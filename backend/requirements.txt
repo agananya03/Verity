@@ -1,0 +1,13 @@
+fastapi
+uvicorn[standard]
+langgraph
+langchain
+langchain-google-genai
+qdrant-client
+rank-bm25
+sentence-transformers
+ragas
+python-dotenv
+sse-starlette
+beautifulsoup4
+requests

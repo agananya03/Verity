@@ -1,0 +1,33 @@
+# Python
+venv/
+.venv/
+__pycache__/
+*.py[cod]
+*$py.class
+.env
+
+# Node / Frontend
+node_modules/
+.next/
+out/
+build/
+dist/
+.npm
+*.log
+
+# OS / System
+.DS_Store
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# IDE / Editor
+.vscode/
+.idea/
+
+# Data & Large Index Artifacts (Keep .gitkeep)
+backend/data/raw/*
+!backend/data/raw/.gitkeep
+backend/data/processed/*
+!backend/data/processed/.gitkeep
+
