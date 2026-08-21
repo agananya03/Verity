@@ -15,6 +15,7 @@ from dotenv import load_dotenv
 from langchain_google_genai import ChatGoogleGenerativeAI
 from pydantic import BaseModel, Field
 
+from backend.agent.llm_client import get_llm_with_fallback
 from backend.agent.state import AgentState
 
 # Load environment variables
@@ -54,6 +55,12 @@ class ClassificationOutput(BaseModel):
     )
 
 
+# Model Configuration
+# Classifier node only performs structured classification (routing + filter extraction),
+# so the lighter model is sufficient and preserves free-tier quota for the draft node.
+MODEL_CLASSIFIER = os.getenv("MODEL_CLASSIFIER", "gemini-3.5-flash-lite")
+
+
 def classify(state: AgentState) -> AgentState:
     """
     Classifies query intent and extracts metadata filters using Gemini structured output.
@@ -62,10 +69,13 @@ def classify(state: AgentState) -> AgentState:
     query = state.get("query", "")
     api_key = os.getenv("GOOGLE_API_KEY")
 
-    llm = ChatGoogleGenerativeAI(
-        model="gemini-3.6-flash",
+    llm = get_llm_with_fallback(
+        primary_model=MODEL_CLASSIFIER,
+        fallback_models=[],
         google_api_key=api_key or None,
         temperature=0.0,
+        request_timeout=30.0,
+        max_retries=2,
     )
     structured_llm = llm.with_structured_output(ClassificationOutput)
 

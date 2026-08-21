@@ -15,6 +15,7 @@ from dotenv import load_dotenv
 from langchain_google_genai import ChatGoogleGenerativeAI
 from pydantic import BaseModel, Field
 
+from backend.agent.llm_client import get_llm_with_fallback
 from backend.agent.state import AgentState
 
 # Load environment variables
@@ -45,6 +46,12 @@ class CriticVerdictOutput(BaseModel):
     )
 
 
+# Model Configuration
+# Critic node only performs structured verification (grounded: bool + unsupported_claims list),
+# not open-ended generation, so the lighter model is sufficient and preserves free-tier quota for the draft node.
+MODEL_CRITIC = os.getenv("MODEL_CRITIC", "gemini-3.5-flash-lite")
+
+
 def critique(state: AgentState) -> AgentState:
     """
     Evaluates draft_answer groundedness against retrieved_chunks using Gemini structured output.
@@ -63,10 +70,13 @@ def critique(state: AgentState) -> AgentState:
         [f"[Chunk {c.get('id') or c.get('chunk_id')}]\n{c.get('text', '')}" for c in chunks]
     )
 
-    llm = ChatGoogleGenerativeAI(
-        model="gemini-3.6-flash",
+    llm = get_llm_with_fallback(
+        primary_model=MODEL_CRITIC,
+        fallback_models=[],
         google_api_key=api_key or None,
         temperature=0.0,
+        request_timeout=30.0,
+        max_retries=2,
     )
     structured_llm = llm.with_structured_output(CriticVerdictOutput)
 

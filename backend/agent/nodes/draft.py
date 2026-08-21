@@ -15,6 +15,7 @@ from typing import Dict, List
 from dotenv import load_dotenv
 from langchain_google_genai import ChatGoogleGenerativeAI
 
+from backend.agent.llm_client import get_llm_with_fallback
 from backend.agent.state import AgentState
 
 # Load environment variables
@@ -27,7 +28,7 @@ DRAFT_PROMPT = """You are Verity's financial analyst AI. Your task is to answer 
 
 STRICT CONSTRAINTS:
 1. Answer ONLY using the information provided in the Context Chunks below. Do NOT use outside knowledge or extrapolate.
-2. Every factual statement or financial figure MUST be explicitly cited inline with its corresponding `[chunk_id]` marker (e.g., "Microsoft revenue reached $245B in 2024 [0004150a-99c9-4f57-8bce-fec2f0ee5c89]").
+2. Every factual statement or financial figure MUST be explicitly cited inline with its corresponding numeric chunk marker (e.g., "Microsoft revenue reached $245B in 2024 [1]").
 3. If the provided Context Chunks do NOT contain sufficient information to answer the question, state explicitly: "I don't have enough information to answer this question based on the retrieved SEC filings."
 4. Be precise, professional, and directly address the user's question.
 
@@ -36,9 +37,16 @@ Context Chunks:
 """
 
 
+# Model Configuration & Fallback Chain
+# Draft node is the only node where full answer quality and open-ended financial synthesis matter,
+# so it retains the stronger primary model with automatic fallback models if quota is exhausted.
+MODEL_DRAFT = os.getenv("MODEL_DRAFT", "gemini-3.5-flash")
+FALLBACK_DRAFT = ["gemini-3.5-flash-lite", "gemini-2.5-flash-lite"]
+
+
 def draft_answer(state: AgentState) -> AgentState:
     """
-    Generates a grounded draft answer with inline chunk_id citations using Gemini.
+    Generates a grounded draft answer with concise numeric citations [1] using Gemini.
     Populates state['draft_answer'] and state['citations'].
     """
     query = state.get("query", "")
@@ -50,22 +58,24 @@ def draft_answer(state: AgentState) -> AgentState:
         state["citations"] = []
         return state
 
-    # Format context chunks for the prompt
+    # Format context chunks with clear numeric indices [Chunk 1], [Chunk 2]...
     context_blocks = []
-    chunk_map: Dict[str, Dict] = {}
-    for c in chunks:
-        c_id = c.get("id") or c.get("chunk_id", "")
-        chunk_map[str(c_id)] = c
-        header = f"[chunk_id: {c_id}] (Company: {c.get('company')}, Year: {c.get('fiscal_year')}, Section: {c.get('item_section')})"
+    chunk_index_map: Dict[int, Dict] = {}
+    for idx, c in enumerate(chunks, start=1):
+        chunk_index_map[idx] = c
+        header = f"[Chunk {idx}] (Company: {c.get('company')}, Year: {c.get('fiscal_year')}, Section: {c.get('item_section')})"
         context_blocks.append(f"{header}\nText: {c.get('text', '')}")
 
     context_text = "\n\n".join(context_blocks)
     prompt = DRAFT_PROMPT.format(context_text=context_text)
 
-    llm = ChatGoogleGenerativeAI(
-        model="gemini-3.6-flash",
+    llm = get_llm_with_fallback(
+        primary_model=MODEL_DRAFT,
+        fallback_models=FALLBACK_DRAFT,
         google_api_key=api_key or None,
         temperature=0.1,
+        request_timeout=30.0,
+        max_retries=2,
     )
 
     messages = [
@@ -79,20 +89,19 @@ def draft_answer(state: AgentState) -> AgentState:
     else:
         answer_text = str(response.content).strip()
 
-    # Extract referenced chunk_ids from draft_answer
-    referenced_ids = set(re.findall(r'\[([a-f0-9\-]{8,36})\]', answer_text, re.IGNORECASE))
-
-    # Also check if any known chunk_id from retrieved_chunks appears in the text
-    for c_id in chunk_map:
-        if c_id in answer_text:
-            referenced_ids.add(c_id)
+    # Extract referenced numeric chunk markers e.g. [1], [2] or [Chunk 1]
+    referenced_indices = set()
+    for match in re.finditer(r'\[(?:Chunk\s*)?(\d+)\]', answer_text, re.IGNORECASE):
+        referenced_indices.add(int(match.group(1)))
 
     citations = []
-    for c_id in referenced_ids:
-        if c_id in chunk_map:
-            chunk = chunk_map[c_id]
+    for idx in sorted(referenced_indices):
+        if idx in chunk_index_map:
+            chunk = chunk_index_map[idx]
+            c_id = chunk.get("id") or chunk.get("chunk_id", "")
             citations.append({
                 "chunk_id": c_id,
+                "citation_marker": f"[{idx}]",
                 "company": chunk.get("company"),
                 "fiscal_year": chunk.get("fiscal_year"),
                 "item_section": chunk.get("item_section"),

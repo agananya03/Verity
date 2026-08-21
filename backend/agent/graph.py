@@ -106,35 +106,39 @@ if __name__ == "__main__":
     print("TESTING VERITY LANGGRAPH WORKFLOW END-TO-END")
     print("=" * 80)
 
-    test_query = "What was Microsoft's revenue in fiscal year 2024?"
-    print(f"Test Query: '{test_query}'\n")
+    test_queries = [
+        "What was Apple's net sales in fiscal year 2024?",
+        "What subscription-based services does Apple offer?",
+        "According to the filing, what are the principal competitive factors important to the Company?",
+    ]
 
-    initial_state: AgentState = {
-        "query": test_query,
-        "classification": "",
-        "extracted_filters": {},
-        "retrieved_chunks": [],
-        "draft_answer": "",
-        "citations": [],
-        "critic_verdict": {},
-        "retry_count": 0,
-        "final_answer": "",
-    }
+    for idx, test_query in enumerate(test_queries, start=1):
+        print(f"\n--- Test Query #{idx}: '{test_query}' ---")
 
-    config = {"configurable": {"thread_id": "test_end_to_end_1"}}
+        initial_state: AgentState = {
+            "query": test_query,
+            "classification": "",
+            "extracted_filters": {},
+            "retrieved_chunks": [],
+            "draft_answer": "",
+            "citations": [],
+            "critic_verdict": {},
+            "retry_count": 0,
+            "final_answer": "",
+        }
 
-    final_output = verity_graph.invoke(initial_state, config=config)
+        config = {"configurable": {"thread_id": f"test_end_to_end_{idx}"}}
 
-    print("=" * 80)
-    print("WORKFLOW RUN COMPLETE")
-    print("=" * 80)
-    print(f"Query Classification:  {final_output.get('classification')}")
-    print(f"Extracted Filters:     {final_output.get('extracted_filters')}")
-    print(f"Total Retries:         {final_output.get('retry_count')}")
-    print(f"Critic Verdict:        {final_output.get('critic_verdict')}")
-    print("-" * 80)
-    print(f"Final Answer:\n{final_output.get('final_answer')}\n")
-    print("Citations:")
-    for cite in final_output.get("citations", []):
-        print(f"  - [{cite.get('chunk_id')}] {cite.get('company')} ({cite.get('fiscal_year')}) - {cite.get('item_section')}")
-    print("=" * 80)
+        final_output = verity_graph.invoke(initial_state, config=config)
+
+        print(f"Query Classification:  {final_output.get('classification')}")
+        print(f"Extracted Filters:     {final_output.get('extracted_filters')}")
+        print(f"Total Retries:         {final_output.get('retry_count')}")
+        print(f"Critic Verdict:        {final_output.get('critic_verdict')}")
+        print("-" * 80)
+        print(f"Final Answer:\n{final_output.get('final_answer')}\n")
+        print("Citations:")
+        for cite in final_output.get("citations", []):
+            print(f"  - [{cite.get('chunk_id')}] {cite.get('company')} ({cite.get('fiscal_year')}) - {cite.get('item_section')}")
+        print("=" * 80)
+
