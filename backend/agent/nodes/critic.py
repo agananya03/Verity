@@ -94,9 +94,20 @@ Draft Answer to evaluate:
 
     result: CriticVerdictOutput = structured_llm.invoke(messages)
 
-    state["critic_verdict"] = {
+    verdict_dict = {
         "grounded": result.grounded,
         "unsupported_claims": result.unsupported_claims,
     }
+
+    state["critic_verdict"] = verdict_dict
+
+    if not state.get("first_critic_verdict"):
+        # First evaluation pass
+        state["first_critic_verdict"] = verdict_dict
+        state["retry_count"] = 0
+    else:
+        # Retry evaluation pass
+        current_retries = state.get("retry_count", 0)
+        state["retry_count"] = current_retries + 1
 
     return state

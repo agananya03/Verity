@@ -145,6 +145,22 @@ async def get_eval_results() -> Dict[str, Any]:
     }
 
 
+@app.get("/category-breakdown")
+async def get_category_breakdown() -> Dict[str, Any]:
+    """
+    Reads and returns the contents of backend/eval/results/category_breakdown.json.
+    """
+    breakdown_path = BASE_DIR / "eval" / "results" / "category_breakdown.json"
+    if not breakdown_path.exists():
+        raise HTTPException(status_code=404, detail="category_breakdown.json not found")
+    try:
+        with open(breakdown_path, "r", encoding="utf-8") as f:
+            return json.load(f)
+    except Exception as e:
+        logger.error(f"Error loading category_breakdown.json: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
 @app.post("/chat")
 async def chat_endpoint(request: ChatRequest) -> EventSourceResponse:
     """

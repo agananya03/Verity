@@ -1,0 +1,210 @@
+{
+  "category_summary": {
+    "simple_lookup": {
+      "count": 22,
+      "metrics": {
+        "faithfulness": {
+          "baseline": 0.9727,
+          "improved": 0.9727,
+          "delta": 0.0
+        },
+        "answer_relevancy": {
+          "baseline": 0.9395,
+          "improved": 0.9086,
+          "delta": -0.0309
+        },
+        "context_precision": {
+          "baseline": 1.0,
+          "improved": 1.0,
+          "delta": 0.0
+        },
+        "context_recall": {
+          "baseline": 1.0,
+          "improved": 1.0,
+          "delta": 0.0
+        }
+      }
+    },
+    "multi_hop": {
+      "count": 4,
+      "metrics": {
+        "faithfulness": {
+          "baseline": 0.8375,
+          "improved": 0.8375,
+          "delta": 0.0
+        },
+        "answer_relevancy": {
+          "baseline": 0.6867,
+          "improved": 0.6559,
+          "delta": -0.0308
+        },
+        "context_precision": {
+          "baseline": 1.0,
+          "improved": 1.0,
+          "delta": 0.0
+        },
+        "context_recall": {
+          "baseline": 1.0,
+          "improved": 1.0,
+          "delta": 0.0
+        }
+      }
+    },
+    "numeric_precision": {
+      "count": 3,
+      "metrics": {
+        "faithfulness": {
+          "baseline": 0.95,
+          "improved": 0.95,
+          "delta": 0.0
+        },
+        "answer_relevancy": {
+          "baseline": 0.2657,
+          "improved": 0.5939,
+          "delta": 0.3283
+        },
+        "context_precision": {
+          "baseline": 1.0,
+          "improved": 1.0,
+          "delta": 0.0
+        },
+        "context_recall": {
+          "baseline": 1.0,
+          "improved": 1.0,
+          "delta": 0.0
+        }
+      }
+    },
+    "unanswerable": {
+      "count": 6,
+      "metrics": {
+        "faithfulness": {
+          "baseline": 1.0,
+          "improved": 1.0,
+          "delta": 0.0
+        },
+        "answer_relevancy": {
+          "baseline": 1.0,
+          "improved": 1.0,
+          "delta": 0.0
+        },
+        "context_precision": {
+          "baseline": 1.0,
+          "improved": 1.0,
+          "delta": 0.0
+        },
+        "context_recall": {
+          "baseline": 1.0,
+          "improved": 1.0,
+          "delta": 0.0
+        }
+      }
+    }
+  },
+  "unanswerable_qualitative_evaluation": [
+    {
+      "golden_index": 29,
+      "question": "What was Amazon's total net sales and AWS operating income in fiscal year 2024 according to the filings?",
+      "ground_truth": "The provided documents do not contain this information.",
+      "baseline_answer": "I don't have enough information to answer this question based on the retrieved SEC filings.",
+      "improved_answer": "I don't have enough information to answer this question based on the retrieved SEC filings.",
+      "baseline_declined": true,
+      "improved_declined": true,
+      "behavior_status": "BOTH_CORRECTLY_DECLINED"
+    },
+    {
+      "golden_index": 30,
+      "question": "What was Netflix's global subscriber churn rate and ARPU in Q4 2024?",
+      "ground_truth": "The provided documents do not contain this information.",
+      "baseline_answer": "I don't have enough information to answer this question based on the retrieved SEC filings.",
+      "improved_answer": "I don't have enough information to answer this question based on the retrieved SEC filings.",
+      "baseline_declined": true,
+      "improved_declined": true,
+      "behavior_status": "BOTH_CORRECTLY_DECLINED"
+    },
+    {
+      "golden_index": 31,
+      "question": "According to Apple's Form 10-K, what was the exact breakdown of R&D expenses spent on Project Titan autonomous vehicles in 2022?",
+      "ground_truth": "The provided documents do not contain this information.",
+      "baseline_answer": "I don't have enough information to answer this question based on the retrieved SEC filings.",
+      "improved_answer": "I don't have enough information to answer this question based on the retrieved SEC filings.",
+      "baseline_declined": true,
+      "improved_declined": true,
+      "behavior_status": "BOTH_CORRECTLY_DECLINED"
+    },
+    {
+      "golden_index": 32,
+      "question": "What was Amazon's total net sales and AWS operating income in fiscal year 2024 according to the filings?",
+      "ground_truth": "The provided documents do not contain this information.",
+      "baseline_answer": "I don't have enough information to answer this question based on the retrieved SEC filings.",
+      "improved_answer": "I don't have enough information to answer this question based on the retrieved SEC filings.",
+      "baseline_declined": true,
+      "improved_declined": true,
+      "behavior_status": "BOTH_CORRECTLY_DECLINED"
+    },
+    {
+      "golden_index": 33,
+      "question": "What was Netflix's global subscriber churn rate and ARPU in Q4 2024?",
+      "ground_truth": "The provided documents do not contain this information.",
+      "baseline_answer": "I don't have enough information to answer this question based on the retrieved SEC filings.",
+      "improved_answer": "I don't have enough information to answer this question based on the retrieved SEC filings.",
+      "baseline_declined": true,
+      "improved_declined": true,
+      "behavior_status": "BOTH_CORRECTLY_DECLINED"
+    },
+    {
+      "golden_index": 34,
+      "question": "According to Apple's Form 10-K, what was the exact breakdown of R&D expenses spent on Project Titan autonomous vehicles in 2022?",
+      "ground_truth": "The provided documents do not contain this information.",
+      "baseline_answer": "I don't have enough information to answer this question based on the retrieved SEC filings.",
+      "improved_answer": "I don't have enough information to answer this question based on the retrieved SEC filings.",
+      "baseline_declined": true,
+      "improved_declined": true,
+      "behavior_status": "BOTH_CORRECTLY_DECLINED"
+    }
+  ],
+  "critic_retry_logging": {
+    "retry_data_available": true,
+    "total_retried_questions": 2,
+    "retries_by_category": {
+      "simple_lookup": 2
+    },
+    "retried_questions_detail": [
+      {
+        "golden_index": 2,
+        "question": "According to the filing, what are the principal competitive factors important to the Company?",
+        "category": "simple_lookup",
+        "retry_count": 2,
+        "initial_unsupported_claims": [
+          "From the 2023 and 2024 filings",
+          "From the 2025 filings"
+        ],
+        "final_grounded": false,
+        "baseline_faithfulness": 0.95,
+        "improved_faithfulness": 0.95,
+        "faithfulness_delta": 0.0,
+        "baseline_answer_relevancy": 0.6545,
+        "improved_answer_relevancy": 0.8842,
+        "answer_relevancy_delta": 0.2297
+      },
+      {
+        "golden_index": 9,
+        "question": "According to the Form 10-K, in which specific sections are many of the forward-looking statements located?",
+        "category": "simple_lookup",
+        "retry_count": 2,
+        "initial_unsupported_claims": [
+          "For Apple (2023, 2024, 2025)",
+          "Many of the forward-looking statements are located in: Part I, Item 1 under the heading “Business” [4, 6, 8]",
+          "Part II, Item 7 under the heading “Management’s Discussion and Analysis of Financial Condition and Results of Operations” [4, 6, 8]"
+        ],
+        "final_grounded": false,
+        "baseline_faithfulness": 0.95,
+        "improved_faithfulness": 0.95,
+        "faithfulness_delta": 0.0,
+        "baseline_answer_relevancy": 1.0,
+        "improved_answer_relevancy": 0.7875,
+        "answer_relevancy_delta": -0.2125
+      }
+    ]
+  }
+}

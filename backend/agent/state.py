@@ -54,6 +54,10 @@ class AgentState(TypedDict):
     # Dictionary evaluation containing {"grounded": bool, "unsupported_claims": list[str]} verifying factual alignment.
     critic_verdict: Dict[str, Any]
 
+    # Field 7b: Initial Critic Evaluation Verdict
+    # Populated by the Critic Node on its first evaluation pass before any retries.
+    first_critic_verdict: Dict[str, Any]
+
     # Field 8: Retry Counter
     # Incremented by the Router / Conditional Feedback Node during self-correction loops when the Critic finds hallucinations.
     retry_count: int

@@ -114,7 +114,7 @@ Answer:"""
     return answer, retrieved_contexts
 
 
-def run_improved_pipeline(query: str) -> Tuple[str, List[str]]:
+def run_improved_pipeline(query: str) -> Tuple[str, List[str], Dict[str, Any]]:
     """
     Improved pipeline:
     - End-to-end verity_graph execution.
@@ -129,6 +129,7 @@ def run_improved_pipeline(query: str) -> Tuple[str, List[str]]:
         "draft_answer": "",
         "citations": [],
         "critic_verdict": {},
+        "first_critic_verdict": {},
         "retry_count": 0,
         "final_answer": "",
     }
@@ -141,7 +142,17 @@ def run_improved_pipeline(query: str) -> Tuple[str, List[str]]:
             final_answer = final_state.get("final_answer") or final_state.get("draft_answer") or ""
             retrieved_chunks = final_state.get("retrieved_chunks", [])
             retrieved_contexts = [c.get("text", "") for c in retrieved_chunks if c.get("text")]
-            return final_answer, retrieved_contexts
+
+            critic_verdict = final_state.get("critic_verdict") or {}
+            initial_critic_verdict = final_state.get("first_critic_verdict") or critic_verdict
+            retry_count = final_state.get("retry_count", 0)
+
+            exec_info = {
+                "retry_count": retry_count,
+                "critic_verdict": critic_verdict,
+                "initial_critic_verdict": initial_critic_verdict,
+            }
+            return final_answer, retrieved_contexts, exec_info
         except AllModelsExhaustedError:
             raise
         except Exception as e:
@@ -157,7 +168,12 @@ def run_improved_pipeline(query: str) -> Tuple[str, List[str]]:
     hits = search_qdrant(query=query, filters=None, limit=8)
     retrieved_contexts = [h.get("text", "") for h in hits if h.get("text")]
     final_answer = f"Based on retrieved SEC filings: {retrieved_contexts[0][:250]}..." if retrieved_contexts else "I don't have enough information to answer this question based on the retrieved SEC filings."
-    return final_answer, retrieved_contexts
+    fallback_exec_info = {
+        "retry_count": 0,
+        "critic_verdict": {"grounded": False, "unsupported_claims": ["Pipeline execution fallback"]},
+        "initial_critic_verdict": {"grounded": False, "unsupported_claims": ["Pipeline execution fallback"]},
+    }
+    return final_answer, retrieved_contexts, fallback_exec_info
 
 
 def compute_heuristic_metrics(
@@ -306,6 +322,7 @@ def main():
     answers: List[str] = []
     contexts_list: List[List[str]] = []
     ground_truths: List[str] = []
+    execution_infos: List[Dict[str, Any]] = []
 
     # Check for existing results to resume if start_from > 1
     results_dir = BASE_DIR / "eval" / "results"
@@ -320,6 +337,12 @@ def main():
                     answers.append(item.get("answer", ""))
                     contexts_list.append(item.get("contexts", [""]))
                     ground_truths.append(item.get("ground_truth", ""))
+                    if args.config == "improved":
+                        execution_infos.append({
+                            "retry_count": item.get("retry_count", 0),
+                            "critic_verdict": item.get("critic_verdict", {}),
+                            "initial_critic_verdict": item.get("initial_critic_verdict", {}),
+                        })
                 logger.info(f"Resuming evaluation: Loaded {len(questions)} existing answers prior to index {args.start_from}.")
         except Exception as e:
             logger.warning(f"Could not load previous evaluation results to resume: {e}")
@@ -336,7 +359,8 @@ def main():
             if args.config == "baseline":
                 answer, contexts = run_baseline_pipeline(q)
             else:
-                answer, contexts = run_improved_pipeline(q)
+                answer, contexts, exec_info = run_improved_pipeline(q)
+                execution_infos.append(exec_info)
 
             questions.append(q)
             answers.append(answer)
@@ -354,19 +378,25 @@ def main():
             print("!" * 75 + "\n")
 
             if questions:
+                partial_per_question = []
+                for i in range(len(questions)):
+                    pq_item = {
+                        "question": questions[i],
+                        "answer": answers[i],
+                        "contexts": contexts_list[i],
+                        "ground_truth": ground_truths[i],
+                    }
+                    if args.config == "improved" and i < len(execution_infos):
+                        pq_item["retry_count"] = execution_infos[i].get("retry_count", 0)
+                        pq_item["critic_verdict"] = execution_infos[i].get("critic_verdict", {})
+                        pq_item["initial_critic_verdict"] = execution_infos[i].get("initial_critic_verdict", {})
+                    partial_per_question.append(pq_item)
+
                 partial_output = {
                     "config": args.config,
                     "total_evaluated": len(questions),
                     "checkpoint_question_index": idx,
-                    "per_question_results": [
-                        {
-                            "question": questions[i],
-                            "answer": answers[i],
-                            "contexts": contexts_list[i],
-                            "ground_truth": ground_truths[i],
-                        }
-                        for i in range(len(questions))
-                    ],
+                    "per_question_results": partial_per_question,
                 }
                 results_dir = BASE_DIR / "eval" / "results"
                 results_dir.mkdir(parents=True, exist_ok=True)
@@ -387,6 +417,12 @@ def main():
             answers.append("Error generating answer.")
             contexts_list.append([""])
             ground_truths.append(gt)
+            if args.config == "improved":
+                execution_infos.append({
+                    "retry_count": 0,
+                    "critic_verdict": {"grounded": False, "unsupported_claims": [str(e)]},
+                    "initial_critic_verdict": {"grounded": False, "unsupported_claims": [str(e)]},
+                })
 
         if idx < len(golden_set) and args.delay > 0:
             time.sleep(args.delay)
@@ -467,6 +503,14 @@ def main():
             aggregate_scores, per_question_breakdown = compute_heuristic_metrics(
                 questions, answers, contexts_list, ground_truths, golden_set
             )
+
+    # Attach graph execution info to per_question_breakdown for improved config
+    if args.config == "improved" and execution_infos:
+        for i, res in enumerate(per_question_breakdown):
+            if i < len(execution_infos):
+                res["retry_count"] = execution_infos[i].get("retry_count", 0)
+                res["critic_verdict"] = execution_infos[i].get("critic_verdict", {})
+                res["initial_critic_verdict"] = execution_infos[i].get("initial_critic_verdict", {})
 
     # Step 3: Save results to backend/eval/results/{config}.json
     output_data = {

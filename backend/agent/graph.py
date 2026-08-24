@@ -123,6 +123,7 @@ if __name__ == "__main__":
             "draft_answer": "",
             "citations": [],
             "critic_verdict": {},
+            "first_critic_verdict": {},
             "retry_count": 0,
             "final_answer": "",
         }
