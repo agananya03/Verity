@@ -10,6 +10,7 @@ Role:
 
 import os
 import re
+import logging
 from pathlib import Path
 from typing import Dict, List
 from dotenv import load_dotenv
@@ -23,13 +24,21 @@ BASE_DIR = Path(__file__).resolve().parent.parent.parent
 load_dotenv(dotenv_path=BASE_DIR / ".env")
 load_dotenv()
 
+logger = logging.getLogger(__name__)
+
+# Helpful Decline Message
+DECLINE_MESSAGE = (
+    "I don't have enough information to answer this question based on the retrieved SEC filings. "
+    "Verity currently indexes SEC Form 10-K filings for Apple (AAPL), Microsoft (MSFT), and Alphabet (GOOGL)."
+)
+
 # System Prompt for Draft Generation
 DRAFT_PROMPT = """You are Verity's financial analyst AI. Your task is to answer the user's financial question accurately and concisely.
 
 STRICT CONSTRAINTS:
 1. Answer ONLY using the information provided in the Context Chunks below. Do NOT use outside knowledge or extrapolate.
 2. Every factual statement or financial figure MUST be explicitly cited inline with its corresponding numeric chunk marker (e.g., "Microsoft revenue reached $245B in 2024 [1]").
-3. If the provided Context Chunks do NOT contain sufficient information to answer the question, state explicitly: "I don't have enough information to answer this question based on the retrieved SEC filings."
+3. If the provided Context Chunks do NOT contain sufficient information to answer the question, state explicitly: "I don't have enough information to answer this question based on the retrieved SEC filings. Verity currently indexes SEC Form 10-K filings for Apple (AAPL), Microsoft (MSFT), and Alphabet (GOOGL)."
 4. Be precise, professional, and directly address the user's question.
 
 Context Chunks:
@@ -47,15 +56,16 @@ FALLBACK_DRAFT = ["gemini-3.5-flash-lite", "gemini-2.5-flash-lite"]
 def draft_answer(state: AgentState) -> AgentState:
     """
     Generates a grounded draft answer with concise numeric citations [1] using Gemini.
-    Populates state['draft_answer'] and state['citations'].
+    Populates state['draft_answer'], state['citations'], and state['is_decline'].
     """
     query = state.get("query", "")
     chunks = state.get("retrieved_chunks", [])
     api_key = os.getenv("GOOGLE_API_KEY")
 
     if not chunks:
-        state["draft_answer"] = "I don't have enough information to answer this question based on the retrieved SEC filings."
+        state["draft_answer"] = DECLINE_MESSAGE
         state["citations"] = []
+        state["is_decline"] = True
         return state
 
     # Format context chunks with clear numeric indices [Chunk 1], [Chunk 2]...
@@ -89,6 +99,15 @@ def draft_answer(state: AgentState) -> AgentState:
     else:
         answer_text = str(response.content).strip()
 
+    # Detect if answer is a decline/insufficient information response
+    lower_answer = answer_text.lower()
+    is_decline = bool(
+        "don't have enough information" in lower_answer
+        or "do not have enough information" in lower_answer
+        or "insufficient information" in lower_answer
+        or answer_text.strip() == DECLINE_MESSAGE
+    )
+
     # Extract referenced numeric chunk markers e.g. [1], [2] or [Chunk 1]
     referenced_indices = set()
     for match in re.finditer(r'\[(?:Chunk\s*)?(\d+)\]', answer_text, re.IGNORECASE):
@@ -111,5 +130,8 @@ def draft_answer(state: AgentState) -> AgentState:
 
     state["draft_answer"] = answer_text
     state["citations"] = citations
+    state["is_decline"] = is_decline
+
+    logger.info(f"Draft Generator Node: is_decline={is_decline}")
 
     return state

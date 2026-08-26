@@ -1,6 +1,5 @@
 "use client";
 
-import { ShieldCheck, RefreshCw, AlertTriangle, Loader2, FileSearch, Sparkles, CheckCircle2 } from "lucide-react";
 import { CriticStatus } from "@/lib/useVerityChat";
 
 interface CriticBadgeProps {
@@ -10,52 +9,60 @@ interface CriticBadgeProps {
 }
 
 export function CriticBadge({ statusNode, criticStatus, isStreaming }: CriticBadgeProps) {
-  // If streaming and node is actively running
+  // If streaming and node is actively running -> terminal log-line output
   if (isStreaming && statusNode && statusNode !== "completed" && statusNode !== "failed") {
-    const nodeLabels: Record<string, { label: string; icon: any }> = {
-      classifier: { label: "Classifying query intent & filters...", icon: Sparkles },
-      retriever: { label: "Searching SEC 10-K vector & BM25 index...", icon: FileSearch },
-      draft: { label: "Synthesizing answer from retrieved chunks...", icon: Loader2 },
-      critic: { label: "Auditing groundedness with Critic node...", icon: ShieldCheck },
-      finalizer: { label: "Finalizing response...", icon: CheckCircle2 },
+    const nodeLabels: Record<string, string> = {
+      classifier: "Classifying query intent & filters...",
+      retriever: "Searching SEC 10-K vector & BM25 index...",
+      draft: "Synthesizing answer from retrieved chunks...",
+      critic: "Auditing groundedness with Critic node...",
+      finalizer: "Finalizing response...",
     };
 
-    const current = nodeLabels[statusNode] || { label: `Processing node '${statusNode}'...`, icon: Loader2 };
-    const Icon = current.icon;
+    const label = nodeLabels[statusNode] || `Processing node '${statusNode}'...`;
 
     return (
-      <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-blue-500/10 text-blue-400 border border-blue-500/20 text-xs font-medium animate-pulse">
-        <Icon className="w-3.5 h-3.5 animate-spin" />
-        <span>{current.label}</span>
+      <div className="font-mono text-xs text-[#E8A33D] flex items-center gap-1.5">
+        <span>{label}</span>
+        <span className="animate-pulse font-bold">_</span>
       </div>
     );
   }
 
   // If critic status is available
   if (criticStatus) {
+    if (criticStatus.is_decline) {
+      return (
+        <div className="font-mono text-xs text-[#8B95A1] flex items-center gap-1.5 uppercase tracking-wider font-medium">
+          <span className="w-1.5 h-1.5 rounded-full bg-[#8B95A1]" />
+          <span>NO MATCH IN CORPUS</span>
+        </div>
+      );
+    }
+
     if (criticStatus.grounded && criticStatus.retry_count === 0) {
       return (
-        <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 text-xs font-semibold">
-          <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
-          <span>Verified • 100% Grounded</span>
+        <div className="font-mono text-xs text-[#4A7C6D] flex items-center gap-1.5 uppercase tracking-wider font-medium">
+          <span className="w-1.5 h-1.5 rounded-full bg-[#4A7C6D]" />
+          <span>GROUNDED</span>
         </div>
       );
     }
 
     if (criticStatus.grounded && criticStatus.retry_count > 0) {
       return (
-        <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-amber-500/10 text-amber-400 border border-amber-500/20 text-xs font-semibold">
-          <RefreshCw className="w-3.5 h-3.5 text-amber-400" />
-          <span>Verified • Self-Corrected ({criticStatus.retry_count} retry{criticStatus.retry_count > 1 ? "s" : ""})</span>
+        <div className="font-mono text-xs text-[#E8A33D] flex items-center gap-1.5 uppercase tracking-wider font-medium">
+          <span className="w-1.5 h-1.5 rounded-full bg-[#E8A33D]" />
+          <span>RETRIED {criticStatus.retry_count}x</span>
         </div>
       );
     }
 
     if (!criticStatus.grounded) {
       return (
-        <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-rose-500/10 text-rose-400 border border-rose-500/20 text-xs font-semibold">
-          <AlertTriangle className="w-3.5 h-3.5 text-rose-400" />
-          <span>Unverified Claims Detected ({criticStatus.unsupported_claims.length} flagged)</span>
+        <div className="font-mono text-xs text-[#C0503F] flex items-center gap-1.5 uppercase tracking-wider font-medium">
+          <span className="w-1.5 h-1.5 rounded-full bg-[#C0503F]" />
+          <span>UNRESOLVED AFTER RETRY</span>
         </div>
       );
     }
@@ -63,9 +70,9 @@ export function CriticBadge({ statusNode, criticStatus, isStreaming }: CriticBad
 
   if (statusNode === "completed") {
     return (
-      <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 text-xs font-semibold">
-        <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
-        <span>Verified Response</span>
+      <div className="font-mono text-xs text-[#4A7C6D] flex items-center gap-1.5 uppercase tracking-wider font-medium">
+        <span className="w-1.5 h-1.5 rounded-full bg-[#4A7C6D]" />
+        <span>GROUNDED</span>
       </div>
     );
   }

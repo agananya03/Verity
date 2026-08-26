@@ -24,6 +24,16 @@ class AgentState(TypedDict):
     # Populated initially at graph entry with the raw financial query string submitted by the user.
     query: str
 
+    # Field 1b: Original Query & Rewritten Query
+    # Populated by the Rewriter Node. Stores original user prompt and standalone rewritten query.
+    original_query: str
+    rewritten_query: str
+
+    # Field 1c: Conversation History
+    # Populated at API entry with recent prior turns [{"role": "user"|"assistant", "content": "..."}, ...]
+    conversation_history: List[Dict[str, str]]
+
+
     # Field 2: Query Classification
     # Populated by the Router Node.
     # Allowed values: "simple_lookup" (factual retrieval), "comparison" (cross-company/year analysis), "numeric" (financial calculation/table analysis).
@@ -66,3 +76,8 @@ class AgentState(TypedDict):
     # Populated by the Finalizer / Output Node.
     # The verified, grounded answer ready for downstream API streaming and client UI rendering.
     final_answer: str
+
+    # Field 10: Insufficient Context / Decline Flag
+    # Populated by the Draft / Generator Node when retrieval chunks are missing or context is insufficient to answer.
+    is_decline: bool
+

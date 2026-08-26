@@ -129,15 +129,15 @@ export default function EvalDashboardPage() {
   // Loading State Skeleton
   if (loading) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-[70vh] py-12 space-y-4">
-        <div className="w-12 h-12 rounded-2xl bg-blue-500/10 border border-blue-500/20 flex items-center justify-center animate-pulse">
-          <BarChart3 className="w-6 h-6 text-blue-400 animate-spin" />
+      <div className="flex flex-col items-center justify-center min-h-[60vh] py-12 space-y-3 font-mono text-center">
+        <div className="w-8 h-8 rounded-sm bg-[#E8A33D]/10 border border-[#E8A33D]/30 flex items-center justify-center animate-pulse">
+          <BarChart3 className="w-4 h-4 text-[#E8A33D]" />
         </div>
-        <p className="text-sm font-medium text-slate-300">
-          Loading RAGAS benchmark evaluation metrics...
+        <p className="text-xs text-[#EDE7DA] tracking-wide">
+          WAKING BACKEND — FREE-TIER HOSTING, THIS MAY TAKE UP TO 60S
         </p>
-        <p className="text-xs text-slate-500 max-w-sm text-center">
-          Fetching overall and per-category evaluation breakdowns...
+        <p className="text-[11px] text-[#8B95A1] max-w-sm">
+          Fetching RAGAS evaluation metrics and category breakdown data...
         </p>
       </div>
     );
@@ -146,18 +146,18 @@ export default function EvalDashboardPage() {
   // Error State with Retry
   if (error || !data) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-[60vh] py-12 text-center max-w-md mx-auto px-4">
-        <div className="w-12 h-12 rounded-2xl bg-rose-500/10 border border-rose-500/20 flex items-center justify-center mb-4">
-          <AlertCircle className="w-6 h-6 text-rose-400" />
+      <div className="flex flex-col items-center justify-center min-h-[60vh] py-12 text-center max-w-md mx-auto px-4 font-mono">
+        <div className="w-10 h-10 rounded-sm bg-[#C0503F]/10 border border-[#C0503F]/30 flex items-center justify-center mb-4">
+          <AlertCircle className="w-5 h-5 text-[#C0503F]" />
         </div>
-        <h2 className="text-xl font-bold text-slate-200">Unable to Load Evaluation Metrics</h2>
-        <p className="mt-2 text-xs text-slate-400 leading-relaxed">{error}</p>
+        <h2 className="text-sm font-semibold text-[#EDE7DA] uppercase tracking-wider">Unable to Load Evaluation Metrics</h2>
+        <p className="mt-2 text-xs text-[#8B95A1] leading-relaxed">{error}</p>
         <button
           onClick={fetchEvalResults}
-          className="mt-6 flex items-center gap-2 px-4 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-medium text-xs shadow-lg shadow-blue-500/20 transition-all"
+          className="mt-6 flex items-center gap-2 px-4 py-2 rounded-sm bg-[#E8A33D] text-[#0F1419] font-medium text-xs hover:bg-[#E8A33D]/90 transition-all focus-visible:outline-none"
         >
           <RefreshCw className="w-3.5 h-3.5" />
-          <span>Retry Connection</span>
+          <span>RETRY CONNECTION</span>
         </button>
       </div>
     );
@@ -206,56 +206,54 @@ export default function EvalDashboardPage() {
 
   return (
     <div className="space-y-8 pb-12">
-      {/* Header Title */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-800/80 pb-5">
+      {/* Page Masthead Header */}
+      <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 border-b border-[#2A3138] pb-5">
         <div>
-          <div className="flex items-center gap-2 text-xs font-semibold text-emerald-400 mb-1">
-            <ShieldCheck className="w-4 h-4" />
-            <span>Benchmark RAGAS Evaluation</span>
-          </div>
-          <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-white">
-            Evaluation Dashboard
+          <h1 className="font-display font-medium text-3xl sm:text-4xl text-[#EDE7DA] tracking-tight">
+            Evaluation Results
           </h1>
-          <p className="text-xs sm:text-sm text-slate-400 mt-1">
-            Category Breakdown: Baseline (Vector-Only) vs Improved (Hybrid RRF + Critic Self-Correction).
+          <p className="font-mono text-xs text-[#8B95A1] mt-1 tracking-wide">
+            {totalQuestionsCount}-QUESTION GOLDEN SET · BASELINE VS. VERITY_GRAPH
           </p>
         </div>
 
         <button
           onClick={fetchEvalResults}
-          className="self-start sm:self-auto flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-900 text-slate-300 hover:bg-slate-800 border border-slate-800 text-xs font-medium transition-colors"
+          className="self-start sm:self-auto flex items-center gap-1.5 px-3 py-1.5 rounded-sm bg-[#0F1419] text-[#EDE7DA] hover:bg-[#EDE7DA]/[0.05] border border-[#2A3138] font-mono text-xs transition-colors"
         >
-          <RefreshCw className="w-3.5 h-3.5 text-slate-400" />
-          <span>Refresh Metrics</span>
+          <RefreshCw className="w-3.5 h-3.5 text-[#8B95A1]" />
+          <span>Refresh Data</span>
         </button>
       </div>
 
-      {/* Dynamic Headline Stat Banner */}
-      <div className="p-6 rounded-2xl glass-panel border border-blue-500/30 bg-gradient-to-r from-blue-950/40 via-slate-900/60 to-indigo-950/40 shadow-xl relative overflow-hidden">
-        <div className="absolute -right-8 -top-8 w-36 h-36 bg-blue-500/10 rounded-full blur-2xl pointer-events-none" />
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-          <div className="space-y-1.5 max-w-2xl">
-            <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-blue-500/10 text-blue-400 border border-blue-500/20 text-[11px] font-bold tracking-wide">
-              <Sparkles className="w-3 h-3" /> CATEGORY HIGHLIGHT
+      {/* Headline Stat Document Panel */}
+      <div className="p-6 rounded-sm bg-[#0F1419] border border-[#2A3138] space-y-4">
+        <div className="font-mono text-xs text-[#E8A33D] uppercase tracking-widest">
+          CATEGORY HIGHLIGHT — NUMERIC PRECISION
+        </div>
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
+          <div className="space-y-2 max-w-2xl">
+            <div className="font-display font-medium text-4xl sm:text-5xl text-[#E8A33D] tracking-tight">
+              +{numPercentBoost}%
             </div>
-            <h2 className="text-xl sm:text-2xl font-extrabold text-white tracking-tight">
-              +{numPercentBoost}% Answer Relevancy on numeric precision questions
+            <h2 className="font-body font-semibold text-lg sm:text-xl text-[#EDE7DA]">
+              Answer Relevancy boost on numeric precision questions
             </h2>
-            <p className="text-xs text-slate-300/90 leading-relaxed">
-              Driven by BM25 + dense hybrid retrieval with reciprocal rank fusion (RRF), enabling exact metric match for financial calculations.
+            <p className="font-body text-xs sm:text-sm text-[#8B95A1] leading-relaxed">
+              Driven by BM25 + dense hybrid retrieval fused via Reciprocal Rank Fusion (RRF), enabling exact metric retrieval for financial figures across filings.
             </p>
           </div>
 
-          <div className="flex items-center gap-3 shrink-0">
-            <div className="p-3.5 rounded-xl bg-slate-900/90 border border-slate-800 text-center min-w-[120px]">
-              <span className="text-[10px] text-slate-400 block font-medium uppercase tracking-wider">Baseline Relevancy</span>
-              <span className="text-xl font-extrabold font-mono text-slate-400">
+          <div className="flex items-center gap-3 shrink-0 font-mono text-xs">
+            <div className="p-3 rounded-sm bg-[#0F1419] border border-[#2A3138] text-center min-w-[120px]">
+              <span className="text-[10px] text-[#8B95A1] block uppercase tracking-wider">Baseline</span>
+              <span className="text-lg font-bold text-[#8B95A1]">
                 {(numBaseRel * 100).toFixed(1)}%
               </span>
             </div>
-            <div className="p-3.5 rounded-xl bg-slate-900/90 border border-blue-500/30 text-center min-w-[120px] shadow-lg shadow-blue-500/10">
-              <span className="text-[10px] text-blue-300 block font-medium uppercase tracking-wider">Improved Relevancy</span>
-              <span className="text-xl font-extrabold font-mono text-blue-400">
+            <div className="p-3 rounded-sm bg-[#0F1419] border border-[#E8A33D]/40 text-center min-w-[120px]">
+              <span className="text-[10px] text-[#E8A33D] block uppercase tracking-wider">Improved</span>
+              <span className="text-lg font-bold text-[#E8A33D]">
                 {(numImpRel * 100).toFixed(1)}%
               </span>
             </div>
@@ -263,133 +261,139 @@ export default function EvalDashboardPage() {
         </div>
       </div>
 
-      {/* Primary Category Answer Relevancy Grouped Bar Chart */}
-      <div className="p-6 rounded-2xl glass-panel border border-slate-800 space-y-3 shadow-xl">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-800 pb-3">
+      {/* Primary Category Grouped Bar Chart */}
+      <div className="p-6 rounded-sm bg-[#0F1419] border border-[#2A3138] space-y-4">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-[#2A3138] pb-3">
           <div>
-            <h3 className="text-base font-bold text-white flex items-center gap-2">
-              <BarChart3 className="w-4 h-4 text-blue-400" />
+            <h3 className="font-display font-medium text-lg text-[#EDE7DA] flex items-center gap-2">
+              <BarChart3 className="w-4 h-4 text-[#E8A33D]" />
               <span>Answer Relevancy by Question Category</span>
             </h3>
-            <p className="text-xs text-slate-400 mt-0.5">
-              Side-by-side metric comparison revealing performance across difficulty domains.
+            <p className="font-mono text-xs text-[#8B95A1] mt-0.5">
+              Side-by-side metric comparison across evaluation domains.
             </p>
           </div>
-          <span className="text-xs font-mono text-slate-400 bg-slate-900 px-2.5 py-1 rounded-lg border border-slate-800">
-            4 Category Groups
+          <span className="font-mono text-xs text-[#8B95A1] px-2.5 py-1 rounded-sm border border-[#2A3138]">
+            4 CATEGORIES
           </span>
         </div>
 
         <CategoryBarChart data={categoryChartData} />
       </div>
 
-      {/* Critic Loop Activity Card */}
-      <div className="p-6 rounded-2xl glass-panel border border-purple-500/20 bg-slate-900/40 space-y-4 shadow-xl">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-800 pb-3">
-          <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-xl bg-purple-500/10 border border-purple-500/20 flex items-center justify-center text-purple-400">
-              <ShieldAlert className="w-4 h-4" />
+      {/* Critic Loop Activity Audit Note Panel */}
+      <div className="p-6 rounded-sm bg-[#0F1419] border border-[#2A3138] space-y-4">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[#2A3138] pb-3">
+          <div>
+            <div className="font-mono text-xs text-[#8B95A1] uppercase tracking-widest">
+              CRITIC AUDIT LOG
             </div>
-            <div>
-              <h3 className="text-base font-bold text-white">Critic Loop Activity & Telemetry</h3>
-              <p className="text-xs text-slate-400">
-                Self-correcting audit loop evaluating draft groundedness against retrieved SEC context.
-              </p>
-            </div>
+            <p className="font-body text-xs text-[#8B95A1] mt-0.5">
+              Self-correcting audit loop evaluating draft groundedness against retrieved SEC context.
+            </p>
           </div>
-          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-purple-500/10 border border-purple-500/20 text-purple-300 text-xs font-semibold self-start sm:self-auto">
-            <span>{totalRetriedCount} of {totalQuestionsCount} Questions Triggered Retries</span>
+          <div className="font-mono text-xs text-[#E8A33D] px-2.5 py-1 border border-[#2A3138] rounded-sm self-start sm:self-auto">
+            {totalRetriedCount} OF {totalQuestionsCount} QUESTIONS TRIGGERED RETRIES
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-1">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-1 font-mono text-xs">
           {/* Query 2 Note */}
-          <div className="p-4 rounded-xl bg-slate-900/80 border border-slate-800 space-y-2">
+          <div className="p-4 rounded-sm bg-[#0F1419] border border-[#2A3138] space-y-2">
             <div className="flex items-center justify-between">
-              <span className="text-xs font-semibold text-slate-200">Query #2 — Simple Lookup</span>
-              <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-purple-500/10 text-purple-300 border border-purple-500/20">
-                2 Retries Triggered
+              <span className="font-semibold text-[#EDE7DA]">Query #2 — Simple Lookup</span>
+              <span className="text-[10px] px-2 py-0.5 rounded-sm bg-[#C0503F]/15 border border-[#C0503F]/30 text-[#C0503F] font-semibold uppercase tracking-wider">
+                FLAGGED — UNRESOLVED
               </span>
             </div>
-            <p className="text-xs text-slate-400 leading-relaxed">
-              <strong className="text-slate-300">Flagged Issue:</strong> Critic flagged ungrounded multi-year section headers inferred across SEC filing chunks when the query asked for general competitive factors.
+            <p className="text-[#8B95A1] font-body text-xs leading-relaxed">
+              <strong className="font-mono text-[#EDE7DA]">Flagged Issue:</strong> Critic flagged ungrounded multi-year section headers inferred across SEC filing chunks when the query asked for general competitive factors.
             </p>
           </div>
 
           {/* Query 9 Note */}
-          <div className="p-4 rounded-xl bg-slate-900/80 border border-slate-800 space-y-2">
+          <div className="p-4 rounded-sm bg-[#0F1419] border border-[#2A3138] space-y-2">
             <div className="flex items-center justify-between">
-              <span className="text-xs font-semibold text-slate-200">Query #9 — Simple Lookup</span>
-              <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-purple-500/10 text-purple-300 border border-purple-500/20">
-                2 Retries Triggered
+              <span className="font-semibold text-[#EDE7DA]">Query #9 — Simple Lookup</span>
+              <span className="text-[10px] px-2 py-0.5 rounded-sm bg-[#C0503F]/15 border border-[#C0503F]/30 text-[#C0503F] font-semibold uppercase tracking-wider">
+                FLAGGED — UNRESOLVED
               </span>
             </div>
-            <p className="text-xs text-slate-400 leading-relaxed">
-              <strong className="text-slate-300">Flagged Issue:</strong> Critic flagged unverified section attributions when forward-looking statement headings differed across filing years.
+            <p className="text-[#8B95A1] font-body text-xs leading-relaxed">
+              <strong className="font-mono text-[#EDE7DA]">Flagged Issue:</strong> Critic flagged unverified section attributions when forward-looking statement headings differed across filing years.
             </p>
           </div>
         </div>
 
-        {/* Honest Limitation Note */}
-        <div className="p-3.5 rounded-xl bg-amber-500/5 border border-amber-500/20 flex items-start gap-3 text-xs text-amber-300/90 leading-relaxed">
-          <AlertCircle className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
+        {/* Honest Limitation Disclosure Note */}
+        <div className="p-3.5 rounded-sm bg-[#0F1419] border border-[#2A3138] flex items-start gap-3 font-mono text-xs text-[#8B95A1] leading-relaxed">
+          <AlertCircle className="w-4 h-4 text-[#C0503F] shrink-0 mt-0.5" />
           <div>
-            <strong className="font-semibold text-amber-200">Honest Evaluation & Known Limitation:</strong>
+            <span className="text-[#EDE7DA] font-semibold">Audit Disclosure:</span>
             {" In both retried cases, because the underlying retrieval context lacked explicit year/section disambiguation statements, max retries (2/2) were reached without fully resolving the flagged claims. The finalizer passed the best available answer while preserving full audit logs."}
           </div>
         </div>
       </div>
 
-      {/* Visually De-emphasized Aggregate Metrics Section */}
-      <div className="p-5 rounded-2xl bg-slate-950/60 border border-slate-800/60 space-y-3 opacity-85 hover:opacity-100 transition-opacity">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 border-b border-slate-800/60 pb-2.5">
-          <div>
-            <h4 className="text-xs font-semibold text-slate-400 uppercase tracking-wider">
-              Overall Aggregate Metrics (All {totalQuestionsCount} Questions)
-            </h4>
-            <p className="text-[11px] text-slate-500 mt-0.5">
-              Aggregate scores across all 35 questions — see category breakdown above for where the real differences show up.
-            </p>
-          </div>
+      {/* Visually De-emphasized Aggregate Metrics Appendix Table */}
+      <div className="pt-4 border-t border-[#2A3138]">
+        <div className="font-mono text-xs text-[#8B95A1] uppercase tracking-widest mb-3">
+          APPENDIX — OVERALL AGGREGATE METRICS (ALL {totalQuestionsCount} QUESTIONS)
         </div>
 
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 pt-1">
-          <div className="p-3 rounded-xl bg-slate-900/50 border border-slate-800/80">
-            <span className="text-[11px] text-slate-400 font-medium block">Faithfulness</span>
-            <span className="text-base font-bold font-mono text-slate-200">{(impFaith * 100).toFixed(1)}%</span>
-            <span className="text-[10px] text-slate-500 block">Baseline: {(baseFaith * 100).toFixed(1)}%</span>
-          </div>
-          <div className="p-3 rounded-xl bg-slate-900/50 border border-slate-800/80">
-            <span className="text-[11px] text-slate-400 font-medium block">Answer Relevancy</span>
-            <span className="text-base font-bold font-mono text-slate-200">{(impRel * 100).toFixed(1)}%</span>
-            <span className="text-[10px] text-slate-500 block">Baseline: {(baseRel * 100).toFixed(1)}%</span>
-          </div>
-          <div className="p-3 rounded-xl bg-slate-900/50 border border-slate-800/80">
-            <span className="text-[11px] text-slate-400 font-medium block">Context Precision</span>
-            <span className="text-base font-bold font-mono text-slate-200">{(impPrec * 100).toFixed(1)}%</span>
-            <span className="text-[10px] text-slate-500 block">Baseline: {(basePrec * 100).toFixed(1)}%</span>
-          </div>
-          <div className="p-3 rounded-xl bg-slate-900/50 border border-slate-800/80">
-            <span className="text-[11px] text-slate-400 font-medium block">Context Recall</span>
-            <span className="text-base font-bold font-mono text-slate-200">{(impRec * 100).toFixed(1)}%</span>
-            <span className="text-[10px] text-slate-500 block">Baseline: {(baseRec * 100).toFixed(1)}%</span>
-          </div>
+        <div className="overflow-x-auto">
+          <table className="w-full text-left font-mono text-xs text-[#EDE7DA] border-collapse">
+            <thead>
+              <tr className="border-b border-[#2A3138] text-[#8B95A1] uppercase tracking-wider">
+                <th className="py-2.5 px-3">Metric</th>
+                <th className="py-2.5 px-3 text-right">Improved (Verity)</th>
+                <th className="py-2.5 px-3 text-right">Baseline (Vector)</th>
+                <th className="py-2.5 px-3 text-right">Delta</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-[#2A3138]">
+              <tr>
+                <td className="py-2.5 px-3 font-medium text-[#EDE7DA]">Faithfulness</td>
+                <td className="py-2.5 px-3 text-right font-bold text-[#EDE7DA]">{(impFaith * 100).toFixed(1)}%</td>
+                <td className="py-2.5 px-3 text-right text-[#8B95A1]">{(baseFaith * 100).toFixed(1)}%</td>
+                <td className="py-2.5 px-3 text-right text-[#4A7C6D]">+{((impFaith - baseFaith) * 100).toFixed(1)}%</td>
+              </tr>
+              <tr>
+                <td className="py-2.5 px-3 font-medium text-[#EDE7DA]">Answer Relevancy</td>
+                <td className="py-2.5 px-3 text-right font-bold text-[#EDE7DA]">{(impRel * 100).toFixed(1)}%</td>
+                <td className="py-2.5 px-3 text-right text-[#8B95A1]">{(baseRel * 100).toFixed(1)}%</td>
+                <td className="py-2.5 px-3 text-right text-[#4A7C6D]">+{((impRel - baseRel) * 100).toFixed(1)}%</td>
+              </tr>
+              <tr>
+                <td className="py-2.5 px-3 font-medium text-[#EDE7DA]">Context Precision</td>
+                <td className="py-2.5 px-3 text-right font-bold text-[#EDE7DA]">{(impPrec * 100).toFixed(1)}%</td>
+                <td className="py-2.5 px-3 text-right text-[#8B95A1]">{(basePrec * 100).toFixed(1)}%</td>
+                <td className="py-2.5 px-3 text-right text-[#8B95A1]">0.0%</td>
+              </tr>
+              <tr>
+                <td className="py-2.5 px-3 font-medium text-[#EDE7DA]">Context Recall</td>
+                <td className="py-2.5 px-3 text-right font-bold text-[#EDE7DA]">{(impRec * 100).toFixed(1)}%</td>
+                <td className="py-2.5 px-3 text-right text-[#8B95A1]">{(baseRec * 100).toFixed(1)}%</td>
+                <td className="py-2.5 px-3 text-right text-[#8B95A1]">0.0%</td>
+              </tr>
+            </tbody>
+          </table>
         </div>
       </div>
 
       {/* Per-Question Benchmark Table Section */}
-      <div className="p-6 rounded-2xl glass-panel border border-slate-800 space-y-4 shadow-xl">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-800 pb-3">
+      <div className="p-6 rounded-sm bg-[#0F1419] border border-[#2A3138] space-y-4">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-[#2A3138] pb-3">
           <div>
-            <h3 className="text-base font-bold text-white">
+            <h3 className="font-display font-medium text-lg text-[#EDE7DA]">
               Per-Question Benchmark Results (Improved Verity Graph)
             </h3>
-            <p className="text-xs text-slate-400">
+            <p className="font-mono text-xs text-[#8B95A1] mt-0.5">
               Detailed generated answers, faithfulness verification scores, and critic telemetry per golden set question.
             </p>
           </div>
-          <span className="text-xs text-slate-400 font-mono">
-            {improved.per_question_results?.length || 0} Questions Total
+          <span className="font-mono text-xs text-[#8B95A1]">
+            {improved.per_question_results?.length || 0} QUESTIONS TOTAL
           </span>
         </div>
 

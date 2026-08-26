@@ -15,12 +15,15 @@ export interface CriticStatus {
   grounded: boolean;
   unsupported_claims: string[];
   retry_count: number;
+  is_decline?: boolean;
 }
+
 
 export interface Message {
   id: string;
   role: "user" | "assistant";
   content: string;
+  rewrittenQuery?: string;
   citations?: Citation[];
   criticStatus?: CriticStatus;
   statusNode?: string;
@@ -34,6 +37,8 @@ export function useVerityChat() {
   const [error, setError] = useState<string | null>(null);
 
   const abortControllerRef = useRef<AbortController | null>(null);
+  const messagesRef = useRef<Message[]>([]);
+  messagesRef.current = messages;
 
   const sendMessage = useCallback(async (query: string) => {
     const trimmedQuery = query.trim();
@@ -57,8 +62,22 @@ export function useVerityChat() {
       content: "",
       citations: [],
       criticStatus: undefined,
-      statusNode: "classifier",
+      statusNode: "rewriter",
     };
+
+    // Extract recent conversation history (last 6 completed messages) from messagesRef.current
+    const historyPayload = messagesRef.current
+      .filter((msg) => msg.content && !msg.isError)
+      .slice(-6)
+      .map((msg) => ({
+        role: msg.role,
+        content: msg.content,
+      }));
+
+    console.log("[VerityChat] Sending POST /chat payload:", {
+      query: trimmedQuery,
+      history: historyPayload,
+    });
 
     setMessages((prev) => [...prev, userMessage, initialAssistantMessage]);
 
@@ -92,7 +111,10 @@ export function useVerityChat() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ query: trimmedQuery }),
+        body: JSON.stringify({
+          query: trimmedQuery,
+          history: historyPayload,
+        }),
         signal: abortController.signal,
       });
 
@@ -129,7 +151,6 @@ export function useVerityChat() {
         for (const line of lines) {
           const trimmedLine = line.trim();
           if (!trimmedLine) {
-            eventType = "message";
             continue;
           }
 
@@ -140,6 +161,16 @@ export function useVerityChat() {
 
             try {
               const data = JSON.parse(dataStr);
+
+              if (eventType === "rewritten_query" && data.rewritten_query) {
+                setMessages((prev) =>
+                  prev.map((msg) =>
+                    msg.id === userMessageId
+                      ? { ...msg, rewrittenQuery: data.rewritten_query }
+                      : msg
+                  )
+                );
+              }
 
               setMessages((prev) =>
                 prev.map((msg) => {
@@ -173,6 +204,7 @@ export function useVerityChat() {
                           ? data.unsupported_claims
                           : [],
                         retry_count: Number(data.retry_count || 0),
+                        is_decline: Boolean(data.is_decline),
                       };
                       break;
 

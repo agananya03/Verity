@@ -60,11 +60,21 @@ app.add_middleware(
 
 
 # Request schema for POST /chat
+# Request schema for POST /chat
+class ChatHistoryMessage(BaseModel):
+    role: str
+    content: str
+
+
 class ChatRequest(BaseModel):
     query: str = Field(
         ...,
         description="Financial user query (e.g. 'What was Microsoft's revenue in 2024?')",
         example="What was Microsoft's revenue in fiscal year 2024?",
+    )
+    history: List[ChatHistoryMessage] = Field(
+        default_factory=list,
+        description="Recent conversation history turns for multi-turn query rewriting",
     )
 
 
@@ -80,28 +90,25 @@ Frontend Event Listener Types:
 
 1. event: "status"
    Data: {"node": "<node_name>", "state": "running"}
-   Description: Emitted as each graph node starts execution (e.g. classifier, retriever, draft, critic, finalizer).
+   Description: Emitted as each graph node starts execution (e.g. rewriter, classifier, retriever, draft, critic, finalizer).
 
-2. event: "citation"
+2. event: "rewritten_query"
+   Data: {"original_query": str, "rewritten_query": str}
+   Description: Emitted if the rewriter node reformulates a multi-turn follow-up query.
+
+3. event: "citation"
    Data: [{"chunk_id": str, "company": str, "fiscal_year": str, "item_section": str, ...}, ...]
    Description: Emitted after the draft node completes, containing structured citation metadata for referenced SEC filings.
 
-3. event: "answer"
+4. event: "answer"
    Data: {"answer": "<draft_answer_text>"}
    Description: Emitted when the draft node completes with the synthesized draft text.
 
-   * NOTE ON TOKEN STREAMING TRADEOFF *
-   verity_graph executes structured LangGraph state operations where LLM responses are validated
-   against retrieved SEC context and audited by a self-correcting Critic node before final output.
-   Streaming token-by-token mid-node would bypass graph verification and groundedness validation.
-   Therefore, we emit the complete draft answer as a single "answer" event rather than faking token streaming.
+5. event: "critic_status"
+   Data: {"grounded": bool, "unsupported_claims": list[str], "retry_count": int, "is_decline": bool}
+   Description: Emitted after the critic node evaluates draft groundedness.
 
-4. event: "critic_status"
-   Data: {"grounded": bool, "unsupported_claims": list[str], "retry_count": int}
-   Description: Emitted after the critic node evaluates draft groundedness. If grounded is False and retry_count < 2,
-   the graph triggers a self-correction loop back to the retriever node.
-
-5. event: "done"
+6. event: "done"
    Data: {"final_answer": "<final_verified_answer>", "status": "completed"}
    Description: Emitted when the graph completes execution and finalizer finishes.
 """
@@ -165,12 +172,16 @@ async def get_category_breakdown() -> Dict[str, Any]:
 async def chat_endpoint(request: ChatRequest) -> EventSourceResponse:
     """
     POST /chat endpoint that executes verity_graph in streaming mode and emits SSE events.
-    Accepts JSON body: {"query": "<user_query>"}
+    Accepts JSON body: {"query": "<user_query>", "history": [{"role": "user", "content": "..."}, ...]}
     Returns a Server-Sent Events stream using sse-starlette's EventSourceResponse.
     """
     query = request.query.strip()
     if not query:
         raise HTTPException(status_code=400, detail="Query string cannot be empty.")
+
+    history_payload = [{"role": h.role, "content": h.content} for h in request.history]
+
+    logger.info(f"POST /chat endpoint received query='{query}', history count={len(history_payload)}, history={history_payload}")
 
     async def event_generator():
         thread_id = str(uuid.uuid4())
@@ -178,6 +189,9 @@ async def chat_endpoint(request: ChatRequest) -> EventSourceResponse:
 
         initial_state: AgentState = {
             "query": query,
+            "original_query": query,
+            "rewritten_query": query,
+            "conversation_history": history_payload,
             "classification": "",
             "extracted_filters": {},
             "retrieved_chunks": [],
@@ -186,22 +200,41 @@ async def chat_endpoint(request: ChatRequest) -> EventSourceResponse:
             "critic_verdict": {},
             "retry_count": 0,
             "final_answer": "",
+            "is_decline": False,
         }
 
         # Emit initial status for first node
         yield {
             "event": "status",
-            "data": json.dumps({"node": "classifier", "state": "running"}),
+            "data": json.dumps({"node": "rewriter", "state": "running"}),
         }
 
         final_answer = ""
+        is_decline = False
 
         try:
             async for output in verity_graph.astream(initial_state, config=config):
                 for node_name, state_update in output.items():
                     logger.info(f"Node execution completed: {node_name}")
 
-                    if node_name == "classifier":
+                    if "is_decline" in state_update:
+                        is_decline = state_update["is_decline"]
+
+                    if node_name == "rewriter":
+                        # Rewriter node finished -> Emit rewritten_query if modified, then signal classifier
+                        orig = state_update.get("original_query", "")
+                        rewritten = state_update.get("rewritten_query", "")
+                        if rewritten and rewritten.lower() != orig.lower():
+                            yield {
+                                "event": "rewritten_query",
+                                "data": json.dumps({"original_query": orig, "rewritten_query": rewritten}),
+                            }
+                        yield {
+                            "event": "status",
+                            "data": json.dumps({"node": "classifier", "state": "running"}),
+                        }
+
+                    elif node_name == "classifier":
                         # Classifier node finished -> Next node is retriever
                         yield {
                             "event": "status",
@@ -247,7 +280,10 @@ async def chat_endpoint(request: ChatRequest) -> EventSourceResponse:
                             "grounded": verdict.get("grounded", False),
                             "unsupported_claims": verdict.get("unsupported_claims", []),
                             "retry_count": retry_count,
+                            "is_decline": is_decline,
                         }
+
+                        logger.info(f"Emitting critic_status SSE event payload: {critic_payload}")
 
                         yield {
                             "event": "critic_status",

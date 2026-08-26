@@ -1,88 +1,135 @@
 "use client";
 
-import { Sparkles, ArrowRight, Building2, TrendingUp, ShieldAlert, HelpCircle } from "lucide-react";
+import { useEffect, useState } from "react";
+import { ArrowRight } from "lucide-react";
 
 interface ExamplePromptsProps {
   onSelectPrompt: (prompt: string) => void;
 }
 
 export function ExamplePrompts({ onSelectPrompt }: ExamplePromptsProps) {
-  const examples = [
+  const [faithfulness, setFaithfulness] = useState<string>("96%");
+
+  useEffect(() => {
+    async function fetchEvalScore() {
+      try {
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+        const res = await fetch(`${apiUrl}/eval-results`);
+        if (res.ok) {
+          const data = await res.json();
+          const score = data?.improved?.aggregate_metrics?.faithfulness;
+          if (typeof score === "number") {
+            setFaithfulness(`${Math.round(score * 100)}%`);
+          }
+        }
+      } catch {
+        // Fallback to default 96% on connection issue
+      }
+    }
+    fetchEvalScore();
+  }, []);
+
+  const items = [
     {
+      itemNumber: "Item 7",
       title: "R&D Spend Analysis",
       prompt: "What was Apple's total R&D spend in fiscal year 2024?",
-      icon: Building2,
-      category: "Apple 10-K",
-      color: "from-blue-500/20 to-indigo-500/20 text-blue-400 border-blue-500/30",
+      ticker: "AAPL",
     },
     {
+      itemNumber: "Item 7",
       title: "Segment Revenue Comparison",
       prompt: "Compare Microsoft's Intelligent Cloud revenue between fiscal year 2023 and 2024.",
-      icon: TrendingUp,
-      category: "Microsoft 10-K",
-      color: "from-emerald-500/20 to-teal-500/20 text-emerald-400 border-emerald-500/30",
+      ticker: "MSFT",
     },
     {
+      itemNumber: "Item 1A",
       title: "Risk Factors Audit",
       prompt: "What are the primary supply chain risk factors listed in Apple's Item 1A filing?",
-      icon: ShieldAlert,
-      category: "Risk Analysis",
-      color: "from-amber-500/20 to-orange-500/20 text-amber-400 border-amber-500/30",
+      ticker: "AAPL",
     },
     {
+      itemNumber: "Item —",
       title: "Unanswerable Query Test",
       prompt: "What was Netflix's global subscriber churn rate and ARPU in Q4 2024?",
-      icon: HelpCircle,
-      category: "Negative Test",
-      color: "from-purple-500/20 to-pink-500/20 text-purple-400 border-purple-500/30",
+      ticker: "NFLX",
     },
   ];
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-[60vh] py-8 text-center max-w-3xl mx-auto px-4">
-      {/* Hero Header */}
-      <div className="w-14 h-14 rounded-2xl bg-gradient-to-tr from-blue-600 via-indigo-500 to-emerald-400 p-0.5 shadow-xl shadow-blue-500/20 mb-5">
-        <div className="w-full h-full bg-slate-950 rounded-[14px] flex items-center justify-center">
-          <Sparkles className="w-7 h-7 text-emerald-400" />
+    <div className="w-full max-w-4xl py-6 sm:py-10 text-left">
+      {/* Left-Aligned Hero */}
+      <div className="mb-10 sm:mb-12">
+        <h1 className="font-display font-medium text-3xl sm:text-4xl md:text-5xl text-[#EDE7DA] leading-tight sm:leading-snug">
+          <div>Ask a 10-K a question.</div>
+          <div>
+            Get an answer that{" "}
+            <span className="relative inline-block z-10 px-1">
+              cites its source
+              <svg
+                viewBox="0 0 220 24"
+                preserveAspectRatio="none"
+                aria-hidden="true"
+                className="absolute left-0 bottom-0.5 w-full h-3 text-[#E8A33D]/40 pointer-events-none -z-10"
+              >
+                <path
+                  d="M 4,18 Q 55,4 110,14 T 216,10"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="10"
+                  strokeLinecap="round"
+                />
+              </svg>
+            </span>{" "}
+            — or admits it doesn't know.
+          </div>
+        </h1>
+
+        {/* Dynamic Credibility Strip */}
+        <div className="mt-6 inline-flex items-center gap-2 px-3 py-1.5 border border-[#2A3138] rounded-sm font-mono text-[11px] sm:text-xs text-[#8B95A1]">
+          <span className="text-[#E8A33D] font-medium">FAITHFULNESS {faithfulness}</span>
+          <span className="text-[#2A3138]">·</span>
+          <span>HYBRID RETRIEVAL: DENSE + BM25</span>
+          <span className="text-[#2A3138]">·</span>
+          <span>35-Q EVAL SET</span>
         </div>
       </div>
 
-      <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-white via-slate-100 to-slate-400">
-        Financial Intelligence RAG
-      </h1>
+      {/* Item Index Section */}
+      <div className="mt-8 border-t border-[#2A3138] pt-6">
+        <div className="font-mono text-xs text-[#8B95A1] tracking-widest uppercase mb-4">
+          ITEM INDEX — TRY A QUERY
+        </div>
 
-      <p className="mt-2.5 text-slate-400 text-sm sm:text-base max-w-lg leading-relaxed">
-        Query SEC 10-K filings with self-correcting Critic node validation & hybrid dense/sparse retrieval.
-      </p>
-
-      {/* Grid of Interactive Sample Questions */}
-      <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 gap-3.5 w-full text-left">
-        {examples.map((item, i) => {
-          const Icon = item.icon;
-          return (
+        <div className="divide-y divide-[#2A3138] border-b border-[#2A3138]">
+          {items.map((item, index) => (
             <button
-              key={i}
+              key={index}
               onClick={() => onSelectPrompt(item.prompt)}
-              className="p-4 rounded-2xl glass-panel border border-slate-800/80 hover:border-slate-700 transition-all duration-300 group flex flex-col justify-between hover:shadow-lg hover:shadow-blue-500/5 hover:-translate-y-0.5"
+              className="w-full text-left py-4 px-2 sm:px-3 hover:bg-[#EDE7DA]/[0.03] focus-visible:bg-[#EDE7DA]/[0.04] transition-colors group block focus-visible:outline-none"
             >
-              <div className="flex items-center justify-between w-full mb-2">
-                <span className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-gradient-to-r ${item.color} border`}>
-                  <Icon className="w-3 h-3" />
-                  {item.category}
-                </span>
-                <ArrowRight className="w-4 h-4 text-slate-600 group-hover:text-slate-200 group-hover:translate-x-0.5 transition-all" />
+              <div className="flex items-center justify-between gap-4">
+                <div className="flex items-center gap-3 sm:gap-4 flex-wrap sm:flex-nowrap">
+                  <span className="font-mono text-xs font-semibold text-[#E8A33D] w-14 shrink-0">
+                    {item.itemNumber}
+                  </span>
+                  <span className="font-body font-medium text-sm text-[#EDE7DA]">
+                    {item.title}
+                  </span>
+                </div>
+                <div className="flex items-center gap-2 shrink-0">
+                  <span className="font-mono text-xs text-[#8B95A1]">{item.ticker}</span>
+                  <ArrowRight className="w-4 h-4 text-[#8B95A1] group-hover:text-[#EDE7DA] group-hover:translate-x-1 transition-transform" />
+                </div>
               </div>
-              <div>
-                <h3 className="text-xs font-semibold text-slate-300 group-hover:text-white mb-1">
-                  {item.title}
-                </h3>
-                <p className="text-xs text-slate-400 group-hover:text-slate-300 line-clamp-2 leading-relaxed">
+              <div className="mt-1.5 sm:pl-17">
+                <p className="font-mono text-xs text-[#8B95A1] line-clamp-1">
                   "{item.prompt}"
                 </p>
               </div>
             </button>
-          );
-        })}
+          ))}
+        </div>
       </div>
     </div>
   );

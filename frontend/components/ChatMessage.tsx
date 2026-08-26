@@ -1,6 +1,6 @@
 "use client";
 
-import { User, ShieldCheck, AlertCircle } from "lucide-react";
+import { AlertCircle } from "lucide-react";
 import { Message } from "@/lib/useVerityChat";
 import { CriticBadge } from "@/components/CriticBadge";
 import { SourceCitations } from "@/components/SourceCitations";
@@ -14,16 +14,28 @@ export function ChatMessage({ message, isStreaming }: ChatMessageProps) {
   const isUser = message.role === "user";
 
   if (isUser) {
+    const showRewritten =
+      message.rewrittenQuery &&
+      message.rewrittenQuery.trim().toLowerCase() !== message.content.trim().toLowerCase();
+
     return (
-      <div className="flex justify-end my-4">
-        <div className="flex items-start gap-3 max-w-[85%] sm:max-w-[75%]">
-          <div className="p-4 rounded-2xl bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-700 text-white shadow-lg shadow-blue-500/10 border border-blue-400/20 text-sm leading-relaxed font-medium">
+      <div className="flex flex-col items-end my-4 space-y-1">
+        <div className="flex items-start gap-2.5 max-w-[85%] sm:max-w-[75%]">
+          {/* User Typed Note on Paper */}
+          <div className="p-3.5 rounded-sm bg-[#EDE7DA] text-[#0F1419] font-body text-xs sm:text-sm leading-relaxed border border-[#EDE7DA]">
             {message.content}
           </div>
-          <div className="w-8 h-8 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center shrink-0 text-slate-300">
-            <User className="w-4 h-4" />
+          {/* Square Mono Tag for User */}
+          <div className="w-7 h-7 rounded-sm bg-[#0F1419] border border-[#2A3138] flex items-center justify-center shrink-0 font-mono text-xs text-[#8B95A1] mt-0.5">
+            U
           </div>
         </div>
+
+        {showRewritten && (
+          <div className="font-mono text-[11px] text-[#8B95A1] pr-9 text-right">
+            Interpreted as: &ldquo;{message.rewrittenQuery}&rdquo;
+          </div>
+        )}
       </div>
     );
   }
@@ -31,16 +43,15 @@ export function ChatMessage({ message, isStreaming }: ChatMessageProps) {
   return (
     <div className="flex justify-start my-5">
       <div className="flex items-start gap-3 max-w-[92%] sm:max-w-[85%] w-full">
-        <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-blue-600 via-indigo-500 to-emerald-400 p-0.5 shadow-md shadow-blue-500/20 shrink-0 mt-1">
-          <div className="w-full h-full bg-slate-950 rounded-[10px] flex items-center justify-center">
-            <ShieldCheck className="w-4 h-4 text-emerald-400" />
-          </div>
+        {/* Square Mono Tag for Assistant */}
+        <div className="w-7 h-7 rounded-sm bg-[#0F1419] border border-[#2A3138] flex items-center justify-center shrink-0 font-mono text-xs font-semibold text-[#E8A33D] mt-0.5">
+          V
         </div>
 
-        <div className="flex-1 p-5 rounded-2xl glass-panel border border-slate-800/80 shadow-xl space-y-3">
-          {/* Header Bar with Critic Badge */}
-          <div className="flex items-center justify-between flex-wrap gap-2 pb-2 border-b border-slate-800/50">
-            <span className="text-xs font-semibold tracking-wide text-slate-300 flex items-center gap-1.5">
+        <div className="flex-1 p-4 rounded-sm bg-[#0F1419] border border-[#2A3138] space-y-3">
+          {/* Header Bar with Assistant Label & Critic Badge */}
+          <div className="flex items-center justify-between flex-wrap gap-2 pb-2 border-b border-[#2A3138]">
+            <span className="font-body text-xs font-medium text-[#8B95A1]">
               Verity AI Assistant
             </span>
             <CriticBadge
@@ -52,23 +63,23 @@ export function ChatMessage({ message, isStreaming }: ChatMessageProps) {
 
           {/* Cold start warning notice */}
           {message.warningNote && (
-            <div className="p-3 rounded-lg bg-amber-500/10 border border-amber-500/20 text-amber-300 text-xs flex items-center gap-2 animate-pulse">
-              <AlertCircle className="w-4 h-4 shrink-0" />
+            <div className="p-3 rounded-sm bg-[#E8A33D]/10 border border-[#E8A33D]/30 text-[#EDE7DA] font-mono text-xs flex items-center gap-2">
+              <AlertCircle className="w-4 h-4 text-[#E8A33D] shrink-0" />
               <span>{message.warningNote}</span>
             </div>
           )}
 
           {/* Answer Text */}
-          <div className="text-sm text-slate-200 leading-relaxed whitespace-pre-wrap font-normal">
+          <div className="font-body text-xs sm:text-sm text-[#EDE7DA] leading-relaxed whitespace-pre-wrap">
             {message.content ? (
               message.content
             ) : isStreaming ? (
-              <span className="text-slate-400 italic flex items-center gap-2">
-                <span className="w-2 h-2 rounded-full bg-blue-400 animate-ping" />
+              <span className="text-[#8B95A1] font-body text-xs flex items-center gap-1.5">
+                <span className="font-mono text-[#E8A33D]">{">"}</span>
                 Retrieving SEC filings and formulating verified answer...
               </span>
             ) : (
-              <span className="text-slate-500 italic">No answer generated.</span>
+              <span className="font-mono text-xs text-[#8B95A1]">No answer generated.</span>
             )}
           </div>
 

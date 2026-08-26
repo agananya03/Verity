@@ -24,6 +24,7 @@ from backend.agent.nodes.classifier import classify
 from backend.agent.nodes.critic import critique
 from backend.agent.nodes.draft import draft_answer
 from backend.agent.nodes.retriever import retrieve_node
+from backend.agent.nodes.rewriter import rewrite_query
 from backend.agent.state import AgentState
 
 # Set up logging
@@ -70,14 +71,16 @@ def route_critic(state: AgentState) -> str:
 builder = StateGraph(AgentState)
 
 # Add Nodes
+builder.add_node("rewriter", rewrite_query)
 builder.add_node("classifier", classify)
 builder.add_node("retriever", retrieve_node)
 builder.add_node("draft", draft_answer)
 builder.add_node("critic", critique)
 builder.add_node("finalizer", finalize_response)
 
-# Add Sequential Edges: START -> classifier -> retriever -> draft -> critic
-builder.add_edge(START, "classifier")
+# Add Sequential Edges: START -> rewriter -> classifier -> retriever -> draft -> critic
+builder.add_edge(START, "rewriter")
+builder.add_edge("rewriter", "classifier")
 builder.add_edge("classifier", "retriever")
 builder.add_edge("retriever", "draft")
 builder.add_edge("draft", "critic")
