@@ -29,7 +29,7 @@ logger = logging.getLogger(__name__)
 # Helpful Decline Message
 DECLINE_MESSAGE = (
     "I don't have enough information to answer this question based on the retrieved SEC filings. "
-    "Verity currently indexes SEC Form 10-K filings for Apple (AAPL), Microsoft (MSFT), and Alphabet (GOOGL)."
+    "Verity currently indexes SEC Form 10-K filings for Apple (AAPL), Microsoft (MSFT), Alphabet (GOOGL), Amazon (AMZN), and NVIDIA (NVDA)."
 )
 
 # System Prompt for Draft Generation
@@ -38,7 +38,7 @@ DRAFT_PROMPT = """You are Verity's financial analyst AI. Your task is to answer 
 STRICT CONSTRAINTS:
 1. Answer ONLY using the information provided in the Context Chunks below. Do NOT use outside knowledge or extrapolate.
 2. Every factual statement or financial figure MUST be explicitly cited inline with its corresponding numeric chunk marker (e.g., "Microsoft revenue reached $245B in 2024 [1]").
-3. If the provided Context Chunks do NOT contain sufficient information to answer the question, state explicitly: "I don't have enough information to answer this question based on the retrieved SEC filings. Verity currently indexes SEC Form 10-K filings for Apple (AAPL), Microsoft (MSFT), and Alphabet (GOOGL)."
+3. If the provided Context Chunks do NOT contain sufficient information to answer the question, state explicitly: "I don't have enough information to answer this question based on the retrieved SEC filings. Verity currently indexes SEC Form 10-K filings for Apple (AAPL), Microsoft (MSFT), Alphabet (GOOGL), Amazon (AMZN), and NVIDIA (NVDA)."
 4. Be precise, professional, and directly address the user's question.
 
 Context Chunks:

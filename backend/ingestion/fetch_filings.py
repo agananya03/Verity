@@ -32,11 +32,13 @@ logger = logging.getLogger(__name__)
 DEFAULT_USER_AGENT = "VerityResearch admin@verity.com"
 SEC_RATE_LIMIT_DELAY = 0.15  # seconds between HTTP requests (~6.6 requests/sec)
 
-# Target Companies (Apple, Microsoft, Alphabet/Google)
+# Target Companies (Apple, Microsoft, Alphabet/Google, Amazon, NVIDIA)
 COMPANIES = [
     {"name": "Apple", "ticker": "AAPL", "cik": "0000320193"},
     {"name": "Microsoft", "ticker": "MSFT", "cik": "0000789019"},
     {"name": "Alphabet", "ticker": "GOOGL", "cik": "0001652044"},
+    {"name": "Amazon", "ticker": "AMZN", "cik": "0001018724"},
+    {"name": "NVIDIA", "ticker": "NVDA", "cik": "0001045810"},
 ]
 
 # Path configuration
@@ -144,14 +146,30 @@ def fetch_and_save_filings():
     """Fetches 10-K filings for configured companies and updates manifest.json."""
     DATA_RAW_DIR.mkdir(parents=True, exist_ok=True)
     fetcher = SECFetcher()
-    manifest_entries = []
+    
+    # Load existing manifest entries if manifest.json exists
+    existing_manifest = []
+    if MANIFEST_FILE.exists():
+        try:
+            with open(MANIFEST_FILE, "r", encoding="utf-8") as f:
+                existing_manifest = json.load(f)
+        except Exception as e:
+            logger.warning(f"Could not load existing manifest: {e}")
+            
+    existing_companies = {entry["ticker"] for entry in existing_manifest if "ticker" in entry}
+    manifest_entries = list(existing_manifest)
 
     for company in COMPANIES:
         name = company["name"]
         ticker = company["ticker"]
         cik = company["cik"]
         
-        logger.info(f"=== Processing {name} ({ticker}) [CIK: {cik}] ===")
+        # If company is already in existing manifest and local files exist, skip re-fetching
+        if ticker in existing_companies:
+            logger.info(f"=== Skipping re-fetch for {name} ({ticker}): already in manifest ===")
+            continue
+
+        logger.info(f"=== Processing new company {name} ({ticker}) [CIK: {cik}] ===")
         sub_data = fetcher.get_company_submissions(cik)
         if not sub_data:
             logger.warning(f"Skipping {name}: failed to retrieve submission metadata.")
@@ -167,12 +185,18 @@ def fetch_and_save_filings():
             file_name = f"{name.lower()}_{fiscal_year}.html"
             local_file_path = DATA_RAW_DIR / file_name
             
-            html_content = fetcher.fetch_filing_html(filing["source_url"])
+            # Check if file already exists locally
+            if local_file_path.exists() and local_file_path.stat().st_size > 0:
+                logger.info(f"Filing HTML file {file_name} already exists locally. Skipping download.")
+                html_content = True
+            else:
+                html_content = fetcher.fetch_filing_html(filing["source_url"])
+                if html_content:
+                    local_file_path.write_text(html_content, encoding="utf-8")
+                    logger.info(f"Successfully saved {file_name} ({len(html_content)} bytes)")
+
             if html_content:
-                local_file_path.write_text(html_content, encoding="utf-8")
                 relative_path = str(local_file_path.relative_to(BASE_DIR.parent)).replace("\\", "/")
-                logger.info(f"Successfully saved {file_name} ({len(html_content)} bytes)")
-                
                 manifest_entries.append({
                     "company": name,
                     "ticker": ticker,

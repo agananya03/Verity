@@ -30,7 +30,7 @@ CHUNKS_FILE = DATA_PROCESSED_DIR / "chunks.json"
 COLLECTION_NAME = "verity_chunks"
 MODEL_NAME = "BAAI/bge-small-en-v1.5"
 VECTOR_SIZE = 384
-BATCH_SIZE = 100
+BATCH_SIZE = 50
 
 
 def main():
@@ -51,7 +51,7 @@ def main():
         sys.exit(1)
 
     logger.info(f"Connecting to Qdrant at {qdrant_url}...")
-    client = QdrantClient(url=qdrant_url, api_key=qdrant_api_key or None)
+    client = QdrantClient(url=qdrant_url, api_key=qdrant_api_key or None, timeout=60.0)
 
     # 2. Check if chunks file exists and load chunks
     if not CHUNKS_FILE.exists():
@@ -69,6 +69,7 @@ def main():
     logger.info(f"Successfully loaded {len(chunks)} chunks from {CHUNKS_FILE}")
 
     # 3. Create or verify Qdrant collection
+    existing_point_ids = set()
     if not client.collection_exists(collection_name=COLLECTION_NAME):
         logger.info(f"Collection '{COLLECTION_NAME}' does not exist. Creating new collection...")
         client.create_collection(
@@ -77,20 +78,44 @@ def main():
         )
         logger.info(f"Collection '{COLLECTION_NAME}' created with size {VECTOR_SIZE} and COSINE distance.")
     else:
-        logger.info(f"Collection '{COLLECTION_NAME}' already exists.")
+        logger.info(f"Collection '{COLLECTION_NAME}' already exists. Checking existing indexed points...")
+        try:
+            scroll_res, _ = client.scroll(
+                collection_name=COLLECTION_NAME,
+                limit=10000,
+                with_payload=False,
+                with_vectors=False,
+            )
+            existing_point_ids = {str(pt.id) for pt in scroll_res}
+            logger.info(f"Found {len(existing_point_ids)} existing point IDs in collection '{COLLECTION_NAME}'.")
+        except Exception as e:
+            logger.warning(f"Could not retrieve existing point IDs: {e}")
+
+    chunks_to_embed = [c for c in chunks if str(c.get("chunk_id")) not in existing_point_ids]
+    if not chunks_to_embed:
+        logger.info("All chunks are already indexed in Qdrant. No new vectors to generate.")
+        collection_info = client.get_collection(COLLECTION_NAME)
+        indexed_count = collection_info.points_count
+        print("=" * 70)
+        print("Indexing Status: Up to date!")
+        print(f"Total vectors in Qdrant collection '{COLLECTION_NAME}': {indexed_count}")
+        print("=" * 70)
+        return
+
+    logger.info(f"Found {len(chunks_to_embed)} new chunks to embed (out of {len(chunks)} total).")
 
     # 4. Load local SentenceTransformer model (offline/free)
     logger.info(f"Loading embedding model '{MODEL_NAME}' locally...")
     model = SentenceTransformer(MODEL_NAME)
 
-    # 5. Generate embeddings
-    logger.info(f"Generating embeddings for {len(chunks)} chunks...")
-    texts = [chunk["text"] for chunk in chunks]
+    # 5. Generate embeddings for new chunks only
+    logger.info(f"Generating embeddings for {len(chunks_to_embed)} new chunks...")
+    texts = [chunk["text"] for chunk in chunks_to_embed]
     embeddings = model.encode(texts, show_progress_bar=True, batch_size=32)
 
     # 6. Prepare Qdrant point objects with payload metadata
     points = []
-    for chunk, embedding in zip(chunks, embeddings):
+    for chunk, embedding in zip(chunks_to_embed, embeddings):
         point_id = chunk.get("chunk_id") or str(uuid.uuid4())
         payload = {
             "company": chunk.get("company"),
@@ -110,14 +135,26 @@ def main():
 
     # 7. Batch upsert into Qdrant
     total_points = len(points)
-    logger.info(f"Upserting {total_points} vectors into Qdrant collection '{COLLECTION_NAME}' in batches of {BATCH_SIZE}...")
+    logger.info(f"Upserting {total_points} new vectors into Qdrant collection '{COLLECTION_NAME}' in batches of {BATCH_SIZE}...")
 
     for i in range(0, total_points, BATCH_SIZE):
         batch = points[i : i + BATCH_SIZE]
-        client.upsert(
-            collection_name=COLLECTION_NAME,
-            points=batch,
-        )
+        max_retries = 3
+        for attempt in range(max_retries):
+            try:
+                client.upsert(
+                    collection_name=COLLECTION_NAME,
+                    points=batch,
+                )
+                break
+            except Exception as exc:
+                if attempt < max_retries - 1:
+                    logger.warning(f"Upsert batch attempt {attempt + 1} failed: {exc}. Retrying in 2 seconds...")
+                    time.sleep(2)
+                else:
+                    logger.error(f"Upsert batch failed after {max_retries} attempts.")
+                    raise exc
+
         batch_num = i // BATCH_SIZE + 1
         total_batches = (total_points + BATCH_SIZE - 1) // BATCH_SIZE
         print(f"Progress: Upserted batch {batch_num}/{total_batches} ({min(i + BATCH_SIZE, total_points)}/{total_points} vectors)")

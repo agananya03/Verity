@@ -168,6 +168,68 @@ async def get_category_breakdown() -> Dict[str, Any]:
         raise HTTPException(status_code=500, detail=str(e))
 
 
+@app.get("/corpus-info")
+async def get_corpus_info() -> Dict[str, Any]:
+    """
+    Reads the ingestion manifest (backend/data/raw/manifest.json) and processed chunks (backend/data/processed/chunks.json),
+    returning metadata about indexed companies, fiscal years covered per company, filing type, and total chunk count.
+    """
+    manifest_path = BASE_DIR / "data" / "raw" / "manifest.json"
+    chunks_path = BASE_DIR / "data" / "processed" / "chunks.json"
+
+    if not manifest_path.exists():
+        raise HTTPException(status_code=404, detail="Ingestion manifest (manifest.json) not found")
+
+    try:
+        with open(manifest_path, "r", encoding="utf-8") as f:
+            manifest_entries = json.load(f)
+    except Exception as e:
+        logger.error(f"Error reading manifest.json: {e}")
+        raise HTTPException(status_code=500, detail=f"Failed to read manifest.json: {str(e)}")
+
+    total_chunks = 0
+    if chunks_path.exists():
+        try:
+            with open(chunks_path, "r", encoding="utf-8") as f:
+                chunks_data = json.load(f)
+                total_chunks = len(chunks_data)
+        except Exception as e:
+            logger.warning(f"Could not load chunks.json for chunk count: {e}")
+
+    # Group entries by company (preserving company order of appearance)
+    company_map: Dict[str, Dict[str, Any]] = {}
+    for entry in manifest_entries:
+        ticker = entry.get("ticker", "")
+        name = entry.get("company", "")
+        fiscal_year = str(entry.get("fiscal_year", ""))
+        
+        if not ticker:
+            continue
+            
+        if ticker not in company_map:
+            company_map[ticker] = {
+                "ticker": ticker,
+                "name": name,
+                "fiscal_years": set(),
+            }
+        if fiscal_year:
+            company_map[ticker]["fiscal_years"].add(fiscal_year)
+
+    companies_list = []
+    for ticker, info in company_map.items():
+        companies_list.append({
+            "ticker": info["ticker"],
+            "name": info["name"],
+            "fiscal_years": sorted(list(info["fiscal_years"])),
+        })
+
+    return {
+        "companies": companies_list,
+        "filing_type": "10-K",
+        "total_chunks": total_chunks,
+    }
+
+
 @app.post("/chat")
 async def chat_endpoint(request: ChatRequest) -> EventSourceResponse:
     """

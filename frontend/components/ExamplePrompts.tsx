@@ -32,9 +32,15 @@ export function ExamplePrompts({ onSelectPrompt }: ExamplePromptsProps) {
   const items = [
     {
       itemNumber: "Item 7",
-      title: "R&D Spend Analysis",
-      prompt: "What was Apple's total R&D spend in fiscal year 2024?",
-      ticker: "AAPL",
+      title: "AWS Operating Income",
+      prompt: "What was Amazon's AWS segment sales and operating income in fiscal year 2024?",
+      ticker: "AMZN",
+    },
+    {
+      itemNumber: "Item 7",
+      title: "Data Center Revenue",
+      prompt: "What was NVIDIA's Data Center revenue growth in fiscal year 2025?",
+      ticker: "NVDA",
     },
     {
       itemNumber: "Item 7",

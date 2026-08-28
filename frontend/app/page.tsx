@@ -5,6 +5,7 @@ import { Send, Trash2, AlertCircle, Loader2 } from "lucide-react";
 import { useVerityChat } from "@/lib/useVerityChat";
 import { ChatMessage } from "@/components/ChatMessage";
 import { ExamplePrompts } from "@/components/ExamplePrompts";
+import { CoverageIndicator } from "@/components/CoverageIndicator";
 
 export default function ChatPage() {
   const { messages, sendMessage, isStreaming, error, clearMessages } = useVerityChat();
@@ -49,7 +50,7 @@ export default function ChatPage() {
   };
 
   return (
-    <div className="flex flex-col min-h-[calc(100vh-5.5rem)] relative pb-28">
+    <div className="flex flex-col min-h-[calc(100vh-5.5rem)] relative pb-32">
       {/* Top Action Bar when messages exist */}
       {messages.length > 0 && (
         <div className="flex items-center justify-between py-2 px-1 mb-4 border-b border-[#2A3138] font-mono text-xs text-[#8B95A1]">
@@ -92,8 +93,11 @@ export default function ChatPage() {
       </div>
 
       {/* Fixed/Sticky Bottom Input Bar */}
-      <div className="fixed bottom-0 left-0 right-0 z-40 bg-[#0F1419]/95 backdrop-blur border-t border-[#2A3138] pt-4 pb-4">
+      <div className="fixed bottom-0 left-0 right-0 z-40 bg-[#0F1419]/95 backdrop-blur border-t border-[#2A3138] pt-3 pb-4">
         <div className="max-w-4xl mx-auto px-4 sm:px-6">
+          <div className="mb-2 px-0.5">
+            <CoverageIndicator />
+          </div>
           <div className="bg-[#0F1419] p-1.5 rounded-sm border border-[#2A3138] focus-within:border-[#E8A33D] transition-colors">
             <form
               onSubmit={(e) => {
@@ -107,7 +111,7 @@ export default function ChatPage() {
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 onKeyDown={handleKeyDown}
-                placeholder="Ask any financial question about Apple, Microsoft SEC 10-Ks…"
+                placeholder="Ask any financial question about Apple, Microsoft, Amazon, NVIDIA 10-Ks…"
                 rows={1}
                 disabled={isStreaming}
                 className="flex-1 bg-transparent border-0 resize-none px-3 py-2 font-mono text-xs sm:text-sm text-[#EDE7DA] placeholder:text-[#8B95A1] focus:outline-none focus:ring-0 max-h-32 min-h-[40px]"
