@@ -8,11 +8,12 @@ Role:
 - Populates state['draft_answer'] and extracts state['citations'] (list of referenced chunk_ids & metadata).
 """
 
+import json
+import logging
 import os
 import re
-import logging
 from pathlib import Path
-from typing import Dict, List
+from typing import Dict, List, Optional
 from dotenv import load_dotenv
 from langchain_google_genai import ChatGoogleGenerativeAI
 
@@ -52,6 +53,52 @@ Context Chunks:
 MODEL_DRAFT = os.getenv("MODEL_DRAFT", "gemini-3.5-flash")
 FALLBACK_DRAFT = ["gemini-3.5-flash-lite", "gemini-2.5-flash-lite"]
 
+# Manifest mapping for SEC filing URLs
+_manifest_url_map: Optional[Dict[str, str]] = None
+
+
+def get_manifest_url_map() -> Dict[str, str]:
+    """Builds a lookup mapping from local source_path (and filename) to canonical SEC source_url."""
+    global _manifest_url_map
+    if _manifest_url_map is not None:
+        return _manifest_url_map
+
+    _manifest_url_map = {}
+
+    # 1. Try committed artifacts manifest
+    artifacts_manifest = BASE_DIR / "artifacts" / "corpus_manifest.json"
+    if artifacts_manifest.exists():
+        try:
+            with open(artifacts_manifest, "r", encoding="utf-8") as f:
+                data = json.load(f)
+                for filing in data.get("filings", []):
+                    url = filing.get("source_url") or filing.get("filing_url")
+                    path_str = filing.get("local_path")
+                    if url and path_str:
+                        _manifest_url_map[path_str] = url
+                        _manifest_url_map[Path(path_str).name] = url
+                        _manifest_url_map[Path(path_str).as_posix()] = url
+        except Exception as e:
+            logger.warning(f"Failed to load corpus_manifest.json in draft node: {e}")
+
+    # 2. Try raw manifest fallback
+    raw_manifest = BASE_DIR / "data" / "raw" / "manifest.json"
+    if raw_manifest.exists():
+        try:
+            with open(raw_manifest, "r", encoding="utf-8") as f:
+                data = json.load(f)
+                for filing in data:
+                    url = filing.get("source_url") or filing.get("filing_url")
+                    path_str = filing.get("local_path")
+                    if url and path_str:
+                        _manifest_url_map[path_str] = url
+                        _manifest_url_map[Path(path_str).name] = url
+                        _manifest_url_map[Path(path_str).as_posix()] = url
+        except Exception as e:
+            logger.warning(f"Failed to load raw manifest.json in draft node: {e}")
+
+    return _manifest_url_map
+
 
 def draft_answer(state: AgentState) -> AgentState:
     """
@@ -88,9 +135,20 @@ def draft_answer(state: AgentState) -> AgentState:
         max_retries=2,
     )
 
+    critique_feedback = state.get("critique_feedback") or []
+    if critique_feedback:
+        unsupported_list = "\n".join([f"- {claim}" for claim in critique_feedback])
+        user_prompt = (
+            f"Question: {query}\n\n"
+            f"A reviewer found these claims unsupported:\n{unsupported_list}\n\n"
+            f"Rewrite using only the context, remove unsupported claims."
+        )
+    else:
+        user_prompt = f"Question: {query}"
+
     messages = [
         ("system", prompt),
-        ("user", f"Question: {query}"),
+        ("user", user_prompt),
     ]
 
     response = llm.invoke(messages)
@@ -113,11 +171,20 @@ def draft_answer(state: AgentState) -> AgentState:
     for match in re.finditer(r'\[(?:Chunk\s*)?(\d+)\]', answer_text, re.IGNORECASE):
         referenced_indices.add(int(match.group(1)))
 
+    url_map = get_manifest_url_map()
     citations = []
     for idx in sorted(referenced_indices):
         if idx in chunk_index_map:
             chunk = chunk_index_map[idx]
             c_id = chunk.get("id") or chunk.get("chunk_id", "")
+            source_path = chunk.get("source_path", "")
+            source_url = (
+                url_map.get(source_path)
+                or url_map.get(Path(source_path).name)
+                or url_map.get(Path(source_path).as_posix())
+                or ""
+            ) if source_path else ""
+
             citations.append({
                 "chunk_id": c_id,
                 "citation_marker": f"[{idx}]",
@@ -125,7 +192,8 @@ def draft_answer(state: AgentState) -> AgentState:
                 "fiscal_year": chunk.get("fiscal_year"),
                 "item_section": chunk.get("item_section"),
                 "item_title": chunk.get("item_title"),
-                "source_path": chunk.get("source_path"),
+                "source_path": source_path,
+                "source_url": source_url,
             })
 
     state["draft_answer"] = answer_text

@@ -87,7 +87,7 @@ export function ExamplePrompts({ onSelectPrompt }: ExamplePromptsProps) {
                 />
               </svg>
             </span>{" "}
-            — or admits it doesn't know.
+            — or admits it doesn&apos;t know.
           </div>
         </h1>
 
@@ -130,7 +130,7 @@ export function ExamplePrompts({ onSelectPrompt }: ExamplePromptsProps) {
               </div>
               <div className="mt-1.5 sm:pl-17">
                 <p className="font-mono text-xs text-[#8B95A1] line-clamp-1">
-                  "{item.prompt}"
+                  &ldquo;{item.prompt}&rdquo;
                 </p>
               </div>
             </button>

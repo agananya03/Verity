@@ -2,10 +2,9 @@ services:
   - type: web
     name: verity-backend
     runtime: python
-    rootDir: backend
     plan: free
-    buildCommand: "pip install -r requirements.txt"
-    startCommand: "uvicorn api.main:app --host 0.0.0.0 --port $PORT"
+    buildCommand: "pip install -r backend/requirements.txt"
+    startCommand: "python -m uvicorn backend.api.main:app --host 0.0.0.0 --port $PORT"
     envVars:
       - key: GOOGLE_API_KEY
         sync: false
@@ -15,3 +14,7 @@ services:
         sync: false
       - key: ALLOWED_ORIGIN
         sync: false
+      - key: EMBEDDING_BACKEND
+        value: fastembed
+      - key: PYTHONPATH
+        value: .

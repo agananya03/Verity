@@ -3,16 +3,17 @@
 import { useState } from "react";
 import { CheckCircle2, FileText, ChevronDown, ChevronUp } from "lucide-react";
 
-interface QuestionResult {
+export interface QuestionResult {
   question: string;
   answer: string;
   faithfulness?: number;
   answer_relevancy?: number;
+  relevancy?: number;
   context_precision?: number;
   context_recall?: number;
   contexts?: string[];
   ground_truth?: string;
-  [key: string]: any;
+  [key: string]: unknown;
 }
 
 interface EvalMetricsTableProps {
@@ -50,8 +51,9 @@ export function EvalMetricsTable({ results }: EvalMetricsTableProps) {
         <tbody className="divide-y divide-[#2A3138]">
           {results.slice(0, 10).map((item, idx) => {
             const isExpanded = expandedIndex === idx;
-            const faithfulnessScore = item.faithfulness ?? 1.0;
-            const relevancyScore = item.answer_relevancy ?? item.relevancy ?? 0.9;
+            const faithfulnessScore = typeof item.faithfulness === "number" ? item.faithfulness : 1.0;
+            const rawRel = item.answer_relevancy ?? item.relevancy;
+            const relevancyScore = typeof rawRel === "number" ? rawRel : 0.9;
 
             return (
               <tr

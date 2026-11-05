@@ -68,14 +68,26 @@ class AgentState(TypedDict):
     # Populated by the Critic Node on its first evaluation pass before any retries.
     first_critic_verdict: Dict[str, Any]
 
+    # Field 7c: Critique Feedback
+    # Populated by the Revise Node with unsupported claims flagged by the Critic node.
+    critique_feedback: List[str]
+
     # Field 8: Retry Counter
-    # Incremented by the Router / Conditional Feedback Node during self-correction loops when the Critic finds hallucinations.
+    # Incremented by the Revise Node during self-correction loops when the Critic finds hallucinations.
     retry_count: int
 
     # Field 9: Final Grounded Answer
     # Populated by the Finalizer / Output Node.
     # The verified, grounded answer ready for downstream API streaming and client UI rendering.
     final_answer: str
+
+    # Field 9b: Final Grounded Status
+    # Populated by the Finalizer Node. True if final answer is grounded, False if still ungrounded after max retries.
+    final_grounded: bool
+
+    # Field 9c: Final Unsupported Claims
+    # Populated by the Finalizer Node. List of claims still ungrounded after max retries (if any).
+    unsupported_claims_final: List[str]
 
     # Field 10: Insufficient Context / Decline Flag
     # Populated by the Draft / Generator Node when retrieval chunks are missing or context is insufficient to answer.

@@ -1,5 +1,7 @@
 # Verity: Self-Critiquing Financial RAG Agent
 
+[![CI](https://github.com/agananya03/Verity/actions/workflows/ci.yml/badge.svg)](https://github.com/agananya03/Verity/actions/workflows/ci.yml)
+
 Verity is a self-critiquing RAG (Retrieval-Augmented Generation) agent over SEC 10-K filings, built with LangGraph, evaluated with RAGAS, deployed as a Next.js + FastAPI full-stack app, running entirely on free-tier infrastructure. It enables financial analysts and investors to query complex corporate Form 10-K annual reports with exact numerical precision, transparent source citations, and automated self-critique loops that strip out unsupported claims and decline out-of-domain queries.
 
 ---

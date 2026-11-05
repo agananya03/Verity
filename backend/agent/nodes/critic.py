@@ -5,7 +5,7 @@ Role:
 - Evaluates the LLM-generated draft_answer against the retrieved_chunks.
 - Checks whether every factual statement, figure, and claim is strictly supported by the context.
 - Uses Gemini with Pydantic structured output to produce state['critic_verdict'] ({'grounded': bool, 'unsupported_claims': list[str]}).
-- Increments state['retry_count'].
+- Populates state['first_critic_verdict'] on the first pass.
 """
 
 import os
@@ -55,15 +55,12 @@ MODEL_CRITIC = os.getenv("MODEL_CRITIC", "gemini-3.5-flash-lite")
 def critique(state: AgentState) -> AgentState:
     """
     Evaluates draft_answer groundedness against retrieved_chunks using Gemini structured output.
-    Populates state['critic_verdict'] and increments state['retry_count'].
+    Populates state['critic_verdict'] and state['first_critic_verdict'] on the first pass.
+    Does not modify retry_count.
     """
     draft = state.get("draft_answer", "")
     chunks = state.get("retrieved_chunks", [])
     api_key = os.getenv("GOOGLE_API_KEY")
-
-    # Increment retry count
-    current_retries = state.get("retry_count", 0)
-    state["retry_count"] = current_retries + 1
 
     # Format context for evaluation
     context_text = "\n\n".join(
@@ -104,10 +101,5 @@ Draft Answer to evaluate:
     if not state.get("first_critic_verdict"):
         # First evaluation pass
         state["first_critic_verdict"] = verdict_dict
-        state["retry_count"] = 0
-    else:
-        # Retry evaluation pass
-        current_retries = state.get("retry_count", 0)
-        state["retry_count"] = current_retries + 1
 
     return state

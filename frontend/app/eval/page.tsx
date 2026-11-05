@@ -3,18 +3,11 @@
 import { useEffect, useState, useCallback } from "react";
 import {
   BarChart3,
-  TrendingUp,
-  ShieldCheck,
-  ShieldAlert,
   RefreshCw,
   AlertCircle,
-  FileCheck2,
-  Sparkles,
-  Layers,
-  HelpCircle,
 } from "lucide-react";
 import { CategoryBarChart } from "@/components/CategoryBarChart";
-import { EvalMetricsTable } from "@/components/EvalMetricsTable";
+import { EvalMetricsTable, type QuestionResult } from "@/components/EvalMetricsTable";
 
 interface ConfigResult {
   config: string;
@@ -24,9 +17,9 @@ interface ConfigResult {
     answer_relevancy?: number;
     context_precision?: number;
     context_recall?: number;
-    [key: string]: any;
+    [key: string]: unknown;
   };
-  per_question_results: any[];
+  per_question_results: QuestionResult[];
 }
 
 interface EvalResponse {
@@ -66,14 +59,8 @@ interface RetriedQuestionDetail {
 }
 
 interface CategoryBreakdownResponse {
-  category_summary: {
-    simple_lookup?: CategorySummaryItem;
-    multi_hop?: CategorySummaryItem;
-    numeric_precision?: CategorySummaryItem;
-    unanswerable?: CategorySummaryItem;
-    [key: string]: any;
-  };
-  unanswerable_qualitative_evaluation?: any[];
+  category_summary: Record<string, CategorySummaryItem | undefined>;
+  unanswerable_qualitative_evaluation?: unknown[];
   critic_retry_logging?: {
     retry_data_available: boolean;
     total_retried_questions: number;
@@ -88,7 +75,7 @@ export default function EvalDashboardPage() {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
-  const fetchEvalResults = useCallback(async () => {
+  const refresh = useCallback(async () => {
     setLoading(true);
     setError(null);
     const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
@@ -109,10 +96,11 @@ export default function EvalDashboardPage() {
         const catJson: CategoryBreakdownResponse = await catRes.json();
         setCategoryData(catJson);
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error("Failed to fetch evaluation results:", err);
+      const msg = err instanceof Error ? err.message : String(err);
       setError(
-        err.message ||
+        msg ||
           "Unable to connect to Verity backend at " +
             apiUrl +
             ". Make sure the backend server is running."
@@ -123,8 +111,55 @@ export default function EvalDashboardPage() {
   }, []);
 
   useEffect(() => {
-    fetchEvalResults();
-  }, [fetchEvalResults]);
+    let ignore = false;
+
+    async function load() {
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+
+      try {
+        const [evalRes, catRes] = await Promise.all([
+          fetch(`${apiUrl}/eval-results`),
+          fetch(`${apiUrl}/category-breakdown`),
+        ]);
+
+        if (!evalRes.ok) {
+          throw new Error(`Eval API returned status ${evalRes.status}: ${evalRes.statusText}`);
+        }
+        const json: EvalResponse = await evalRes.json();
+        if (!ignore) {
+          setData(json);
+        }
+
+        if (catRes.ok) {
+          const catJson: CategoryBreakdownResponse = await catRes.json();
+          if (!ignore) {
+            setCategoryData(catJson);
+          }
+        }
+      } catch (err: unknown) {
+        console.error("Failed to fetch evaluation results:", err);
+        const msg = err instanceof Error ? err.message : String(err);
+        if (!ignore) {
+          setError(
+            msg ||
+              "Unable to connect to Verity backend at " +
+                apiUrl +
+                ". Make sure the backend server is running."
+          );
+        }
+      } finally {
+        if (!ignore) {
+          setLoading(false);
+        }
+      }
+    }
+
+    load();
+
+    return () => {
+      ignore = true;
+    };
+  }, []);
 
   // Loading State Skeleton
   if (loading) {
@@ -153,7 +188,7 @@ export default function EvalDashboardPage() {
         <h2 className="text-sm font-semibold text-[#EDE7DA] uppercase tracking-wider">Unable to Load Evaluation Metrics</h2>
         <p className="mt-2 text-xs text-[#8B95A1] leading-relaxed">{error}</p>
         <button
-          onClick={fetchEvalResults}
+          onClick={refresh}
           className="mt-6 flex items-center gap-2 px-4 py-2 rounded-sm bg-[#E8A33D] text-[#0F1419] font-medium text-xs hover:bg-[#E8A33D]/90 transition-all focus-visible:outline-none"
         >
           <RefreshCw className="w-3.5 h-3.5" />
@@ -218,7 +253,7 @@ export default function EvalDashboardPage() {
         </div>
 
         <button
-          onClick={fetchEvalResults}
+          onClick={refresh}
           className="self-start sm:self-auto flex items-center gap-1.5 px-3 py-1.5 rounded-sm bg-[#0F1419] text-[#EDE7DA] hover:bg-[#EDE7DA]/[0.05] border border-[#2A3138] font-mono text-xs transition-colors"
         >
           <RefreshCw className="w-3.5 h-3.5 text-[#8B95A1]" />

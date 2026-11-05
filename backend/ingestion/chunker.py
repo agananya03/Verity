@@ -172,6 +172,7 @@ def split_section_into_chunks(
     """
     Splits section text into paragraph/sentence bounded chunks of ~300-500 tokens
     with ~15% overlap between adjacent chunks.
+    Assigns deterministic UUID5 chunk_ids derived from company, year, section, chunk_index, and text prefix.
     """
     # Split section into paragraphs
     paragraphs = [p.strip() for p in section_text.split("\n") if p.strip()]
@@ -200,9 +201,13 @@ def split_section_into_chunks(
         # When target token count is reached or at end of units
         if current_tokens >= TARGET_MIN_TOKENS or i == len(units) - 1:
             chunk_text = "\n\n".join(current_units)
+            chunk_index = len(chunks)
+            chunk_hash_key = f"{company}|{fiscal_year}|{item_section}|{chunk_index}|{chunk_text[:200]}"
+            chunk_id = str(uuid.uuid5(uuid.NAMESPACE_DNS, chunk_hash_key))
             
             chunks.append({
-                "chunk_id": str(uuid.uuid4()),
+                "chunk_id": chunk_id,
+                "chunk_index": chunk_index,
                 "text": chunk_text,
                 "company": company,
                 "fiscal_year": fiscal_year,
@@ -274,6 +279,31 @@ def chunk_filing(manifest_entry: Dict) -> List[Dict]:
     return filing_chunks
 
 
+def deduplicate_chunks(chunks: List[Dict]) -> Tuple[List[Dict], int]:
+    """
+    Dedupes chunks with identical text within the same company+year+section.
+    Returns a tuple of (deduplicated_chunks, removed_count).
+    """
+    seen_keys = set()
+    deduped = []
+    removed_count = 0
+
+    for chunk in chunks:
+        dedupe_key = (
+            chunk.get("company", ""),
+            str(chunk.get("fiscal_year", "")),
+            chunk.get("item_section", ""),
+            chunk.get("text", "").strip(),
+        )
+        if dedupe_key in seen_keys:
+            removed_count += 1
+        else:
+            seen_keys.add(dedupe_key)
+            deduped.append(chunk)
+
+    return deduped, removed_count
+
+
 def main():
     """Main execution function to process all filings in manifest.json and write chunks.json."""
     print("=" * 70)
@@ -294,11 +324,18 @@ def main():
         chunks = chunk_filing(entry)
         all_chunks.extend(chunks)
         
+    # Deduplicate chunks with identical text within the same company+year+section before writing
+    deduped_chunks, removed_count = deduplicate_chunks(all_chunks)
+    logger.info(
+        f"Deduplication complete: removed {removed_count} duplicate chunks with identical text within the same company+year+section."
+    )
+    logger.info(f"Retained {len(deduped_chunks)} unique chunks out of {len(all_chunks)} total chunks.")
+
     with open(OUTPUT_CHUNKS_FILE, "w", encoding="utf-8") as f:
-        json.dump(all_chunks, f, indent=2)
+        json.dump(deduped_chunks, f, indent=2)
         
     print("=" * 70)
-    print(f"Chunking complete. Total chunks generated: {len(all_chunks)}")
+    print(f"Chunking complete. Total unique chunks generated: {len(deduped_chunks)} (removed {removed_count} duplicates)")
     print(f"Saved processed chunks to: {OUTPUT_CHUNKS_FILE}")
     print("=" * 70)
 

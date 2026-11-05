@@ -10,11 +10,12 @@ import json
 import logging
 import os
 import sys
+import time
 import uuid
 from pathlib import Path
 from dotenv import load_dotenv
 from qdrant_client import QdrantClient
-from qdrant_client.models import Distance, VectorParams, PointStruct
+from qdrant_client.models import Distance, VectorParams, PointStruct, PayloadSchemaType
 from sentence_transformers import SentenceTransformer
 
 # Set up logging
@@ -80,16 +81,34 @@ def main():
     else:
         logger.info(f"Collection '{COLLECTION_NAME}' already exists. Checking existing indexed points...")
         try:
-            scroll_res, _ = client.scroll(
-                collection_name=COLLECTION_NAME,
-                limit=10000,
-                with_payload=False,
-                with_vectors=False,
-            )
-            existing_point_ids = {str(pt.id) for pt in scroll_res}
+            next_offset = None
+            while True:
+                scroll_res, next_offset = client.scroll(
+                    collection_name=COLLECTION_NAME,
+                    limit=1000,
+                    offset=next_offset,
+                    with_payload=False,
+                    with_vectors=False,
+                )
+                for pt in scroll_res:
+                    existing_point_ids.add(str(pt.id))
+                if next_offset is None or not scroll_res:
+                    break
             logger.info(f"Found {len(existing_point_ids)} existing point IDs in collection '{COLLECTION_NAME}'.")
         except Exception as e:
             logger.warning(f"Could not retrieve existing point IDs: {e}")
+
+    # Ensure payload index on company and fiscal_year (keyword type)
+    for field_name in ["company", "fiscal_year"]:
+        try:
+            client.create_payload_index(
+                collection_name=COLLECTION_NAME,
+                field_name=field_name,
+                field_schema=PayloadSchemaType.KEYWORD,
+            )
+            logger.info(f"Created/verified payload index on '{field_name}' (keyword) in collection '{COLLECTION_NAME}'.")
+        except Exception as e:
+            logger.info(f"Payload index on '{field_name}': {e}")
 
     chunks_to_embed = [c for c in chunks if str(c.get("chunk_id")) not in existing_point_ids]
     if not chunks_to_embed:

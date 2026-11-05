@@ -114,6 +114,7 @@ class SECFetcher:
                 source_url = (
                     f"https://www.sec.gov/Archives/edgar/data/{cik_unpadded}/{acc_num_no_dash}/{primary_doc}"
                 )
+                filing_url = source_url
                 
                 filings.append({
                     "accession_number": acc_num,
@@ -121,7 +122,8 @@ class SECFetcher:
                     "report_date": report_date,
                     "fiscal_year": fiscal_year,
                     "primary_doc": primary_doc,
-                    "source_url": source_url
+                    "source_url": source_url,
+                    "filing_url": filing_url,
                 })
                 
                 if len(filings) >= max_years:
@@ -197,15 +199,38 @@ def fetch_and_save_filings():
 
             if html_content:
                 relative_path = str(local_file_path.relative_to(BASE_DIR.parent)).replace("\\", "/")
-                manifest_entries.append({
+                entry_data = {
                     "company": name,
                     "ticker": ticker,
                     "cik": cik,
                     "fiscal_year": fiscal_year,
                     "filing_date": filing["filing_date"],
                     "source_url": filing["source_url"],
-                    "local_path": relative_path
-                })
+                    "filing_url": filing.get("filing_url") or filing["source_url"],
+                    "local_path": relative_path,
+                }
+                # Add fiscal_year note for non-calendar fiscal years
+                if ticker == "NVDA":
+                    entry_data["fiscal_year_note"] = "Non-calendar fiscal year ends in January (e.g., FY2024 ended January 2024)"
+                elif ticker == "AAPL":
+                    entry_data["fiscal_year_note"] = "Non-calendar fiscal year ends in late September"
+                elif ticker == "MSFT":
+                    entry_data["fiscal_year_note"] = "Non-calendar fiscal year ends June 30"
+
+                manifest_entries.append(entry_data)
+
+    # Ensure all manifest entries (including existing) include filing_url and non-calendar fiscal_year_note
+    for entry in manifest_entries:
+        if "filing_url" not in entry and "source_url" in entry:
+            entry["filing_url"] = entry["source_url"]
+        t = entry.get("ticker", "")
+        if "fiscal_year_note" not in entry:
+            if t == "NVDA":
+                entry["fiscal_year_note"] = "Non-calendar fiscal year ends in January (e.g., FY2024 ended January 2024)"
+            elif t == "AAPL":
+                entry["fiscal_year_note"] = "Non-calendar fiscal year ends in late September"
+            elif t == "MSFT":
+                entry["fiscal_year_note"] = "Non-calendar fiscal year ends June 30"
 
     # Save manifest.json
     with open(MANIFEST_FILE, "w", encoding="utf-8") as f:

@@ -1,14 +1,18 @@
 "use client";
 
-import { useState, useCallback, useRef } from "react";
+import { useState, useCallback, useRef, useEffect } from "react";
 
 export interface Citation {
   chunk_id: string;
+  citation_marker?: string;
   company: string;
   fiscal_year: string;
   item_section: string;
+  item_title?: string;
+  source_path?: string;
+  source_url?: string;
   text?: string;
-  [key: string]: any;
+  [key: string]: unknown;
 }
 
 export interface CriticStatus {
@@ -17,7 +21,6 @@ export interface CriticStatus {
   retry_count: number;
   is_decline?: boolean;
 }
-
 
 export interface Message {
   id: string;
@@ -29,6 +32,11 @@ export interface Message {
   statusNode?: string;
   isError?: boolean;
   warningNote?: string;
+  isDraft?: boolean;
+  isVerified?: boolean;
+  finalGrounded?: boolean;
+  unsupportedClaimsFinal?: string[];
+  requestId?: string;
 }
 
 export function useVerityChat() {
@@ -38,12 +46,17 @@ export function useVerityChat() {
 
   const abortControllerRef = useRef<AbortController | null>(null);
   const messagesRef = useRef<Message[]>([]);
-  messagesRef.current = messages;
+  const lastQueryRef = useRef<string>("");
+
+  useEffect(() => {
+    messagesRef.current = messages;
+  }, [messages]);
 
   const sendMessage = useCallback(async (query: string) => {
     const trimmedQuery = query.trim();
     if (!trimmedQuery) return;
 
+    lastQueryRef.current = trimmedQuery;
     setError(null);
     setIsStreaming(true);
 
@@ -63,6 +76,8 @@ export function useVerityChat() {
       citations: [],
       criticStatus: undefined,
       statusNode: "rewriter",
+      isDraft: false,
+      isVerified: false,
     };
 
     // Extract recent conversation history (last 6 completed messages) from messagesRef.current
@@ -73,11 +88,6 @@ export function useVerityChat() {
         role: msg.role,
         content: msg.content,
       }));
-
-    console.log("[VerityChat] Sending POST /chat payload:", {
-      query: trimmedQuery,
-      history: historyPayload,
-    });
 
     setMessages((prev) => [...prev, userMessage, initialAssistantMessage]);
 
@@ -94,10 +104,10 @@ export function useVerityChat() {
         prev.map((msg) =>
           msg.id === assistantMessageId
             ? {
-                ...msg,
-                warningNote:
-                  "Waking up the backend (free-tier hosting can take up to a minute on first request)...",
-              }
+              ...msg,
+              warningNote:
+                "Waking up the backend (free-tier hosting can take up to a minute on first request)...",
+            }
             : msg
         )
       );
@@ -193,19 +203,28 @@ export function useVerityChat() {
 
                     case "answer":
                       if (data.answer) {
+                        // Draft state: Do not display as verified final answer
                         updated.content = data.answer;
+                        updated.isDraft = true;
+                        updated.isVerified = false;
                       }
                       break;
 
                     case "critic_status":
+                      const isGrounded = Boolean(data.grounded);
                       updated.criticStatus = {
-                        grounded: Boolean(data.grounded),
+                        grounded: isGrounded,
                         unsupported_claims: Array.isArray(data.unsupported_claims)
                           ? data.unsupported_claims
                           : [],
                         retry_count: Number(data.retry_count || 0),
                         is_decline: Boolean(data.is_decline),
                       };
+                      // If critic verifies grounded=true, transition out of draft
+                      if (isGrounded) {
+                        updated.isVerified = true;
+                        updated.isDraft = false;
+                      }
                       break;
 
                     case "done":
@@ -213,11 +232,30 @@ export function useVerityChat() {
                         updated.content = data.final_answer;
                       }
                       updated.statusNode = "completed";
+                      updated.isDraft = false;
+                      updated.isVerified = true;
+                      if (data.request_id) {
+                        updated.requestId = data.request_id;
+                      }
+                      const finalGrounded = typeof data.final_grounded === "boolean" ? data.final_grounded : true;
+                      updated.finalGrounded = finalGrounded;
+                      updated.unsupportedClaimsFinal = Array.isArray(data.unsupported_claims_final)
+                        ? data.unsupported_claims_final
+                        : [];
+                      // If final_grounded is false in done, set visible warning banner
+                      if (!finalGrounded) {
+                        updated.warningNote = "Some claims could not be verified and were removed.";
+                      }
                       break;
 
                     case "error":
                       updated.isError = true;
+                      updated.isDraft = false;
+                      updated.statusNode = "failed";
                       updated.content = data.error || "An error occurred during graph processing.";
+                      if (data.request_id) {
+                        updated.requestId = data.request_id;
+                      }
                       break;
 
                     default:
@@ -233,18 +271,18 @@ export function useVerityChat() {
           }
         }
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
       clearTimeout(coldStartTimer);
 
-      if (err.name === "AbortError") {
-        console.log("Chat stream aborted by user.");
+      const errorObj = err instanceof Error ? err : new Error(String(err));
+      if (errorObj.name === "AbortError") {
         return;
       }
 
-      console.error("Error in useVerityChat stream:", err);
+      console.error("Error in useVerityChat stream:", errorObj);
 
       const errorMessage =
-        err.message || "Unable to connect to Verity backend. Please ensure the backend server is running.";
+        errorObj.message || "Unable to connect to Verity backend. Please ensure the backend server is running.";
 
       setError(errorMessage);
 
@@ -252,15 +290,15 @@ export function useVerityChat() {
         prev.map((msg) =>
           msg.id === assistantMessageId
             ? {
-                ...msg,
-                isError: true,
-                content:
-                  msg.content ||
-                  "Unable to complete query. Please check if backend server is running at " +
-                    apiUrl,
-                statusNode: "failed",
-                warningNote: undefined,
-              }
+              ...msg,
+              isError: true,
+              isDraft: false,
+              content:
+                msg.content ||
+                "Unable to complete query. The backend service may be cold-starting or unreachable. Click Retry to try again.",
+              statusNode: "failed",
+              warningNote: undefined,
+            }
             : msg
         )
       );
@@ -269,6 +307,12 @@ export function useVerityChat() {
       setIsStreaming(false);
     }
   }, []);
+
+  const retry = useCallback(() => {
+    if (lastQueryRef.current) {
+      sendMessage(lastQueryRef.current);
+    }
+  }, [sendMessage]);
 
   const clearMessages = useCallback(() => {
     if (abortControllerRef.current) {
@@ -282,6 +326,7 @@ export function useVerityChat() {
   return {
     messages,
     sendMessage,
+    retry,
     isStreaming,
     error,
     clearMessages,

@@ -6,23 +6,35 @@ Evaluates either:
 - Improved config: Full verity_graph pipeline (Hybrid Dense/Sparse search + metadata filtering + self-correcting Critic loop).
 
 Features:
-- Handles Gemini free-tier quota limits (20 requests/day limit on free tier).
-- Includes deterministic fallback metric calculation when Gemini LLM judge is rate-limited or quota-exhausted.
+- Real RAGAS evaluation mode with configurable judge model (JUDGE_MODEL env var) and fallback chain.
+- Explicit metric_source tracking ("ragas" vs "heuristic" vs "heuristic_fallback").
+- Heuristic smoke metrics code path (compute_heuristic_smoke_metrics) clearly isolated for fast pipeline smoke testing.
+- Automatic non-zero exit (sys.exit(1)) and loud warnings if real RAGAS fails or is quota-exhausted and falls back to heuristics.
+- Logs metadata: judge_model, generator_models, UTC timestamp, git commit hash, golden_set_size, and random seed.
+- Resumes evaluation from checkpoint using --start-from and enforces rate limiting via --delay.
 - Saves aggregate scores and per-question breakdowns to:
   - backend/eval/results/baseline.json
   - backend/eval/results/improved.json
 """
 
 import argparse
+import datetime
 import json
 import logging
+import math
 import os
+import random
+import subprocess
 import sys
 import time
 import types
 import uuid
 from pathlib import Path
-from typing import Any, Dict, List, Tuple
+from typing import Any, Dict, List, Optional, Tuple
+
+# Ensure huggingface uses local cache when running offline
+os.environ.setdefault("HF_HUB_OFFLINE", "1")
+os.environ.setdefault("TRANSFORMERS_OFFLINE", "1")
 
 # Compatibility patch for ragas importing langchain_community.chat_models.vertexai
 vertexai_mock = types.ModuleType("vertexai")
@@ -71,19 +83,42 @@ logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(
 logger = logging.getLogger(__name__)
 
 
-def run_baseline_pipeline(query: str) -> Tuple[str, List[str]]:
+def get_git_commit_hash() -> str:
+    """Returns the current git commit hash, or 'unknown' if git is not available."""
+    try:
+        res = subprocess.run(
+            ["git", "rev-parse", "HEAD"],
+            cwd=Path(__file__).resolve().parent,
+            capture_output=True,
+            text=True,
+            check=True,
+        )
+        return res.stdout.strip()
+    except Exception:
+        return "unknown"
+
+
+def run_baseline_pipeline(query: str) -> Tuple[str, List[str], List[str]]:
     """
     Baseline pipeline:
     - Vector-only search via Qdrant (top_k=8, no metadata filters, no BM25 fusion).
     - Single LLM draft generation call using get_llm_with_fallback with timeout.
+    Returns:
+        (answer, retrieved_contexts, retrieved_chunk_ids)
     """
     api_key = os.getenv("GOOGLE_API_KEY")
     hits = search_qdrant(query=query, filters=None, limit=8)
     retrieved_contexts = [h.get("text", "") for h in hits if h.get("text")]
+    retrieved_chunk_ids = [
+        str(h.get("id") or h.get("chunk_id", ""))
+        for h in hits
+        if (h.get("id") or h.get("chunk_id"))
+    ]
 
     if not retrieved_contexts:
         return (
             "I don't have enough information to answer this question based on the retrieved SEC filings.",
+            [],
             [],
         )
 
@@ -97,8 +132,9 @@ Context Chunks:
 Question: {query}
 Answer:"""
 
+    baseline_model = os.getenv("MODEL_BASELINE", os.getenv("MODEL_DRAFT", "gemini-3.5-flash"))
     llm = get_llm_with_fallback(
-        primary_model="gemini-3.5-flash",
+        primary_model=baseline_model,
         fallback_models=["gemini-3.5-flash-lite", "gemini-2.5-flash-lite"],
         google_api_key=api_key or None,
         temperature=0.1,
@@ -111,15 +147,17 @@ Answer:"""
     else:
         answer = str(response.content).strip()
 
-    return answer, retrieved_contexts
+    return answer, retrieved_contexts, retrieved_chunk_ids
 
 
-def run_improved_pipeline(query: str) -> Tuple[str, List[str], Dict[str, Any]]:
+def run_improved_pipeline(query: str) -> Tuple[str, List[str], List[str], Dict[str, Any]]:
     """
     Improved pipeline:
     - End-to-end verity_graph execution.
     - Includes metadata classifier, hybrid dense+sparse retrieval with RRF, draft generation, and self-correcting Critic loop.
     - Includes retry logic with backoff for rate limits.
+    Returns:
+        (final_answer, retrieved_contexts, retrieved_chunk_ids, exec_info)
     """
     initial_state: AgentState = {
         "query": query,
@@ -130,7 +168,10 @@ def run_improved_pipeline(query: str) -> Tuple[str, List[str], Dict[str, Any]]:
         "citations": [],
         "critic_verdict": {},
         "first_critic_verdict": {},
+        "critique_feedback": [],
         "retry_count": 0,
+        "final_grounded": False,
+        "unsupported_claims_final": [],
         "final_answer": "",
     }
     config = {"configurable": {"thread_id": str(uuid.uuid4())}}
@@ -142,6 +183,11 @@ def run_improved_pipeline(query: str) -> Tuple[str, List[str], Dict[str, Any]]:
             final_answer = final_state.get("final_answer") or final_state.get("draft_answer") or ""
             retrieved_chunks = final_state.get("retrieved_chunks", [])
             retrieved_contexts = [c.get("text", "") for c in retrieved_chunks if c.get("text")]
+            retrieved_chunk_ids = [
+                str(c.get("id") or c.get("chunk_id", ""))
+                for c in retrieved_chunks
+                if (c.get("id") or c.get("chunk_id"))
+            ]
 
             critic_verdict = final_state.get("critic_verdict") or {}
             initial_critic_verdict = final_state.get("first_critic_verdict") or critic_verdict
@@ -151,8 +197,10 @@ def run_improved_pipeline(query: str) -> Tuple[str, List[str], Dict[str, Any]]:
                 "retry_count": retry_count,
                 "critic_verdict": critic_verdict,
                 "initial_critic_verdict": initial_critic_verdict,
+                "final_grounded": final_state.get("final_grounded", False),
+                "unsupported_claims_final": final_state.get("unsupported_claims_final", []),
             }
-            return final_answer, retrieved_contexts, exec_info
+            return final_answer, retrieved_contexts, retrieved_chunk_ids, exec_info
         except AllModelsExhaustedError:
             raise
         except Exception as e:
@@ -167,25 +215,38 @@ def run_improved_pipeline(query: str) -> Tuple[str, List[str], Dict[str, Any]]:
     # Fallback if retries exhausted
     hits = search_qdrant(query=query, filters=None, limit=8)
     retrieved_contexts = [h.get("text", "") for h in hits if h.get("text")]
+    retrieved_chunk_ids = [
+        str(h.get("id") or h.get("chunk_id", ""))
+        for h in hits
+        if (h.get("id") or h.get("chunk_id"))
+    ]
     final_answer = f"Based on retrieved SEC filings: {retrieved_contexts[0][:250]}..." if retrieved_contexts else "I don't have enough information to answer this question based on the retrieved SEC filings."
     fallback_exec_info = {
         "retry_count": 0,
         "critic_verdict": {"grounded": False, "unsupported_claims": ["Pipeline execution fallback"]},
         "initial_critic_verdict": {"grounded": False, "unsupported_claims": ["Pipeline execution fallback"]},
+        "final_grounded": False,
+        "unsupported_claims_final": ["Pipeline execution fallback"],
     }
-    return final_answer, retrieved_contexts, fallback_exec_info
+    return final_answer, retrieved_contexts, retrieved_chunk_ids, fallback_exec_info
 
 
-def compute_heuristic_metrics(
+def compute_heuristic_smoke_metrics(
     questions: List[str],
     answers: List[str],
     contexts_list: List[List[str]],
     ground_truths: List[str],
     golden_set_items: List[Dict[str, Any]],
+    chunk_ids_list: Optional[List[List[str]]] = None,
 ) -> Tuple[Dict[str, float], List[Dict[str, Any]]]:
     """
-    Deterministic evaluation metric fallback used when Gemini LLM judge API quota is exhausted.
-    Calculates context precision, recall, faithfulness, and answer relevancy metrics.
+    HEURISTIC SMOKE METRICS ONLY.
+
+    WARNING: These are heuristic, deterministic approximations (e.g. hardcoded
+    faithfulness=0.95 and lexical word overlap for relevancy).
+    These MUST NEVER be reported as real RAGAS scores. They exist solely for
+    smoke-testing the pipeline and ensuring end-to-end data flow when LLM judge
+    APIs are unavailable.
     """
     per_question: List[Dict[str, Any]] = []
     faithfulness_scores: List[float] = []
@@ -198,6 +259,9 @@ def compute_heuristic_metrics(
         ans = answers[i]
         ctxs = contexts_list[i]
         gt = ground_truths[i]
+        g_item = golden_set_items[i] if i < len(golden_set_items) else {}
+        g_id = g_item.get("id", f"golden_{i+1:02d}")
+        chunk_ids = chunk_ids_list[i] if (chunk_ids_list and i < len(chunk_ids_list)) else []
 
         ans_lower = ans.lower()
         gt_lower = gt.lower()
@@ -241,9 +305,11 @@ def compute_heuristic_metrics(
         context_recall_scores.append(c_rec)
 
         per_question.append({
+            "id": g_id,
             "question": q,
             "answer": ans,
             "contexts": ctxs,
+            "retrieved_chunk_ids": chunk_ids,
             "ground_truth": gt,
             "faithfulness": faith,
             "answer_relevancy": relevancy,
@@ -281,7 +347,7 @@ def main():
     parser.add_argument(
         "--fast-eval",
         action="store_true",
-        help="Use fast deterministic benchmark metrics (ideal for free-tier Gemini API rate limits).",
+        help="Use fast heuristic smoke metrics (NOT real RAGAS scores; for pipeline smoke testing only).",
     )
     parser.add_argument(
         "--delay",
@@ -295,14 +361,42 @@ def main():
         default=1,
         help="1-indexed question index to resume evaluation from (preserves prior answers).",
     )
+    parser.add_argument(
+        "--seed",
+        type=int,
+        default=42,
+        help="Random seed for reproducibility.",
+    )
     args = parser.parse_args()
+
+    # Set random seeds
+    random.seed(args.seed)
+    try:
+        import numpy as np
+        np.random.seed(args.seed)
+    except ImportError:
+        pass
 
     api_key = os.getenv("GOOGLE_API_KEY")
     if not api_key:
         logger.error("GOOGLE_API_KEY environment variable is missing!")
         sys.exit(1)
 
-    logger.info("Configured LLM Fallback Chain: Primary='gemini-3.5-flash', Fallbacks=['gemini-3.5-flash-lite', 'gemini-2.5-flash-lite'], Timeout=30.0s")
+    judge_model = os.getenv("JUDGE_MODEL", "gemini-2.5-flash")
+    logger.info(f"Configured RAGAS Judge Model: '{judge_model}' (via env JUDGE_MODEL)")
+
+    # Define generator models metadata
+    if args.config == "improved":
+        generator_models = {
+            "draft": os.getenv("MODEL_DRAFT", "gemini-3.5-flash"),
+            "critic": os.getenv("MODEL_CRITIC", "gemini-3.5-flash"),
+            "classifier": os.getenv("MODEL_CLASSIFIER", "gemini-3.5-flash"),
+            "rewriter": os.getenv("MODEL_REWRITER", "gemini-3.5-flash"),
+        }
+    else:
+        generator_models = {
+            "baseline": os.getenv("MODEL_BASELINE", os.getenv("MODEL_DRAFT", "gemini-3.5-flash")),
+        }
 
     golden_set_path = BASE_DIR / "eval" / "golden_set.json"
     if not golden_set_path.exists():
@@ -321,6 +415,7 @@ def main():
     questions: List[str] = []
     answers: List[str] = []
     contexts_list: List[List[str]] = []
+    chunk_ids_list: List[List[str]] = []
     ground_truths: List[str] = []
     execution_infos: List[Dict[str, Any]] = []
 
@@ -336,12 +431,15 @@ def main():
                     questions.append(item.get("question", ""))
                     answers.append(item.get("answer", ""))
                     contexts_list.append(item.get("contexts", [""]))
+                    chunk_ids_list.append(item.get("retrieved_chunk_ids", []))
                     ground_truths.append(item.get("ground_truth", ""))
                     if args.config == "improved":
                         execution_infos.append({
                             "retry_count": item.get("retry_count", 0),
                             "critic_verdict": item.get("critic_verdict", {}),
                             "initial_critic_verdict": item.get("initial_critic_verdict", {}),
+                            "final_grounded": item.get("final_grounded", False),
+                            "unsupported_claims_final": item.get("unsupported_claims_final", []),
                         })
                 logger.info(f"Resuming evaluation: Loaded {len(questions)} existing answers prior to index {args.start_from}.")
         except Exception as e:
@@ -357,14 +455,15 @@ def main():
 
         try:
             if args.config == "baseline":
-                answer, contexts = run_baseline_pipeline(q)
+                answer, contexts, chunk_ids = run_baseline_pipeline(q)
             else:
-                answer, contexts, exec_info = run_improved_pipeline(q)
+                answer, contexts, chunk_ids, exec_info = run_improved_pipeline(q)
                 execution_infos.append(exec_info)
 
             questions.append(q)
             answers.append(answer)
             contexts_list.append(contexts if contexts else [""])
+            chunk_ids_list.append(chunk_ids)
             ground_truths.append(gt)
 
         except AllModelsExhaustedError as e:
@@ -380,20 +479,32 @@ def main():
             if questions:
                 partial_per_question = []
                 for i in range(len(questions)):
+                    g_id = golden_set[i].get("id", f"golden_{i+1:02d}") if i < len(golden_set) else f"q_{i+1}"
                     pq_item = {
+                        "id": g_id,
                         "question": questions[i],
                         "answer": answers[i],
                         "contexts": contexts_list[i],
+                        "retrieved_chunk_ids": chunk_ids_list[i] if i < len(chunk_ids_list) else [],
                         "ground_truth": ground_truths[i],
                     }
                     if args.config == "improved" and i < len(execution_infos):
                         pq_item["retry_count"] = execution_infos[i].get("retry_count", 0)
                         pq_item["critic_verdict"] = execution_infos[i].get("critic_verdict", {})
                         pq_item["initial_critic_verdict"] = execution_infos[i].get("initial_critic_verdict", {})
+                        pq_item["final_grounded"] = execution_infos[i].get("final_grounded", False)
+                        pq_item["unsupported_claims_final"] = execution_infos[i].get("unsupported_claims_final", [])
                     partial_per_question.append(pq_item)
 
                 partial_output = {
                     "config": args.config,
+                    "metric_source": "partial_unscored",
+                    "judge_model": judge_model,
+                    "generator_models": generator_models,
+                    "timestamp": datetime.datetime.now(datetime.timezone.utc).isoformat(),
+                    "git_commit_hash": get_git_commit_hash(),
+                    "golden_set_size": len(golden_set),
+                    "seed": args.seed,
                     "total_evaluated": len(questions),
                     "checkpoint_question_index": idx,
                     "per_question_results": partial_per_question,
@@ -416,33 +527,46 @@ def main():
             questions.append(q)
             answers.append("Error generating answer.")
             contexts_list.append([""])
+            chunk_ids_list.append([])
             ground_truths.append(gt)
             if args.config == "improved":
                 execution_infos.append({
                     "retry_count": 0,
                     "critic_verdict": {"grounded": False, "unsupported_claims": [str(e)]},
                     "initial_critic_verdict": {"grounded": False, "unsupported_claims": [str(e)]},
+                    "final_grounded": False,
+                    "unsupported_claims_final": [str(e)],
                 })
 
         if idx < len(golden_set) and args.delay > 0:
             time.sleep(args.delay)
 
-    # Step 2: RAGAS Metric Evaluation with Fallback
+    # Step 2: Metric Evaluation
     logger.info("Initializing evaluation metrics...")
 
     aggregate_scores: Dict[str, float] = {}
     per_question_breakdown: List[Dict[str, Any]] = []
+    metric_source = "ragas"
+    fallback_reason: Optional[str] = None
 
     if args.fast_eval:
-        logger.info("Fast evaluation mode enabled. Computing benchmark metrics...")
-        aggregate_scores, per_question_breakdown = compute_heuristic_metrics(
-            questions, answers, contexts_list, ground_truths, golden_set
+        logger.warning("Running in heuristic smoke metrics mode (--fast-eval). Metric source: 'heuristic'.")
+        metric_source = "heuristic"
+        aggregate_scores, per_question_breakdown = compute_heuristic_smoke_metrics(
+            questions, answers, contexts_list, ground_truths, golden_set, chunk_ids_list
         )
     else:
         try:
+            fallback_judge_models = [
+                m.strip()
+                for m in os.getenv("JUDGE_FALLBACK_MODELS", "gemini-2.5-flash-lite,gemini-1.5-flash").split(",")
+                if m.strip()
+            ]
+            logger.info(f"Using RAGAS LLM judge: primary='{judge_model}', fallbacks={fallback_judge_models}")
+
             llm = get_llm_with_fallback(
-                primary_model="gemini-3.5-flash",
-                fallback_models=["gemini-3.5-flash-lite", "gemini-2.5-flash-lite"],
+                primary_model=judge_model,
+                fallback_models=fallback_judge_models,
                 google_api_key=api_key or None,
                 temperature=0.0,
                 request_timeout=30.0,
@@ -469,9 +593,9 @@ def main():
                 "ground_truth": ground_truths,
             })
 
-            run_config = RunConfig(max_workers=1, timeout=15)
+            run_config = RunConfig(max_workers=1, timeout=20)
 
-            logger.info("Running RAGAS evaluate...")
+            logger.info("Executing real RAGAS evaluate()...")
             ragas_results = evaluate(
                 dataset=ragas_dataset,
                 metrics=metrics,
@@ -487,21 +611,27 @@ def main():
                 "context_precision": float(df_results["context_precision"].mean()) if "context_precision" in df_results else 0.0,
                 "context_recall": float(df_results["context_recall"].mean()) if "context_recall" in df_results else 0.0,
             }
-            import math
+
             if math.isnan(aggregate_scores.get("faithfulness", float("nan"))):
-                logger.warning("RAGAS LLM evaluation returned NaN due to API quota exhaustion. Using benchmark metric evaluation.")
-                aggregate_scores, per_question_breakdown = compute_heuristic_metrics(
-                    questions, answers, contexts_list, ground_truths, golden_set
-                )
-            else:
-                per_question_breakdown = df_results.to_dict(orient="records")
+                raise ValueError("RAGAS evaluate() returned NaN scores (API rate limit or quota exhaustion).")
+
+            per_question_breakdown = df_results.to_dict(orient="records")
+            # Ensure stable id and chunk_ids on each result
+            for i, res in enumerate(per_question_breakdown):
+                g_id = golden_set[i].get("id", f"golden_{i+1:02d}") if i < len(golden_set) else f"q_{i+1}"
+                res["id"] = g_id
+                if i < len(chunk_ids_list):
+                    res["retrieved_chunk_ids"] = chunk_ids_list[i]
+
         except Exception as e:
-            logger.warning(
-                f"RAGAS LLM evaluation was quota-limited or unavailable ({e}). "
-                "Switching to deterministic benchmark metric evaluation..."
+            fallback_reason = str(e)
+            logger.error(
+                f"CRITICAL: Real RAGAS evaluation failed or was quota-exhausted: {e}\n"
+                "Falling back to HEURISTIC SMOKE METRICS for logging. Script will exit with code 1."
             )
-            aggregate_scores, per_question_breakdown = compute_heuristic_metrics(
-                questions, answers, contexts_list, ground_truths, golden_set
+            metric_source = "heuristic_fallback"
+            aggregate_scores, per_question_breakdown = compute_heuristic_smoke_metrics(
+                questions, answers, contexts_list, ground_truths, golden_set, chunk_ids_list
             )
 
     # Attach graph execution info to per_question_breakdown for improved config
@@ -511,14 +641,31 @@ def main():
                 res["retry_count"] = execution_infos[i].get("retry_count", 0)
                 res["critic_verdict"] = execution_infos[i].get("critic_verdict", {})
                 res["initial_critic_verdict"] = execution_infos[i].get("initial_critic_verdict", {})
+                res["final_grounded"] = execution_infos[i].get("final_grounded", False)
+                res["unsupported_claims_final"] = execution_infos[i].get("unsupported_claims_final", [])
 
     # Step 3: Save results to backend/eval/results/{config}.json
-    output_data = {
+    output_data: Dict[str, Any] = {
         "config": args.config,
+        "metric_source": metric_source,
+        "judge_model": judge_model,
+        "generator_models": generator_models,
+        "timestamp": datetime.datetime.now(datetime.timezone.utc).isoformat(),
+        "git_commit_hash": get_git_commit_hash(),
+        "golden_set_size": len(golden_set),
+        "seed": args.seed,
         "total_evaluated": len(questions),
         "aggregate_scores": aggregate_scores,
         "per_question_results": per_question_breakdown,
     }
+
+    if metric_source == "heuristic_fallback":
+        output_data["ragas_evaluation_failed"] = True
+        output_data["fallback_warning"] = (
+            "CRITICAL: Real RAGAS evaluation failed or was quota-exhausted. "
+            "These scores are HEURISTIC SMOKE METRICS and MUST NOT be reported as real RAGAS scores!"
+        )
+        output_data["fallback_reason"] = fallback_reason
 
     results_dir = BASE_DIR / "eval" / "results"
     results_dir.mkdir(parents=True, exist_ok=True)
@@ -532,6 +679,8 @@ def main():
     # Step 4: Print summary table to console
     print("\n" + "=" * 60)
     print(f"RAGAS EVALUATION SUMMARY RESULTS [{args.config.upper()} CONFIG]")
+    print(f"Metric Source: {metric_source.upper()}")
+    print(f"Judge Model:   {judge_model}")
     print("=" * 60)
     print(f"{'Metric':<25} | {'Score':<10}")
     print("-" * 60)
@@ -541,6 +690,16 @@ def main():
     print(f"{'Context Recall':<25} | {aggregate_scores['context_recall']:.4f}")
     print("=" * 60)
     print(f"Full details saved to: backend/eval/results/{args.config}.json\n")
+
+    # If RAGAS fell back to heuristic smoke metrics, loudly notify and exit non-zero
+    if metric_source == "heuristic_fallback":
+        print("\n" + "!" * 80)
+        print("CRITICAL: REAL RAGAS EVALUATION FAILED OR WAS QUOTA-EXHAUSTED.")
+        print(f"REASON: {fallback_reason}")
+        print("FALLBACK HEURISTIC SMOKE METRICS WERE SAVED WITH 'metric_source': 'heuristic_fallback'.")
+        print("THESE ARE NOT REAL RAGAS SCORES. SCRIPT EXITING WITH NON-ZERO STATUS (1).")
+        print("!" * 80 + "\n")
+        sys.exit(1)
 
 
 if __name__ == "__main__":

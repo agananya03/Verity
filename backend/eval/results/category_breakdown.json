@@ -1,27 +1,221 @@
 {
   "category_summary": {
     "simple_lookup": {
-      "count": 22,
+      "count": 11,
       "metrics": {
         "faithfulness": {
-          "baseline": 0.9727,
-          "improved": 0.9727,
-          "delta": 0.0
+          "baseline": 0.2,
+          "baseline_ci_95": [
+            0.2,
+            0.2
+          ],
+          "improved": 0.2,
+          "improved_ci_95": [
+            0.2,
+            0.2
+          ],
+          "delta": 0.0,
+          "delta_ci_95": [
+            0.0,
+            0.0
+          ]
         },
         "answer_relevancy": {
-          "baseline": 0.9395,
-          "improved": 0.9086,
-          "delta": -0.0309
+          "baseline": 0.0,
+          "baseline_ci_95": [
+            0.0,
+            0.0
+          ],
+          "improved": 0.0,
+          "improved_ci_95": [
+            0.0,
+            0.0
+          ],
+          "delta": 0.0,
+          "delta_ci_95": [
+            0.0,
+            0.0
+          ]
         },
         "context_precision": {
-          "baseline": 1.0,
-          "improved": 1.0,
-          "delta": 0.0
+          "baseline": 0.0,
+          "baseline_ci_95": [
+            0.0,
+            0.0
+          ],
+          "improved": 0.0,
+          "improved_ci_95": [
+            0.0,
+            0.0
+          ],
+          "delta": 0.0,
+          "delta_ci_95": [
+            0.0,
+            0.0
+          ]
         },
         "context_recall": {
-          "baseline": 1.0,
-          "improved": 1.0,
-          "delta": 0.0
+          "baseline": 0.0,
+          "baseline_ci_95": [
+            0.0,
+            0.0
+          ],
+          "improved": 0.0,
+          "improved_ci_95": [
+            0.0,
+            0.0
+          ],
+          "delta": 0.0,
+          "delta_ci_95": [
+            0.0,
+            0.0
+          ]
+        }
+      }
+    },
+    "numeric_precision": {
+      "count": 4,
+      "metrics": {
+        "faithfulness": {
+          "baseline": 0.2,
+          "baseline_ci_95": [
+            0.2,
+            0.2
+          ],
+          "improved": 0.2,
+          "improved_ci_95": [
+            0.2,
+            0.2
+          ],
+          "delta": 0.0,
+          "delta_ci_95": [
+            0.0,
+            0.0
+          ]
+        },
+        "answer_relevancy": {
+          "baseline": 0.0,
+          "baseline_ci_95": [
+            0.0,
+            0.0
+          ],
+          "improved": 0.0,
+          "improved_ci_95": [
+            0.0,
+            0.0
+          ],
+          "delta": 0.0,
+          "delta_ci_95": [
+            0.0,
+            0.0
+          ]
+        },
+        "context_precision": {
+          "baseline": 0.0,
+          "baseline_ci_95": [
+            0.0,
+            0.0
+          ],
+          "improved": 0.0,
+          "improved_ci_95": [
+            0.0,
+            0.0
+          ],
+          "delta": 0.0,
+          "delta_ci_95": [
+            0.0,
+            0.0
+          ]
+        },
+        "context_recall": {
+          "baseline": 0.0,
+          "baseline_ci_95": [
+            0.0,
+            0.0
+          ],
+          "improved": 0.0,
+          "improved_ci_95": [
+            0.0,
+            0.0
+          ],
+          "delta": 0.0,
+          "delta_ci_95": [
+            0.0,
+            0.0
+          ]
+        }
+      }
+    },
+    "unanswerable": {
+      "count": 13,
+      "metrics": {
+        "faithfulness": {
+          "baseline": 0.0,
+          "baseline_ci_95": [
+            0.0,
+            0.0
+          ],
+          "improved": 0.0,
+          "improved_ci_95": [
+            0.0,
+            0.0
+          ],
+          "delta": 0.0,
+          "delta_ci_95": [
+            0.0,
+            0.0
+          ]
+        },
+        "answer_relevancy": {
+          "baseline": 0.2,
+          "baseline_ci_95": [
+            0.2,
+            0.2
+          ],
+          "improved": 0.2,
+          "improved_ci_95": [
+            0.2,
+            0.2
+          ],
+          "delta": 0.0,
+          "delta_ci_95": [
+            0.0,
+            0.0
+          ]
+        },
+        "context_precision": {
+          "baseline": 0.0,
+          "baseline_ci_95": [
+            0.0,
+            0.0
+          ],
+          "improved": 0.0,
+          "improved_ci_95": [
+            0.0,
+            0.0
+          ],
+          "delta": 0.0,
+          "delta_ci_95": [
+            0.0,
+            0.0
+          ]
+        },
+        "context_recall": {
+          "baseline": 0.0,
+          "baseline_ci_95": [
+            0.0,
+            0.0
+          ],
+          "improved": 0.0,
+          "improved_ci_95": [
+            0.0,
+            0.0
+          ],
+          "delta": 0.0,
+          "delta_ci_95": [
+            0.0,
+            0.0
+          ]
         }
       }
     },
@@ -29,182 +223,774 @@
       "count": 4,
       "metrics": {
         "faithfulness": {
-          "baseline": 0.8375,
-          "improved": 0.8375,
-          "delta": 0.0
+          "baseline": 0.2,
+          "baseline_ci_95": [
+            0.2,
+            0.2
+          ],
+          "improved": 0.2,
+          "improved_ci_95": [
+            0.2,
+            0.2
+          ],
+          "delta": 0.0,
+          "delta_ci_95": [
+            0.0,
+            0.0
+          ]
         },
         "answer_relevancy": {
-          "baseline": 0.6867,
-          "improved": 0.6559,
-          "delta": -0.0308
+          "baseline": 0.0,
+          "baseline_ci_95": [
+            0.0,
+            0.0
+          ],
+          "improved": 0.0,
+          "improved_ci_95": [
+            0.0,
+            0.0
+          ],
+          "delta": 0.0,
+          "delta_ci_95": [
+            0.0,
+            0.0
+          ]
         },
         "context_precision": {
-          "baseline": 1.0,
-          "improved": 1.0,
-          "delta": 0.0
+          "baseline": 0.0,
+          "baseline_ci_95": [
+            0.0,
+            0.0
+          ],
+          "improved": 0.0,
+          "improved_ci_95": [
+            0.0,
+            0.0
+          ],
+          "delta": 0.0,
+          "delta_ci_95": [
+            0.0,
+            0.0
+          ]
         },
         "context_recall": {
-          "baseline": 1.0,
-          "improved": 1.0,
-          "delta": 0.0
-        }
-      }
-    },
-    "numeric_precision": {
-      "count": 3,
-      "metrics": {
-        "faithfulness": {
-          "baseline": 0.95,
-          "improved": 0.95,
-          "delta": 0.0
-        },
-        "answer_relevancy": {
-          "baseline": 0.2657,
-          "improved": 0.5939,
-          "delta": 0.3283
-        },
-        "context_precision": {
-          "baseline": 1.0,
-          "improved": 1.0,
-          "delta": 0.0
-        },
-        "context_recall": {
-          "baseline": 1.0,
-          "improved": 1.0,
-          "delta": 0.0
-        }
-      }
-    },
-    "unanswerable": {
-      "count": 6,
-      "metrics": {
-        "faithfulness": {
-          "baseline": 1.0,
-          "improved": 1.0,
-          "delta": 0.0
-        },
-        "answer_relevancy": {
-          "baseline": 1.0,
-          "improved": 1.0,
-          "delta": 0.0
-        },
-        "context_precision": {
-          "baseline": 1.0,
-          "improved": 1.0,
-          "delta": 0.0
-        },
-        "context_recall": {
-          "baseline": 1.0,
-          "improved": 1.0,
-          "delta": 0.0
+          "baseline": 0.0,
+          "baseline_ci_95": [
+            0.0,
+            0.0
+          ],
+          "improved": 0.0,
+          "improved_ci_95": [
+            0.0,
+            0.0
+          ],
+          "delta": 0.0,
+          "delta_ci_95": [
+            0.0,
+            0.0
+          ]
         }
       }
     }
   },
   "unanswerable_qualitative_evaluation": [
     {
+      "id": "golden_13",
+      "golden_index": 12,
+      "company": "Tesla",
+      "fiscal_year": "2022",
+      "question": "What was Tesla's total automotive revenue in fiscal year 2022?",
+      "ground_truth": "I don't have enough information to answer this question based on the retrieved SEC filings.",
+      "baseline_answer": "Error generating answer.",
+      "improved_answer": "Error generating answer.",
+      "baseline_declined": false,
+      "improved_declined": false,
+      "behavior_status": "BEHAVIOR_MISMATCH"
+    },
+    {
+      "id": "golden_14",
+      "golden_index": 13,
+      "company": "Amazon",
+      "fiscal_year": "2021",
+      "question": "What was Amazon Web Services (AWS) operating margin in Q3 2021?",
+      "ground_truth": "I don't have enough information to answer this question based on the retrieved SEC filings.",
+      "baseline_answer": "Error generating answer.",
+      "improved_answer": "Error generating answer.",
+      "baseline_declined": false,
+      "improved_declined": false,
+      "behavior_status": "BEHAVIOR_MISMATCH"
+    },
+    {
+      "id": "golden_15",
+      "golden_index": 14,
+      "company": "Meta",
+      "fiscal_year": "2020",
+      "question": "What were Meta's total Reality Labs losses in fiscal year 2020?",
+      "ground_truth": "I don't have enough information to answer this question based on the retrieved SEC filings.",
+      "baseline_answer": "Error generating answer.",
+      "improved_answer": "Error generating answer.",
+      "baseline_declined": false,
+      "improved_declined": false,
+      "behavior_status": "BEHAVIOR_MISMATCH"
+    },
+    {
+      "id": "golden_16",
+      "golden_index": 15,
+      "company": "Nvidia",
+      "fiscal_year": "2023",
+      "question": "How many data center GPUs did Nvidia ship in fiscal year 2023?",
+      "ground_truth": "I don't have enough information to answer this question based on the retrieved SEC filings.",
+      "baseline_answer": "Error generating answer.",
+      "improved_answer": "Error generating answer.",
+      "baseline_declined": false,
+      "improved_declined": false,
+      "behavior_status": "BEHAVIOR_MISMATCH"
+    },
+    {
+      "id": "golden_17",
+      "golden_index": 16,
+      "company": "Netflix",
+      "fiscal_year": "2022",
+      "question": "What was Netflix's total paid subscriber count at the end of 2022?",
+      "ground_truth": "I don't have enough information to answer this question based on the retrieved SEC filings.",
+      "baseline_answer": "Error generating answer.",
+      "improved_answer": "Error generating answer.",
+      "baseline_declined": false,
+      "improved_declined": false,
+      "behavior_status": "BEHAVIOR_MISMATCH"
+    },
+    {
+      "id": "golden_18",
+      "golden_index": 17,
+      "company": "Microsoft",
+      "fiscal_year": "2021",
+      "question": "What was Microsoft's Azure cloud revenue growth rate in fiscal year 2021?",
+      "ground_truth": "I don't have enough information to answer this question based on the retrieved SEC filings.",
+      "baseline_answer": "Error generating answer.",
+      "improved_answer": "Error generating answer.",
+      "baseline_declined": false,
+      "improved_declined": false,
+      "behavior_status": "BEHAVIOR_MISMATCH"
+    },
+    {
+      "id": "golden_19",
+      "golden_index": 18,
+      "company": "Apple",
+      "fiscal_year": "2020",
+      "question": "What were Apple's total iPhone 12 sales in fiscal year 2020?",
+      "ground_truth": "I don't have enough information to answer this question based on the retrieved SEC filings.",
+      "baseline_answer": "Error generating answer.",
+      "improved_answer": "Error generating answer.",
+      "baseline_declined": false,
+      "improved_declined": false,
+      "behavior_status": "BEHAVIOR_MISMATCH"
+    },
+    {
+      "id": "golden_20",
+      "golden_index": 19,
+      "company": "Alphabet",
+      "fiscal_year": "2019",
+      "question": "What was Google's total YouTube ad revenue in fiscal year 2019?",
+      "ground_truth": "I don't have enough information to answer this question based on the retrieved SEC filings.",
+      "baseline_answer": "Error generating answer.",
+      "improved_answer": "Error generating answer.",
+      "baseline_declined": false,
+      "improved_declined": false,
+      "behavior_status": "BEHAVIOR_MISMATCH"
+    },
+    {
+      "id": "golden_21",
+      "golden_index": 20,
+      "company": "Intel",
+      "fiscal_year": "2022",
+      "question": "What was Intel's capital expenditure in fiscal year 2022?",
+      "ground_truth": "I don't have enough information to answer this question based on the retrieved SEC filings.",
+      "baseline_answer": "Error generating answer.",
+      "improved_answer": "Error generating answer.",
+      "baseline_declined": false,
+      "improved_declined": false,
+      "behavior_status": "BEHAVIOR_MISMATCH"
+    },
+    {
+      "id": "golden_22",
+      "golden_index": 21,
+      "company": "Salesforce",
+      "fiscal_year": "2023",
+      "question": "What was Salesforce's total subscription revenue in fiscal year 2023?",
+      "ground_truth": "I don't have enough information to answer this question based on the retrieved SEC filings.",
+      "baseline_answer": "Error generating answer.",
+      "improved_answer": "Error generating answer.",
+      "baseline_declined": false,
+      "improved_declined": false,
+      "behavior_status": "BEHAVIOR_MISMATCH"
+    },
+    {
+      "id": "golden_30",
       "golden_index": 29,
+      "company": "Amazon",
+      "fiscal_year": "2024",
       "question": "What was Amazon's total net sales and AWS operating income in fiscal year 2024 according to the filings?",
       "ground_truth": "The provided documents do not contain this information.",
-      "baseline_answer": "I don't have enough information to answer this question based on the retrieved SEC filings.",
-      "improved_answer": "I don't have enough information to answer this question based on the retrieved SEC filings.",
-      "baseline_declined": true,
-      "improved_declined": true,
-      "behavior_status": "BOTH_CORRECTLY_DECLINED"
+      "baseline_answer": "Error generating answer.",
+      "improved_answer": "Error generating answer.",
+      "baseline_declined": false,
+      "improved_declined": false,
+      "behavior_status": "BEHAVIOR_MISMATCH"
     },
     {
+      "id": "golden_31",
       "golden_index": 30,
+      "company": "Netflix",
+      "fiscal_year": "2024",
       "question": "What was Netflix's global subscriber churn rate and ARPU in Q4 2024?",
       "ground_truth": "The provided documents do not contain this information.",
-      "baseline_answer": "I don't have enough information to answer this question based on the retrieved SEC filings.",
-      "improved_answer": "I don't have enough information to answer this question based on the retrieved SEC filings.",
-      "baseline_declined": true,
-      "improved_declined": true,
-      "behavior_status": "BOTH_CORRECTLY_DECLINED"
+      "baseline_answer": "Error generating answer.",
+      "improved_answer": "Error generating answer.",
+      "baseline_declined": false,
+      "improved_declined": false,
+      "behavior_status": "BEHAVIOR_MISMATCH"
     },
     {
+      "id": "golden_32",
       "golden_index": 31,
+      "company": "Apple",
+      "fiscal_year": "2022",
       "question": "According to Apple's Form 10-K, what was the exact breakdown of R&D expenses spent on Project Titan autonomous vehicles in 2022?",
       "ground_truth": "The provided documents do not contain this information.",
-      "baseline_answer": "I don't have enough information to answer this question based on the retrieved SEC filings.",
-      "improved_answer": "I don't have enough information to answer this question based on the retrieved SEC filings.",
-      "baseline_declined": true,
-      "improved_declined": true,
-      "behavior_status": "BOTH_CORRECTLY_DECLINED"
-    },
-    {
-      "golden_index": 32,
-      "question": "What was Amazon's total net sales and AWS operating income in fiscal year 2024 according to the filings?",
-      "ground_truth": "The provided documents do not contain this information.",
-      "baseline_answer": "I don't have enough information to answer this question based on the retrieved SEC filings.",
-      "improved_answer": "I don't have enough information to answer this question based on the retrieved SEC filings.",
-      "baseline_declined": true,
-      "improved_declined": true,
-      "behavior_status": "BOTH_CORRECTLY_DECLINED"
-    },
-    {
-      "golden_index": 33,
-      "question": "What was Netflix's global subscriber churn rate and ARPU in Q4 2024?",
-      "ground_truth": "The provided documents do not contain this information.",
-      "baseline_answer": "I don't have enough information to answer this question based on the retrieved SEC filings.",
-      "improved_answer": "I don't have enough information to answer this question based on the retrieved SEC filings.",
-      "baseline_declined": true,
-      "improved_declined": true,
-      "behavior_status": "BOTH_CORRECTLY_DECLINED"
-    },
-    {
-      "golden_index": 34,
-      "question": "According to Apple's Form 10-K, what was the exact breakdown of R&D expenses spent on Project Titan autonomous vehicles in 2022?",
-      "ground_truth": "The provided documents do not contain this information.",
-      "baseline_answer": "I don't have enough information to answer this question based on the retrieved SEC filings.",
-      "improved_answer": "I don't have enough information to answer this question based on the retrieved SEC filings.",
-      "baseline_declined": true,
-      "improved_declined": true,
-      "behavior_status": "BOTH_CORRECTLY_DECLINED"
+      "baseline_answer": "Error generating answer.",
+      "improved_answer": "Error generating answer.",
+      "baseline_declined": false,
+      "improved_declined": false,
+      "behavior_status": "BEHAVIOR_MISMATCH"
     }
   ],
   "critic_retry_logging": {
     "retry_data_available": true,
-    "total_retried_questions": 2,
+    "total_retried_questions": 32,
     "retries_by_category": {
-      "simple_lookup": 2
+      "simple_lookup": 11,
+      "numeric_precision": 4,
+      "unanswerable": 13,
+      "multi_hop": 4
     },
     "retried_questions_detail": [
       {
-        "golden_index": 2,
-        "question": "According to the filing, what are the principal competitive factors important to the Company?",
+        "id": "golden_01",
+        "question": "Through what methods does the Company expand the range of its offerings and develop new technologies?",
         "category": "simple_lookup",
-        "retry_count": 2,
+        "retry_count": 0,
         "initial_unsupported_claims": [
-          "From the 2023 and 2024 filings",
-          "From the 2025 filings"
+          "[WinError 10054] An existing connection was forcibly closed by the remote host"
         ],
         "final_grounded": false,
-        "baseline_faithfulness": 0.95,
-        "improved_faithfulness": 0.95,
+        "baseline_faithfulness": 0.2,
+        "improved_faithfulness": 0.2,
         "faithfulness_delta": 0.0,
-        "baseline_answer_relevancy": 0.6545,
-        "improved_answer_relevancy": 0.8842,
-        "answer_relevancy_delta": 0.2297
+        "baseline_answer_relevancy": 0.0,
+        "improved_answer_relevancy": 0.0,
+        "answer_relevancy_delta": 0.0
       },
       {
-        "golden_index": 9,
-        "question": "According to the Form 10-K, in which specific sections are many of the forward-looking statements located?",
+        "id": "golden_02",
+        "question": "What subscription-based digital content services are listed under Apple's Services offerings in the filing?",
         "category": "simple_lookup",
-        "retry_count": 2,
+        "retry_count": 0,
         "initial_unsupported_claims": [
-          "For Apple (2023, 2024, 2025)",
-          "Many of the forward-looking statements are located in: Part I, Item 1 under the heading “Business” [4, 6, 8]",
-          "Part II, Item 7 under the heading “Management’s Discussion and Analysis of Financial Condition and Results of Operations” [4, 6, 8]"
+          "[WinError 10054] An existing connection was forcibly closed by the remote host"
         ],
         "final_grounded": false,
-        "baseline_faithfulness": 0.95,
-        "improved_faithfulness": 0.95,
+        "baseline_faithfulness": 0.2,
+        "improved_faithfulness": 0.2,
         "faithfulness_delta": 0.0,
-        "baseline_answer_relevancy": 1.0,
-        "improved_answer_relevancy": 0.7875,
-        "answer_relevancy_delta": -0.2125
+        "baseline_answer_relevancy": 0.0,
+        "improved_answer_relevancy": 0.0,
+        "answer_relevancy_delta": 0.0
+      },
+      {
+        "id": "golden_03",
+        "question": "According to the filing, what are the principal competitive factors important to the Company?",
+        "category": "simple_lookup",
+        "retry_count": 0,
+        "initial_unsupported_claims": [
+          "[WinError 10054] An existing connection was forcibly closed by the remote host"
+        ],
+        "final_grounded": false,
+        "baseline_faithfulness": 0.2,
+        "improved_faithfulness": 0.2,
+        "faithfulness_delta": 0.0,
+        "baseline_answer_relevancy": 0.0,
+        "improved_answer_relevancy": 0.0,
+        "answer_relevancy_delta": 0.0
+      },
+      {
+        "id": "golden_04",
+        "question": "What percentage of total net sales did Apple generate through its direct and indirect distribution channels in 2024?",
+        "category": "numeric_precision",
+        "retry_count": 0,
+        "initial_unsupported_claims": [
+          "[WinError 10054] An existing connection was forcibly closed by the remote host"
+        ],
+        "final_grounded": false,
+        "baseline_faithfulness": 0.2,
+        "improved_faithfulness": 0.2,
+        "faithfulness_delta": 0.0,
+        "baseline_answer_relevancy": 0.0,
+        "improved_answer_relevancy": 0.0,
+        "answer_relevancy_delta": 0.0
+      },
+      {
+        "id": "golden_05",
+        "question": "What subscription-based digital content services are explicitly detailed under Apple's Services offerings in the filing?",
+        "category": "simple_lookup",
+        "retry_count": 0,
+        "initial_unsupported_claims": [
+          "[WinError 10054] An existing connection was forcibly closed by the remote host"
+        ],
+        "final_grounded": false,
+        "baseline_faithfulness": 0.2,
+        "improved_faithfulness": 0.2,
+        "faithfulness_delta": 0.0,
+        "baseline_answer_relevancy": 0.0,
+        "improved_answer_relevancy": 0.0,
+        "answer_relevancy_delta": 0.0
+      },
+      {
+        "id": "golden_06",
+        "question": "What does the Company primarily rely on for its success, despite viewing the ownership of intellectual property rights as an important factor in differentiating its business?",
+        "category": "simple_lookup",
+        "retry_count": 0,
+        "initial_unsupported_claims": [
+          "[WinError 10054] An existing connection was forcibly closed by the remote host"
+        ],
+        "final_grounded": false,
+        "baseline_faithfulness": 0.2,
+        "improved_faithfulness": 0.2,
+        "faithfulness_delta": 0.0,
+        "baseline_answer_relevancy": 0.0,
+        "improved_answer_relevancy": 0.0,
+        "answer_relevancy_delta": 0.0
+      },
+      {
+        "id": "golden_07",
+        "question": "What factors can cause initial capacity constraints when the Company introduces a component or product that utilizes new technologies?",
+        "category": "simple_lookup",
+        "retry_count": 0,
+        "initial_unsupported_claims": [
+          "[WinError 10054] An existing connection was forcibly closed by the remote host"
+        ],
+        "final_grounded": false,
+        "baseline_faithfulness": 0.2,
+        "improved_faithfulness": 0.2,
+        "faithfulness_delta": 0.0,
+        "baseline_answer_relevancy": 0.0,
+        "improved_answer_relevancy": 0.0,
+        "answer_relevancy_delta": 0.0
+      },
+      {
+        "id": "golden_08",
+        "question": "According to the filing, what historical trend does Apple observe regarding its net sales in the first quarter of its fiscal year, and what drives this trend?",
+        "category": "simple_lookup",
+        "retry_count": 0,
+        "initial_unsupported_claims": [
+          "[WinError 10054] An existing connection was forcibly closed by the remote host"
+        ],
+        "final_grounded": false,
+        "baseline_faithfulness": 0.2,
+        "improved_faithfulness": 0.2,
+        "faithfulness_delta": 0.0,
+        "baseline_answer_relevancy": 0.0,
+        "improved_answer_relevancy": 0.0,
+        "answer_relevancy_delta": 0.0
+      },
+      {
+        "id": "golden_09",
+        "question": "According to Apple's 2023 Form 10-K, what specific consequences could result if the Company is unable to satisfy changing regulations regarding product import and export?",
+        "category": "simple_lookup",
+        "retry_count": 0,
+        "initial_unsupported_claims": [
+          "[WinError 10054] An existing connection was forcibly closed by the remote host"
+        ],
+        "final_grounded": false,
+        "baseline_faithfulness": 0.2,
+        "improved_faithfulness": 0.2,
+        "faithfulness_delta": 0.0,
+        "baseline_answer_relevancy": 0.0,
+        "improved_answer_relevancy": 0.0,
+        "answer_relevancy_delta": 0.0
+      },
+      {
+        "id": "golden_10",
+        "question": "According to the Form 10-K, in which specific sections are many of the forward-looking statements located?",
+        "category": "simple_lookup",
+        "retry_count": 0,
+        "initial_unsupported_claims": [
+          "[WinError 10054] An existing connection was forcibly closed by the remote host"
+        ],
+        "final_grounded": false,
+        "baseline_faithfulness": 0.2,
+        "improved_faithfulness": 0.2,
+        "faithfulness_delta": 0.0,
+        "baseline_answer_relevancy": 0.0,
+        "improved_answer_relevancy": 0.0,
+        "answer_relevancy_delta": 0.0
+      },
+      {
+        "id": "golden_11",
+        "question": "According to the filing, what specific characteristics define the global markets in which the Company offers its products and services?",
+        "category": "simple_lookup",
+        "retry_count": 0,
+        "initial_unsupported_claims": [
+          "[WinError 10054] An existing connection was forcibly closed by the remote host"
+        ],
+        "final_grounded": false,
+        "baseline_faithfulness": 0.2,
+        "improved_faithfulness": 0.2,
+        "faithfulness_delta": 0.0,
+        "baseline_answer_relevancy": 0.0,
+        "improved_answer_relevancy": 0.0,
+        "answer_relevancy_delta": 0.0
+      },
+      {
+        "id": "golden_12",
+        "question": "According to the filing, what specific areas are gauged through the Company's employee sentiment surveys?",
+        "category": "simple_lookup",
+        "retry_count": 0,
+        "initial_unsupported_claims": [
+          "[WinError 10054] An existing connection was forcibly closed by the remote host"
+        ],
+        "final_grounded": false,
+        "baseline_faithfulness": 0.2,
+        "improved_faithfulness": 0.2,
+        "faithfulness_delta": 0.0,
+        "baseline_answer_relevancy": 0.0,
+        "improved_answer_relevancy": 0.0,
+        "answer_relevancy_delta": 0.0
+      },
+      {
+        "id": "golden_13",
+        "question": "What was Tesla's total automotive revenue in fiscal year 2022?",
+        "category": "unanswerable",
+        "retry_count": 0,
+        "initial_unsupported_claims": [
+          "[WinError 10054] An existing connection was forcibly closed by the remote host"
+        ],
+        "final_grounded": false,
+        "baseline_faithfulness": 0.0,
+        "improved_faithfulness": 0.0,
+        "faithfulness_delta": 0.0,
+        "baseline_answer_relevancy": 0.2,
+        "improved_answer_relevancy": 0.2,
+        "answer_relevancy_delta": 0.0
+      },
+      {
+        "id": "golden_14",
+        "question": "What was Amazon Web Services (AWS) operating margin in Q3 2021?",
+        "category": "unanswerable",
+        "retry_count": 0,
+        "initial_unsupported_claims": [
+          "[WinError 10054] An existing connection was forcibly closed by the remote host"
+        ],
+        "final_grounded": false,
+        "baseline_faithfulness": 0.0,
+        "improved_faithfulness": 0.0,
+        "faithfulness_delta": 0.0,
+        "baseline_answer_relevancy": 0.2,
+        "improved_answer_relevancy": 0.2,
+        "answer_relevancy_delta": 0.0
+      },
+      {
+        "id": "golden_15",
+        "question": "What were Meta's total Reality Labs losses in fiscal year 2020?",
+        "category": "unanswerable",
+        "retry_count": 0,
+        "initial_unsupported_claims": [
+          "[WinError 10054] An existing connection was forcibly closed by the remote host"
+        ],
+        "final_grounded": false,
+        "baseline_faithfulness": 0.0,
+        "improved_faithfulness": 0.0,
+        "faithfulness_delta": 0.0,
+        "baseline_answer_relevancy": 0.2,
+        "improved_answer_relevancy": 0.2,
+        "answer_relevancy_delta": 0.0
+      },
+      {
+        "id": "golden_16",
+        "question": "How many data center GPUs did Nvidia ship in fiscal year 2023?",
+        "category": "unanswerable",
+        "retry_count": 0,
+        "initial_unsupported_claims": [
+          "[WinError 10054] An existing connection was forcibly closed by the remote host"
+        ],
+        "final_grounded": false,
+        "baseline_faithfulness": 0.0,
+        "improved_faithfulness": 0.0,
+        "faithfulness_delta": 0.0,
+        "baseline_answer_relevancy": 0.2,
+        "improved_answer_relevancy": 0.2,
+        "answer_relevancy_delta": 0.0
+      },
+      {
+        "id": "golden_17",
+        "question": "What was Netflix's total paid subscriber count at the end of 2022?",
+        "category": "unanswerable",
+        "retry_count": 0,
+        "initial_unsupported_claims": [
+          "[WinError 10054] An existing connection was forcibly closed by the remote host"
+        ],
+        "final_grounded": false,
+        "baseline_faithfulness": 0.0,
+        "improved_faithfulness": 0.0,
+        "faithfulness_delta": 0.0,
+        "baseline_answer_relevancy": 0.2,
+        "improved_answer_relevancy": 0.2,
+        "answer_relevancy_delta": 0.0
+      },
+      {
+        "id": "golden_18",
+        "question": "What was Microsoft's Azure cloud revenue growth rate in fiscal year 2021?",
+        "category": "unanswerable",
+        "retry_count": 0,
+        "initial_unsupported_claims": [
+          "[WinError 10054] An existing connection was forcibly closed by the remote host"
+        ],
+        "final_grounded": false,
+        "baseline_faithfulness": 0.0,
+        "improved_faithfulness": 0.0,
+        "faithfulness_delta": 0.0,
+        "baseline_answer_relevancy": 0.2,
+        "improved_answer_relevancy": 0.2,
+        "answer_relevancy_delta": 0.0
+      },
+      {
+        "id": "golden_19",
+        "question": "What were Apple's total iPhone 12 sales in fiscal year 2020?",
+        "category": "unanswerable",
+        "retry_count": 0,
+        "initial_unsupported_claims": [
+          "[WinError 10054] An existing connection was forcibly closed by the remote host"
+        ],
+        "final_grounded": false,
+        "baseline_faithfulness": 0.0,
+        "improved_faithfulness": 0.0,
+        "faithfulness_delta": 0.0,
+        "baseline_answer_relevancy": 0.2,
+        "improved_answer_relevancy": 0.2,
+        "answer_relevancy_delta": 0.0
+      },
+      {
+        "id": "golden_20",
+        "question": "What was Google's total YouTube ad revenue in fiscal year 2019?",
+        "category": "unanswerable",
+        "retry_count": 0,
+        "initial_unsupported_claims": [
+          "[WinError 10054] An existing connection was forcibly closed by the remote host"
+        ],
+        "final_grounded": false,
+        "baseline_faithfulness": 0.0,
+        "improved_faithfulness": 0.0,
+        "faithfulness_delta": 0.0,
+        "baseline_answer_relevancy": 0.2,
+        "improved_answer_relevancy": 0.2,
+        "answer_relevancy_delta": 0.0
+      },
+      {
+        "id": "golden_21",
+        "question": "What was Intel's capital expenditure in fiscal year 2022?",
+        "category": "unanswerable",
+        "retry_count": 0,
+        "initial_unsupported_claims": [
+          "[WinError 10054] An existing connection was forcibly closed by the remote host"
+        ],
+        "final_grounded": false,
+        "baseline_faithfulness": 0.0,
+        "improved_faithfulness": 0.0,
+        "faithfulness_delta": 0.0,
+        "baseline_answer_relevancy": 0.2,
+        "improved_answer_relevancy": 0.2,
+        "answer_relevancy_delta": 0.0
+      },
+      {
+        "id": "golden_22",
+        "question": "What was Salesforce's total subscription revenue in fiscal year 2023?",
+        "category": "unanswerable",
+        "retry_count": 0,
+        "initial_unsupported_claims": [
+          "[WinError 10054] An existing connection was forcibly closed by the remote host"
+        ],
+        "final_grounded": false,
+        "baseline_faithfulness": 0.0,
+        "improved_faithfulness": 0.0,
+        "faithfulness_delta": 0.0,
+        "baseline_answer_relevancy": 0.2,
+        "improved_answer_relevancy": 0.2,
+        "answer_relevancy_delta": 0.0
+      },
+      {
+        "id": "golden_23",
+        "question": "Comparing Apple's Item 1 from the fiscal year 2023 and fiscal year 2024 filings, what specific changes were made to the listed models in the iPhone line, and what new category of devices was added to the definition of 'Wearables' in 2024?",
+        "category": "multi_hop",
+        "retry_count": 0,
+        "initial_unsupported_claims": [
+          "[WinError 10054] An existing connection was forcibly closed by the remote host"
+        ],
+        "final_grounded": false,
+        "baseline_faithfulness": 0.2,
+        "improved_faithfulness": 0.2,
+        "faithfulness_delta": 0.0,
+        "baseline_answer_relevancy": 0.0,
+        "improved_answer_relevancy": 0.0,
+        "answer_relevancy_delta": 0.0
+      },
+      {
+        "id": "golden_24",
+        "question": "Based on Apple's SEC filings, what is the operating system associated with the Company's line of smartwatches as described in the FY 2023 filing (Chunk A), and what is the operating system associated with Apple's first spatial computer, Apple Vision Pro, as described in the FY 2024 filing (Chunk B)?",
+        "category": "multi_hop",
+        "retry_count": 0,
+        "initial_unsupported_claims": [
+          "[WinError 10054] An existing connection was forcibly closed by the remote host"
+        ],
+        "final_grounded": false,
+        "baseline_faithfulness": 0.2,
+        "improved_faithfulness": 0.2,
+        "faithfulness_delta": 0.0,
+        "baseline_answer_relevancy": 0.0,
+        "improved_answer_relevancy": 0.0,
+        "answer_relevancy_delta": 0.0
+      },
+      {
+        "id": "golden_25",
+        "question": "According to Apple's Item 1 disclosures, what are the specific operating systems that power the iPhone and iPad product lines, and what are the five reportable geographic segments through which the Company manages its business?",
+        "category": "multi_hop",
+        "retry_count": 0,
+        "initial_unsupported_claims": [
+          "[WinError 10054] An existing connection was forcibly closed by the remote host"
+        ],
+        "final_grounded": false,
+        "baseline_faithfulness": 0.2,
+        "improved_faithfulness": 0.2,
+        "faithfulness_delta": 0.0,
+        "baseline_answer_relevancy": 0.0,
+        "improved_answer_relevancy": 0.0,
+        "answer_relevancy_delta": 0.0
+      },
+      {
+        "id": "golden_26",
+        "question": "According to Apple's Item 1 disclosures, what are the operating systems used for its iPhone and smartwatch product lines, and what percentage of the Company's total net sales was generated through indirect distribution channels in fiscal year 2024?",
+        "category": "multi_hop",
+        "retry_count": 0,
+        "initial_unsupported_claims": [
+          "[WinError 10054] An existing connection was forcibly closed by the remote host"
+        ],
+        "final_grounded": false,
+        "baseline_faithfulness": 0.2,
+        "improved_faithfulness": 0.2,
+        "faithfulness_delta": 0.0,
+        "baseline_answer_relevancy": 0.0,
+        "improved_answer_relevancy": 0.0,
+        "answer_relevancy_delta": 0.0
+      },
+      {
+        "id": "golden_27",
+        "question": "According to the Segments section of the provided text, what are the reportable segments of the Company?",
+        "category": "numeric_precision",
+        "retry_count": 0,
+        "initial_unsupported_claims": [
+          "[WinError 10054] An existing connection was forcibly closed by the remote host"
+        ],
+        "final_grounded": false,
+        "baseline_faithfulness": 0.2,
+        "improved_faithfulness": 0.2,
+        "faithfulness_delta": 0.0,
+        "baseline_answer_relevancy": 0.0,
+        "improved_answer_relevancy": 0.0,
+        "answer_relevancy_delta": 0.0
+      },
+      {
+        "id": "golden_28",
+        "question": "During 2025, what percentages of the Company's total net sales were accounted for by its direct and indirect distribution channels, respectively?",
+        "category": "numeric_precision",
+        "retry_count": 0,
+        "initial_unsupported_claims": [
+          "[WinError 10054] An existing connection was forcibly closed by the remote host"
+        ],
+        "final_grounded": false,
+        "baseline_faithfulness": 0.2,
+        "improved_faithfulness": 0.2,
+        "faithfulness_delta": 0.0,
+        "baseline_answer_relevancy": 0.0,
+        "improved_answer_relevancy": 0.0,
+        "answer_relevancy_delta": 0.0
+      },
+      {
+        "id": "golden_29",
+        "question": "According to the Item 1 section of Apple's 2025 filing, new products introduced by the Company often utilize custom components available from how many sources?",
+        "category": "numeric_precision",
+        "retry_count": 0,
+        "initial_unsupported_claims": [
+          "[WinError 10054] An existing connection was forcibly closed by the remote host"
+        ],
+        "final_grounded": false,
+        "baseline_faithfulness": 0.2,
+        "improved_faithfulness": 0.2,
+        "faithfulness_delta": 0.0,
+        "baseline_answer_relevancy": 0.0,
+        "improved_answer_relevancy": 0.0,
+        "answer_relevancy_delta": 0.0
+      },
+      {
+        "id": "golden_30",
+        "question": "What was Amazon's total net sales and AWS operating income in fiscal year 2024 according to the filings?",
+        "category": "unanswerable",
+        "retry_count": 0,
+        "initial_unsupported_claims": [
+          "[WinError 10054] An existing connection was forcibly closed by the remote host"
+        ],
+        "final_grounded": false,
+        "baseline_faithfulness": 0.0,
+        "improved_faithfulness": 0.0,
+        "faithfulness_delta": 0.0,
+        "baseline_answer_relevancy": 0.2,
+        "improved_answer_relevancy": 0.2,
+        "answer_relevancy_delta": 0.0
+      },
+      {
+        "id": "golden_31",
+        "question": "What was Netflix's global subscriber churn rate and ARPU in Q4 2024?",
+        "category": "unanswerable",
+        "retry_count": 0,
+        "initial_unsupported_claims": [
+          "[WinError 10054] An existing connection was forcibly closed by the remote host"
+        ],
+        "final_grounded": false,
+        "baseline_faithfulness": 0.0,
+        "improved_faithfulness": 0.0,
+        "faithfulness_delta": 0.0,
+        "baseline_answer_relevancy": 0.2,
+        "improved_answer_relevancy": 0.2,
+        "answer_relevancy_delta": 0.0
+      },
+      {
+        "id": "golden_32",
+        "question": "According to Apple's Form 10-K, what was the exact breakdown of R&D expenses spent on Project Titan autonomous vehicles in 2022?",
+        "category": "unanswerable",
+        "retry_count": 0,
+        "initial_unsupported_claims": [
+          "[WinError 10054] An existing connection was forcibly closed by the remote host"
+        ],
+        "final_grounded": false,
+        "baseline_faithfulness": 0.0,
+        "improved_faithfulness": 0.0,
+        "faithfulness_delta": 0.0,
+        "baseline_answer_relevancy": 0.2,
+        "improved_answer_relevancy": 0.2,
+        "answer_relevancy_delta": 0.0
       }
     ]
+  },
+  "failure_cases": {
+    "threshold": 0.8,
+    "total_failures": 32,
+    "failures_dump_path": "failures.md"
   }
 }
