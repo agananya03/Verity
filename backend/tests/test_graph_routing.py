@@ -259,3 +259,120 @@ def test_never_grounded_strips_sentences(monkeypatch):
     assert "electric cars" not in result["final_answer"]
     # The grounded sentence is retained
     assert "NVIDIA compute revenue reached $115B" in result["final_answer"]
+
+
+def test_routing_empty_history_prepares_state_and_bypasses_rewriter(monkeypatch):
+    """
+    (a) With empty history, verity_graph.invoke runs 'prepare':
+    retriever receives original query, and final state has rewritten_query == query.
+    """
+    received_retrieval_query = []
+
+    mock_chunks = [
+        {
+            "id": f"c{i}",
+            "chunk_id": f"c{i}",
+            "text": f"Apple reported $391,035 million revenue in fiscal 2024 part {i}.",
+            "company": "Apple",
+            "fiscal_year": "2024",
+            "item_section": "Item 7",
+            "source_path": "apple_2024.html",
+        }
+        for i in range(1, 4)
+    ]
+
+    def mock_retrieve(query, **kwargs):
+        received_retrieval_query.append(query)
+        return mock_chunks
+
+    monkeypatch.setattr("backend.agent.nodes.retriever.retrieve", mock_retrieve)
+
+    def mock_invoke(messages, schema):
+        if schema == ClassificationOutput:
+            return ClassificationOutput(
+                classification="simple_lookup",
+                company="Apple",
+                fiscal_year="2024",
+            )
+        elif schema == CriticVerdictOutput:
+            return CriticVerdictOutput(grounded=True, unsupported_claims=[])
+        else:
+            return MockLLMResponse("Apple reported $391,035M revenue in 2024 [1].")
+
+    monkeypatch.setattr("backend.agent.nodes.classifier.get_llm_with_fallback", lambda *args, **kwargs: MockLLMWrapper(mock_invoke))
+    monkeypatch.setattr("backend.agent.nodes.draft.get_llm_with_fallback", lambda *args, **kwargs: MockLLMWrapper(mock_invoke))
+    monkeypatch.setattr("backend.agent.nodes.critic.get_llm_with_fallback", lambda *args, **kwargs: MockLLMWrapper(mock_invoke))
+
+    # Omit original_query and rewritten_query to verify 'prepare' node populates them
+    raw_query = "What was Apple's total revenue in fiscal 2024?"
+    initial_state: AgentState = {
+        "query": raw_query,
+        "conversation_history": [],
+    }
+
+    result = verity_graph.invoke(initial_state)
+
+    assert len(received_retrieval_query) == 1
+    assert received_retrieval_query[0] == raw_query
+    assert result["original_query"] == raw_query
+    assert result["rewritten_query"] == raw_query
+    assert result["query"] == raw_query
+
+
+def test_routing_non_empty_history_runs_rewriter(monkeypatch):
+    """
+    (b) With non-empty history, the rewriter node runs and updates rewritten_query.
+    """
+    rewriter_calls = []
+
+    class MockRewriterLLM:
+        def invoke(self, messages):
+            rewriter_calls.append(messages)
+            return MockLLMResponse("What was Apple's net sales in fiscal 2024?")
+
+    monkeypatch.setattr(
+        "backend.agent.nodes.rewriter.get_llm_with_fallback",
+        lambda *args, **kwargs: MockRewriterLLM(),
+    )
+
+    mock_chunks = [
+        {
+            "id": "c1",
+            "chunk_id": "c1",
+            "text": "Apple net sales were $391B.",
+            "company": "Apple",
+            "fiscal_year": "2024",
+        }
+    ]
+    monkeypatch.setattr("backend.agent.nodes.retriever.retrieve", lambda *args, **kwargs: mock_chunks)
+
+    def mock_invoke(messages, schema):
+        if schema == ClassificationOutput:
+            return ClassificationOutput(
+                classification="simple_lookup",
+                company="Apple",
+                fiscal_year="2024",
+            )
+        elif schema == CriticVerdictOutput:
+            return CriticVerdictOutput(grounded=True, unsupported_claims=[])
+        else:
+            return MockLLMResponse("Apple net sales were $391B [1].")
+
+    monkeypatch.setattr("backend.agent.nodes.classifier.get_llm_with_fallback", lambda *args, **kwargs: MockLLMWrapper(mock_invoke))
+    monkeypatch.setattr("backend.agent.nodes.draft.get_llm_with_fallback", lambda *args, **kwargs: MockLLMWrapper(mock_invoke))
+    monkeypatch.setattr("backend.agent.nodes.critic.get_llm_with_fallback", lambda *args, **kwargs: MockLLMWrapper(mock_invoke))
+
+    raw_query = "What about its net sales?"
+    initial_state: AgentState = {
+        "query": raw_query,
+        "conversation_history": [
+            {"role": "user", "content": "Tell me about Apple in 2024"},
+            {"role": "assistant", "content": "Apple had a strong fiscal year 2024."},
+        ],
+    }
+
+    result = verity_graph.invoke(initial_state)
+
+    assert len(rewriter_calls) == 1
+    assert result["original_query"] == raw_query
+    assert result["rewritten_query"] == "What was Apple's net sales in fiscal 2024?"

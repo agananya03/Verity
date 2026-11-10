@@ -41,7 +41,12 @@ from starlette.requests import Request
 
 from backend.agent.graph import MAX_RETRIES, verity_graph
 from backend.agent.llm_client import _active_model_cache
-from backend.agent.retrieval import get_bm25_chunks_count, is_bm25_loaded, is_qdrant_connected
+from backend.agent.retrieval import (
+    does_bm25_match_index,
+    get_bm25_chunks_count,
+    is_bm25_loaded,
+    is_qdrant_connected,
+)
 from backend.agent.state import AgentState
 
 
@@ -98,9 +103,10 @@ logging.getLogger().addFilter(RedactingFilter())
 # Startup system check logging
 logger.info("=" * 60)
 logger.info("VERITY BACKEND STARTUP SYSTEM STATUS:")
-logger.info(f"  - BM25 Index Loaded: {is_bm25_loaded()} ({get_bm25_chunks_count()} chunks)")
-logger.info(f"  - Qdrant Vector DB:  {'CONNECTED' if is_qdrant_connected() else 'NOT CONNECTED'}")
-logger.info(f"  - Embedding Backend: {os.getenv('EMBEDDING_BACKEND', 'fastembed')}")
+logger.info(f"  - BM25 Index Loaded:  {is_bm25_loaded()} ({get_bm25_chunks_count()} chunks)")
+logger.info(f"  - Qdrant Vector DB:   {'CONNECTED' if is_qdrant_connected() else 'NOT CONNECTED'}")
+logger.info(f"  - BM25 Matches Index: {does_bm25_match_index()}")
+logger.info(f"  - Embedding Backend:  {os.getenv('EMBEDDING_BACKEND', 'fastembed')}")
 logger.info("=" * 60)
 
 # Initialize Rate Limiter (per-IP, 10 requests/minute on /chat)
@@ -219,6 +225,7 @@ async def health_check() -> Dict[str, Any]:
         "bm25_loaded": is_bm25_loaded(),
         "qdrant_connected": is_qdrant_connected(),
         "chunks": get_bm25_chunks_count(),
+        "bm25_matches_index": does_bm25_match_index(),
     }
 
 

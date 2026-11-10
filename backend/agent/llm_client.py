@@ -16,6 +16,34 @@ logger = logging.getLogger(__name__)
 
 # Process-wide cache mapping primary_model -> currently active working model
 _active_model_cache: Dict[str, str] = {}
+_llm_call_hooks: List[Any] = []
+_last_model_used: Optional[str] = None
+
+
+def get_last_model_used() -> Optional[str]:
+    """Returns the model identifier that successfully handled the most recent LLM invocation."""
+    return _last_model_used
+
+
+def register_llm_call_hook(hook: Any) -> None:
+    """Registers a callback function fn(model_name: str) called on each LLM invocation."""
+    if hook not in _llm_call_hooks:
+        _llm_call_hooks.append(hook)
+
+
+def unregister_llm_call_hook(hook: Any) -> None:
+    """Unregisters a previously registered LLM call hook."""
+    if hook in _llm_call_hooks:
+        _llm_call_hooks.remove(hook)
+
+
+def notify_llm_call(model: str) -> None:
+    """Notifies registered hooks that an LLM call is being dispatched to model."""
+    for hook in list(_llm_call_hooks):
+        try:
+            hook(model)
+        except Exception as e:
+            logger.warning(f"Error in LLM call hook: {e}")
 
 
 def reset_fallback_cache() -> None:
@@ -97,12 +125,15 @@ class FallbackLLMWrapper:
 
         for model in candidates:
             attempted.append(model)
+            notify_llm_call(model)
             try:
                 llm = ChatGoogleGenerativeAI(model=model, **self.llm_kwargs)
                 target = llm.with_structured_output(self.structured_schema) if self.structured_schema else llm
                 result = target.invoke(input_messages, **kwargs)
 
                 # Cache working model for subsequent calls in this process
+                global _last_model_used
+                _last_model_used = model
                 _active_model_cache[self.primary_model] = model
                 return result
 

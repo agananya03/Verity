@@ -17,7 +17,7 @@ Production Features:
 import json
 import logging
 import os
-import pickle
+import re
 import time
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
@@ -41,12 +41,10 @@ QDRANT_API_KEY = os.getenv("QDRANT_API_KEY")
 COLLECTION_NAME = "verity_chunks"
 MODEL_NAME = "BAAI/bge-small-en-v1.5"
 
-# Artifact and data paths
+# Artifact paths
 ARTIFACTS_DIR = BASE_DIR / "artifacts"
 BM25_INPUTS_JSON = ARTIFACTS_DIR / "bm25_inputs.json"
-BM25_INPUTS_NPZ = ARTIFACTS_DIR / "bm25_inputs.npz"
-BM25_LEGACY_PKL = ARTIFACTS_DIR / "bm25_index.pkl"
-BM25_DATA_PKL = BASE_DIR / "data" / "processed" / "bm25_index.pkl"
+CORPUS_MANIFEST_JSON = ARTIFACTS_DIR / "corpus_manifest.json"
 
 # -----------------------------------------------------------------------------
 # Qdrant Client Initialization
@@ -149,78 +147,39 @@ def encode_query(query: str) -> List[float]:
 
 
 # -----------------------------------------------------------------------------
-# BM25 Keyword Index Initialization (Rebuilt from artifacts)
+# BM25 Regex Tokenizer & Keyword Index Initialization (Rebuilt from artifacts)
 # -----------------------------------------------------------------------------
+def tokenize_bm25(text: str) -> List[str]:
+    """
+    Regex-based BM25 tokenizer that preserves numbers like '383,285' and '$1.2'
+    while stripping surrounding punctuation. Used identically at index build time
+    and at query time.
+    """
+    if not text:
+        return []
+    return re.findall(r"[a-z0-9]+(?:[.,][0-9]+)*", text.lower())
+
+
 bm25_index: Optional[BM25Okapi] = None
 bm25_chunks: List[Dict[str, Any]] = []
 
 
 def _load_bm25_index() -> Tuple[Optional[BM25Okapi], List[Dict[str, Any]]]:
     """
-    Loads BM25 inputs from artifacts/bm25_inputs.json (or npz/pkl) and rebuilds BM25Okapi.
-    Rebuilding at startup from JSON takes ~0.5s for 5,915 chunks and avoids unsafe pickle.
+    Loads BM25 inputs from artifacts/bm25_inputs.json and rebuilds BM25Okapi using tokenize_bm25.
+    Rebuilding at startup from JSON takes ~0.2s for 2,921 chunks and avoids unsafe pickle files.
     """
-    # 1. Try bm25_inputs.json (safe JSON format in artifacts/)
     if BM25_INPUTS_JSON.exists():
         try:
             logger.info(f"Loading BM25 corpus from JSON artifact: {BM25_INPUTS_JSON}...")
             with open(BM25_INPUTS_JSON, "r", encoding="utf-8") as f:
                 chunks = json.load(f)
-            tokenized = [c["text"].lower().split() for c in chunks]
+            tokenized = [tokenize_bm25(c.get("text", "")) for c in chunks]
             index = BM25Okapi(tokenized)
             logger.info(f"BM25 index successfully built from JSON artifact ({len(chunks)} chunks).")
             return index, chunks
         except Exception as e:
             logger.error(f"Failed to load BM25 from {BM25_INPUTS_JSON}: {e}")
-
-    # 2. Try bm25_inputs.npz (compact binary format in artifacts/)
-    if BM25_INPUTS_NPZ.exists():
-        try:
-            import numpy as np
-
-            logger.info(f"Loading BM25 corpus from NPZ artifact: {BM25_INPUTS_NPZ}...")
-            data = np.load(BM25_INPUTS_NPZ, allow_pickle=False)
-            ids = data["ids"]
-            texts = data["texts"]
-            comps = data["comps"]
-            yrs = data["yrs"]
-            sects = data["sects"]
-            titles = data["titles"]
-            paths = data["paths"]
-
-            chunks = [
-                {
-                    "id": str(ids[i]),
-                    "chunk_id": str(ids[i]),
-                    "text": str(texts[i]),
-                    "company": str(comps[i]),
-                    "fiscal_year": str(yrs[i]),
-                    "item_section": str(sects[i]),
-                    "item_title": str(titles[i]),
-                    "source_path": str(paths[i]),
-                }
-                for i in range(len(ids))
-            ]
-            tokenized = [c["text"].lower().split() for c in chunks]
-            index = BM25Okapi(tokenized)
-            logger.info(f"BM25 index successfully built from NPZ artifact ({len(chunks)} chunks).")
-            return index, chunks
-        except Exception as e:
-            logger.error(f"Failed to load BM25 from {BM25_INPUTS_NPZ}: {e}")
-
-    # 3. Fallback: pickle file in artifacts/ or data/processed/
-    pkl_file = BM25_LEGACY_PKL if BM25_LEGACY_PKL.exists() else BM25_DATA_PKL
-    if pkl_file.exists():
-        try:
-            logger.info(f"Loading legacy BM25 index from pickle: {pkl_file}...")
-            with open(pkl_file, "rb") as f:
-                payload = pickle.load(f)
-                index = payload.get("bm25")
-                chunks = payload.get("chunks", [])
-            logger.info(f"Loaded legacy BM25 index ({len(chunks)} chunks).")
-            return index, chunks
-        except Exception as e:
-            logger.error(f"Failed to load legacy BM25 pickle: {e}")
 
     logger.warning("BM25 index artifacts not found; hybrid sparse search will be unavailable.")
     return None, []
@@ -238,6 +197,89 @@ def is_bm25_loaded() -> bool:
 def get_bm25_chunks_count() -> int:
     """Returns the total number of chunks indexed in BM25."""
     return len(bm25_chunks)
+
+
+# -----------------------------------------------------------------------------
+# Index Alignment Verification (BM25 vs. Qdrant)
+# -----------------------------------------------------------------------------
+_index_match_cache: Dict[str, Any] = {"matches": False, "last_checked": 0.0}
+
+
+def does_bm25_match_index() -> bool:
+    """
+    Checks if the BM25 artifact chunk count matches Qdrant collection points_count.
+    Returns True if counts match, False if diverged or if Qdrant is unreachable.
+    Cached for 10 seconds.
+    """
+    global _index_match_cache
+    now = time.time()
+    if now - _index_match_cache["last_checked"] < 10.0:
+        return bool(_index_match_cache["matches"])
+
+    if not qdrant_client or not is_qdrant_connected() or not is_bm25_loaded():
+        _index_match_cache = {"matches": False, "last_checked": now}
+        return False
+
+    try:
+        info = qdrant_client.get_collection(COLLECTION_NAME)
+        points_count = info.points_count
+        matches = bool(points_count == len(bm25_chunks))
+        _index_match_cache = {"matches": matches, "last_checked": now}
+        return matches
+    except Exception as e:
+        logger.warning(f"Error checking Qdrant points_count for index match: {e}")
+        _index_match_cache = {"matches": False, "last_checked": now}
+        return False
+
+
+def check_index_alignment() -> Optional[bool]:
+    """
+    Compares the BM25 artifact chunk count with Qdrant collection points_count at startup.
+    Logs a loud WARNING if they differ.
+    """
+    if not is_bm25_loaded():
+        logger.warning("BM25 index is not loaded; cannot check index alignment.")
+        return False
+
+    bm25_count = len(bm25_chunks)
+    if not is_qdrant_connected():
+        logger.info(
+            f"Qdrant vector DB is not connected at startup; skipping index alignment check (BM25: {bm25_count} chunks)."
+        )
+        return None
+
+    try:
+        info = qdrant_client.get_collection(COLLECTION_NAME)
+        points_count = info.points_count
+        if bm25_count != points_count:
+            logger.warning(
+                "\n"
+                + "!" * 80
+                + "\n"
+                + f"⚠️  LOUD WARNING: BM25 artifact chunk count ({bm25_count}) DOES NOT MATCH "
+                + f"Qdrant collection '{COLLECTION_NAME}' points_count ({points_count})!\n"
+                + "Sparse keyword hits and dense semantic vectors are out of sync.\n"
+                + "Please re-index Qdrant or rebuild artifacts to ensure identical retrieval corpus.\n"
+                + "!" * 80
+            )
+            _index_match_cache["matches"] = False
+            _index_match_cache["last_checked"] = time.time()
+            return False
+        else:
+            logger.info(
+                f"Index alignment verified: BM25 artifact count ({bm25_count}) matches "
+                f"Qdrant collection points_count ({points_count})."
+            )
+            _index_match_cache["matches"] = True
+            _index_match_cache["last_checked"] = time.time()
+            return True
+    except Exception as e:
+        logger.warning(f"Failed to verify index alignment with Qdrant: {e}")
+        return False
+
+
+# Run alignment check at startup
+check_index_alignment()
 
 
 # -----------------------------------------------------------------------------
@@ -298,13 +340,24 @@ def search_qdrant(query: str, filters: Optional[Dict] = None, limit: int = 20) -
         return []
 
 
+SECTION_TITLES = {
+    "Item 1": "Business",
+    "Item 1A": "Risk Factors",
+    "Item 7": "Management's Discussion and Analysis of Financial Condition and Results of Operations",
+    "Item 8": "Financial Statements and Supplementary Data",
+}
+
+
 def search_bm25(query: str, filters: Optional[Dict] = None, limit: int = 20) -> List[Dict]:
-    """Searches local BM25 keyword index for top scoring chunks."""
+    """Searches local BM25 keyword index for top scoring chunks using regex tokenizer."""
     if not bm25_index or not bm25_chunks:
         logger.warning("BM25 index is not loaded; skipping sparse search.")
         return []
 
-    tokenized_query = query.lower().split()
+    tokenized_query = tokenize_bm25(query)
+    if not tokenized_query:
+        return []
+
     scores = bm25_index.get_scores(tokenized_query)
 
     scored_chunks = []
@@ -320,14 +373,21 @@ def search_bm25(query: str, filters: Optional[Dict] = None, limit: int = 20) -> 
                 continue
 
         chunk_id = chunk.get("chunk_id") or chunk.get("id") or str(idx)
+        comp = chunk.get("company", "")
+        fy = str(chunk.get("fiscal_year", ""))
+        sec = chunk.get("item_section", "")
+        title = chunk.get("item_title") or SECTION_TITLES.get(sec, sec)
+        source_path = chunk.get("source_path") or f"backend/data/raw/{comp.lower()}_{fy}.html"
+
         scored_chunks.append({
             "id": str(chunk_id),
+            "chunk_id": str(chunk_id),
             "text": chunk.get("text", ""),
-            "company": chunk.get("company"),
-            "fiscal_year": chunk.get("fiscal_year"),
-            "item_section": chunk.get("item_section"),
-            "item_title": chunk.get("item_title"),
-            "source_path": chunk.get("source_path"),
+            "company": comp,
+            "fiscal_year": fy,
+            "item_section": sec,
+            "item_title": title,
+            "source_path": source_path,
             "raw_score": float(score),
         })
 

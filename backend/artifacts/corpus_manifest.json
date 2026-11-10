@@ -1,6 +1,111 @@
 {
-  "total_chunks": 5915,
+  "total_chunks": 2921,
+  "generated_at": "2026-11-06T08:01:48.255892+00:00",
+  "sha256": "8b7563a191e94a53a6c6c5db4e73bae9fbf83b549364c328e4109689f2691234",
+  "chunks_sha256": "8b7563a191e94a53a6c6c5db4e73bae9fbf83b549364c328e4109689f2691234",
   "filing_type": "10-K",
+  "per_company_year_section": {
+    "Apple": {
+      "2025": {
+        "Item 1": 13,
+        "Item 1A": 55,
+        "Item 7": 13,
+        "Item 8": 43
+      },
+      "2024": {
+        "Item 1": 11,
+        "Item 1A": 53,
+        "Item 7": 11,
+        "Item 8": 43
+      },
+      "2023": {
+        "Item 1": 12,
+        "Item 1A": 50,
+        "Item 7": 12,
+        "Item 8": 45
+      }
+    },
+    "Microsoft": {
+      "2026": {
+        "Item 1": 31,
+        "Item 1A": 62,
+        "Item 7": 42,
+        "Item 8": 78
+      },
+      "2025": {
+        "Item 1": 36,
+        "Item 1A": 56,
+        "Item 7": 39,
+        "Item 8": 74
+      },
+      "2024": {
+        "Item 1": 52,
+        "Item 1A": 58,
+        "Item 7": 40,
+        "Item 8": 85
+      }
+    },
+    "Alphabet": {
+      "2025": {
+        "Item 1": 18,
+        "Item 1A": 69,
+        "Item 7": 36,
+        "Item 8": 94
+      },
+      "2024": {
+        "Item 1": 23,
+        "Item 1A": 70,
+        "Item 7": 43,
+        "Item 8": 91
+      },
+      "2023": {
+        "Item 1": 25,
+        "Item 1A": 63,
+        "Item 7": 45,
+        "Item 8": 91
+      }
+    },
+    "Amazon": {
+      "2025": {
+        "Item 1": 10,
+        "Item 1A": 47,
+        "Item 7": 37,
+        "Item 8": 90
+      },
+      "2024": {
+        "Item 1": 10,
+        "Item 1A": 45,
+        "Item 7": 37,
+        "Item 8": 90
+      },
+      "2023": {
+        "Item 1": 10,
+        "Item 1A": 45,
+        "Item 7": 38,
+        "Item 8": 92
+      }
+    },
+    "NVIDIA": {
+      "2026": {
+        "Item 1": 38,
+        "Item 1A": 85,
+        "Item 7": 27,
+        "Item 8": 71
+      },
+      "2025": {
+        "Item 1": 43,
+        "Item 1A": 85,
+        "Item 7": 31,
+        "Item 8": 74
+      },
+      "2024": {
+        "Item 1": 41,
+        "Item 1A": 86,
+        "Item 7": 33,
+        "Item 8": 74
+      }
+    }
+  },
   "companies": [
     {
       "ticker": "AAPL",
@@ -11,11 +116,37 @@
         "2024",
         "2025"
       ],
-      "total_chunks": 864,
+      "total_chunks": 361,
       "chunk_counts": {
-        "2025": 304,
-        "2024": 298,
-        "2023": 262
+        "2023": 119,
+        "2024": 118,
+        "2025": 124
+      },
+      "section_counts": {
+        "Item 1": 36,
+        "Item 1A": 158,
+        "Item 7": 36,
+        "Item 8": 131
+      },
+      "breakdown": {
+        "2025": {
+          "Item 1": 13,
+          "Item 1A": 55,
+          "Item 7": 13,
+          "Item 8": 43
+        },
+        "2024": {
+          "Item 1": 11,
+          "Item 1A": 53,
+          "Item 7": 11,
+          "Item 8": 43
+        },
+        "2023": {
+          "Item 1": 12,
+          "Item 1A": 50,
+          "Item 7": 12,
+          "Item 8": 45
+        }
       }
     },
     {
@@ -27,11 +158,37 @@
         "2025",
         "2026"
       ],
-      "total_chunks": 1014,
+      "total_chunks": 653,
       "chunk_counts": {
-        "2026": 325,
-        "2025": 320,
-        "2024": 369
+        "2024": 235,
+        "2025": 205,
+        "2026": 213
+      },
+      "section_counts": {
+        "Item 1": 119,
+        "Item 1A": 176,
+        "Item 7": 121,
+        "Item 8": 237
+      },
+      "breakdown": {
+        "2026": {
+          "Item 1": 31,
+          "Item 1A": 62,
+          "Item 7": 42,
+          "Item 8": 78
+        },
+        "2025": {
+          "Item 1": 36,
+          "Item 1A": 56,
+          "Item 7": 39,
+          "Item 8": 74
+        },
+        "2024": {
+          "Item 1": 52,
+          "Item 1A": 58,
+          "Item 7": 40,
+          "Item 8": 85
+        }
       }
     },
     {
@@ -43,11 +200,37 @@
         "2024",
         "2025"
       ],
-      "total_chunks": 1751,
+      "total_chunks": 668,
       "chunk_counts": {
-        "2025": 558,
-        "2024": 605,
-        "2023": 588
+        "2023": 224,
+        "2024": 227,
+        "2025": 217
+      },
+      "section_counts": {
+        "Item 1": 66,
+        "Item 1A": 202,
+        "Item 7": 124,
+        "Item 8": 276
+      },
+      "breakdown": {
+        "2025": {
+          "Item 1": 18,
+          "Item 1A": 69,
+          "Item 7": 36,
+          "Item 8": 94
+        },
+        "2024": {
+          "Item 1": 23,
+          "Item 1A": 70,
+          "Item 7": 43,
+          "Item 8": 91
+        },
+        "2023": {
+          "Item 1": 25,
+          "Item 1A": 63,
+          "Item 7": 45,
+          "Item 8": 91
+        }
       }
     },
     {
@@ -59,11 +242,37 @@
         "2024",
         "2025"
       ],
-      "total_chunks": 759,
+      "total_chunks": 551,
       "chunk_counts": {
-        "2025": 257,
-        "2024": 250,
-        "2023": 252
+        "2023": 185,
+        "2024": 182,
+        "2025": 184
+      },
+      "section_counts": {
+        "Item 1": 30,
+        "Item 1A": 137,
+        "Item 7": 112,
+        "Item 8": 272
+      },
+      "breakdown": {
+        "2025": {
+          "Item 1": 10,
+          "Item 1A": 47,
+          "Item 7": 37,
+          "Item 8": 90
+        },
+        "2024": {
+          "Item 1": 10,
+          "Item 1A": 45,
+          "Item 7": 37,
+          "Item 8": 90
+        },
+        "2023": {
+          "Item 1": 10,
+          "Item 1A": 45,
+          "Item 7": 38,
+          "Item 8": 92
+        }
       }
     },
     {
@@ -75,11 +284,37 @@
         "2025",
         "2026"
       ],
-      "total_chunks": 1527,
+      "total_chunks": 688,
       "chunk_counts": {
-        "2026": 496,
-        "2025": 517,
-        "2024": 514
+        "2024": 234,
+        "2025": 233,
+        "2026": 221
+      },
+      "section_counts": {
+        "Item 1": 122,
+        "Item 1A": 256,
+        "Item 7": 91,
+        "Item 8": 219
+      },
+      "breakdown": {
+        "2026": {
+          "Item 1": 38,
+          "Item 1A": 85,
+          "Item 7": 27,
+          "Item 8": 71
+        },
+        "2025": {
+          "Item 1": 43,
+          "Item 1A": 85,
+          "Item 7": 31,
+          "Item 8": 74
+        },
+        "2024": {
+          "Item 1": 41,
+          "Item 1A": 86,
+          "Item 7": 33,
+          "Item 8": 74
+        }
       }
     }
   ],
@@ -93,7 +328,8 @@
       "source_url": "https://www.sec.gov/Archives/edgar/data/320193/000032019325000079/aapl-20250927.htm",
       "local_path": "backend/data/raw/apple_2025.html",
       "filing_url": "https://www.sec.gov/Archives/edgar/data/320193/000032019325000079/aapl-20250927.htm",
-      "fiscal_year_note": "Non-calendar fiscal year ends in late September"
+      "fiscal_year_note": "Non-calendar fiscal year ends in late September",
+      "chunk_count": 124
     },
     {
       "company": "Apple",
@@ -104,7 +340,8 @@
       "source_url": "https://www.sec.gov/Archives/edgar/data/320193/000032019324000123/aapl-20240928.htm",
       "local_path": "backend/data/raw/apple_2024.html",
       "filing_url": "https://www.sec.gov/Archives/edgar/data/320193/000032019324000123/aapl-20240928.htm",
-      "fiscal_year_note": "Non-calendar fiscal year ends in late September"
+      "fiscal_year_note": "Non-calendar fiscal year ends in late September",
+      "chunk_count": 118
     },
     {
       "company": "Apple",
@@ -115,7 +352,8 @@
       "source_url": "https://www.sec.gov/Archives/edgar/data/320193/000032019323000106/aapl-20230930.htm",
       "local_path": "backend/data/raw/apple_2023.html",
       "filing_url": "https://www.sec.gov/Archives/edgar/data/320193/000032019323000106/aapl-20230930.htm",
-      "fiscal_year_note": "Non-calendar fiscal year ends in late September"
+      "fiscal_year_note": "Non-calendar fiscal year ends in late September",
+      "chunk_count": 119
     },
     {
       "company": "Microsoft",
@@ -126,7 +364,8 @@
       "source_url": "https://www.sec.gov/Archives/edgar/data/789019/000119312526323660/msft-20260630.htm",
       "local_path": "backend/data/raw/microsoft_2026.html",
       "filing_url": "https://www.sec.gov/Archives/edgar/data/789019/000119312526323660/msft-20260630.htm",
-      "fiscal_year_note": "Non-calendar fiscal year ends June 30"
+      "fiscal_year_note": "Non-calendar fiscal year ends June 30",
+      "chunk_count": 213
     },
     {
       "company": "Microsoft",
@@ -137,7 +376,8 @@
       "source_url": "https://www.sec.gov/Archives/edgar/data/789019/000095017025100235/msft-20250630.htm",
       "local_path": "backend/data/raw/microsoft_2025.html",
       "filing_url": "https://www.sec.gov/Archives/edgar/data/789019/000095017025100235/msft-20250630.htm",
-      "fiscal_year_note": "Non-calendar fiscal year ends June 30"
+      "fiscal_year_note": "Non-calendar fiscal year ends June 30",
+      "chunk_count": 205
     },
     {
       "company": "Microsoft",
@@ -148,7 +388,8 @@
       "source_url": "https://www.sec.gov/Archives/edgar/data/789019/000095017024087843/msft-20240630.htm",
       "local_path": "backend/data/raw/microsoft_2024.html",
       "filing_url": "https://www.sec.gov/Archives/edgar/data/789019/000095017024087843/msft-20240630.htm",
-      "fiscal_year_note": "Non-calendar fiscal year ends June 30"
+      "fiscal_year_note": "Non-calendar fiscal year ends June 30",
+      "chunk_count": 235
     },
     {
       "company": "Alphabet",
@@ -158,7 +399,8 @@
       "filing_date": "2026-02-05",
       "source_url": "https://www.sec.gov/Archives/edgar/data/1652044/000165204426000018/goog-20251231.htm",
       "local_path": "backend/data/raw/alphabet_2025.html",
-      "filing_url": "https://www.sec.gov/Archives/edgar/data/1652044/000165204426000018/goog-20251231.htm"
+      "filing_url": "https://www.sec.gov/Archives/edgar/data/1652044/000165204426000018/goog-20251231.htm",
+      "chunk_count": 217
     },
     {
       "company": "Alphabet",
@@ -168,7 +410,8 @@
       "filing_date": "2025-02-05",
       "source_url": "https://www.sec.gov/Archives/edgar/data/1652044/000165204425000014/goog-20241231.htm",
       "local_path": "backend/data/raw/alphabet_2024.html",
-      "filing_url": "https://www.sec.gov/Archives/edgar/data/1652044/000165204425000014/goog-20241231.htm"
+      "filing_url": "https://www.sec.gov/Archives/edgar/data/1652044/000165204425000014/goog-20241231.htm",
+      "chunk_count": 227
     },
     {
       "company": "Alphabet",
@@ -178,7 +421,8 @@
       "filing_date": "2024-01-31",
       "source_url": "https://www.sec.gov/Archives/edgar/data/1652044/000165204424000022/goog-20231231.htm",
       "local_path": "backend/data/raw/alphabet_2023.html",
-      "filing_url": "https://www.sec.gov/Archives/edgar/data/1652044/000165204424000022/goog-20231231.htm"
+      "filing_url": "https://www.sec.gov/Archives/edgar/data/1652044/000165204424000022/goog-20231231.htm",
+      "chunk_count": 224
     },
     {
       "company": "Amazon",
@@ -188,7 +432,8 @@
       "filing_date": "2026-02-06",
       "source_url": "https://www.sec.gov/Archives/edgar/data/1018724/000101872426000004/amzn-20251231.htm",
       "local_path": "backend/data/raw/amazon_2025.html",
-      "filing_url": "https://www.sec.gov/Archives/edgar/data/1018724/000101872426000004/amzn-20251231.htm"
+      "filing_url": "https://www.sec.gov/Archives/edgar/data/1018724/000101872426000004/amzn-20251231.htm",
+      "chunk_count": 184
     },
     {
       "company": "Amazon",
@@ -198,7 +443,8 @@
       "filing_date": "2025-02-07",
       "source_url": "https://www.sec.gov/Archives/edgar/data/1018724/000101872425000004/amzn-20241231.htm",
       "local_path": "backend/data/raw/amazon_2024.html",
-      "filing_url": "https://www.sec.gov/Archives/edgar/data/1018724/000101872425000004/amzn-20241231.htm"
+      "filing_url": "https://www.sec.gov/Archives/edgar/data/1018724/000101872425000004/amzn-20241231.htm",
+      "chunk_count": 182
     },
     {
       "company": "Amazon",
@@ -208,7 +454,8 @@
       "filing_date": "2024-02-02",
       "source_url": "https://www.sec.gov/Archives/edgar/data/1018724/000101872424000008/amzn-20231231.htm",
       "local_path": "backend/data/raw/amazon_2023.html",
-      "filing_url": "https://www.sec.gov/Archives/edgar/data/1018724/000101872424000008/amzn-20231231.htm"
+      "filing_url": "https://www.sec.gov/Archives/edgar/data/1018724/000101872424000008/amzn-20231231.htm",
+      "chunk_count": 185
     },
     {
       "company": "NVIDIA",
@@ -219,7 +466,8 @@
       "source_url": "https://www.sec.gov/Archives/edgar/data/1045810/000104581026000021/nvda-20260125.htm",
       "local_path": "backend/data/raw/nvidia_2026.html",
       "filing_url": "https://www.sec.gov/Archives/edgar/data/1045810/000104581026000021/nvda-20260125.htm",
-      "fiscal_year_note": "Non-calendar fiscal year ends in January (e.g., FY2024 ended January 2024)"
+      "fiscal_year_note": "Non-calendar fiscal year ends in January (e.g., FY2024 ended January 2024)",
+      "chunk_count": 221
     },
     {
       "company": "NVIDIA",
@@ -230,7 +478,8 @@
       "source_url": "https://www.sec.gov/Archives/edgar/data/1045810/000104581025000023/nvda-20250126.htm",
       "local_path": "backend/data/raw/nvidia_2025.html",
       "filing_url": "https://www.sec.gov/Archives/edgar/data/1045810/000104581025000023/nvda-20250126.htm",
-      "fiscal_year_note": "Non-calendar fiscal year ends in January (e.g., FY2024 ended January 2024)"
+      "fiscal_year_note": "Non-calendar fiscal year ends in January (e.g., FY2024 ended January 2024)",
+      "chunk_count": 233
     },
     {
       "company": "NVIDIA",
@@ -241,7 +490,8 @@
       "source_url": "https://www.sec.gov/Archives/edgar/data/1045810/000104581024000029/nvda-20240128.htm",
       "local_path": "backend/data/raw/nvidia_2024.html",
       "filing_url": "https://www.sec.gov/Archives/edgar/data/1045810/000104581024000029/nvda-20240128.htm",
-      "fiscal_year_note": "Non-calendar fiscal year ends in January (e.g., FY2024 ended January 2024)"
+      "fiscal_year_note": "Non-calendar fiscal year ends in January (e.g., FY2024 ended January 2024)",
+      "chunk_count": 234
     }
   ]
 }

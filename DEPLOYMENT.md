@@ -40,6 +40,8 @@ In the Render dashboard for `verity-backend`, navigate to **Environment** $\righ
 | `QDRANT_API_KEY` | Qdrant Cluster API Key | `th-xxxx...` |
 | `ALLOWED_ORIGIN` | Allowed Frontend CORS Origins | `https://your-app.vercel.app` (or `*` for initial testing) |
 | `EMBEDDING_BACKEND` | Embedding engine (`fastembed` or `local`) | `fastembed` *(CRITICAL for Render 512MB RAM limit)* |
+| `GEN_MODEL` | Generator/Draft LLM model name | `gemini-3.5-flash-lite` |
+| `CRITIC_MODEL` | Critic audit LLM model name | `gemini-3.1-flash-lite` |
 | `PYTHONPATH` | Python import path | `.` |
 
 ### 3. Deploy & Copy Service URL
@@ -102,18 +104,20 @@ Verify the following endpoints immediately after Render deployment:
        "status": "ok",
        "bm25_loaded": true,
        "qdrant_connected": true,
-       "chunks": 5915
+       "chunks": 2921,
+       "bm25_matches_index": true
      }
      ```
    - [ ] `bm25_loaded` must be `true` (proves BM25 keyword index rebuilt successfully from `backend/artifacts/bm25_inputs.json`).
    - [ ] `qdrant_connected` must be `true` (proves cloud vector database is reachable).
-   - [ ] `chunks` must be `5915`.
+   - [ ] `chunks` must be `2921`.
+   - [ ] `bm25_matches_index` must be `true` (proves BM25 artifact chunk count exactly matches Qdrant vector database points_count).
 
 2. **Corpus Info Check**:
    ```bash
    curl -s https://verity-backend.onrender.com/corpus-info
    ```
-   - [ ] Must return HTTP 200 (not 404) with the 5 indexed companies (Apple, Microsoft, Alphabet, Amazon, NVIDIA) and `total_chunks: 5915`.
+   - [ ] Must return HTTP 200 (not 404) with the 5 indexed companies (Apple, Microsoft, Alphabet, Amazon, NVIDIA) and `total_chunks: 2921`.
 
 3. **Evaluation Results Check**:
    ```bash

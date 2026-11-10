@@ -48,9 +48,12 @@ Context Chunks:
 
 
 # Model Configuration & Fallback Chain
-# Draft node is the only node where full answer quality and open-ended financial synthesis matter,
-# so it retains the stronger primary model with automatic fallback models if quota is exhausted.
-MODEL_DRAFT = os.getenv("MODEL_DRAFT", "gemini-3.5-flash")
+def get_draft_model() -> str:
+    """Returns the generator model configured via GEN_MODEL (fallback MODEL_DRAFT)."""
+    return os.getenv("GEN_MODEL", os.getenv("MODEL_DRAFT", "gemini-3.5-flash-lite"))
+
+
+MODEL_DRAFT = get_draft_model()
 FALLBACK_DRAFT = ["gemini-3.5-flash-lite", "gemini-2.5-flash-lite"]
 
 # Manifest mapping for SEC filing URLs
@@ -126,8 +129,9 @@ def draft_answer(state: AgentState) -> AgentState:
     context_text = "\n\n".join(context_blocks)
     prompt = DRAFT_PROMPT.format(context_text=context_text)
 
+    model = get_draft_model()
     llm = get_llm_with_fallback(
-        primary_model=MODEL_DRAFT,
+        primary_model=model,
         fallback_models=FALLBACK_DRAFT,
         google_api_key=api_key or None,
         temperature=0.1,
@@ -152,6 +156,8 @@ def draft_answer(state: AgentState) -> AgentState:
     ]
 
     response = llm.invoke(messages)
+    from backend.agent.llm_client import get_last_model_used
+    state["generator_model"] = get_last_model_used() or model
     if isinstance(response.content, list):
         answer_text = "".join([part.get("text", "") if isinstance(part, dict) else str(part) for part in response.content]).strip()
     else:

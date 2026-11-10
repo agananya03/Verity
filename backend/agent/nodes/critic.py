@@ -24,32 +24,50 @@ load_dotenv(dotenv_path=BASE_DIR / ".env")
 load_dotenv()
 
 # System Prompt for Critic Evaluation
-CRITIC_PROMPT = """You are a strict, objective audit Critic for financial AI responses.
+CRITIC_PROMPT = """You are a strict, objective factual audit Critic for financial AI responses.
 
 Your task is to review the Draft Answer against the provided Source Context Chunks:
-1. Verify if EVERY factual statement, financial number, date, and claim made in the Draft Answer is explicitly backed by the Source Context Chunks.
-2. If any claim is missing support, contradictory, unverified, or hallucinated from outside knowledge, mark grounded = false and list the specific unsupported claims.
-3. If the Draft Answer correctly states "I don't have enough information", mark grounded = true.
 
-Be extremely rigorous. Financial accuracy requires zero ungrounded assertions.
+1. CHECK ONLY SUBSTANTIVE FACTUAL ASSERTIONS:
+   - Focus exclusively on verifiable factual assertions: numbers, metrics, dates, named facts/entities, and causal or comparative statements.
+   - Ignore introductory or framing phrases (e.g., "Based on the filings...", "According to the provided SEC filings...", "In summary...").
+   - Ignore markdown headings, bold bullet labels (e.g., "**Net Sales:**", "- **Overview:**"), and citation markers (e.g., "[1]", "[Chunk 2]").
+
+2. GROUNDING & VERBATIM EXTRACTION REQUIREMENTS:
+   - Verify whether every factual assertion in the Draft Answer is explicitly backed by the Source Context Chunks.
+   - If any factual assertion is missing support, contradictory, unverified, or hallucinated from outside knowledge:
+     - Mark grounded = false.
+     - unsupported_claims MUST be verbatim sentences or clauses from the answer that contain a specific factual assertion not supported by the context.
+   - If all factual assertions are supported by the context (or if the answer states "I don't have enough information"):
+     - Mark grounded = true.
+     - unsupported_claims MUST be an empty list ([]).
+
+CRITICAL RULES:
+- unsupported_claims must be verbatim sentences or clauses extracted directly from the answer that contain an ungrounded factual assertion.
+- If everything is supported, unsupported_claims MUST be an empty list ([]).
 """
 
 
 class CriticVerdictOutput(BaseModel):
     """Pydantic model for structured critic evaluation output."""
     grounded: bool = Field(
-        description="True if every claim in the draft answer is fully supported by source context, False otherwise."
+        description="True if every factual assertion in the draft answer is fully supported by the source context, False otherwise."
     )
     unsupported_claims: List[str] = Field(
         default_factory=list,
-        description="List of specific sentences, numbers, or claims in the draft answer not supported by source context."
+        description="Verbatim sentences or clauses from the answer that contain a specific factual assertion not supported by the context. Must be an empty list if everything is supported."
     )
 
 
 # Model Configuration
 # Critic node only performs structured verification (grounded: bool + unsupported_claims list),
 # not open-ended generation, so the lighter model is sufficient and preserves free-tier quota for the draft node.
-MODEL_CRITIC = os.getenv("MODEL_CRITIC", "gemini-3.5-flash-lite")
+def get_critic_model() -> str:
+    """Returns the critic model configured via CRITIC_MODEL (fallback MODEL_CRITIC)."""
+    return os.getenv("CRITIC_MODEL", os.getenv("MODEL_CRITIC", "gemini-3.1-flash-lite"))
+
+
+MODEL_CRITIC = get_critic_model()
 
 
 def critique(state: AgentState) -> AgentState:
@@ -67,8 +85,9 @@ def critique(state: AgentState) -> AgentState:
         [f"[Chunk {c.get('id') or c.get('chunk_id')}]\n{c.get('text', '')}" for c in chunks]
     )
 
+    model = get_critic_model()
     llm = get_llm_with_fallback(
-        primary_model=MODEL_CRITIC,
+        primary_model=model,
         fallback_models=[],
         google_api_key=api_key or None,
         temperature=0.0,
@@ -90,10 +109,17 @@ Draft Answer to evaluate:
     ]
 
     result: CriticVerdictOutput = structured_llm.invoke(messages)
+    from backend.agent.llm_client import get_last_model_used
+    state["critic_model"] = get_last_model_used() or model
+
+    unsupported = [c.strip() for c in (result.unsupported_claims or []) if c.strip()]
+    grounded = bool(result.grounded and len(unsupported) == 0)
+    if grounded:
+        unsupported = []
 
     verdict_dict = {
-        "grounded": result.grounded,
-        "unsupported_claims": result.unsupported_claims,
+        "grounded": grounded,
+        "unsupported_claims": unsupported,
     }
 
     state["critic_verdict"] = verdict_dict

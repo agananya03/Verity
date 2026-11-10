@@ -86,9 +86,14 @@ def generate_multihop_candidates(chunks: List[Dict[str, Any]], count: int = 4) -
                 if c1.get("item_section") == c2.get("item_section"):
                     pairs.append((c1, c2))
 
+    from backend.agent.llm_client import register_llm_call_hook
+    from backend.eval.quota_ledger import global_quota_ledger
+    register_llm_call_hook(global_quota_ledger.record_call)
+
+    bench_model = os.getenv("BENCH_MODEL", "gemini-3.5-flash")
     api_key = os.getenv("GOOGLE_API_KEY")
     llm = get_llm_with_fallback(
-        primary_model="gemini-3.5-flash",
+        primary_model=bench_model,
         fallback_models=["gemini-3.5-flash-lite", "gemini-3.6-flash-lite"],
         google_api_key=api_key or None,
         temperature=0.3,

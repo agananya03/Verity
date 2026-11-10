@@ -1,24 +1,28 @@
 """
-RAGAS Evaluation Runner for Verity Financial RAG.
+RAGAS Evaluation Runner for Verity Financial RAG (Free-Tier Hardened).
 
 Evaluates either:
 - Baseline config: Vector-only Qdrant search + single LLM draft generation.
 - Improved config: Full verity_graph pipeline (Hybrid Dense/Sparse search + metadata filtering + self-correcting Critic loop).
 
 Features:
-- Real RAGAS evaluation mode with configurable judge model (JUDGE_MODEL env var) and fallback chain.
-- Explicit metric_source tracking ("ragas" vs "heuristic" vs "heuristic_fallback").
-- Heuristic smoke metrics code path (compute_heuristic_smoke_metrics) clearly isolated for fast pipeline smoke testing.
-- Automatic non-zero exit (sys.exit(1)) and loud warnings if real RAGAS fails or is quota-exhausted and falls back to heuristics.
-- Logs metadata: judge_model, generator_models, UTC timestamp, git commit hash, golden_set_size, and random seed.
-- Resumes evaluation from checkpoint using --start-from and enforces rate limiting via --delay.
-- Saves aggregate scores and per-question breakdowns to:
-  - backend/eval/results/baseline.json
-  - backend/eval/results/improved.json
+- Per-role model env vars: REWRITER_MODEL, CLASSIFIER_MODEL, GEN_MODEL, CRITIC_MODEL, JUDGE_MODEL, BENCH_MODEL.
+- Daily quota tracking via backend/eval/results/quota_ledger.json (America/Los_Angeles dates, Google Pacific midnight reset).
+- Quota limits loaded from backend/eval/quota_limits.json.
+- Graceful stop with exit code 2 when any model's daily budget hits 0 or --max-calls reached (saves partial results, prints reset in IST).
+- Bypasses query rewriter when conversation history is empty.
+- Fast deterministic rule-based extractor in classifier to eliminate classifier LLM calls when unambiguous.
+- Deterministic LLM-free retrieval metrics: hit@k, recall@k, MRR (k=8) computed from source_chunk_ids.
+- Deterministic numeric-match check for numeric_precision questions (normalizes $, commas, %, 'million/billion').
+- RAGAS faithfulness and answer correctness as the only LLM-judged metrics, selectable via --metrics (e.g. --metrics faithfulness,answer_correctness, or --metrics none).
+- Two-stage architecture: Stage 1 ('generate') -> {config}_answers.json, Stage 2 ('judge') -> {config}.json.
+- Model independence check: JUDGE_MODEL cannot match GEN_MODEL or CRITIC_MODEL without --allow-same-judge.
+- --dry-run prints per-model calls needed vs remaining budget and days to complete, then exits 0.
 """
 
 import argparse
 import datetime
+import hashlib
 import json
 import logging
 import math
@@ -36,10 +40,15 @@ from typing import Any, Dict, List, Optional, Tuple
 os.environ.setdefault("HF_HUB_OFFLINE", "1")
 os.environ.setdefault("TRANSFORMERS_OFFLINE", "1")
 
-# Compatibility patch for ragas importing langchain_community.chat_models.vertexai
-vertexai_mock = types.ModuleType("vertexai")
-vertexai_mock.ChatVertexAI = type("ChatVertexAI", (), {})
-sys.modules["langchain_community.chat_models.vertexai"] = vertexai_mock
+# Compatibility patch for ragas importing langchain_community modules
+if "langchain_community.chat_models.vertexai" not in sys.modules:
+    vertexai_mock = types.ModuleType("vertexai")
+    vertexai_mock.ChatVertexAI = type("ChatVertexAI", (), {})
+    sys.modules["langchain_community.chat_models.vertexai"] = vertexai_mock
+if "langchain_community.llms" not in sys.modules:
+    vertexai_llm_mock = types.ModuleType("llms")
+    vertexai_llm_mock.VertexAI = type("VertexAI", (), {})
+    sys.modules["langchain_community.llms"] = vertexai_llm_mock
 
 # Setup sys.path for backend imports
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -53,30 +62,40 @@ load_dotenv(dotenv_path=BASE_DIR / ".env")
 load_dotenv()
 
 from datasets import Dataset
+from langchain_core.callbacks import BaseCallbackHandler
 from langchain_google_genai import ChatGoogleGenerativeAI, GoogleGenerativeAIEmbeddings
 from ragas import evaluate
 from ragas.embeddings import LangchainEmbeddingsWrapper
-from ragas.llms import LangchainLLMWrapper
-try:
-    from ragas.metrics.collections import (
-        answer_relevancy,
-        context_precision,
-        context_recall,
-        faithfulness,
-    )
-except ImportError:
-    from ragas.metrics import (
-        answer_relevancy,
-        context_precision,
-        context_recall,
-        faithfulness,
-    )
+from ragas.llms.base import LangchainLLMWrapper
+from ragas.metrics._answer_correctness import AnswerCorrectness
+from ragas.metrics._faithfulness import Faithfulness
 from ragas.run_config import RunConfig
 
 from backend.agent.graph import verity_graph
-from backend.agent.llm_client import AllModelsExhaustedError, get_llm_with_fallback
+from backend.agent.llm_client import (
+    AllModelsExhaustedError,
+    get_llm_with_fallback,
+    is_quota_error,
+    notify_llm_call,
+    register_llm_call_hook,
+    reset_fallback_cache,
+)
+import backend.agent.nodes.classifier as classifier_node
+import backend.agent.nodes.critic as critic_node
+import backend.agent.nodes.draft as draft_node
+import backend.agent.nodes.rewriter as rewriter_node
 from backend.agent.retrieval import search_qdrant
 from backend.agent.state import AgentState
+from backend.eval.quota_ledger import (
+    QuotaLedger,
+    get_next_reset_time_ist,
+    get_pacific_today,
+    global_quota_ledger,
+)
+from backend.eval.retrieval_metrics import (
+    check_numeric_precision_match,
+    compute_retrieval_metrics,
+)
 
 # Setup logging
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
@@ -98,13 +117,243 @@ def get_git_commit_hash() -> str:
         return "unknown"
 
 
-def run_baseline_pipeline(query: str) -> Tuple[str, List[str], List[str]]:
+def compute_pipeline_fingerprint() -> str:
+    """
+    Computes a deterministic pipeline fingerprint based on:
+    - Sorted hashes of all Python files in backend/agent/**/*.py.
+    - Hash of backend/eval/golden_set.json.
+    (Git commit hash is excluded from the comparison value so that committing
+    without code changes does not break resume).
+    """
+    hasher = hashlib.sha256()
+
+    # 1. Files in backend/agent/**/*.py
+    agent_dir = BASE_DIR / "agent"
+    if agent_dir.exists():
+        py_files = sorted(agent_dir.glob("**/*.py"), key=lambda p: p.as_posix())
+        for py_file in py_files:
+            rel_path = py_file.relative_to(BASE_DIR).as_posix()
+            hasher.update(rel_path.encode("utf-8"))
+            try:
+                content = py_file.read_bytes()
+                hasher.update(hashlib.sha256(content).digest())
+            except Exception as e:
+                logger.warning(f"Failed to read {py_file} for fingerprint: {e}")
+
+    # 2. golden_set.json
+    golden_set_path = BASE_DIR / "eval" / "golden_set.json"
+    if golden_set_path.exists():
+        try:
+            content = golden_set_path.read_bytes()
+            hasher.update(hashlib.sha256(content).digest())
+        except Exception as e:
+            logger.warning(f"Failed to read {golden_set_path} for fingerprint: {e}")
+
+    return hasher.hexdigest()
+
+
+def is_transient_error(e: Exception) -> bool:
+    """
+    Checks if an exception represents a 503 or transient network/service error
+    that should be retried with exponential backoff.
+    """
+    err_str = str(e).lower()
+    transient_indicators = [
+        "503",
+        "service unavailable",
+        "unavailable",
+        "timeout",
+        "timed out",
+        "connection reset",
+        "connection error",
+        "temporary failure",
+        "deadline exceeded",
+        "internal error",
+        "500",
+        "502",
+        "504",
+    ]
+    return any(ind in err_str for ind in transient_indicators)
+
+
+def resolve_role_models() -> Dict[str, str]:
+    """
+    Resolves per-role model names from environment variables with sensible defaults.
+    """
+    return {
+        "rewriter_model": os.getenv("REWRITER_MODEL", os.getenv("MODEL_REWRITER", os.getenv("MODEL_CLASSIFIER", "gemini-3.5-flash-lite"))),
+        "classifier_model": os.getenv("CLASSIFIER_MODEL", os.getenv("MODEL_CLASSIFIER", "gemini-3.5-flash-lite")),
+        "gen_model": os.getenv("GEN_MODEL", os.getenv("MODEL_DRAFT", "gemini-3.5-flash")),
+        "critic_model": os.getenv("CRITIC_MODEL", os.getenv("MODEL_CRITIC", "gemini-3.5-flash-lite")),
+        "judge_model": os.getenv("JUDGE_MODEL", "gemini-3.5-flash-lite"),
+        "bench_model": os.getenv("BENCH_MODEL", "gemini-3.5-flash"),
+    }
+
+
+def check_judge_model_independence(
+    gen_model: str,
+    critic_model: str,
+    judge_model: str,
+    config: str,
+    allow_same_judge: bool,
+) -> None:
+    """
+    Validates that JUDGE_MODEL is distinct from GEN_MODEL and CRITIC_MODEL.
+    Prints a loud warning and requires --allow-same-judge to proceed if conflicts exist.
+    """
+    conflicts: List[str] = []
+    if judge_model == gen_model:
+        conflicts.append(f"GEN_MODEL ('{gen_model}')")
+    if config == "improved" and judge_model == critic_model:
+        conflicts.append(f"CRITIC_MODEL ('{critic_model}')")
+    elif judge_model == critic_model:
+        conflicts.append(f"CRITIC_MODEL ('{critic_model}')")
+
+    if conflicts:
+        conflict_desc = " and ".join(conflicts)
+        box = (
+            "\n" + "!" * 78 + "\n"
+            f"WARNING: Model Conflict Detected!\n"
+            f"JUDGE_MODEL ('{judge_model}') equals {conflict_desc}.\n\n"
+            "Using the same model as judge and generator/critic can bias evaluation.\n"
+            "To proceed anyway, pass the --allow-same-judge flag.\n"
+            + "!" * 78 + "\n"
+        )
+        if not allow_same_judge:
+            print(box)
+            logger.error(f"Aborting evaluation: JUDGE_MODEL equals {conflict_desc}. Require --allow-same-judge to proceed.")
+            sys.exit(1)
+        else:
+            print(box)
+            logger.warning(f"Proceeding despite model conflict: JUDGE_MODEL equals {conflict_desc} (--allow-same-judge passed).")
+
+
+def print_api_call_estimate_and_budget(
+    config: str,
+    stage: str,
+    num_questions: int,
+    role_models: Dict[str, str],
+    metrics_to_run: List[str],
+    fast_eval: bool,
+    dry_run: bool,
+    ledger: QuotaLedger,
+) -> None:
+    """
+    Calculates calls needed per model vs remaining budget and prints an informative table.
+    If dry_run is True, exits with code 0.
+    """
+    gen_model = role_models["gen_model"]
+    critic_model = role_models["critic_model"]
+    classifier_model = role_models["classifier_model"]
+    rewriter_model = role_models["rewriter_model"]
+    judge_model = role_models["judge_model"]
+
+    # Estimate calls needed per role
+    calls_by_role: Dict[str, int] = {
+        "Generator": 0,
+        "Critic": 0,
+        "Classifier": 0,
+        "Rewriter": 0,
+        "Judge": 0,
+    }
+
+    if stage in ["generate", "all"]:
+        if config == "baseline":
+            calls_by_role["Generator"] += num_questions
+        else:
+            calls_by_role["Generator"] += int(math.ceil(num_questions * 1.3))
+            calls_by_role["Critic"] += int(math.ceil(num_questions * 1.3))
+            # Rule-based extractor bypasses classifier on unambiguous benchmark items
+            calls_by_role["Classifier"] += int(math.ceil(num_questions * 0.1))
+            # Rewriter is skipped because conversation history is empty
+            calls_by_role["Rewriter"] += 0
+
+    if stage in ["judge", "all"] and not fast_eval:
+        judge_calls_per_q = 0
+        if "faithfulness" in metrics_to_run:
+            judge_calls_per_q += 2
+        if "answer_correctness" in metrics_to_run:
+            judge_calls_per_q += 1
+        calls_by_role["Judge"] += num_questions * judge_calls_per_q
+
+    # Aggregate total calls per model
+    calls_by_model: Dict[str, int] = {}
+    for role_name, model in [
+        ("Generator", gen_model),
+        ("Critic", critic_model),
+        ("Classifier", classifier_model),
+        ("Rewriter", rewriter_model),
+        ("Judge", judge_model),
+    ]:
+        calls_by_model[model] = calls_by_model.get(model, 0) + calls_by_role[role_name]
+
+    pacific_date = get_pacific_today()
+    reset_ist = get_next_reset_time_ist()
+
+    print("\n" + "=" * 90)
+    print(f"ESTIMATED API CALLS & QUOTA BUDGET [Config: {config.upper()}, Stage: {stage.upper()}]")
+    print(f"Pacific Date: {pacific_date} | Next Quota Reset (IST): {reset_ist}")
+    print("=" * 90)
+    print(f"{'Role':<14} | {'Model':<22} | {'Calls Needed':<12} | {'Used Today':<10} | {'Daily Limit':<11} | {'Remaining':<9} | {'Days Needed'}")
+    print("-" * 90)
+
+    max_days = 1
+    total_calls = sum(calls_by_role.values())
+
+    model_roles = [
+        ("Generator", gen_model),
+        ("Critic", critic_model),
+        ("Classifier", classifier_model),
+        ("Rewriter", rewriter_model),
+        ("Judge", judge_model),
+    ]
+
+    for role_name, model in model_roles:
+        c_needed = calls_by_role.get(role_name, 0)
+        total_model_calls = calls_by_model.get(model, 0)
+        used = ledger.get_used_today(model)
+        limit = ledger.get_limit(model)
+        rem = ledger.get_remaining_budget(model)
+
+        if total_model_calls == 0:
+            days_str = "0 days"
+        elif total_model_calls <= rem:
+            days_str = "1 day"
+        else:
+            rem_after_today = total_model_calls - rem
+            extra_days = int(math.ceil(rem_after_today / max(1, limit)))
+            total_days = 1 + extra_days
+            days_str = f"{total_days} days"
+            max_days = max(max_days, total_days)
+
+        note = ""
+        if role_name == "Rewriter":
+            note = " (skipped)"
+        elif role_name == "Classifier" and config == "improved":
+            note = " (rule-based)"
+
+        print(
+            f"{role_name:<14} | {model:<22} | {str(c_needed) + note:<12} | {used:<10} | {limit:<11} | {rem:<9} | {days_str}"
+        )
+
+    print("-" * 90)
+    print(f"Total Estimated Calls:    {total_calls}")
+    print(f"Max Days to Complete:     {max_days} day(s)")
+    print(f"Retrieval Metrics (k=8):  hit@8, recall@8, mrr (LLM-free, zero quota)")
+    print(f"Numeric Precision Match:  Deterministic regex & unit normalization (LLM-free, zero quota)")
+    print(f"LLM-Judged Metrics:       {', '.join(metrics_to_run) if metrics_to_run else 'None (LLM-free mode)'}")
+    print("=" * 90)
+
+    if dry_run:
+        print("\nDry-run requested (--dry-run). Exiting without making API calls.\n")
+        sys.exit(0)
+
+
+def run_baseline_pipeline(query: str, gen_model: str) -> Tuple[str, List[str], List[str], Dict[str, Any]]:
     """
     Baseline pipeline:
     - Vector-only search via Qdrant (top_k=8, no metadata filters, no BM25 fusion).
-    - Single LLM draft generation call using get_llm_with_fallback with timeout.
-    Returns:
-        (answer, retrieved_contexts, retrieved_chunk_ids)
+    - Single LLM draft generation call pinned to gen_model with NO fallback models.
     """
     api_key = os.getenv("GOOGLE_API_KEY")
     hits = search_qdrant(query=query, filters=None, limit=8)
@@ -120,6 +369,7 @@ def run_baseline_pipeline(query: str) -> Tuple[str, List[str], List[str]]:
             "I don't have enough information to answer this question based on the retrieved SEC filings.",
             [],
             [],
+            {"generator_model": gen_model},
         )
 
     context_text = "\n\n".join([f"[Chunk {i+1}]\n{ctx}" for i, ctx in enumerate(retrieved_contexts)])
@@ -132,33 +382,46 @@ Context Chunks:
 Question: {query}
 Answer:"""
 
-    baseline_model = os.getenv("MODEL_BASELINE", os.getenv("MODEL_DRAFT", "gemini-3.5-flash"))
     llm = get_llm_with_fallback(
-        primary_model=baseline_model,
-        fallback_models=["gemini-3.5-flash-lite", "gemini-2.5-flash-lite"],
+        primary_model=gen_model,
+        fallback_models=[],
         google_api_key=api_key or None,
         temperature=0.1,
         request_timeout=30.0,
-        max_retries=2,
+        max_retries=0,
     )
     response = llm.invoke([("user", prompt)])
+    from backend.agent.llm_client import get_last_model_used
+    actual_gen = get_last_model_used() or gen_model
+
     if isinstance(response.content, list):
         answer = "".join([part.get("text", "") if isinstance(part, dict) else str(part) for part in response.content]).strip()
     else:
         answer = str(response.content).strip()
 
-    return answer, retrieved_contexts, retrieved_chunk_ids
+    return answer, retrieved_contexts, retrieved_chunk_ids, {"generator_model": actual_gen}
 
 
-def run_improved_pipeline(query: str) -> Tuple[str, List[str], List[str], Dict[str, Any]]:
+def run_improved_pipeline(
+    query: str,
+    gen_model: str,
+    critic_model: str,
+    classifier_model: str,
+    rewriter_model: str,
+) -> Tuple[str, List[str], List[str], Dict[str, Any]]:
     """
     Improved pipeline:
     - End-to-end verity_graph execution.
-    - Includes metadata classifier, hybrid dense+sparse retrieval with RRF, draft generation, and self-correcting Critic loop.
-    - Includes retry logic with backoff for rate limits.
-    Returns:
-        (final_answer, retrieved_contexts, retrieved_chunk_ids, exec_info)
+    - Pinned generator, critic, classifier, and rewriter models.
+    - Does NOT silently fall back to secondary models.
     """
+    draft_node.MODEL_DRAFT = gen_model
+    draft_node.FALLBACK_DRAFT = []
+    critic_node.MODEL_CRITIC = critic_model
+    classifier_node.MODEL_CLASSIFIER = classifier_model
+    rewriter_node.MODEL_REWRITER = rewriter_model
+    reset_fallback_cache()
+
     initial_state: AgentState = {
         "query": query,
         "classification": "",
@@ -176,162 +439,732 @@ def run_improved_pipeline(query: str) -> Tuple[str, List[str], List[str], Dict[s
     }
     config = {"configurable": {"thread_id": str(uuid.uuid4())}}
 
-    max_attempts = 3
-    for attempt in range(1, max_attempts + 1):
+    final_state = verity_graph.invoke(initial_state, config=config)
+    final_answer = final_state.get("final_answer") or final_state.get("draft_answer") or ""
+    retrieved_chunks = final_state.get("retrieved_chunks", [])
+    retrieved_contexts = [c.get("text", "") for c in retrieved_chunks if c.get("text")]
+    retrieved_chunk_ids = [
+        str(c.get("id") or c.get("chunk_id", ""))
+        for c in retrieved_chunks
+        if (c.get("id") or c.get("chunk_id"))
+    ]
+
+    critic_verdict = final_state.get("critic_verdict") or {}
+    initial_critic_verdict = final_state.get("first_critic_verdict") or critic_verdict
+    retry_count = final_state.get("retry_count", 0)
+
+    from backend.agent.llm_client import get_last_model_used
+    actual_gen = final_state.get("generator_model") or get_last_model_used() or gen_model
+    actual_critic = final_state.get("critic_model") or critic_model
+
+    exec_info = {
+        "retry_count": retry_count,
+        "critic_verdict": critic_verdict,
+        "initial_critic_verdict": initial_critic_verdict,
+        "final_grounded": final_state.get("final_grounded", False),
+        "unsupported_claims_final": final_state.get("unsupported_claims_final", []),
+        "generator_model": actual_gen,
+        "critic_model": actual_critic,
+    }
+    return final_answer, retrieved_contexts, retrieved_chunk_ids, exec_info
+
+
+def generate_single_question_with_retries(
+    config: str,
+    query: str,
+    role_models: Dict[str, str],
+    max_transient_retries: int = 5,
+) -> Tuple[str, List[str], List[str], Dict[str, Any], str, Optional[str]]:
+    """
+    Executes answer generation with transient retry backoff (up to 5 attempts).
+    - On 429/quota error: Raises AllModelsExhaustedError immediately.
+    - On 503/transient error: Retries up to 5 times with exponential backoff.
+    - If error persists: Returns status='error' with error details.
+    """
+    gen_model = role_models["gen_model"]
+    critic_model = role_models["critic_model"]
+    classifier_model = role_models["classifier_model"]
+    rewriter_model = role_models["rewriter_model"]
+
+    last_error: Optional[Exception] = None
+
+    for attempt in range(1, max_transient_retries + 1):
         try:
-            final_state = verity_graph.invoke(initial_state, config=config)
-            final_answer = final_state.get("final_answer") or final_state.get("draft_answer") or ""
-            retrieved_chunks = final_state.get("retrieved_chunks", [])
-            retrieved_contexts = [c.get("text", "") for c in retrieved_chunks if c.get("text")]
-            retrieved_chunk_ids = [
-                str(c.get("id") or c.get("chunk_id", ""))
-                for c in retrieved_chunks
-                if (c.get("id") or c.get("chunk_id"))
-            ]
+            if config == "baseline":
+                ans, ctxs, c_ids, b_info = run_baseline_pipeline(query, gen_model)
+                return ans, ctxs, c_ids, b_info, "success", None
+            else:
+                ans, ctxs, c_ids, e_info = run_improved_pipeline(
+                    query, gen_model, critic_model, classifier_model, rewriter_model
+                )
+                return ans, ctxs, c_ids, e_info, "success", None
 
-            critic_verdict = final_state.get("critic_verdict") or {}
-            initial_critic_verdict = final_state.get("first_critic_verdict") or critic_verdict
-            retry_count = final_state.get("retry_count", 0)
-
-            exec_info = {
-                "retry_count": retry_count,
-                "critic_verdict": critic_verdict,
-                "initial_critic_verdict": initial_critic_verdict,
-                "final_grounded": final_state.get("final_grounded", False),
-                "unsupported_claims_final": final_state.get("unsupported_claims_final", []),
-            }
-            return final_answer, retrieved_contexts, retrieved_chunk_ids, exec_info
         except AllModelsExhaustedError:
             raise
+
         except Exception as e:
-            if "429" in str(e) or "RESOURCE_EXHAUSTED" in str(e):
-                logger.warning(f"Rate limit hit on attempt {attempt}/{max_attempts}. Reloading .env and sleeping 6 seconds before retry...")
-                load_dotenv(dotenv_path=BASE_DIR / ".env", override=True)
-                time.sleep(6)
+            last_error = e
+            if is_quota_error(e):
+                raise AllModelsExhaustedError(attempted_models=[gen_model], last_error=e)
+            elif is_transient_error(e):
+                logger.warning(
+                    f"Transient error on query (attempt {attempt}/{max_transient_retries}): {e}. "
+                    f"Retrying with exponential backoff..."
+                )
+                if attempt < max_transient_retries:
+                    backoff_sec = min(32.0, 2.0 ** attempt)
+                    time.sleep(backoff_sec)
+                else:
+                    logger.error(f"Transient error persisted after {max_transient_retries} attempts: {e}")
             else:
-                logger.warning(f"Improved pipeline execution failed: {e}")
+                logger.error(f"Non-transient error during generation: {e}")
                 break
 
-    # Fallback if retries exhausted
-    hits = search_qdrant(query=query, filters=None, limit=8)
-    retrieved_contexts = [h.get("text", "") for h in hits if h.get("text")]
-    retrieved_chunk_ids = [
-        str(h.get("id") or h.get("chunk_id", ""))
-        for h in hits
-        if (h.get("id") or h.get("chunk_id"))
-    ]
-    final_answer = f"Based on retrieved SEC filings: {retrieved_contexts[0][:250]}..." if retrieved_contexts else "I don't have enough information to answer this question based on the retrieved SEC filings."
-    fallback_exec_info = {
-        "retry_count": 0,
-        "critic_verdict": {"grounded": False, "unsupported_claims": ["Pipeline execution fallback"]},
-        "initial_critic_verdict": {"grounded": False, "unsupported_claims": ["Pipeline execution fallback"]},
-        "final_grounded": False,
-        "unsupported_claims_final": ["Pipeline execution fallback"],
-    }
-    return final_answer, retrieved_contexts, retrieved_chunk_ids, fallback_exec_info
+    return "", [], [], {}, "error", str(last_error)
+
+
+def save_answers_file(path: Path, data: Dict[str, Any]) -> None:
+    """Safely saves intermediate or final answers to disk."""
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with open(path, "w", encoding="utf-8") as f:
+        json.dump(data, f, indent=2, ensure_ascii=False)
+
+
+def run_generation_stage(
+    config: str,
+    golden_set: List[Dict[str, Any]],
+    role_models: Dict[str, str],
+    answers_path: Path,
+    ledger: QuotaLedger,
+    start_from: int = 1,
+    delay: float = 0.0,
+    seed: int = 42,
+    restart: bool = False,
+) -> Dict[str, Any]:
+    """
+    Stage 1: Generates answers and contexts for benchmark questions.
+    Enforces quota budget checks prior to each question, stopping gracefully with exit code 2 if exhausted.
+    """
+    items: List[Dict[str, Any]] = []
+    current_fingerprint = compute_pipeline_fingerprint()
+
+    # If --restart is requested, archive any existing answers file and reset start_from to 1
+    if restart and answers_path.exists():
+        timestamp_str = datetime.datetime.now(datetime.timezone.utc).strftime("%Y%m%d_%H%M%S")
+        archive_path = answers_path.parent / f"{config}_answers_archived_{timestamp_str}.json"
+        try:
+            answers_path.rename(archive_path)
+            logger.info(
+                f"--restart specified: Archived {answers_path.name} to {archive_path.name}. "
+                f"Starting clean from question 1."
+            )
+        except Exception as e:
+            logger.warning(f"Failed to archive previous answers file {answers_path}: {e}")
+        start_from = 1
+
+    # Resume from previous answers if start_from > 1
+    if start_from > 1 and answers_path.exists():
+        try:
+            with open(answers_path, "r", encoding="utf-8") as f:
+                prev_data = json.load(f)
+            prev_fingerprint = prev_data.get("pipeline_fingerprint")
+            if not prev_fingerprint or prev_fingerprint != current_fingerprint:
+                print("\n" + "!" * 80)
+                print("PIPELINE FINGERPRINT MISMATCH DETECTED ON RESUME:")
+                print(f"  Existing file fingerprint:     {prev_fingerprint}")
+                print(f"  Current pipeline fingerprint:  {current_fingerprint}")
+                print(f"The codebase or golden set has changed since {answers_path.name} was generated.")
+                print("Cannot safely resume across different pipeline versions.")
+                print("Please rerun with --restart to archive the previous file and start clean.")
+                print("!" * 80 + "\n")
+                sys.exit(1)
+
+            prev_items = prev_data.get("items", [])
+            items = prev_items[: start_from - 1]
+            logger.info(f"Resuming generation: Loaded {len(items)} prior answers from {answers_path}.")
+        except SystemExit:
+            raise
+        except Exception as e:
+            logger.warning(f"Could not load previous answers to resume: {e}")
+
+    start_idx = max(1, start_from)
+    for idx, g_item in enumerate(golden_set[start_idx - 1 :], start=start_idx):
+        q = g_item.get("question", "")
+        gt = g_item.get("ground_truth", "")
+        g_id = g_item.get("id", f"golden_{idx:02d}")
+        source_chunk_ids = g_item.get("source_chunk_ids") or (
+            [g_item["chunk_id"]] if isinstance(g_item.get("chunk_id"), str) else (g_item.get("chunk_id") or [])
+        )
+        category = g_item.get("category", "simple_lookup")
+
+        logger.info(f"[{idx}/{len(golden_set)}] Generating for '{config}' query ({g_id}): '{q[:60]}...'")
+
+        # Quota budget pre-check: verify budget remains before invoking model
+        def save_current_progress():
+            payload = {
+                "config": config,
+                "stage": "generate",
+                "timestamp": datetime.datetime.now(datetime.timezone.utc).isoformat(),
+                "git_commit_hash": get_git_commit_hash(),
+                "pipeline_fingerprint": current_fingerprint,
+                "golden_set_size": len(golden_set),
+                "seed": seed,
+                "models": role_models,
+                "checkpoint_question_index": idx,
+                "completed_questions": len(items),
+                "items": items,
+            }
+            save_answers_file(answers_path, payload)
+
+        ledger.check_budget_or_stop(
+            model=role_models["gen_model"],
+            save_partial_callback=save_current_progress,
+            next_index=idx,
+        )
+        if config == "improved":
+            ledger.check_budget_or_stop(
+                model=role_models["critic_model"],
+                save_partial_callback=save_current_progress,
+                next_index=idx,
+            )
+
+        try:
+            ans, ctxs, chunk_ids, exec_info, status, err_msg = generate_single_question_with_retries(
+                config=config,
+                query=q,
+                role_models=role_models,
+            )
+
+            item_record: Dict[str, Any] = {
+                "id": g_id,
+                "category": category,
+                "question": q,
+                "answer": ans,
+                "contexts": ctxs if ctxs else [""],
+                "retrieved_chunk_ids": chunk_ids,
+                "source_chunk_ids": source_chunk_ids,
+                "ground_truth": gt,
+                "status": status,
+                "error": err_msg,
+                "generator_model": exec_info.get("generator_model") or role_models["gen_model"],
+                "timestamp": datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            }
+
+            if config == "improved":
+                item_record["critic_model"] = exec_info.get("critic_model") or role_models["critic_model"]
+                item_record["retry_count"] = exec_info.get("retry_count", 0)
+                item_record["critic_verdict"] = exec_info.get("critic_verdict", {})
+                item_record["initial_critic_verdict"] = exec_info.get("initial_critic_verdict", {})
+                item_record["final_grounded"] = exec_info.get("final_grounded", False)
+                item_record["unsupported_claims_final"] = exec_info.get("unsupported_claims_final", [])
+
+            items.append(item_record)
+
+            answers_payload = {
+                "config": config,
+                "stage": "generate",
+                "timestamp": datetime.datetime.now(datetime.timezone.utc).isoformat(),
+                "git_commit_hash": get_git_commit_hash(),
+                "pipeline_fingerprint": current_fingerprint,
+                "golden_set_size": len(golden_set),
+                "seed": seed,
+                "models": role_models,
+                "completed_questions": len(items),
+                "items": items,
+            }
+            save_answers_file(answers_path, answers_payload)
+
+        except AllModelsExhaustedError as e:
+            logger.error(
+                f"Daily quota exhausted for model '{role_models['gen_model']}' at question {idx}/{len(golden_set)} "
+                f"— partial results saved, resume with --start-from {idx}"
+            )
+            print("\n" + "!" * 75)
+            print(f"Daily quota exhausted for model '{role_models['gen_model']}' at question {idx}/{len(golden_set)} — partial results saved, resume with --start-from {idx}")
+            print(f"Attempted models: {e.attempted_models}")
+            print("!" * 75 + "\n")
+            save_current_progress()
+            sys.exit(1)
+
+        if idx < len(golden_set) and delay > 0:
+            time.sleep(delay)
+
+    logger.info(f"Stage 1 (generate) completed: {len(items)} items written to {answers_path}")
+    return answers_payload
 
 
 def compute_heuristic_smoke_metrics(
-    questions: List[str],
-    answers: List[str],
-    contexts_list: List[List[str]],
-    ground_truths: List[str],
-    golden_set_items: List[Dict[str, Any]],
-    chunk_ids_list: Optional[List[List[str]]] = None,
+    scored_items: List[Dict[str, Any]],
+    metrics_to_run: List[str],
 ) -> Tuple[Dict[str, float], List[Dict[str, Any]]]:
     """
-    HEURISTIC SMOKE METRICS ONLY.
-
-    WARNING: These are heuristic, deterministic approximations (e.g. hardcoded
-    faithfulness=0.95 and lexical word overlap for relevancy).
-    These MUST NEVER be reported as real RAGAS scores. They exist solely for
-    smoke-testing the pipeline and ensuring end-to-end data flow when LLM judge
-    APIs are unavailable.
+    Fast heuristic metrics mode for smoke testing data flow without API calls.
+    Computes exact retrieval metrics + numeric match, with heuristic estimates for LLM metrics.
     """
     per_question: List[Dict[str, Any]] = []
     faithfulness_scores: List[float] = []
-    answer_relevancy_scores: List[float] = []
-    context_precision_scores: List[float] = []
-    context_recall_scores: List[float] = []
+    correctness_scores: List[float] = []
+    hit_scores: List[float] = []
+    recall_scores: List[float] = []
+    mrr_scores: List[float] = []
+    numeric_scores: List[float] = []
 
-    for i in range(len(questions)):
-        q = questions[i]
-        ans = answers[i]
-        ctxs = contexts_list[i]
-        gt = ground_truths[i]
-        g_item = golden_set_items[i] if i < len(golden_set_items) else {}
-        g_id = g_item.get("id", f"golden_{i+1:02d}")
-        chunk_ids = chunk_ids_list[i] if (chunk_ids_list and i < len(chunk_ids_list)) else []
+    for item in scored_items:
+        ans = item.get("answer", "")
+        gt = item.get("ground_truth", "")
+        source_chunk_ids = item.get("source_chunk_ids", [])
+        retrieved_chunk_ids = item.get("retrieved_chunk_ids", [])
+        category = item.get("category", "simple_lookup")
 
-        ans_lower = ans.lower()
-        gt_lower = gt.lower()
+        # 1. Deterministic retrieval metrics
+        rm = compute_retrieval_metrics(retrieved_chunk_ids, source_chunk_ids, k=8)
+        if not rm.get("is_unanswerable"):
+            hit_scores.append(rm["hit@k"])
+            recall_scores.append(rm["recall@k"])
+            mrr_scores.append(rm["mrr"])
 
-        is_unanswerable_gt = "do not contain" in gt_lower or "don't have enough information" in gt_lower
-        is_unanswerable_ans = "don't have enough information" in ans_lower or "do not contain" in ans_lower or "insufficient" in ans_lower
+        # 2. Deterministic numeric match
+        num_matched = None
+        if category == "numeric_precision":
+            num_matched = check_numeric_precision_match(ans, gt)
+            numeric_scores.append(1.0 if num_matched else 0.0)
 
-        if is_unanswerable_gt:
-            if is_unanswerable_ans:
-                faith = 1.0
-                relevancy = 1.0
-                c_prec = 1.0
-                c_rec = 1.0
+        # 3. Heuristic approximations for LLM metrics
+        faith = None
+        if "faithfulness" in metrics_to_run:
+            ans_lower = ans.lower()
+            gt_lower = gt.lower()
+            is_unanswerable_gt = "do not contain" in gt_lower or "don't have enough information" in gt_lower
+            is_unanswerable_ans = "don't have enough information" in ans_lower or "do not contain" in ans_lower
+            if is_unanswerable_gt:
+                faith = 1.0 if is_unanswerable_ans else 0.0
             else:
-                faith = 0.0
-                relevancy = 0.2
-                c_prec = 0.0
-                c_rec = 0.0
-        else:
-            has_context = len(ctxs) > 0 and bool(ctxs[0].strip())
-            c_prec = 1.0 if has_context else 0.0
-            c_rec = 1.0 if has_context else 0.0
+                has_ctx = len(item.get("contexts", [])) > 0 and bool(item.get("contexts", [""])[0].strip())
+                faith = 0.95 if has_ctx else 0.2
+            faithfulness_scores.append(faith)
 
-            if is_unanswerable_ans:
-                faith = 0.5
-                relevancy = 0.3
+        correctness = None
+        if "answer_correctness" in metrics_to_run:
+            words_ans = set(ans.lower().split())
+            words_gt = set(gt.lower().split())
+            if words_gt:
+                overlap = len(words_ans & words_gt) / len(words_gt | words_ans)
+                correctness = min(1.0, round(overlap * 2.5, 4))
             else:
-                faith = 0.95 if has_context else 0.2
+                correctness = 0.85
+            correctness_scores.append(correctness)
 
-                words_ans = set(ans_lower.split())
-                words_gt = set(gt_lower.split())
-                if words_gt:
-                    overlap = len(words_ans & words_gt) / len(words_gt | words_ans)
-                    relevancy = min(1.0, round(overlap * 2.8, 4))
-                else:
-                    relevancy = 0.85
-
-        faithfulness_scores.append(faith)
-        answer_relevancy_scores.append(relevancy)
-        context_precision_scores.append(c_prec)
-        context_recall_scores.append(c_rec)
-
-        per_question.append({
-            "id": g_id,
-            "question": q,
-            "answer": ans,
-            "contexts": ctxs,
-            "retrieved_chunk_ids": chunk_ids,
-            "ground_truth": gt,
+        res_item = dict(item)
+        res_item.update({
+            "hit@8": rm["hit@k"],
+            "recall@8": rm["recall@k"],
+            "mrr": rm["mrr"],
+            "numeric_match": num_matched,
             "faithfulness": faith,
-            "answer_relevancy": relevancy,
-            "context_precision": c_prec,
-            "context_recall": c_rec,
+            "answer_correctness": correctness,
         })
+        per_question.append(res_item)
 
-    avg_f = sum(faithfulness_scores) / max(1, len(faithfulness_scores))
-    avg_ar = sum(answer_relevancy_scores) / max(1, len(answer_relevancy_scores))
-    avg_cp = sum(context_precision_scores) / max(1, len(context_precision_scores))
-    avg_cr = sum(context_recall_scores) / max(1, len(context_recall_scores))
+    agg: Dict[str, float] = {
+        "hit@8": round(sum(hit_scores) / max(1, len(hit_scores)), 4),
+        "recall@8": round(sum(recall_scores) / max(1, len(recall_scores)), 4),
+        "mrr": round(sum(mrr_scores) / max(1, len(mrr_scores)), 4),
+    }
+    if numeric_scores:
+        agg["numeric_accuracy"] = round(sum(numeric_scores) / len(numeric_scores), 4)
+    if faithfulness_scores:
+        agg["faithfulness"] = round(sum(faithfulness_scores) / len(faithfulness_scores), 4)
+    if correctness_scores:
+        agg["answer_correctness"] = round(sum(correctness_scores) / len(correctness_scores), 4)
 
-    return {
-        "faithfulness": round(avg_f, 4),
-        "answer_relevancy": round(avg_ar, 4),
-        "context_precision": round(avg_cp, 4),
-        "context_recall": round(avg_cr, 4),
-    }, per_question
+    return agg, per_question
+
+
+class QuotaTrackingCallbackHandler(BaseCallbackHandler):
+    """
+    LangChain callback handler that routes judge LLM invocations to the quota ledger hook
+    and enforces quota budget / max-calls prior to dispatch.
+    """
+
+    def __init__(self, model_name: str, ledger: QuotaLedger):
+        super().__init__()
+        self.model_name = model_name
+        self.ledger = ledger
+        self._in_wrapper = False
+
+    def on_llm_start(self, serialized: Dict[str, Any], prompts: List[str], **kwargs: Any) -> None:
+        if not self._in_wrapper:
+            self.ledger.check_budget_or_stop(model=self.model_name)
+            notify_llm_call(self.model_name)
+
+    def on_chat_model_start(self, serialized: Dict[str, Any], messages: List[List[Any]], **kwargs: Any) -> None:
+        if not self._in_wrapper:
+            self.ledger.check_budget_or_stop(model=self.model_name)
+            notify_llm_call(self.model_name)
+
+
+class QuotaTrackingLangchainLLMWrapper(LangchainLLMWrapper):
+    """
+    RAGAS LangchainLLMWrapper that intercepts generate_text and agenerate_text calls,
+    checks quota budget / max-calls, and records calls via notify_llm_call.
+    """
+
+    def __init__(
+        self,
+        langchain_llm: Any,
+        model_name: str,
+        ledger: QuotaLedger,
+        **kwargs: Any,
+    ):
+        super().__init__(langchain_llm, **kwargs)
+        self.model_name = model_name
+        self.ledger = ledger
+
+    def generate_text(self, *args: Any, **kwargs: Any) -> Any:
+        self.ledger.check_budget_or_stop(model=self.model_name)
+        notify_llm_call(self.model_name)
+        if hasattr(self.langchain_llm, "callbacks") and self.langchain_llm.callbacks:
+            for cb in self.langchain_llm.callbacks:
+                if isinstance(cb, QuotaTrackingCallbackHandler):
+                    cb._in_wrapper = True
+        try:
+            return super().generate_text(*args, **kwargs)
+        finally:
+            if hasattr(self.langchain_llm, "callbacks") and self.langchain_llm.callbacks:
+                for cb in self.langchain_llm.callbacks:
+                    if isinstance(cb, QuotaTrackingCallbackHandler):
+                        cb._in_wrapper = False
+
+    async def agenerate_text(self, *args: Any, **kwargs: Any) -> Any:
+        self.ledger.check_budget_or_stop(model=self.model_name)
+        notify_llm_call(self.model_name)
+        if hasattr(self.langchain_llm, "callbacks") and self.langchain_llm.callbacks:
+            for cb in self.langchain_llm.callbacks:
+                if isinstance(cb, QuotaTrackingCallbackHandler):
+                    cb._in_wrapper = True
+        try:
+            return await super().agenerate_text(*args, **kwargs)
+        finally:
+            if hasattr(self.langchain_llm, "callbacks") and self.langchain_llm.callbacks:
+                for cb in self.langchain_llm.callbacks:
+                    if isinstance(cb, QuotaTrackingCallbackHandler):
+                        cb._in_wrapper = False
+
+
+def run_judge_stage(
+    config: str,
+    answers_path: Path,
+    results_path: Path,
+    role_models: Dict[str, str],
+    golden_set_size: int,
+    metrics_to_run: List[str],
+    ledger: QuotaLedger,
+    fast_eval: bool = False,
+    seed: int = 42,
+) -> Dict[str, Any]:
+    """
+    Stage 2: Loads answers from {config}_answers.json, computes deterministic retrieval metrics
+    and numeric match, optionally evaluates faithfulness and answer correctness via RAGAS,
+    and saves output to {config}.json.
+    """
+    register_llm_call_hook(ledger.record_call)
+    if not answers_path.exists():
+        logger.error(f"Cannot run judge stage: answers file not found at {answers_path}. Run with '--stage generate' first.")
+        sys.exit(1)
+
+    with open(answers_path, "r", encoding="utf-8") as f:
+        answers_data = json.load(f)
+
+    all_items: List[Dict[str, Any]] = answers_data.get("items", [])
+    if not all_items:
+        logger.error(f"No items found in answers file {answers_path}.")
+        sys.exit(1)
+
+    scored_items = [it for it in all_items if it.get("status") != "error"]
+    error_items = [it for it in all_items if it.get("status") == "error"]
+    n_scored = len(scored_items)
+    n_errors = len(error_items)
+
+    logger.info(f"Loaded {len(all_items)} total items: {n_scored} scored, {n_errors} errors excluded from scoring.")
+
+    if n_scored == 0:
+        logger.error("No successfully generated answers available to score (all items marked status='error').")
+        sys.exit(1)
+
+    judge_model = role_models["judge_model"]
+    metric_source = "ragas" if (metrics_to_run and not fast_eval) else ("heuristic" if fast_eval else "llm_free")
+    actual_judge_model = judge_model
+    fallback_reason: Optional[str] = None
+
+    # Step 1: Compute deterministic retrieval metrics and numeric match for all items
+    hit_scores: List[float] = []
+    recall_scores: List[float] = []
+    mrr_scores: List[float] = []
+    numeric_scores: List[float] = []
+
+    scored_results_map: Dict[str, Dict[str, Any]] = {}
+    for it in scored_items:
+        rm = compute_retrieval_metrics(
+            retrieved_chunk_ids=it.get("retrieved_chunk_ids", []),
+            source_chunk_ids=it.get("source_chunk_ids", []),
+            k=8,
+        )
+        if not rm.get("is_unanswerable"):
+            hit_scores.append(rm["hit@k"])
+            recall_scores.append(rm["recall@k"])
+            mrr_scores.append(rm["mrr"])
+
+        num_match = None
+        if it.get("category") == "numeric_precision":
+            num_match = check_numeric_precision_match(it.get("answer", ""), it.get("ground_truth", ""))
+            numeric_scores.append(1.0 if num_match else 0.0)
+
+        merged = dict(it)
+        merged["hit@8"] = rm["hit@k"]
+        merged["recall@8"] = rm["recall@k"]
+        merged["mrr"] = rm["mrr"]
+        merged["numeric_match"] = num_match
+        scored_results_map[it["id"]] = merged
+
+    aggregate_scores: Dict[str, float] = {
+        "hit@8": round(sum(hit_scores) / max(1, len(hit_scores)), 4),
+        "recall@8": round(sum(recall_scores) / max(1, len(recall_scores)), 4),
+        "mrr": round(sum(mrr_scores) / max(1, len(mrr_scores)), 4),
+    }
+    if numeric_scores:
+        aggregate_scores["numeric_accuracy"] = round(sum(numeric_scores) / len(numeric_scores), 4)
+
+    # Step 2: Evaluate LLM-judged metrics if requested
+    if not metrics_to_run or "none" in metrics_to_run:
+        logger.info("LLM-free mode enabled (--metrics none): Skipping LLM judge calls entirely.")
+        metric_source = "llm_free"
+
+    elif fast_eval:
+        logger.warning("Running in heuristic smoke metrics mode (--fast-eval).")
+        metric_source = "heuristic"
+        heuristic_agg, heuristic_items = compute_heuristic_smoke_metrics(scored_items, metrics_to_run)
+        aggregate_scores.update(heuristic_agg)
+        for h_item in heuristic_items:
+            scored_results_map[h_item["id"]].update({
+                "faithfulness": h_item.get("faithfulness"),
+                "answer_correctness": h_item.get("answer_correctness"),
+            })
+
+    else:
+        # Check judge model budget before invoking
+        ledger.check_budget_or_stop(model=judge_model, next_index=1)
+
+        api_key = os.getenv("GOOGLE_API_KEY")
+        if not api_key:
+            logger.error("GOOGLE_API_KEY environment variable is missing for judge stage!")
+            sys.exit(1)
+
+        raw_fallbacks = os.getenv("JUDGE_FALLBACK_MODELS", "gemini-flash-lite-latest,gemini-3.5-flash").split(",")
+        fallback_judge_models = [
+            m.strip()
+            for m in raw_fallbacks
+            if m.strip() and "1.5" not in m and "2.5-flash" not in m
+        ]
+        candidate_judges = [judge_model] + [m for m in fallback_judge_models if m != judge_model]
+
+        questions = [it["question"] for it in scored_items]
+        answers = [it["answer"] for it in scored_items]
+        contexts_list = [it.get("contexts", [""]) for it in scored_items]
+        ground_truths = [it["ground_truth"] for it in scored_items]
+
+        eval_succeeded = False
+        last_eval_error = None
+
+        for current_judge in candidate_judges:
+            try:
+                logger.info(f"Attempting real RAGAS evaluation with judge model: '{current_judge}'")
+                callback_handler = QuotaTrackingCallbackHandler(model_name=current_judge, ledger=ledger)
+                judge_llm = ChatGoogleGenerativeAI(
+                    model=current_judge,
+                    google_api_key=api_key,
+                    temperature=0.0,
+                    request_timeout=90.0,
+                    max_retries=2,
+                    callbacks=[callback_handler],
+                )
+                embeddings = GoogleGenerativeAIEmbeddings(
+                    model=os.getenv("RAGAS_EMBEDDING_MODEL", "gemini-embedding-001"),
+                    google_api_key=api_key,
+                )
+
+                ragas_llm = QuotaTrackingLangchainLLMWrapper(
+                    judge_llm,
+                    model_name=current_judge,
+                    ledger=ledger,
+                    bypass_n=True,
+                )
+                ragas_embeddings = LangchainEmbeddingsWrapper(embeddings)
+
+                metrics_instances = []
+                if "faithfulness" in metrics_to_run:
+                    metrics_instances.append(Faithfulness(llm=ragas_llm))
+                if "answer_correctness" in metrics_to_run:
+                    metrics_instances.append(AnswerCorrectness(llm=ragas_llm, embeddings=ragas_embeddings))
+
+                ragas_dataset = Dataset.from_dict({
+                    "user_input": questions,
+                    "response": answers,
+                    "retrieved_contexts": contexts_list,
+                    "reference": ground_truths,
+                    "question": questions,
+                    "answer": answers,
+                    "contexts": contexts_list,
+                    "ground_truth": ground_truths,
+                })
+
+                run_config = RunConfig(max_workers=1, timeout=120)
+                logger.info(f"Executing RAGAS evaluate() with {len(questions)} items for metrics: {metrics_to_run}...")
+
+                ragas_results = evaluate(
+                    dataset=ragas_dataset,
+                    metrics=metrics_instances,
+                    llm=ragas_llm,
+                    embeddings=ragas_embeddings,
+                    run_config=run_config,
+                )
+                df_results = ragas_results.to_pandas()
+
+                if "faithfulness" in metrics_to_run and "faithfulness" in df_results:
+                    val = float(df_results["faithfulness"].mean())
+                    if not math.isnan(val):
+                        aggregate_scores["faithfulness"] = val
+                if "answer_correctness" in metrics_to_run and "answer_correctness" in df_results:
+                    val = float(df_results["answer_correctness"].mean())
+                    if not math.isnan(val):
+                        aggregate_scores["answer_correctness"] = val
+
+                df_records = df_results.to_dict(orient="records")
+                for i, rec in enumerate(df_records):
+                    orig_item = scored_items[i]
+                    item_update = {}
+                    if "faithfulness" in metrics_to_run:
+                        item_update["faithfulness"] = rec.get("faithfulness", 0.0)
+                    if "answer_correctness" in metrics_to_run:
+                        item_update["answer_correctness"] = rec.get("answer_correctness", 0.0)
+                    scored_results_map[orig_item["id"]].update(item_update)
+
+                actual_judge_model = current_judge
+                eval_succeeded = True
+                break
+
+            except Exception as e:
+                last_eval_error = e
+                logger.warning(f"RAGAS evaluate() failed with judge '{current_judge}': {e}")
+
+        if not eval_succeeded:
+            fallback_reason = str(last_eval_error or "RAGAS evaluation failed across all candidate judge models.")
+            logger.error(
+                f"CRITICAL: Real RAGAS evaluation failed or was quota-exhausted: {fallback_reason}\n"
+                "Falling back to HEURISTIC SMOKE METRICS for logging. Script will exit with code 1."
+            )
+            metric_source = "heuristic_fallback"
+            heuristic_agg, heuristic_items = compute_heuristic_smoke_metrics(scored_items, metrics_to_run)
+            aggregate_scores.update(heuristic_agg)
+            for h_item in heuristic_items:
+                scored_results_map[h_item["id"]].update({
+                    "faithfulness": h_item.get("faithfulness"),
+                    "answer_correctness": h_item.get("answer_correctness"),
+                })
+
+    # Assemble per_question_results preserving original sequence
+    per_question_results: List[Dict[str, Any]] = []
+    for it in all_items:
+        item_id = it["id"]
+        if it.get("status") == "error":
+            err_record = dict(it)
+            err_record["hit@8"] = None
+            err_record["recall@8"] = None
+            err_record["mrr"] = None
+            err_record["numeric_match"] = None
+            err_record["faithfulness"] = None
+            err_record["answer_correctness"] = None
+            per_question_results.append(err_record)
+        else:
+            per_question_results.append(scored_results_map.get(item_id, it))
+
+    output_data: Dict[str, Any] = {
+        "config": config,
+        "stage": "judge",
+        "metric_source": metric_source,
+        "metrics_evaluated": metrics_to_run,
+        "models": role_models,
+        "judge_model": actual_judge_model,
+        "gen_model": role_models["gen_model"],
+        "critic_model": role_models["critic_model"],
+        "classifier_model": role_models["classifier_model"],
+        "rewriter_model": role_models["rewriter_model"],
+        "bench_model": role_models["bench_model"],
+        "timestamp": datetime.datetime.now(datetime.timezone.utc).isoformat(),
+        "git_commit_hash": get_git_commit_hash(),
+        "pipeline_fingerprint": compute_pipeline_fingerprint(),
+        "golden_set_size": golden_set_size,
+        "seed": seed,
+        "total_evaluated": len(all_items),
+        "n_scored": n_scored,
+        "n_errors": n_errors,
+        "aggregate_scores": aggregate_scores,
+        "per_question_results": per_question_results,
+    }
+
+    if metric_source == "heuristic_fallback":
+        output_data["ragas_evaluation_failed"] = True
+        output_data["fallback_warning"] = (
+            "CRITICAL: Real RAGAS evaluation failed or was quota-exhausted. "
+            "These scores are HEURISTIC SMOKE METRICS and MUST NOT be reported as real RAGAS scores!"
+        )
+        output_data["fallback_reason"] = fallback_reason
+
+    results_path.parent.mkdir(parents=True, exist_ok=True)
+    with open(results_path, "w", encoding="utf-8") as f:
+        json.dump(output_data, f, indent=2, ensure_ascii=False)
+
+    logger.info(f"Saved evaluation results to: {results_path}")
+
+    # Step 4: Print summary table to console
+    print("\n" + "=" * 65)
+    print(f"VERITY RAG EVALUATION SUMMARY [{config.upper()} CONFIG]")
+    print(f"Metric Source:                 {metric_source.upper()}")
+    print(f"Generator Model (GEN_MODEL):   {role_models['gen_model']}")
+    print(f"Critic Model (CRITIC_MODEL):   {role_models['critic_model']}")
+    print(f"Judge Model (JUDGE_MODEL):     {actual_judge_model}")
+    print(f"Questions Evaluated:           {len(all_items)}")
+    print(f"Questions Scored (n_scored):   {n_scored}")
+    print(f"Questions Errored (n_errors):  {n_errors}")
+    print("=" * 65)
+    print(f"{'Metric':<25} | {'Score':<10}")
+    print("-" * 65)
+    print(f"{'Hit@8 (LLM-free)':<25} | {aggregate_scores.get('hit@8', 0.0):.4f}")
+    print(f"{'Recall@8 (LLM-free)':<25} | {aggregate_scores.get('recall@8', 0.0):.4f}")
+    print(f"{'MRR (LLM-free)':<25} | {aggregate_scores.get('mrr', 0.0):.4f}")
+    if "numeric_accuracy" in aggregate_scores:
+        print(f"{'Numeric Accuracy':<25} | {aggregate_scores['numeric_accuracy']:.4f}")
+    if "faithfulness" in aggregate_scores:
+        print(f"{'Faithfulness':<25} | {aggregate_scores['faithfulness']:.4f}")
+    if "answer_correctness" in aggregate_scores:
+        print(f"{'Answer Correctness':<25} | {aggregate_scores['answer_correctness']:.4f}")
+    print("=" * 65)
+    print(f"Answers saved to:  backend/eval/results/{config}_answers.json")
+    print(f"Final results:     backend/eval/results/{config}.json\n")
+
+    if metric_source == "heuristic_fallback":
+        print("\n" + "!" * 80)
+        print("CRITICAL: REAL RAGAS EVALUATION FAILED OR WAS QUOTA-EXHAUSTED.")
+        print(f"REASON: {fallback_reason}")
+        print("FALLBACK HEURISTIC SMOKE METRICS WERE SAVED WITH 'metric_source': 'heuristic_fallback'.")
+        print("THESE ARE NOT REAL RAGAS SCORES. SCRIPT EXITING WITH NON-ZERO STATUS (1).")
+        print("!" * 80 + "\n")
+        sys.exit(1)
+
+    return output_data
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Run RAGAS evaluation on Verity Financial RAG benchmark.")
+    parser = argparse.ArgumentParser(description="Run Free-Tier Hardened RAGAS evaluation on Verity Financial RAG benchmark.")
     parser.add_argument(
         "--config",
         choices=["baseline", "improved"],
@@ -339,10 +1172,28 @@ def main():
         help="Evaluation pipeline config: 'baseline' (vector-only) or 'improved' (full agentic graph).",
     )
     parser.add_argument(
+        "--stage",
+        choices=["generate", "judge", "all"],
+        default="all",
+        help="Execution stage: 'generate' (produce answers/contexts), 'judge' (score answers), or 'all' (both).",
+    )
+    parser.add_argument(
         "--limit",
         type=int,
         default=None,
         help="Optional limit on the number of questions to evaluate (for testing/rate-limiting).",
+    )
+    parser.add_argument(
+        "--metrics",
+        type=str,
+        default="faithfulness,answer_correctness",
+        help="Comma-separated LLM-judged metrics to evaluate: 'faithfulness', 'answer_correctness', or 'none'.",
+    )
+    parser.add_argument(
+        "--max-calls",
+        type=int,
+        default=None,
+        help="Maximum total LLM calls allowed before graceful stop with exit code 2.",
     )
     parser.add_argument(
         "--fast-eval",
@@ -367,6 +1218,21 @@ def main():
         default=42,
         help="Random seed for reproducibility.",
     )
+    parser.add_argument(
+        "--dry-run",
+        action="store_true",
+        help="Print estimated calls needed vs remaining budget per model and days to complete, then exit 0.",
+    )
+    parser.add_argument(
+        "--allow-same-judge",
+        action="store_true",
+        help="Allow JUDGE_MODEL to equal GEN_MODEL or CRITIC_MODEL despite warning.",
+    )
+    parser.add_argument(
+        "--restart",
+        action="store_true",
+        help="Archive existing answers file to {config}_answers_archived_{timestamp}.json and start clean from question 1.",
+    )
     args = parser.parse_args()
 
     # Set random seeds
@@ -377,26 +1243,18 @@ def main():
     except ImportError:
         pass
 
-    api_key = os.getenv("GOOGLE_API_KEY")
-    if not api_key:
-        logger.error("GOOGLE_API_KEY environment variable is missing!")
-        sys.exit(1)
+    # Resolve per-role model environment variables
+    role_models = resolve_role_models()
 
-    judge_model = os.getenv("JUDGE_MODEL", "gemini-2.5-flash")
-    logger.info(f"Configured RAGAS Judge Model: '{judge_model}' (via env JUDGE_MODEL)")
+    # Setup Quota Ledger tracking
+    ledger = QuotaLedger(max_calls=args.max_calls)
+    register_llm_call_hook(ledger.record_call)
 
-    # Define generator models metadata
-    if args.config == "improved":
-        generator_models = {
-            "draft": os.getenv("MODEL_DRAFT", "gemini-3.5-flash"),
-            "critic": os.getenv("MODEL_CRITIC", "gemini-3.5-flash"),
-            "classifier": os.getenv("MODEL_CLASSIFIER", "gemini-3.5-flash"),
-            "rewriter": os.getenv("MODEL_REWRITER", "gemini-3.5-flash"),
-        }
-    else:
-        generator_models = {
-            "baseline": os.getenv("MODEL_BASELINE", os.getenv("MODEL_DRAFT", "gemini-3.5-flash")),
-        }
+    # Parse metrics selection
+    raw_metrics = [m.strip().lower() for m in args.metrics.split(",") if m.strip()]
+    metrics_to_run = [m for m in raw_metrics if m in ["faithfulness", "answer_correctness"]]
+    if "none" in raw_metrics:
+        metrics_to_run = []
 
     golden_set_path = BASE_DIR / "eval" / "golden_set.json"
     if not golden_set_path.exists():
@@ -410,296 +1268,61 @@ def main():
         golden_set = golden_set[: args.limit]
         logger.info(f"Limiting evaluation to first {args.limit} questions from golden_set.json")
 
-    logger.info(f"Loaded {len(golden_set)} evaluation benchmark questions for config '{args.config}'.")
-
-    questions: List[str] = []
-    answers: List[str] = []
-    contexts_list: List[List[str]] = []
-    chunk_ids_list: List[List[str]] = []
-    ground_truths: List[str] = []
-    execution_infos: List[Dict[str, Any]] = []
-
-    # Check for existing results to resume if start_from > 1
-    results_dir = BASE_DIR / "eval" / "results"
-    results_path = results_dir / f"{args.config}.json"
-    if args.start_from > 1 and results_path.exists():
-        try:
-            with open(results_path, "r", encoding="utf-8") as f:
-                prev_data = json.load(f)
-                prev_questions = prev_data.get("per_question_results", [])
-                for item in prev_questions[: args.start_from - 1]:
-                    questions.append(item.get("question", ""))
-                    answers.append(item.get("answer", ""))
-                    contexts_list.append(item.get("contexts", [""]))
-                    chunk_ids_list.append(item.get("retrieved_chunk_ids", []))
-                    ground_truths.append(item.get("ground_truth", ""))
-                    if args.config == "improved":
-                        execution_infos.append({
-                            "retry_count": item.get("retry_count", 0),
-                            "critic_verdict": item.get("critic_verdict", {}),
-                            "initial_critic_verdict": item.get("initial_critic_verdict", {}),
-                            "final_grounded": item.get("final_grounded", False),
-                            "unsupported_claims_final": item.get("unsupported_claims_final", []),
-                        })
-                logger.info(f"Resuming evaluation: Loaded {len(questions)} existing answers prior to index {args.start_from}.")
-        except Exception as e:
-            logger.warning(f"Could not load previous evaluation results to resume: {e}")
-
-    # Step 1: Run pipeline execution for each question starting from args.start_from
-    start_idx = max(1, args.start_from)
-    for idx, item in enumerate(golden_set[start_idx - 1 :], start=start_idx):
-        q = item.get("question", "")
-        gt = item.get("ground_truth", "")
-
-        logger.info(f"[{idx}/{len(golden_set)}] Running '{args.config}' pipeline for query: '{q[:60]}...'")
-
-        try:
-            if args.config == "baseline":
-                answer, contexts, chunk_ids = run_baseline_pipeline(q)
-            else:
-                answer, contexts, chunk_ids, exec_info = run_improved_pipeline(q)
-                execution_infos.append(exec_info)
-
-            questions.append(q)
-            answers.append(answer)
-            contexts_list.append(contexts if contexts else [""])
-            chunk_ids_list.append(chunk_ids)
-            ground_truths.append(gt)
-
-        except AllModelsExhaustedError as e:
-            logger.error(
-                f"Daily quota exhausted across all fallback models at question {idx}/{len(golden_set)} "
-                f"— partial results saved, resume with --start-from {idx}"
-            )
-            print("\n" + "!" * 75)
-            print(f"Daily quota exhausted across all fallback models at question {idx}/{len(golden_set)} — partial results saved, resume with --start-from {idx}")
-            print(f"Attempted models: {e.attempted_models}")
-            print("!" * 75 + "\n")
-
-            if questions:
-                partial_per_question = []
-                for i in range(len(questions)):
-                    g_id = golden_set[i].get("id", f"golden_{i+1:02d}") if i < len(golden_set) else f"q_{i+1}"
-                    pq_item = {
-                        "id": g_id,
-                        "question": questions[i],
-                        "answer": answers[i],
-                        "contexts": contexts_list[i],
-                        "retrieved_chunk_ids": chunk_ids_list[i] if i < len(chunk_ids_list) else [],
-                        "ground_truth": ground_truths[i],
-                    }
-                    if args.config == "improved" and i < len(execution_infos):
-                        pq_item["retry_count"] = execution_infos[i].get("retry_count", 0)
-                        pq_item["critic_verdict"] = execution_infos[i].get("critic_verdict", {})
-                        pq_item["initial_critic_verdict"] = execution_infos[i].get("initial_critic_verdict", {})
-                        pq_item["final_grounded"] = execution_infos[i].get("final_grounded", False)
-                        pq_item["unsupported_claims_final"] = execution_infos[i].get("unsupported_claims_final", [])
-                    partial_per_question.append(pq_item)
-
-                partial_output = {
-                    "config": args.config,
-                    "metric_source": "partial_unscored",
-                    "judge_model": judge_model,
-                    "generator_models": generator_models,
-                    "timestamp": datetime.datetime.now(datetime.timezone.utc).isoformat(),
-                    "git_commit_hash": get_git_commit_hash(),
-                    "golden_set_size": len(golden_set),
-                    "seed": args.seed,
-                    "total_evaluated": len(questions),
-                    "checkpoint_question_index": idx,
-                    "per_question_results": partial_per_question,
-                }
-                results_dir = BASE_DIR / "eval" / "results"
-                results_dir.mkdir(parents=True, exist_ok=True)
-                partial_path = results_dir / f"{args.config}_partial.json"
-                results_path = results_dir / f"{args.config}.json"
-
-                with open(partial_path, "w", encoding="utf-8") as f:
-                    json.dump(partial_output, f, indent=2, ensure_ascii=False)
-                with open(results_path, "w", encoding="utf-8") as f:
-                    json.dump(partial_output, f, indent=2, ensure_ascii=False)
-                logger.info(f"Saved partial results to {partial_path} and {results_path}")
-
-            sys.exit(1)
-
-        except Exception as e:
-            logger.error(f"Error running pipeline for question '{q}': {e}")
-            questions.append(q)
-            answers.append("Error generating answer.")
-            contexts_list.append([""])
-            chunk_ids_list.append([])
-            ground_truths.append(gt)
-            if args.config == "improved":
-                execution_infos.append({
-                    "retry_count": 0,
-                    "critic_verdict": {"grounded": False, "unsupported_claims": [str(e)]},
-                    "initial_critic_verdict": {"grounded": False, "unsupported_claims": [str(e)]},
-                    "final_grounded": False,
-                    "unsupported_claims_final": [str(e)],
-                })
-
-        if idx < len(golden_set) and args.delay > 0:
-            time.sleep(args.delay)
-
-    # Step 2: Metric Evaluation
-    logger.info("Initializing evaluation metrics...")
-
-    aggregate_scores: Dict[str, float] = {}
-    per_question_breakdown: List[Dict[str, Any]] = []
-    metric_source = "ragas"
-    fallback_reason: Optional[str] = None
-
-    if args.fast_eval:
-        logger.warning("Running in heuristic smoke metrics mode (--fast-eval). Metric source: 'heuristic'.")
-        metric_source = "heuristic"
-        aggregate_scores, per_question_breakdown = compute_heuristic_smoke_metrics(
-            questions, answers, contexts_list, ground_truths, golden_set, chunk_ids_list
-        )
-    else:
-        try:
-            fallback_judge_models = [
-                m.strip()
-                for m in os.getenv("JUDGE_FALLBACK_MODELS", "gemini-2.5-flash-lite,gemini-1.5-flash").split(",")
-                if m.strip()
-            ]
-            logger.info(f"Using RAGAS LLM judge: primary='{judge_model}', fallbacks={fallback_judge_models}")
-
-            llm = get_llm_with_fallback(
-                primary_model=judge_model,
-                fallback_models=fallback_judge_models,
-                google_api_key=api_key or None,
-                temperature=0.0,
-                request_timeout=30.0,
-                max_retries=2,
-            )
-            embeddings = GoogleGenerativeAIEmbeddings(
-                model="models/text-embedding-004",
-                google_api_key=api_key,
-            )
-
-            ragas_llm = LangchainLLMWrapper(llm)
-            ragas_embeddings = LangchainEmbeddingsWrapper(embeddings)
-
-            metrics = [faithfulness, answer_relevancy, context_precision, context_recall]
-            for metric in metrics:
-                metric.llm = ragas_llm
-                if hasattr(metric, "embeddings"):
-                    metric.embeddings = ragas_embeddings
-
-            ragas_dataset = Dataset.from_dict({
-                "question": questions,
-                "answer": answers,
-                "contexts": contexts_list,
-                "ground_truth": ground_truths,
-            })
-
-            run_config = RunConfig(max_workers=1, timeout=20)
-
-            logger.info("Executing real RAGAS evaluate()...")
-            ragas_results = evaluate(
-                dataset=ragas_dataset,
-                metrics=metrics,
-                llm=ragas_llm,
-                embeddings=ragas_embeddings,
-                run_config=run_config,
-            )
-            df_results = ragas_results.to_pandas()
-
-            aggregate_scores = {
-                "faithfulness": float(df_results["faithfulness"].mean()) if "faithfulness" in df_results else 0.0,
-                "answer_relevancy": float(df_results["answer_relevancy"].mean()) if "answer_relevancy" in df_results else 0.0,
-                "context_precision": float(df_results["context_precision"].mean()) if "context_precision" in df_results else 0.0,
-                "context_recall": float(df_results["context_recall"].mean()) if "context_recall" in df_results else 0.0,
-            }
-
-            if math.isnan(aggregate_scores.get("faithfulness", float("nan"))):
-                raise ValueError("RAGAS evaluate() returned NaN scores (API rate limit or quota exhaustion).")
-
-            per_question_breakdown = df_results.to_dict(orient="records")
-            # Ensure stable id and chunk_ids on each result
-            for i, res in enumerate(per_question_breakdown):
-                g_id = golden_set[i].get("id", f"golden_{i+1:02d}") if i < len(golden_set) else f"q_{i+1}"
-                res["id"] = g_id
-                if i < len(chunk_ids_list):
-                    res["retrieved_chunk_ids"] = chunk_ids_list[i]
-
-        except Exception as e:
-            fallback_reason = str(e)
-            logger.error(
-                f"CRITICAL: Real RAGAS evaluation failed or was quota-exhausted: {e}\n"
-                "Falling back to HEURISTIC SMOKE METRICS for logging. Script will exit with code 1."
-            )
-            metric_source = "heuristic_fallback"
-            aggregate_scores, per_question_breakdown = compute_heuristic_smoke_metrics(
-                questions, answers, contexts_list, ground_truths, golden_set, chunk_ids_list
-            )
-
-    # Attach graph execution info to per_question_breakdown for improved config
-    if args.config == "improved" and execution_infos:
-        for i, res in enumerate(per_question_breakdown):
-            if i < len(execution_infos):
-                res["retry_count"] = execution_infos[i].get("retry_count", 0)
-                res["critic_verdict"] = execution_infos[i].get("critic_verdict", {})
-                res["initial_critic_verdict"] = execution_infos[i].get("initial_critic_verdict", {})
-                res["final_grounded"] = execution_infos[i].get("final_grounded", False)
-                res["unsupported_claims_final"] = execution_infos[i].get("unsupported_claims_final", [])
-
-    # Step 3: Save results to backend/eval/results/{config}.json
-    output_data: Dict[str, Any] = {
-        "config": args.config,
-        "metric_source": metric_source,
-        "judge_model": judge_model,
-        "generator_models": generator_models,
-        "timestamp": datetime.datetime.now(datetime.timezone.utc).isoformat(),
-        "git_commit_hash": get_git_commit_hash(),
-        "golden_set_size": len(golden_set),
-        "seed": args.seed,
-        "total_evaluated": len(questions),
-        "aggregate_scores": aggregate_scores,
-        "per_question_results": per_question_breakdown,
-    }
-
-    if metric_source == "heuristic_fallback":
-        output_data["ragas_evaluation_failed"] = True
-        output_data["fallback_warning"] = (
-            "CRITICAL: Real RAGAS evaluation failed or was quota-exhausted. "
-            "These scores are HEURISTIC SMOKE METRICS and MUST NOT be reported as real RAGAS scores!"
-        )
-        output_data["fallback_reason"] = fallback_reason
-
     results_dir = BASE_DIR / "eval" / "results"
     results_dir.mkdir(parents=True, exist_ok=True)
+    answers_path = results_dir / f"{args.config}_answers.json"
     results_path = results_dir / f"{args.config}.json"
 
-    with open(results_path, "w", encoding="utf-8") as f:
-        json.dump(output_data, f, indent=2, ensure_ascii=False)
+    # Print API call estimation and budget check before running
+    num_questions_in_scope = len(golden_set) - max(0, args.start_from - 1) if args.stage in ["generate", "all"] else len(golden_set)
+    print_api_call_estimate_and_budget(
+        config=args.config,
+        stage=args.stage,
+        num_questions=max(0, num_questions_in_scope),
+        role_models=role_models,
+        metrics_to_run=metrics_to_run,
+        fast_eval=args.fast_eval,
+        dry_run=args.dry_run,
+        ledger=ledger,
+    )
 
-    logger.info(f"Saved evaluation results to: {results_path}")
+    # Check judge model independence if judging is requested with LLM metrics
+    if args.stage in ["judge", "all"] and metrics_to_run and not args.fast_eval:
+        check_judge_model_independence(
+            gen_model=role_models["gen_model"],
+            critic_model=role_models["critic_model"],
+            judge_model=role_models["judge_model"],
+            config=args.config,
+            allow_same_judge=args.allow_same_judge,
+        )
 
-    # Step 4: Print summary table to console
-    print("\n" + "=" * 60)
-    print(f"RAGAS EVALUATION SUMMARY RESULTS [{args.config.upper()} CONFIG]")
-    print(f"Metric Source: {metric_source.upper()}")
-    print(f"Judge Model:   {judge_model}")
-    print("=" * 60)
-    print(f"{'Metric':<25} | {'Score':<10}")
-    print("-" * 60)
-    print(f"{'Faithfulness':<25} | {aggregate_scores['faithfulness']:.4f}")
-    print(f"{'Answer Relevancy':<25} | {aggregate_scores['answer_relevancy']:.4f}")
-    print(f"{'Context Precision':<25} | {aggregate_scores['context_precision']:.4f}")
-    print(f"{'Context Recall':<25} | {aggregate_scores['context_recall']:.4f}")
-    print("=" * 60)
-    print(f"Full details saved to: backend/eval/results/{args.config}.json\n")
+    # Stage 1: Generate answers and contexts
+    if args.stage in ["generate", "all"]:
+        run_generation_stage(
+            config=args.config,
+            golden_set=golden_set,
+            role_models=role_models,
+            answers_path=answers_path,
+            ledger=ledger,
+            start_from=args.start_from,
+            delay=args.delay,
+            seed=args.seed,
+            restart=args.restart,
+        )
 
-    # If RAGAS fell back to heuristic smoke metrics, loudly notify and exit non-zero
-    if metric_source == "heuristic_fallback":
-        print("\n" + "!" * 80)
-        print("CRITICAL: REAL RAGAS EVALUATION FAILED OR WAS QUOTA-EXHAUSTED.")
-        print(f"REASON: {fallback_reason}")
-        print("FALLBACK HEURISTIC SMOKE METRICS WERE SAVED WITH 'metric_source': 'heuristic_fallback'.")
-        print("THESE ARE NOT REAL RAGAS SCORES. SCRIPT EXITING WITH NON-ZERO STATUS (1).")
-        print("!" * 80 + "\n")
-        sys.exit(1)
+    # Stage 2: Judge generated answers
+    if args.stage in ["judge", "all"]:
+        run_judge_stage(
+            config=args.config,
+            answers_path=answers_path,
+            results_path=results_path,
+            role_models=role_models,
+            golden_set_size=len(golden_set),
+            metrics_to_run=metrics_to_run,
+            ledger=ledger,
+            fast_eval=args.fast_eval,
+            seed=args.seed,
+        )
 
 
 if __name__ == "__main__":

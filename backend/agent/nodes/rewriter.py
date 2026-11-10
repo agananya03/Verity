@@ -31,7 +31,7 @@ Your task:
 3. Output ONLY the rewritten standalone question. Do NOT include explanations or preambles.
 """
 
-MODEL_REWRITER = os.getenv("MODEL_CLASSIFIER", "gemini-3.5-flash-lite")
+MODEL_REWRITER = os.getenv("REWRITER_MODEL", os.getenv("MODEL_REWRITER", os.getenv("MODEL_CLASSIFIER", "gemini-3.5-flash-lite")))
 
 
 def rewrite_query(state: AgentState) -> AgentState:

@@ -16,6 +16,10 @@ services:
         sync: false
       - key: EMBEDDING_BACKEND
         value: fastembed
+      - key: GEN_MODEL
+        value: gemini-3.5-flash-lite
+      - key: CRITIC_MODEL
+        value: gemini-3.1-flash-lite
       - key: PYTHONPATH
         value: .
 

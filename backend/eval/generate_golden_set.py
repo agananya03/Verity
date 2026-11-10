@@ -174,8 +174,10 @@ def generate_golden_set():
         logger.error("GOOGLE_API_KEY environment variable is not set!")
         sys.exit(1)
 
+    from backend.eval.quota_ledger import global_quota_ledger
+    bench_model = os.getenv("BENCH_MODEL", "gemini-3.5-flash")
     llm = ChatGoogleGenerativeAI(
-        model="gemini-3.6-flash",
+        model=bench_model,
         google_api_key=api_key,
         temperature=0.2,
     )
@@ -203,6 +205,7 @@ def generate_golden_set():
         )
 
         try:
+            global_quota_ledger.record_call(bench_model)
             qa_res: QAPair = structured_llm.invoke([("user", prompt)])
             golden_set.append({
                 "question": qa_res.question.strip(),

@@ -36,3 +36,7 @@ backend/data/raw/*
 !backend/data/raw/.gitkeep
 backend/data/processed/*
 !backend/data/processed/.gitkeep
+backend/eval/results_backup_*/
+backend/eval/results/quota_ledger.json
+backend/eval/results/*_answers*.json
+backend/eval/results/*_partial.json

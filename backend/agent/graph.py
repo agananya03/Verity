@@ -151,6 +151,30 @@ def revise(state: AgentState) -> AgentState:
     return state
 
 
+def prepare(state: AgentState) -> AgentState:
+    """
+    Prepares initial query fields in state before routing.
+    Sets original_query and rewritten_query (to the raw query) when conversation_history is empty.
+    """
+    history = state.get("conversation_history") or []
+    raw_query = state.get("query", "")
+    if not history:
+        state["original_query"] = raw_query
+        state["rewritten_query"] = raw_query
+    return state
+
+
+def route_start(state: AgentState) -> str:
+    """
+    Pure read-only router: skips the query rewriter when conversation_history is empty,
+    routing directly to classifier to conserve LLM calls and reduce latency.
+    """
+    history = state.get("conversation_history") or []
+    if not history:
+        return "classifier"
+    return "rewriter"
+
+
 def route_critic(state: AgentState) -> str:
     """
     Pure conditional routing function for the Critic node.
@@ -197,6 +221,7 @@ def route_revise(state: AgentState) -> str:
 builder = StateGraph(AgentState)
 
 # Add Nodes
+builder.add_node("prepare", prepare)
 builder.add_node("rewriter", rewrite_query)
 builder.add_node("classifier", classify)
 builder.add_node("retriever", retrieve_node)
@@ -205,8 +230,16 @@ builder.add_node("critic", critique)
 builder.add_node("revise", revise)
 builder.add_node("finalizer", finalize_response)
 
-# Add Sequential Edges: START -> rewriter -> classifier -> retriever -> draft -> critic
-builder.add_edge(START, "rewriter")
+# Add Edges: START -> prepare -> (route_start) -> rewriter | classifier
+builder.add_edge(START, "prepare")
+builder.add_conditional_edges(
+    "prepare",
+    route_start,
+    {
+        "rewriter": "rewriter",
+        "classifier": "classifier",
+    },
+)
 builder.add_edge("rewriter", "classifier")
 builder.add_edge("classifier", "retriever")
 builder.add_edge("retriever", "draft")
