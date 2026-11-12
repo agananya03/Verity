@@ -1,9 +1,28 @@
 """
 RAGAS Evaluation Runner for Verity Financial RAG (Free-Tier Hardened).
 
+Component Comparison: Baseline vs. Improved
+========================================================================================================
+Component                  | Baseline Pipeline                | Improved Pipeline (Production Graph)
+---------------------------+----------------------------------+-----------------------------------------
+Query Processing           | Raw user query (no rewriting,    | Context-aware Rewriter (multi-turn) +
+                           | no metadata stripping)           | clean_v2 query cleaning (RETRIEVAL_QUERY_CLEANING)
+                           |                                  | (preamble stripped, product/company kept)
+Index / Search Modality    | Dense vector-only (Qdrant        | Hybrid Dense (Qdrant) + Sparse (BM25Okapi
+                           | BAAI/bge-small-en-v1.5)          | number-preserving tokenizer), RRF (k=60)
+Metadata Filtering         | None (filters=None)              | Rule-based extractor + Classifier LLM
+                           |                                  | (company, fiscal_year, fiscal_years)
+Temporal Routing           | Single search pool (top_k=8)     | Multi-year per-year retrieval +
+                           |                                  | alternating merge (ceil(8/n) per year)
+Generation Architecture    | Single LLM prompt call           | Grounded Draft prompt with strict inline
+                           | (gen_model, no fallback chain)   | [Chunk N] citations & domain decline
+Self-Correction / Critic   | None                             | Critic verification loop (up to 2 retries)
+                           |                                  | with feedback + Finalizer grounded claims
+========================================================================================================
+
 Evaluates either:
-- Baseline config: Vector-only Qdrant search + single LLM draft generation.
-- Improved config: Full verity_graph pipeline (Hybrid Dense/Sparse search + metadata filtering + self-correcting Critic loop).
+- Baseline config: Vector-only Qdrant search (raw query, no filters) + single LLM draft generation.
+- Improved config: Full verity_graph pipeline (Hybrid Dense/Sparse search + clean_v2 + per-year retrieval + metadata filtering + self-correcting Critic loop).
 
 Features:
 - Per-role model env vars: REWRITER_MODEL, CLASSIFIER_MODEL, GEN_MODEL, CRITIC_MODEL, JUDGE_MODEL, BENCH_MODEL.
@@ -287,7 +306,10 @@ def print_api_call_estimate_and_budget(
     ]:
         calls_by_model[model] = calls_by_model.get(model, 0) + calls_by_role[role_name]
 
+    # Re-read ledger freshly from disk at print time (not cached from start of run)
+    fresh_ledger_data = ledger.load_ledger()
     pacific_date = get_pacific_today()
+    date_counts = fresh_ledger_data.get(pacific_date, {})
     reset_ist = get_next_reset_time_ist()
 
     print("\n" + "=" * 90)
@@ -311,9 +333,9 @@ def print_api_call_estimate_and_budget(
     for role_name, model in model_roles:
         c_needed = calls_by_role.get(role_name, 0)
         total_model_calls = calls_by_model.get(model, 0)
-        used = ledger.get_used_today(model)
+        used = date_counts.get(model, 0)
         limit = ledger.get_limit(model)
-        rem = ledger.get_remaining_budget(model)
+        rem = max(0, limit - used)
 
         if total_model_calls == 0:
             days_str = "0 days"
@@ -1263,6 +1285,27 @@ def main():
 
     with open(golden_set_path, "r", encoding="utf-8") as f:
         golden_set: List[Dict[str, Any]] = json.load(f)
+
+    # Validate that every source_chunk_id in golden_set.json exists in the current corpus
+    from backend.eval.remap_source_chunks import validate_golden_source_chunks
+    try:
+        missing_ids = validate_golden_source_chunks(golden_set_path=golden_set_path)
+        if missing_ids:
+            logger.error(
+                f"CRITICAL: Golden set validation failed! {len(missing_ids)} source_chunk_id(s) do not exist "
+                f"in current corpus:\n" + "\n".join(f"  - {mid}" for mid in missing_ids)
+            )
+            print(
+                f"\n{'!' * 80}\n"
+                f"CRITICAL: Golden set validation failed!\n"
+                f"{len(missing_ids)} source_chunk_id(s) in {golden_set_path.name} do not exist in the current corpus:\n"
+                + "\n".join(f"  - {mid}" for mid in missing_ids)
+                + f"\nRefusing to run evaluation. Remap IDs using 'python -m backend.eval.remap_source_chunks'.\n"
+                + f"{'!' * 80}\n"
+            )
+            sys.exit(1)
+    except FileNotFoundError as e:
+        logger.warning(f"Skipping corpus chunk validation: {e}")
 
     if args.limit:
         golden_set = golden_set[: args.limit]

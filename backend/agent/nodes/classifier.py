@@ -39,7 +39,8 @@ Your task is to:
 
 2. Extract explicit metadata filters:
    - "company": Extract the primary target company name mentioned (e.g., "Apple", "Microsoft", "Amazon") if a single company is targeted, otherwise null.
-   - "fiscal_year": Extract the explicit 4-digit fiscal year mentioned (e.g., "2024", "2023"), otherwise null.
+   - "fiscal_year": Extract the single explicit 4-digit fiscal year mentioned (e.g., "2024", "2023"), or null if unmentioned or multiple.
+   - "fiscal_years": Extract all explicit 4-digit fiscal years mentioned as a list (e.g., ["2023", "2024"]), or empty if none.
 
 Analyze the query carefully and output structured JSON matching the requested schema.
 """
@@ -56,7 +57,11 @@ class ClassificationOutput(BaseModel):
     )
     fiscal_year: Optional[str] = Field(
         default=None,
-        description="Extracted explicit 4-digit fiscal year (e.g., '2024', '2023'), or None if unmentioned."
+        description="Extracted single explicit 4-digit fiscal year (e.g., '2024', '2023'), or None if unmentioned or multiple."
+    )
+    fiscal_years: List[str] = Field(
+        default_factory=list,
+        description="List of all explicit 4-digit fiscal years mentioned (e.g., ['2023', '2024']), or empty if unmentioned."
     )
 
 
@@ -124,10 +129,9 @@ def extract_metadata_rules(query: str) -> Tuple[Optional[str], Optional[str], Op
             year_val = raw_year
         detected_years.add(year_val)
 
-    # If no prefix match, check standalone 4-digit years in valid range (2015-2035)
-    if not detected_years:
-        for match in _STANDALONE_YEAR_REGEX.finditer(query):
-            detected_years.add(match.group(1))
+    # Also check standalone 4-digit years in valid range (2015-2035)
+    for match in _STANDALONE_YEAR_REGEX.finditer(query):
+        detected_years.add(match.group(1))
 
     # 3. Ambiguity Check
     is_ambiguous = len(detected_companies) > 1 or len(detected_years) > 1
@@ -146,6 +150,191 @@ def extract_metadata_rules(query: str) -> Tuple[Optional[str], Optional[str], Op
     return company, fiscal_year, inferred_classification, is_ambiguous
 
 
+def extract_company_and_year(query: str) -> Tuple[Optional[str], Optional[str]]:
+    """
+    Extracts canonical company and single fiscal year from query using deterministic rules.
+    Returns (company, fiscal_year). For multi-year or ambiguous queries, fiscal_year is None.
+    """
+    company, fiscal_year, _, is_ambiguous = extract_metadata_rules(query)
+    if is_ambiguous:
+        return company, None
+    return company, fiscal_year
+
+
+def extract_all_fiscal_years(query: str) -> List[str]:
+    """
+    Extracts all fiscal years mentioned in the query in order of appearance.
+    Returns a deduplicated list of 4-digit year strings, e.g. ['2023', '2024'].
+    """
+    if not query or not query.strip():
+        return []
+
+    matches: List[Tuple[int, str]] = []
+
+    for m in _FY_PREFIX_REGEX.finditer(query):
+        raw_year = m.group(1)
+        year_val = f"20{raw_year}" if len(raw_year) == 2 else raw_year
+        matches.append((m.start(), year_val))
+
+    for m in _STANDALONE_YEAR_REGEX.finditer(query):
+        matches.append((m.start(), m.group(1)))
+
+    matches.sort(key=lambda x: x[0])
+
+    years: List[str] = []
+    seen: Set[str] = set()
+    for _, yr in matches:
+        if yr not in seen:
+            seen.add(yr)
+            years.append(yr)
+
+    return years
+
+
+def extract_company_and_years(query: str) -> Tuple[Optional[str], List[str]]:
+    """
+    Extracts canonical company and list of all fiscal years mentioned in the query.
+    Returns (company, fiscal_years). For multi-year queries, fiscal_years contains
+    all detected years in order of appearance.
+    """
+    company, _ = extract_company_and_year(query)
+    years = extract_all_fiscal_years(query)
+    return company, years
+
+
+def strip_query_metadata(
+    query: str,
+    company: Optional[str] = None,
+    fiscal_year: Optional[str] = None,
+) -> str:
+    """clean_v1: Alias for strip_query_metadata_v1 for backward compatibility."""
+    return strip_query_metadata_v1(query, company=company, fiscal_year=fiscal_year)
+
+
+def strip_query_metadata_v1(
+    query: str,
+    company: Optional[str] = None,
+    fiscal_year: Optional[str] = None,
+) -> str:
+    """
+    clean_v1:
+    Strips preamble boilerplate and metadata terms from a query that are already
+    enforced by retrieval filters, including company name.
+    """
+    if not query or not query.strip():
+        return ""
+
+    q = query.strip()
+
+    # 1. Preamble removal
+    if fiscal_year and "/" not in str(fiscal_year):
+        q = re.sub(
+            r"^\s*(?:According\s+to|Based\s+on|In|Per)\s+(?:the\s+)?(?:(?:Item\s+[0-9A-Z]+|[A-Za-z]+)\s+section\s+of\s+)?(?:[A-Za-z0-9'’\s-]*?)(?:Form\s+)?10-K(?:\s+filings?)?\s*,\s*",
+            "",
+            q,
+            flags=re.IGNORECASE,
+        )
+    else:
+        q = re.sub(
+            r"^\s*Based\s+on\s+(?:[A-Za-z0-9'’\s-]*?)(?:Form\s+)?10-K(?:\s+filings?)?\s*,\s*",
+            "",
+            q,
+            flags=re.IGNORECASE,
+        )
+
+    # 2. Section references
+    q = re.sub(r"\bthe\s+Item\s+[0-9A-Z]+\s+section\s+of\b", "", q, flags=re.IGNORECASE)
+    q = re.sub(r"\bthe\s+[A-Za-z]+\s+section\s+of\b", "", q, flags=re.IGNORECASE)
+
+    # 3. Form 10-K references
+    q = re.sub(r"\b(?:Form\s+)?10-K(?:\s+filings?)?\b", "", q, flags=re.IGNORECASE)
+
+    # 4. Fiscal year removal: ONLY when single fiscal_year filter is active
+    if fiscal_year and "/" not in str(fiscal_year):
+        fy_str = str(fiscal_year)
+        q = re.sub(r"\bduring\s+fiscal\s+(?:year\s+)?'?" + re.escape(fy_str) + r"\b,?", "", q, flags=re.IGNORECASE)
+        q = re.sub(r"\bin\s+fiscal\s+(?:year\s+)?'?" + re.escape(fy_str) + r"\b,?", "", q, flags=re.IGNORECASE)
+        q = re.sub(r"\bfiscal\s+(?:year\s+)?'?" + re.escape(fy_str) + r"\b", "", q, flags=re.IGNORECASE)
+        q = re.sub(r"\bfy\s*'?" + re.escape(fy_str) + r"\b", "", q, flags=re.IGNORECASE)
+        q = re.sub(r"\b" + re.escape(fy_str) + r"\b", "", q)
+
+    # 5. Company removal: when company filter is active
+    if company:
+        comp_pattern = r"\b" + re.escape(company) + r"(?:'s|’s)?\b"
+        q = re.sub(comp_pattern, "", q, flags=re.IGNORECASE)
+
+    # 6. Clean punctuation & whitespace artifacts
+    q = re.sub(r"\s*,\s*", ", ", q)
+    q = re.sub(r"(?:,\s*)+", ", ", q)
+    q = re.sub(r"^\s*,\s*", "", q)
+    q = re.sub(r"\s+", " ", q).strip()
+
+    if q and q[0].islower():
+        q = q[0].upper() + q[1:]
+
+    return q
+
+
+def strip_query_metadata_v2(
+    query: str,
+    company: Optional[str] = None,
+    fiscal_year: Optional[str] = None,
+) -> str:
+    """
+    clean_v2:
+    Removes ONLY:
+    1. The leading preamble ("According to / Based on / In / Per ... Form 10-K,")
+    2. "Form 10-K" and "10-K filing(s)"
+    3. "fiscal year <yyyy>" / "in fiscal <yyyy>" / "during fiscal <yyyy>" phrases
+       when a single-year filter is active (preserves years for multi-year queries)
+    4. "the Item N section of" or "the <X> section of" clauses
+    
+    MUST NOT remove the company name from the body of the question (so
+    product names like "Apple Vision Pro", "Apple Watch", "Apple Card" survive).
+    """
+    if not query or not query.strip():
+        return ""
+
+    q = query.strip()
+
+    # 1. Leading preamble removal ("According to / Based on / In / Per ... Form 10-K,")
+    q = re.sub(
+        r"^\s*(?:According\s+to|Based\s+on|In|Per)\s+(?:the\s+)?(?:(?:Item\s+[0-9A-Z]+|[A-Za-z]+)\s+section\s+of\s+)?(?:[A-Za-z0-9'’\s-]*?)(?:Form\s+)?10-K(?:\s+filings?)?\s*,\s*",
+        "",
+        q,
+        flags=re.IGNORECASE,
+    )
+
+    # 2. Section references: "the Item N section of", "the <X> section of"
+    q = re.sub(r"\bthe\s+Item\s+[0-9A-Z]+\s+section\s+of\b\s*", "", q, flags=re.IGNORECASE)
+    q = re.sub(r"\bthe\s+[A-Za-z]+\s+section\s+of\b\s*", "", q, flags=re.IGNORECASE)
+
+    # 3. Form 10-K references
+    q = re.sub(r"\b(?:Form\s+)?10-K(?:\s+filings?)?\b", "", q, flags=re.IGNORECASE)
+
+    # 4. Fiscal year removal: ONLY when single fiscal_year filter is active
+    if fiscal_year and "/" not in str(fiscal_year):
+        fy_str = str(fiscal_year)
+        q = re.sub(r"\bduring\s+fiscal\s+(?:year\s+)?'?" + re.escape(fy_str) + r"\b,?", "", q, flags=re.IGNORECASE)
+        q = re.sub(r"\bin\s+fiscal\s+(?:year\s+)?'?" + re.escape(fy_str) + r"\b,?", "", q, flags=re.IGNORECASE)
+        q = re.sub(r"\bfiscal\s+(?:year\s+)?'?" + re.escape(fy_str) + r"\b", "", q, flags=re.IGNORECASE)
+        q = re.sub(r"\bfy\s*'?" + re.escape(fy_str) + r"\b", "", q, flags=re.IGNORECASE)
+        q = re.sub(r"\b" + re.escape(fy_str) + r"\b", "", q)
+
+    # NOTE: In clean_v2, the company name is NEVER removed from the body!
+
+    # 5. Clean punctuation & whitespace artifacts
+    q = re.sub(r"\s*,\s*", ", ", q)
+    q = re.sub(r"(?:,\s*)+", ", ", q)
+    q = re.sub(r"^\s*,\s*", "", q)
+    q = re.sub(r"\s+", " ", q).strip()
+
+    if q and q[0].islower():
+        q = q[0].upper() + q[1:]
+
+    return q
+
+
 def classify(state: AgentState) -> AgentState:
     """
     Classifies query intent and extracts metadata filters.
@@ -153,17 +342,18 @@ def classify(state: AgentState) -> AgentState:
     Calls Gemini structured output only when nothing is found or when the query is ambiguous.
     """
     query = state.get("query", "")
+    all_years = extract_all_fiscal_years(query)
 
     # Step 1: Attempt fast rule-based extraction
     company, fiscal_year, inferred_intent, is_ambiguous = extract_metadata_rules(query)
 
-    # If unambiguous and found a company, bypass LLM
-    # (Bypassing requires a company so out-of-corpus entities like Tesla never receive year-only filters)
+    # Case 1A: Unambiguous single-company & single-year (or single company zero-year)
     if not is_ambiguous and company is not None:
-        extracted_filters: Dict[str, str] = state.get("extracted_filters") or {}
+        extracted_filters: Dict[str, Any] = state.get("extracted_filters") or {}
         extracted_filters["company"] = company
         if fiscal_year:
             extracted_filters["fiscal_year"] = str(fiscal_year)
+            extracted_filters["fiscal_years"] = [str(fiscal_year)]
 
         state["classification"] = inferred_intent or "simple_lookup"
         state["extracted_filters"] = extracted_filters
@@ -173,7 +363,21 @@ def classify(state: AgentState) -> AgentState:
         )
         return state
 
-    # Step 2: Fall back to Gemini structured LLM when nothing found or ambiguous
+    # Case 1B: Single company with multiple years detected (multi-year query)
+    # Extracts company and all years without requiring an expensive LLM call
+    if company is not None and len(all_years) >= 2:
+        extracted_filters = state.get("extracted_filters") or {}
+        extracted_filters["company"] = company
+        extracted_filters["fiscal_years"] = all_years
+        state["classification"] = inferred_intent or "comparison"
+        state["extracted_filters"] = extracted_filters
+        logger.info(
+            f"Rule-based multi-year classifier match: company={company}, fiscal_years={all_years}, "
+            f"classification={state['classification']} (bypassed LLM call)"
+        )
+        return state
+
+    # Step 2: Fall back to Gemini structured LLM when nothing found or ambiguous across companies
     logger.info(
         f"Rule-based classifier inconclusive (found_nothing={company is None and fiscal_year is None}, "
         f"is_ambiguous={is_ambiguous}). Invoking LLM classifier..."
@@ -203,8 +407,20 @@ def classify(state: AgentState) -> AgentState:
     extracted_filters = state.get("extracted_filters") or {}
     if result.company:
         extracted_filters["company"] = result.company
-    if result.fiscal_year:
-        extracted_filters["fiscal_year"] = str(result.fiscal_year)
+
+    # Use LLM returned years (or fallback to extract_all_fiscal_years on query)
+    years = result.fiscal_years or []
+    if not years and result.fiscal_year:
+        years = [result.fiscal_year]
+    if not years:
+        years = all_years
+
+    if len(years) >= 2:
+        extracted_filters["fiscal_years"] = years
+        extracted_filters.pop("fiscal_year", None)
+    elif len(years) == 1:
+        extracted_filters["fiscal_year"] = str(years[0])
+        extracted_filters["fiscal_years"] = [str(years[0])]
 
     state["classification"] = result.classification
     state["extracted_filters"] = extracted_filters

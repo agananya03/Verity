@@ -726,3 +726,90 @@ def test_judge_quota_tracking_respects_daily_budget_with_mocked_judge(tmp_path, 
 
     # Must stop gracefully with exit code 2 when daily budget is exhausted
     assert exc_info.value.code == 2
+
+
+def test_golden_source_chunks_exist_in_corpus():
+    """
+    Validates that every source_chunk_id in golden_set.json exists in the current corpus.
+    Prefers chunks.json; if absent, checks against backend/artifacts/bm25_inputs.json.
+    """
+    from backend.eval.remap_source_chunks import validate_golden_source_chunks
+
+    base_dir = Path(__file__).resolve().parent.parent
+    chunks_path = base_dir / "data" / "processed" / "chunks.json"
+    bm25_path = base_dir / "artifacts" / "bm25_inputs.json"
+
+    if not chunks_path.exists() and not bm25_path.exists():
+        pytest.skip("Neither chunks.json nor bm25_inputs.json is present in environment.")
+
+    # If chunks.json is absent, check against bm25_inputs.json
+    c_path = chunks_path if chunks_path.exists() else None
+    missing = validate_golden_source_chunks(chunks_path=c_path, bm25_inputs_path=bm25_path)
+    assert missing == [], f"Found golden source_chunk_ids missing from corpus: {missing}"
+
+
+def test_golden_source_chunks_validation_detects_missing_ids(tmp_path):
+    """Asserts that validation function detects and reports missing/invalid chunk IDs."""
+    from backend.eval.remap_source_chunks import validate_golden_source_chunks
+
+    fake_golden = tmp_path / "fake_golden.json"
+    fake_golden.write_text(
+        json.dumps([
+            {"id": "test_01", "source_chunk_ids": ["non-existent-uuid-12345"]},
+            {"id": "test_02", "source_chunk_ids": []},
+        ]),
+        encoding="utf-8",
+    )
+
+    base_dir = Path(__file__).resolve().parent.parent
+    bm25_path = base_dir / "artifacts" / "bm25_inputs.json"
+    missing = validate_golden_source_chunks(golden_set_path=fake_golden, bm25_inputs_path=bm25_path)
+    assert "non-existent-uuid-12345" in missing
+
+
+def test_estimate_table_reads_used_today_at_print_time(tmp_path, capsys):
+    """Asserts that print_api_call_estimate_and_budget re-reads used_today at print time."""
+    limits_path = tmp_path / "limits.json"
+    ledger_path = tmp_path / "ledger.json"
+    role_models = resolve_role_models()
+    gen_model = role_models["gen_model"]
+
+    with open(limits_path, "w", encoding="utf-8") as f:
+        json.dump({gen_model: 100}, f)
+    with open(ledger_path, "w", encoding="utf-8") as f:
+        json.dump({get_pacific_today(): {gen_model: 5}}, f)
+
+    ledger = QuotaLedger(limits_path=limits_path, ledger_path=ledger_path)
+
+    # First print: used today should be 5
+    print_api_call_estimate_and_budget(
+        config="baseline",
+        stage="generate",
+        num_questions=10,
+        role_models=role_models,
+        metrics_to_run=[],
+        fast_eval=True,
+        dry_run=False,
+        ledger=ledger,
+    )
+    captured1 = capsys.readouterr().out
+    assert "5 " in captured1
+
+    # Simulate an out-of-band call written to disk
+    with open(ledger_path, "w", encoding="utf-8") as f:
+        json.dump({get_pacific_today(): {gen_model: 42}}, f)
+
+    # Second print: used today should be 42 (read fresh at print time, not cached from start)
+    print_api_call_estimate_and_budget(
+        config="baseline",
+        stage="generate",
+        num_questions=10,
+        role_models=role_models,
+        metrics_to_run=[],
+        fast_eval=True,
+        dry_run=False,
+        ledger=ledger,
+    )
+    captured2 = capsys.readouterr().out
+    assert "42 " in captured2
+

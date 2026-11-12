@@ -1,0 +1,488 @@
+[
+  {
+    "id": "golden_01",
+    "category": "simple_lookup",
+    "company": "Apple",
+    "fiscal_year": "2025",
+    "expected_decline": false,
+    "question": "According to Apple's fiscal year 2025 Form 10-K, through what methods does the company expand the range of its offerings and develop new technologies?",
+    "ground_truth": "The Company develops new technologies to enhance existing products and services and expands its range of offerings through research and development (“R&D”), the licensing of intellectual property, and the acquisition of third-party businesses and technology.",
+    "contexts": [
+      "The Company uses some custom components that are not commonly used by its competitors, and new products introduced by the Company often utilize custom components available from only one source. When a component or product uses new technologies, initial capacity constraints may exist until the suppliers’ yields have matured or their manufacturing capacities have increased. The Company has entered into agreements for the supply of many components; however, the Company may not be able to extend or renew agreements for the supply of components on similar terms, or at all, and may not be successful in obtaining sufficient quantities from its suppliers or in a timely manner, or in identifying and obtaining sufficient quantities from an alternative source. In addition, component suppliers may fail, be subject to consolidation within a particular industry, or decide to concentrate on the production of common components instead of components customized to meet the Company’s requirements, further limiting the Company’s ability to obtain sufficient quantities of components on commercially reasonable terms, or at all.\n\nResearch and Development\n\nBecause the industries in which the Company competes are characterized by rapid technological advances, the Company’s ability to compete successfully depends heavily upon its ability to ensure a continual and timely flow of competitive products, services and technologies to the marketplace. The Company continues to develop new technologies to enhance existing products and services, and to expand the range of its offerings through research and development (“R&D”), licensing of intellectual property and acquisition of third-party businesses and technology."
+    ],
+    "chunk_id": "71dc97f3-b7b7-4de1-adf2-b7bb3057f347",
+    "source_chunk_ids": [
+      "71dc97f3-b7b7-4de1-adf2-b7bb3057f347"
+    ]
+  },
+  {
+    "id": "golden_02",
+    "category": "simple_lookup",
+    "company": "Apple",
+    "fiscal_year": "2025",
+    "expected_decline": false,
+    "question": "According to Apple's fiscal year 2025 Form 10-K, what subscription-based digital content services are listed under Apple's Services offerings?",
+    "ground_truth": "Apple offers subscription-based services including Apple Arcade (a game service), Apple Fitness+ (a personalized fitness service), Apple Music (offering a curated listening experience with on-demand radio stations), Apple News+ (a news and magazine service), and Apple TV.",
+    "contexts": [
+      "®\n\nand Beats\n\n®\n\nproducts. Apple Vision Pro™ is the Company’s spatial computer based on its visionOS\n\n®\n\noperating system.\n\nHome includes Apple TV 4K\n\n®\n\n, the Company’s media streaming and gaming device based on its tvOS\n\n®\n\noperating system, and HomePod\n\n®\n\nand HomePod mini\n\n®\n\n, high-fidelity wireless smart speakers.\n\nAccessories includes Apple-branded and third-party accessories.\n\nApple Inc. | 2025 Form 10-K | 1\n\nServices\n\nAdvertising\n\nThe Company’s advertising services include third-party licensing arrangements and the Company’s own advertising platforms.\n\nAppleCare\n\nThe Company offers a portfolio of fee-based service and support products under the AppleCare\n\n®\n\nbrand. The offerings provide priority access to Apple technical support, access to the global Apple authorized service network for repair and replacement services, and in many cases additional coverage for instances of accidental damage or theft and loss, depending on the country and type of product.\n\nCloud Services\n\nThe Company’s cloud services store and keep customers’ content up-to-date and available across multiple Apple devices and Windows personal computers.\n\nDigital Content\n\nThe Company operates various platforms, including the App Store\n\n®\n\n,\n\nthat allow customers to discover and download applications and digital content, such as books, music, video, games and podcasts.\n\nThe Company also offers digital content through subscription-based services, including Apple Arcade\n\n®\n\n, a game service; Apple Fitness+\n\n®\n\n, a personalized fitness service; Apple Music\n\n®\n\n, which offers users a curated listening experience with on-demand radio stations; Apple News+\n\n®\n\n, a news and magazine service; and Apple TV"
+    ],
+    "chunk_id": "e0c028c7-9dff-4787-93b4-87b85e88460e",
+    "source_chunk_ids": [
+      "e0c028c7-9dff-4787-93b4-87b85e88460e"
+    ]
+  },
+  {
+    "id": "golden_03",
+    "category": "simple_lookup",
+    "company": "Apple",
+    "fiscal_year": "2024",
+    "expected_decline": false,
+    "question": "According to Apple's fiscal year 2024 Form 10-K, what are the principal competitive factors important to the company?",
+    "ground_truth": "The principal competitive factors important to the Company include price, product and service features (including security features), relative price and performance, product and service quality and reliability, design innovation, a strong third-party software and accessories ecosystem, marketing and distribution capability, service and support, and corporate reputation.",
+    "contexts": [
+      "The Company’s ability to compete successfully depends heavily on ensuring the continuing and timely introduction of innovative new products, services and technologies to the marketplace. The Company designs and develops nearly the entire solution for its products, including the hardware, operating system, numerous software applications and related services. Principal competitive factors important to the Company include price, product and service features (including security features), relative price and performance, product and service quality and reliability, design innovation, a strong third-party software and accessories ecosystem, marketing and distribution capability, service and support, and corporate reputation.\n\nThe Company is focused on expanding its market opportunities related to smartphones, personal computers, tablets, wearables and accessories, and services. The Company faces substantial competition in these markets from companies that have significant technical, marketing, distribution and other resources, as well as established hardware, software, and service offerings with large customer bases. In addition, some of the Company’s competitors have broader product lines, lower-priced products and a larger installed base of active devices. Competition has been particularly intense as competitors have aggressively cut prices and lowered product margins. Certain competitors have the resources, experience or cost structures to provide products at little or no profit or even at a loss. The Company’s services compete with business models that provide content to users for free and use illegitimate means to obtain third-party digital content and applications. The Company faces significant competition as competitors imitate the Company’s product features and applications within their products, or collaborate to offer integrated solutions that are more competitive than those they currently offer."
+    ],
+    "chunk_id": "656293de-c159-46a4-98fc-ac1d5cb1b75d",
+    "source_chunk_ids": [
+      "656293de-c159-46a4-98fc-ac1d5cb1b75d"
+    ]
+  },
+  {
+    "id": "golden_04",
+    "category": "numeric_precision",
+    "company": "Apple",
+    "fiscal_year": "2024",
+    "expected_decline": false,
+    "question": "According to Apple's fiscal year 2024 Form 10-K, what percentages of total net sales did Apple generate through its direct and indirect distribution channels in fiscal year 2024, respectively?",
+    "ground_truth": "During 2024, Apple's net sales through its direct and indirect distribution channels accounted for 38% and 62%, respectively, of total net sales.",
+    "contexts": [
+      "®\n\n, a game subscription service; Apple Fitness+\n\nSM\n\n, a personalized fitness service; Apple Music\n\n®\n\n, which offers users a curated listening experience with on-demand radio stations; Apple News+\n\n®\n\n, a subscription news and magazine service; and Apple TV+\n\n®\n\n, which offers exclusive original content and live sports.\n\nPayment Services\n\nThe Company offers payment services, including Apple Card\n\n®\n\n, a co-branded credit card, and Apple Pay\n\n®\n\n, a cashless payment service.\n\nSegments\n\nThe Company manages its business primarily on a geographic basis. The Company’s reportable segments consist of the Americas, Europe, Greater China, Japan and Rest of Asia Pacific. Americas includes both North and South America. Europe includes European countries, as well as India, the Middle East and Africa. Greater China includes China mainland, Hong Kong and Taiwan. Rest of Asia Pacific includes Australia and those Asian countries not included in the Company’s other reportable segments. Although the reportable segments provide similar hardware and software products and similar services, each one is managed separately to better align with the location of the Company’s customers and distribution partners and the unique market dynamics of each geographic region.\n\nMarkets and Distribution\n\nThe Company’s customers are primarily in the consumer, small and mid-sized business, education, enterprise and government markets. The Company sells its products and resells third-party products in most of its major markets directly to customers through its retail and online stores and its direct sales force. The Company also employs a variety of indirect distribution channels, such as third-party cellular network carriers, wholesalers, retailers and resellers. During 2024, the Company’s net sales through its direct and indirect distribution channels accounted for 38% and 62%, respectively, of total net sales."
+    ],
+    "chunk_id": "48d5a681-1951-4466-8c4b-7d4d14875040",
+    "source_chunk_ids": [
+      "48d5a681-1951-4466-8c4b-7d4d14875040"
+    ]
+  },
+  {
+    "id": "golden_05",
+    "category": "simple_lookup",
+    "company": "Apple",
+    "fiscal_year": "2024",
+    "expected_decline": false,
+    "question": "According to Apple's fiscal year 2024 Form 10-K, what subscription-based digital content services are explicitly detailed under Apple's Services offerings?",
+    "ground_truth": "The subscription-based digital content services explicitly listed are Apple Arcade (a game subscription service), Apple Fitness+ (a personalized fitness service), Apple Music (which offers a curated listening experience with on-demand radio stations), and Apple News+.",
+    "contexts": [
+      "®\n\nand Beats\n\n®\n\nproducts. Apple Vision Pro™ is the Company’s first spatial computer based on its visionOS™ operating system.\n\nHome includes Apple TV\n\n®\n\n, the Company’s media streaming and gaming device based on its tvOS\n\n®\n\noperating system, and HomePod\n\n®\n\nand HomePod mini\n\n®\n\n, high-fidelity wireless smart speakers.\n\nAccessories includes Apple-branded and third-party accessories.\n\nApple Inc. | 2024 Form 10-K | 1\n\nServices\n\nAdvertising\n\nThe Company’s advertising services include third-party licensing arrangements and the Company’s own advertising platforms.\n\nAppleCare\n\nThe Company offers a portfolio of fee-based service and support products under the AppleCare\n\n®\n\nbrand. The offerings provide priority access to Apple technical support, access to the global Apple authorized service network for repair and replacement services, and in many cases additional coverage for instances of accidental damage or theft and loss, depending on the country and type of product.\n\nCloud Services\n\nThe Company’s cloud services store and keep customers’ content up-to-date and available across multiple Apple devices and Windows personal computers.\n\nDigital Content\n\nThe Company operates various platforms, including the App Store\n\n®\n\n,\n\nthat allow customers to discover and download applications and digital content, such as books, music, video, games and podcasts.\n\nThe Company also offers digital content through subscription-based services, including Apple Arcade\n\n®\n\n, a game subscription service; Apple Fitness+\n\nSM\n\n, a personalized fitness service; Apple Music\n\n®\n\n, which offers users a curated listening experience with on-demand radio stations; Apple News+\n\n®"
+    ],
+    "chunk_id": "04f3b2b5-fe6b-4061-97a2-6044ac8d02f6",
+    "source_chunk_ids": [
+      "04f3b2b5-fe6b-4061-97a2-6044ac8d02f6"
+    ]
+  },
+  {
+    "id": "golden_06",
+    "category": "simple_lookup",
+    "company": "Apple",
+    "fiscal_year": "2025",
+    "expected_decline": false,
+    "question": "According to Apple's fiscal year 2025 Form 10-K, what does the company primarily rely on for its success, despite viewing the ownership of intellectual property rights as an important factor in differentiating its business?",
+    "ground_truth": "The Company relies primarily on the innovative skills, technical competence and marketing abilities of its personnel.",
+    "contexts": [
+      "Because the industries in which the Company competes are characterized by rapid technological advances, the Company’s ability to compete successfully depends heavily upon its ability to ensure a continual and timely flow of competitive products, services and technologies to the marketplace. The Company continues to develop new technologies to enhance existing products and services, and to expand the range of its offerings through research and development (“R&D”), licensing of intellectual property and acquisition of third-party businesses and technology.\n\nIntellectual Property\n\nThe Company currently holds a broad collection of intellectual property rights relating to certain aspects of its hardware, software and services. This includes patents, designs, copyrights, trademarks, trade secrets and other forms of intellectual property rights in the U.S. and various foreign countries. Although the Company believes the ownership of such intellectual property rights is an important factor in differentiating its business and that its success does depend in part on such ownership, the Company relies primarily on the innovative skills, technical competence and marketing abilities of its personnel.\n\nThe Company regularly files patent, design, copyright and trademark applications to protect innovations arising from its hardware, software and service research, development, design and marketing, and is currently pursuing thousands of applications around the world. Over time, the Company has accumulated a large portfolio of issued and registered intellectual property rights around the world. No single intellectual property right is solely responsible for protecting the Company’s products and services. The Company believes the duration of its intellectual property rights is adequate relative to the expected lives of its products and services."
+    ],
+    "chunk_id": "1f136a02-95cf-4286-97b1-d12d07de5262",
+    "source_chunk_ids": [
+      "1f136a02-95cf-4286-97b1-d12d07de5262"
+    ]
+  },
+  {
+    "id": "golden_07",
+    "category": "simple_lookup",
+    "company": "Apple",
+    "fiscal_year": "2025",
+    "expected_decline": false,
+    "question": "According to Apple's fiscal year 2025 Form 10-K, what factors can cause initial capacity constraints when the company introduces a component or product that utilizes new technologies?",
+    "ground_truth": "Initial capacity constraints may exist when a component or product uses new technologies until the suppliers' yields have matured or their manufacturing capacities have increased.",
+    "contexts": [
+      "Although most components essential to the Company’s business are generally available from multiple sources, certain components are currently obtained from single or limited sources. The Company also competes for various components with other participants in the markets for smartphones, personal computers, tablets, wearables and accessories. Therefore, many components used by the Company, including those that are available from multiple sources, are at times subject to industry-wide shortage and significant commodity pricing fluctuations. Restrictions on international trade can increase the cost or limit the availability of the Company’s products and the components and rare earths and other raw materials that go into them.\n\nThe Company uses some custom components that are not commonly used by its competitors, and new products introduced by the Company often utilize custom components available from only one source. When a component or product uses new technologies, initial capacity constraints may exist until the suppliers’ yields have matured or their manufacturing capacities have increased. The Company has entered into agreements for the supply of many components; however, the Company may not be able to extend or renew agreements for the supply of components on similar terms, or at all, and may not be successful in obtaining sufficient quantities from its suppliers or in a timely manner, or in identifying and obtaining sufficient quantities from an alternative source. In addition, component suppliers may fail, be subject to consolidation within a particular industry, or decide to concentrate on the production of common components instead of components customized to meet the Company’s requirements, further limiting the Company’s ability to obtain sufficient quantities of components on commercially reasonable terms, or at all."
+    ],
+    "chunk_id": "7c5cbada-8eac-49cc-a571-377378c75fb2",
+    "source_chunk_ids": [
+      "7c5cbada-8eac-49cc-a571-377378c75fb2"
+    ]
+  },
+  {
+    "id": "golden_08",
+    "category": "simple_lookup",
+    "company": "Apple",
+    "fiscal_year": "2024",
+    "expected_decline": false,
+    "question": "According to Apple's fiscal year 2024 Form 10-K, what historical trend does Apple observe regarding its net sales in the first quarter of its fiscal year, and what drives this trend?",
+    "ground_truth": "Apple historically experiences higher net sales in its first quarter compared to other quarters in its fiscal year, which is driven in part by seasonal holiday demand.",
+    "contexts": [
+      "The Company regularly files patent, design, copyright and trademark applications to protect innovations arising from its research, development, design and marketing, and is currently pursuing thousands of applications around the world. Over time, the Company has accumulated a large portfolio of issued and registered intellectual property rights around the world. No single intellectual property right is solely responsible for protecting the Company’s products and services. The Company believes the duration of its intellectual property rights is adequate relative to the expected lives of its products and services.\n\nIn addition to Company-owned intellectual property, many of the Company’s products and services are designed to include intellectual property owned by third parties. It may be necessary in the future to seek or renew licenses relating to various aspects of the Company’s products, processes and services. While the Company has generally been able to obtain such licenses on commercially reasonable terms in the past, there is no guarantee that such licenses could be obtained in the future on reasonable terms or at all.\n\nApple Inc. | 2024 Form 10-K | 3\n\nBusiness Seasonality and Product Introductions\n\nThe Company has historically experienced higher net sales in its first quarter compared to other quarters in its fiscal year due in part to seasonal holiday demand. Additionally, new product and service introductions can significantly impact net sales, cost of sales and operating expenses. The timing of product introductions can also impact the Company’s net sales to its indirect distribution channels as these channels are filled with new inventory following a product launch, and channel inventory of an older product often declines as the launch of a newer product approaches. Net sales can also be affected when consumers and distributors anticipate a product introduction."
+    ],
+    "chunk_id": "feed7215-e73f-49da-a5fa-5be1b4358d88",
+    "source_chunk_ids": [
+      "feed7215-e73f-49da-a5fa-5be1b4358d88"
+    ]
+  },
+  {
+    "id": "golden_09",
+    "category": "simple_lookup",
+    "company": "Apple",
+    "fiscal_year": "2023",
+    "expected_decline": false,
+    "question": "According to Apple's fiscal year 2023 Form 10-K, what specific consequences could result if Apple is unable to satisfy changing regulations regarding product import and export?",
+    "ground_truth": "If Apple fails to satisfy import and export regulatory requirements or is found in violation, its products could be banned, delayed, or prohibited from importation, which could materially adversely affect the Company's business, reputation, results of operations, and financial condition.",
+    "contexts": [
+      "While the Company maintains insurance coverage for certain types of claims, such insurance coverage may be insufficient to cover all losses or all types of claims that may arise.\n\nApple Inc. | 2023 Form 10-K | 12\n\nThe Company is subject to complex and changing laws and regulations worldwide, which exposes the Company to potential liabilities, increased costs and other adverse effects on the Company’s business.\n\nThe Company’s global operations are subject to complex and changing laws and regulations on subjects, including antitrust; privacy, data security and data localization; consumer protection; advertising, sales, billing and e-commerce; financial services and technology; product liability; intellectual property ownership and infringement; digital platforms; machine learning and artificial intelligence; internet, telecommunications and mobile communications; media, television, film and digital content; availability of third-party software applications and services; labor and employment; anticorruption; import, export and trade; foreign exchange controls and cash repatriation restrictions; anti–money laundering; foreign ownership and investment; tax; and environmental, health and safety, including electronic waste, recycling, product design and climate change.\n\nCompliance with these laws and regulations is onerous and expensive. New and changing laws and regulations can adversely affect the Company’s business by increasing the Company’s costs, limiting the Company’s ability to offer a product, service or feature to customers, imposing changes to the design of the Company’s products and services, impacting customer demand for the Company’s products and services, and requiring changes to the Company’s supply chain and its business. New and changing laws and regulations can also create uncertainty about how such laws and regulations will be interpreted and applied. These risks and costs may increase as the Company’s products and services are introduced into specialized applications, including health and financial services. The Company has implemented policies and procedures designed to ensure compliance with applicable laws and regulations, but there can be no assurance the Company’s employees, contractors or agents will not violate such laws and regulations or the Company’s policies and procedures. If the Company is found to have violated laws and regulations, it could materially adversely affect the Company’s business, reputation, results of operations and financial condition. Regulatory changes and other actions that materially adversely affect the Company’s business may be announced with little or no advance notice and the Company may not be able to effectively mitigate all adverse impacts from such measures. For example, the Company is subject to changing regulations relating to the export and import of its products. Although the Company has programs, policies and procedures in place that are designed to satisfy regulatory requirements, there can be no assurance that such policies and procedures will be effective in preventing a violation or a claim of a violation. As a result, the Company’s products could be banned, delayed or prohibited from importation, which could materially adversely affect the Company’s business, reputation, results of operations and financial condition."
+    ],
+    "chunk_id": "f56b075d-8906-4b36-8641-485bf7092b4f",
+    "source_chunk_ids": [
+      "f56b075d-8906-4b36-8641-485bf7092b4f"
+    ]
+  },
+  {
+    "id": "golden_10",
+    "category": "simple_lookup",
+    "company": "Apple",
+    "fiscal_year": "2023",
+    "expected_decline": false,
+    "question": "According to Apple's fiscal year 2023 Form 10-K, in which specific sections are many of the forward-looking statements located?",
+    "ground_truth": "Many of the forward-looking statements are located in Part I, Item 1 under the heading \"Business\" and Part II, Item 7 under the heading \"Management’s Discussion and Analysis of Financial Condition and Results of Operations.\"",
+    "contexts": [
+      "Item 1A.\n\nRisk Factors\n\n5\n\nItem 1B.\n\nUnresolved Staff Comments\n\n16\n\nItem 1C.\n\nC\n\nybersecurity\n\n16\n\nItem 2.\n\nProperties\n\n17\n\nItem 3.\n\nLegal Proceedings\n\n17\n\nItem 4.\n\nMine Safety Disclosures\n\n17\n\nPart II\n\nItem 5.\n\nMarket for Registrant’s Common Equity, Related Stockholder Matters and Issuer Purchases of Equity Securities\n\n18\n\nItem 6.\n\n[Reserved]\n\n19\n\nItem 7.\n\nManagement’s Discussion and Analysis of Financial Condition and Results of Operations\n\n20\n\nItem 7A.\n\nQuantitative and Qualitative Disclosures About Market Risk\n\n26\n\nItem 8.\n\nFinancial Statements and Supplementary Data\n\n27\n\nItem 9.\n\nChanges in and Disagreements with Accountants on Accounting and Financial Disclosure\n\n52\n\nItem 9A.\n\nControls and Procedures\n\n52\n\nItem 9B.\n\nOther Information\n\n53\n\nItem 9C.\n\nDisclosure Regarding Foreign Jurisdictions that Prevent Inspections\n\n53\n\nPart III\n\nItem 10.\n\nDirectors, Executive Officers and Corporate Governance\n\n53\n\nItem 11.\n\nExecutive Compensation\n\n53\n\nItem 12\n\n.\n\nSecurity Ownership of Certain Beneficial Owners and Management and Related Stockholder Matters\n\n53\n\nItem 13\n\n.\n\nCertain Relationships and Related Transactions, and Director Independence\n\n53\n\nItem 14.\n\nPrincipal Accountant Fees and Services\n\n53\n\nPart IV\n\nItem 15.\n\nExhibit and Financial Statement Schedules\n\n54\n\nItem 16.\n\nForm 10-K Summary\n\n57\n\nThis Annual Report on Form 10-K (“Form 10-K”) contains forward-looking statements, within the meaning of the Private Securities Litigation Reform Act of 1995, that involve risks and uncertainties. Many of the forward-looking statements are located in Part I, Item 1 of this Form 10-K under the heading “Business” and Part II, Item 7 of this Form 10-K under the heading “Management’s Discussion and Analysis of Financial Condition and Results of Operations.” Forward-looking statements provide current expectations of future events based on certain assumptions and include any statement that does not directly relate to any historical or current fact. For example, statements in this Form 10-K regarding the potential future impact of macroeconomic conditions on the Company’s business and results of operations are forward-looking statements. Forward-looking statements can also be identified by words such as “future,” “anticipates,” “believes,” “estimates,” “expects,” “intends,” “plans,” “predicts,” “will,” “would,” “could,” “can,” “may,” and similar terms. Forward-looking statements are not guarantees of future performance and the Company’s actual results may differ significantly from the results discussed in the forward-looking statements. Factors that might cause such differences include, but are not limited to, those discussed in Part I, Item 1A of this Form 10-K under the heading “Risk Factors.” The Company assumes no obligation to revise or update any forward-looking statements for any reason, except as required by law."
+    ],
+    "chunk_id": "0dce3c2a-8bcb-4188-a7ce-14d090054ce2",
+    "source_chunk_ids": [
+      "0dce3c2a-8bcb-4188-a7ce-14d090054ce2"
+    ]
+  },
+  {
+    "id": "golden_11",
+    "category": "simple_lookup",
+    "company": "Apple",
+    "fiscal_year": "2025",
+    "expected_decline": false,
+    "question": "According to Apple's fiscal year 2025 Form 10-K, what specific characteristics define the global markets in which the company offers its products and services?",
+    "ground_truth": "The global markets for the Company's products and services are characterized by aggressive price competition, downward pressure on gross margins, continual improvement in product performance, price sensitivity on the part of consumers and businesses, frequent introduction of new products and services, short product life cycles, evolving industry standards, and rapid adoption of technological advancements.",
+    "contexts": [
+      "Following any interruption to its business, the Company can require substantial recovery time, incur significant expenditures to resume operations, and lose significant sales. Because the Company relies on single or limited sources for the supply and manufacture of many critical components, a business interruption affecting such sources would exacerbate any negative consequences to the Company. While the Company maintains insurance coverage for certain types of losses, such insurance coverage may be insufficient to cover all losses that may arise. Any of the foregoing can materially adversely affect the Company’s business, results of operations, financial condition and stock price.\n\nGlobal markets for the Company’s products and services are highly competitive and subject to rapid technological change, and the Company may be unable to compete effectively in these markets.\n\nThe Company’s products and services are offered in highly competitive global markets. These markets are characterized by aggressive price competition, downward pressure on gross margins, continual improvement in product performance, and price sensitivity on the part of consumers and businesses. These markets are further defined by frequent introduction of new products and services, short product life cycles, evolving industry standards, and rapid adoption of technological advancements.\n\nThe Company’s ability to compete successfully depends heavily on ensuring the continuing and timely introduction of innovative new products, services and technologies to the marketplace. The Company designs and develops nearly the entire solution for its products, including the hardware, operating system, numerous software applications and related services. As a result, the Company must make significant investments in R&D. These investments may not achieve expected returns, and the Company may not be able to develop and market new products and services successfully."
+    ],
+    "chunk_id": "453e8447-b741-441b-98b1-6f5771423f72",
+    "source_chunk_ids": [
+      "453e8447-b741-441b-98b1-6f5771423f72"
+    ]
+  },
+  {
+    "id": "golden_12",
+    "category": "simple_lookup",
+    "company": "Apple",
+    "fiscal_year": "2023",
+    "expected_decline": false,
+    "question": "According to Apple's fiscal year 2023 Form 10-K, what specific areas are gauged through the company's employee sentiment surveys?",
+    "ground_truth": "The Company conducts surveys that gauge employee sentiment in the areas of career development, manager performance, and inclusivity.",
+    "contexts": [
+      "The Company believes that compensation should be competitive and equitable, and should enable employees to share in the Company’s success. The Company recognizes its people are most likely to thrive when they have the resources to meet their needs and the time and support to succeed in their professional and personal lives. In support of this, the Company offers a wide variety of benefits for employees around the world and invests in tools and resources that are designed to support employees’ individual growth and development.\n\nInclusion and Diversity\n\nThe Company is committed to its vision to build and sustain a more inclusive workforce that is representative of the communities it serves. The Company continues to work to increase diverse representation at every level, foster an inclusive culture, and support equitable pay and access to opportunity for all employees.\n\nEngagement\n\nThe Company believes that open and honest communication among team members, managers and leaders helps create an open, collaborative work environment where everyone can contribute, grow and succeed. Team members are encouraged to come to their managers with questions, feedback or concerns, and the Company conducts surveys that gauge employee sentiment in areas like career development, manager performance and inclusivity.\n\nHealth and Safety\n\nThe Company is committed to protecting its team members everywhere it operates. The Company identifies potential workplace risks in order to develop measures to mitigate possible hazards. The Company supports employees with general safety, security and crisis management training, and by putting specific programs in place for those working in potentially high-hazard environments. Additionally, the Company works to protect the safety and security of its team members, visitors and customers through its global security team."
+    ],
+    "chunk_id": "71e496ff-ac38-4e2f-a1d6-70910d7fecc6",
+    "source_chunk_ids": [
+      "71e496ff-ac38-4e2f-a1d6-70910d7fecc6"
+    ]
+  },
+  {
+    "id": "golden_13",
+    "category": "unanswerable",
+    "company": "Tesla",
+    "fiscal_year": "2022",
+    "expected_decline": true,
+    "question": "What was Tesla's total automotive revenue in fiscal year 2022 according to its Form 10-K?",
+    "ground_truth": "The provided documents do not contain this information.",
+    "contexts": [],
+    "chunk_id": null,
+    "source_chunk_ids": []
+  },
+  {
+    "id": "golden_14",
+    "category": "unanswerable",
+    "company": "Uber",
+    "fiscal_year": "2023",
+    "expected_decline": true,
+    "question": "According to Uber's fiscal year 2023 Form 10-K, what was Uber's total Delivery segment gross bookings in fiscal year 2023?",
+    "ground_truth": "The provided documents do not contain this information.",
+    "contexts": [],
+    "chunk_id": null,
+    "source_chunk_ids": []
+  },
+  {
+    "id": "golden_15",
+    "category": "unanswerable",
+    "company": "Meta",
+    "fiscal_year": "2020",
+    "expected_decline": true,
+    "question": "According to Meta's fiscal year 2020 Form 10-K, what were Meta's total Reality Labs segment operating losses in fiscal year 2020?",
+    "ground_truth": "The provided documents do not contain this information.",
+    "contexts": [],
+    "chunk_id": null,
+    "source_chunk_ids": []
+  },
+  {
+    "id": "golden_16",
+    "category": "unanswerable",
+    "company": "Spotify",
+    "fiscal_year": "2023",
+    "expected_decline": true,
+    "question": "According to Spotify's fiscal year 2023 annual report, what was Spotify's total premium subscriber count at the end of fiscal year 2023?",
+    "ground_truth": "The provided documents do not contain this information.",
+    "contexts": [],
+    "chunk_id": null,
+    "source_chunk_ids": []
+  },
+  {
+    "id": "golden_17",
+    "category": "unanswerable",
+    "company": "Netflix",
+    "fiscal_year": "2022",
+    "expected_decline": true,
+    "question": "According to Netflix's fiscal year 2022 Form 10-K, what was Netflix's total paid membership count at the end of fiscal year 2022?",
+    "ground_truth": "The provided documents do not contain this information.",
+    "contexts": [],
+    "chunk_id": null,
+    "source_chunk_ids": []
+  },
+  {
+    "id": "golden_18",
+    "category": "unanswerable",
+    "company": "Airbnb",
+    "fiscal_year": "2022",
+    "expected_decline": true,
+    "question": "According to Airbnb's fiscal year 2022 Form 10-K, what was Airbnb's total gross booking value in fiscal year 2022?",
+    "ground_truth": "The provided documents do not contain this information.",
+    "contexts": [],
+    "chunk_id": null,
+    "source_chunk_ids": []
+  },
+  {
+    "id": "golden_19",
+    "category": "unanswerable",
+    "company": "Tesla",
+    "fiscal_year": "2021",
+    "expected_decline": true,
+    "question": "According to Tesla's fiscal year 2021 Form 10-K, what were Tesla's total Model 3 and Model Y vehicle deliveries in fiscal year 2021?",
+    "ground_truth": "The provided documents do not contain this information.",
+    "contexts": [],
+    "chunk_id": null,
+    "source_chunk_ids": []
+  },
+  {
+    "id": "golden_20",
+    "category": "unanswerable",
+    "company": "Snap",
+    "fiscal_year": "2023",
+    "expected_decline": true,
+    "question": "According to Snap Inc.'s fiscal year 2023 Form 10-K, what was Snapchat's daily active user (DAU) count at the end of fiscal year 2023?",
+    "ground_truth": "The provided documents do not contain this information.",
+    "contexts": [],
+    "chunk_id": null,
+    "source_chunk_ids": []
+  },
+  {
+    "id": "golden_21",
+    "category": "unanswerable",
+    "company": "Intel",
+    "fiscal_year": "2022",
+    "expected_decline": true,
+    "question": "According to Intel's fiscal year 2022 Form 10-K, what was Intel's total capital expenditure in fiscal year 2022?",
+    "ground_truth": "The provided documents do not contain this information.",
+    "contexts": [],
+    "chunk_id": null,
+    "source_chunk_ids": []
+  },
+  {
+    "id": "golden_22",
+    "category": "unanswerable",
+    "company": "Salesforce",
+    "fiscal_year": "2023",
+    "expected_decline": true,
+    "question": "According to Salesforce's fiscal year 2023 Form 10-K, what was Salesforce's total subscription and support revenue in fiscal year 2023?",
+    "ground_truth": "The provided documents do not contain this information.",
+    "contexts": [],
+    "chunk_id": null,
+    "source_chunk_ids": []
+  },
+  {
+    "id": "golden_23",
+    "category": "multi_hop",
+    "company": "Apple",
+    "fiscal_year": "2023/2024",
+    "expected_decline": false,
+    "question": "Comparing Apple's Item 1 disclosures in its fiscal year 2023 and fiscal year 2024 Form 10-K filings, what specific changes were made to the listed models in the iPhone line, and what new category of devices was added to the definition of 'Wearables' in fiscal year 2024?",
+    "ground_truth": "Based on Apple's Item 1 filings: 1) For the iPhone line, the fiscal year 2023 filing lists the iPhone 15 Pro, iPhone 15, iPhone 14, iPhone 13, and iPhone SE, whereas the fiscal year 2024 filing lists the iPhone 16 Pro, iPhone 16, iPhone 15, iPhone 14, and iPhone SE (meaning the iPhone 16 Pro and iPhone 16 were added, while the iPhone 15 Pro and iPhone 13 were removed). 2) For the definition of 'Wearables', the fiscal year 2023 filing states that 'Wearables includes smartwatches and wireless headphones', whereas the fiscal year 2024 filing adds 'spatial computers' to this definition, stating 'Wearables includes smartwatches, wireless headphones and spatial computers'.",
+    "contexts": [
+      "Item 1.    Business\n\nCompany Background\n\nThe Company designs, manufactures and markets smartphones, personal computers, tablets, wearables and accessories, and sells a variety of related services. The Company’s fiscal year is the 52- or 53-week period that ends on the last Saturday of September.\n\nProducts\n\niPhone\n\niPhone\n\n®\n\nis the Company’s line of smartphones based on its iOS operating system. The iPhone line includes iPhone 15 Pro, iPhone 15, iPhone 14, iPhone 13 and iPhone SE\n\n®\n\n.\n\nMac\n\nMac\n\n®\n\nis the Company’s line of personal computers based on its macOS\n\n®\n\noperating system. The Mac line includes laptops MacBook Air\n\n®\n\nand MacBook Pro\n\n®\n\n, as well as desktops iMac\n\n®\n\n, Mac mini\n\n®\n\n, Mac Studio\n\n®\n\nand Mac Pro\n\n®\n\n.\n\niPad\n\niPad\n\n®\n\nis the Company’s line of multipurpose tablets based on its iPadOS\n\n®\n\noperating system. The iPad line includes iPad Pro\n\n®\n\n, iPad Air\n\n®\n\n, iPad and iPad mini\n\n®\n\n.\n\nWearables, Home and Accessories\n\nWearables includes smartwatches and wireless headphones. The Company’s line of smartwatches, based on its watchOS\n\n®\n\noperating system, includes Apple Watch Ultra™ 2, Apple Watch\n\n®\n\nSeries 9 and Apple Watch SE\n\n®\n\n. The Company’s line of wireless headphones includes AirPods\n\n®\n\n, AirPods Pro\n\n®\n\n, AirPods Max™ and Beats\n\n®\n\nproducts.\n\nHome includes Apple TV\n\n®\n\n, the Company’s media streaming and gaming device based on its tvOS\n\n®\n\noperating system, and HomePod\n\n®\n\nand HomePod mini\n\n®\n\n, high-fidelity wireless smart speakers.\n\nAccessories includes Apple-branded and third-party accessories.",
+      "Item 1.    Business\n\nCompany Background\n\nThe Company designs, manufactures and markets smartphones, personal computers, tablets, wearables and accessories, and sells a variety of related services. The Company’s fiscal year is the 52- or 53-week period that ends on the last Saturday of September.\n\nProducts\n\niPhone\n\niPhone\n\n®\n\nis the Company’s line of smartphones based on its iOS operating system. The iPhone line includes iPhone 16 Pro, iPhone 16, iPhone 15, iPhone 14 and iPhone SE\n\n®\n\n.\n\nMac\n\nMac\n\n®\n\nis the Company’s line of personal computers based on its macOS\n\n®\n\noperating system. The Mac line includes laptops MacBook Air\n\n®\n\nand MacBook Pro\n\n®\n\n, as well as desktops iMac\n\n®\n\n, Mac mini\n\n®\n\n, Mac Studio\n\n®\n\nand Mac Pro\n\n®\n\n.\n\niPad\n\niPad\n\n®\n\nis the Company’s line of multipurpose tablets based on its iPadOS\n\n®\n\noperating system. The iPad line includes iPad Pro\n\n®\n\n, iPad Air\n\n®\n\n, iPad and iPad mini\n\n®\n\n.\n\nWearables, Home and Accessories\n\nWearables includes smartwatches, wireless headphones and spatial computers. The Company’s line of smartwatches, based on its watchOS\n\n®\n\noperating system, includes Apple Watch Ultra\n\n®\n\n2, Apple Watch\n\n®\n\nSeries 10 and Apple Watch SE\n\n®\n\n. The Company’s line of wireless headphones includes AirPods\n\n®\n\n, AirPods Pro\n\n®\n\n, AirPods Max\n\n®\n\nand Beats\n\n®\n\nproducts. Apple Vision Pro™ is the Company’s first spatial computer based on its visionOS™ operating system.\n\nHome includes Apple TV\n\n®\n\n, the Company’s media streaming and gaming device based on its tvOS"
+    ],
+    "chunk_id": [
+      "7888504a-3e9e-4bac-be7d-aea132d9972a",
+      "a28efce8-dda8-45aa-88ab-c58ecd0219c6"
+    ],
+    "source_chunk_ids": [
+      "7888504a-3e9e-4bac-be7d-aea132d9972a",
+      "a28efce8-dda8-45aa-88ab-c58ecd0219c6"
+    ]
+  },
+  {
+    "id": "golden_24",
+    "category": "multi_hop",
+    "company": "Apple",
+    "fiscal_year": "2023/2024",
+    "expected_decline": false,
+    "question": "Based on Apple's Form 10-K filings, what is the operating system associated with Apple's line of smartwatches as described in its fiscal year 2023 filing, and what is the operating system associated with Apple's first spatial computer, Apple Vision Pro, as described in its fiscal year 2024 filing?",
+    "ground_truth": "According to Chunk A (FY 2023), the operating system associated with Apple's line of smartwatches is watchOS (specifically watchOS®). According to Chunk B (FY 2024), the operating system associated with Apple's first spatial computer, Apple Vision Pro, is visionOS (specifically visionOS™).",
+    "contexts": [
+      "Item 1.    Business\n\nCompany Background\n\nThe Company designs, manufactures and markets smartphones, personal computers, tablets, wearables and accessories, and sells a variety of related services. The Company’s fiscal year is the 52- or 53-week period that ends on the last Saturday of September.\n\nProducts\n\niPhone\n\niPhone\n\n®\n\nis the Company’s line of smartphones based on its iOS operating system. The iPhone line includes iPhone 15 Pro, iPhone 15, iPhone 14, iPhone 13 and iPhone SE\n\n®\n\n.\n\nMac\n\nMac\n\n®\n\nis the Company’s line of personal computers based on its macOS\n\n®\n\noperating system. The Mac line includes laptops MacBook Air\n\n®\n\nand MacBook Pro\n\n®\n\n, as well as desktops iMac\n\n®\n\n, Mac mini\n\n®\n\n, Mac Studio\n\n®\n\nand Mac Pro\n\n®\n\n.\n\niPad\n\niPad\n\n®\n\nis the Company’s line of multipurpose tablets based on its iPadOS\n\n®\n\noperating system. The iPad line includes iPad Pro\n\n®\n\n, iPad Air\n\n®\n\n, iPad and iPad mini\n\n®\n\n.\n\nWearables, Home and Accessories\n\nWearables includes smartwatches and wireless headphones. The Company’s line of smartwatches, based on its watchOS\n\n®\n\noperating system, includes Apple Watch Ultra™ 2, Apple Watch\n\n®\n\nSeries 9 and Apple Watch SE\n\n®\n\n. The Company’s line of wireless headphones includes AirPods\n\n®\n\n, AirPods Pro\n\n®\n\n, AirPods Max™ and Beats\n\n®\n\nproducts.\n\nHome includes Apple TV\n\n®\n\n, the Company’s media streaming and gaming device based on its tvOS\n\n®\n\noperating system, and HomePod\n\n®\n\nand HomePod mini\n\n®\n\n, high-fidelity wireless smart speakers.\n\nAccessories includes Apple-branded and third-party accessories.",
+      "®\n\nand Beats\n\n®\n\nproducts. Apple Vision Pro™ is the Company’s first spatial computer based on its visionOS™ operating system.\n\nHome includes Apple TV\n\n®\n\n, the Company’s media streaming and gaming device based on its tvOS\n\n®\n\noperating system, and HomePod\n\n®\n\nand HomePod mini\n\n®\n\n, high-fidelity wireless smart speakers.\n\nAccessories includes Apple-branded and third-party accessories.\n\nApple Inc. | 2024 Form 10-K | 1\n\nServices\n\nAdvertising\n\nThe Company’s advertising services include third-party licensing arrangements and the Company’s own advertising platforms.\n\nAppleCare\n\nThe Company offers a portfolio of fee-based service and support products under the AppleCare\n\n®\n\nbrand. The offerings provide priority access to Apple technical support, access to the global Apple authorized service network for repair and replacement services, and in many cases additional coverage for instances of accidental damage or theft and loss, depending on the country and type of product.\n\nCloud Services\n\nThe Company’s cloud services store and keep customers’ content up-to-date and available across multiple Apple devices and Windows personal computers.\n\nDigital Content\n\nThe Company operates various platforms, including the App Store\n\n®\n\n,\n\nthat allow customers to discover and download applications and digital content, such as books, music, video, games and podcasts.\n\nThe Company also offers digital content through subscription-based services, including Apple Arcade\n\n®\n\n, a game subscription service; Apple Fitness+\n\nSM\n\n, a personalized fitness service; Apple Music\n\n®\n\n, which offers users a curated listening experience with on-demand radio stations; Apple News+\n\n®"
+    ],
+    "chunk_id": [
+      "7888504a-3e9e-4bac-be7d-aea132d9972a",
+      "04f3b2b5-fe6b-4061-97a2-6044ac8d02f6"
+    ],
+    "source_chunk_ids": [
+      "7888504a-3e9e-4bac-be7d-aea132d9972a",
+      "04f3b2b5-fe6b-4061-97a2-6044ac8d02f6"
+    ]
+  },
+  {
+    "id": "golden_25",
+    "category": "multi_hop",
+    "company": "Apple",
+    "fiscal_year": "2023/2024",
+    "expected_decline": false,
+    "question": "According to Apple's Item 1 disclosures in its fiscal year 2023 and fiscal year 2024 Form 10-K filings, what are the specific operating systems that power the iPhone and iPad product lines, and what are the five reportable geographic segments through which Apple manages its business?",
+    "ground_truth": "Based on Apple's Item 1 disclosures:\n1. The operating systems powering the product lines (from Chunk A) are iOS for the iPhone and iPadOS for the iPad.\n2. The five reportable geographic segments (from Chunk B) are the Americas, Europe, Greater China, Japan, and Rest of Asia Pacific.",
+    "contexts": [
+      "Item 1.    Business\n\nCompany Background\n\nThe Company designs, manufactures and markets smartphones, personal computers, tablets, wearables and accessories, and sells a variety of related services. The Company’s fiscal year is the 52- or 53-week period that ends on the last Saturday of September.\n\nProducts\n\niPhone\n\niPhone\n\n®\n\nis the Company’s line of smartphones based on its iOS operating system. The iPhone line includes iPhone 15 Pro, iPhone 15, iPhone 14, iPhone 13 and iPhone SE\n\n®\n\n.\n\nMac\n\nMac\n\n®\n\nis the Company’s line of personal computers based on its macOS\n\n®\n\noperating system. The Mac line includes laptops MacBook Air\n\n®\n\nand MacBook Pro\n\n®\n\n, as well as desktops iMac\n\n®\n\n, Mac mini\n\n®\n\n, Mac Studio\n\n®\n\nand Mac Pro\n\n®\n\n.\n\niPad\n\niPad\n\n®\n\nis the Company’s line of multipurpose tablets based on its iPadOS\n\n®\n\noperating system. The iPad line includes iPad Pro\n\n®\n\n, iPad Air\n\n®\n\n, iPad and iPad mini\n\n®\n\n.\n\nWearables, Home and Accessories\n\nWearables includes smartwatches and wireless headphones. The Company’s line of smartwatches, based on its watchOS\n\n®\n\noperating system, includes Apple Watch Ultra™ 2, Apple Watch\n\n®\n\nSeries 9 and Apple Watch SE\n\n®\n\n. The Company’s line of wireless headphones includes AirPods\n\n®\n\n, AirPods Pro\n\n®\n\n, AirPods Max™ and Beats\n\n®\n\nproducts.\n\nHome includes Apple TV\n\n®\n\n, the Company’s media streaming and gaming device based on its tvOS\n\n®\n\noperating system, and HomePod\n\n®\n\nand HomePod mini\n\n®\n\n, high-fidelity wireless smart speakers.\n\nAccessories includes Apple-branded and third-party accessories.",
+      "®\n\n, a game subscription service; Apple Fitness+\n\nSM\n\n, a personalized fitness service; Apple Music\n\n®\n\n, which offers users a curated listening experience with on-demand radio stations; Apple News+\n\n®\n\n, a subscription news and magazine service; and Apple TV+\n\n®\n\n, which offers exclusive original content and live sports.\n\nPayment Services\n\nThe Company offers payment services, including Apple Card\n\n®\n\n, a co-branded credit card, and Apple Pay\n\n®\n\n, a cashless payment service.\n\nSegments\n\nThe Company manages its business primarily on a geographic basis. The Company’s reportable segments consist of the Americas, Europe, Greater China, Japan and Rest of Asia Pacific. Americas includes both North and South America. Europe includes European countries, as well as India, the Middle East and Africa. Greater China includes China mainland, Hong Kong and Taiwan. Rest of Asia Pacific includes Australia and those Asian countries not included in the Company’s other reportable segments. Although the reportable segments provide similar hardware and software products and similar services, each one is managed separately to better align with the location of the Company’s customers and distribution partners and the unique market dynamics of each geographic region.\n\nMarkets and Distribution\n\nThe Company’s customers are primarily in the consumer, small and mid-sized business, education, enterprise and government markets. The Company sells its products and resells third-party products in most of its major markets directly to customers through its retail and online stores and its direct sales force. The Company also employs a variety of indirect distribution channels, such as third-party cellular network carriers, wholesalers, retailers and resellers. During 2024, the Company’s net sales through its direct and indirect distribution channels accounted for 38% and 62%, respectively, of total net sales."
+    ],
+    "chunk_id": [
+      "7888504a-3e9e-4bac-be7d-aea132d9972a",
+      "48d5a681-1951-4466-8c4b-7d4d14875040"
+    ],
+    "source_chunk_ids": [
+      "7888504a-3e9e-4bac-be7d-aea132d9972a",
+      "48d5a681-1951-4466-8c4b-7d4d14875040"
+    ]
+  },
+  {
+    "id": "golden_26",
+    "category": "multi_hop",
+    "company": "Apple",
+    "fiscal_year": "2023/2024",
+    "expected_decline": false,
+    "question": "According to Apple's Item 1 disclosures in its fiscal year 2023 and fiscal year 2024 Form 10-K filings, what are the operating systems used for the iPhone and smartwatch product lines, and what percentage of Apple's total net sales was generated through indirect distribution channels in fiscal year 2024?",
+    "ground_truth": "According to Chunk A (Apple's 2023 Item 1), the operating system for the iPhone line of smartphones is iOS, and the operating system for the smartwatch line (under Wearables, Home and Accessories) is watchOS. According to Chunk B (Apple's 2024 Item 1), the Company's net sales through indirect distribution channels accounted for 62% of total net sales during 2024.",
+    "contexts": [
+      "Item 1.    Business\n\nCompany Background\n\nThe Company designs, manufactures and markets smartphones, personal computers, tablets, wearables and accessories, and sells a variety of related services. The Company’s fiscal year is the 52- or 53-week period that ends on the last Saturday of September.\n\nProducts\n\niPhone\n\niPhone\n\n®\n\nis the Company’s line of smartphones based on its iOS operating system. The iPhone line includes iPhone 15 Pro, iPhone 15, iPhone 14, iPhone 13 and iPhone SE\n\n®\n\n.\n\nMac\n\nMac\n\n®\n\nis the Company’s line of personal computers based on its macOS\n\n®\n\noperating system. The Mac line includes laptops MacBook Air\n\n®\n\nand MacBook Pro\n\n®\n\n, as well as desktops iMac\n\n®\n\n, Mac mini\n\n®\n\n, Mac Studio\n\n®\n\nand Mac Pro\n\n®\n\n.\n\niPad\n\niPad\n\n®\n\nis the Company’s line of multipurpose tablets based on its iPadOS\n\n®\n\noperating system. The iPad line includes iPad Pro\n\n®\n\n, iPad Air\n\n®\n\n, iPad and iPad mini\n\n®\n\n.\n\nWearables, Home and Accessories\n\nWearables includes smartwatches and wireless headphones. The Company’s line of smartwatches, based on its watchOS\n\n®\n\noperating system, includes Apple Watch Ultra™ 2, Apple Watch\n\n®\n\nSeries 9 and Apple Watch SE\n\n®\n\n. The Company’s line of wireless headphones includes AirPods\n\n®\n\n, AirPods Pro\n\n®\n\n, AirPods Max™ and Beats\n\n®\n\nproducts.\n\nHome includes Apple TV\n\n®\n\n, the Company’s media streaming and gaming device based on its tvOS\n\n®\n\noperating system, and HomePod\n\n®\n\nand HomePod mini\n\n®\n\n, high-fidelity wireless smart speakers.\n\nAccessories includes Apple-branded and third-party accessories.",
+      "The Company’s customers are primarily in the consumer, small and mid-sized business, education, enterprise and government markets. The Company sells its products and resells third-party products in most of its major markets directly to customers through its retail and online stores and its direct sales force. The Company also employs a variety of indirect distribution channels, such as third-party cellular network carriers, wholesalers, retailers and resellers. During 2024, the Company’s net sales through its direct and indirect distribution channels accounted for 38% and 62%, respectively, of total net sales.\n\nCompetition\n\nThe markets for the Company’s products and services are highly competitive, and are characterized by aggressive price competition and resulting downward pressure on gross margins, frequent introduction of new products and services, short product life cycles, evolving industry standards, continual improvement in product price and performance characteristics, rapid adoption of technological advancements by competitors, and price sensitivity on the part of consumers and businesses. Many of the Company’s competitors seek to compete primarily through aggressive pricing and very low cost structures, and by imitating the Company’s products and infringing on its intellectual property.\n\nApple Inc. | 2024 Form 10-K | 2\n\nThe Company’s ability to compete successfully depends heavily on ensuring the continuing and timely introduction of innovative new products, services and technologies to the marketplace. The Company designs and develops nearly the entire solution for its products, including the hardware, operating system, numerous software applications and related services. Principal competitive factors important to the Company include price, product and service features (including security features), relative price and performance, product and service quality and reliability, design innovation, a strong third-party software and accessories ecosystem, marketing and distribution capability, service and support, and corporate reputation."
+    ],
+    "chunk_id": [
+      "7888504a-3e9e-4bac-be7d-aea132d9972a",
+      "1ec67c22-92ef-4120-8249-17700f0d95f2"
+    ],
+    "source_chunk_ids": [
+      "7888504a-3e9e-4bac-be7d-aea132d9972a",
+      "1ec67c22-92ef-4120-8249-17700f0d95f2"
+    ]
+  },
+  {
+    "id": "golden_27",
+    "category": "numeric_precision",
+    "company": "Apple",
+    "fiscal_year": "2025",
+    "expected_decline": false,
+    "question": "According to the Segments section of Apple's fiscal year 2025 Form 10-K, what are the reportable geographic segments of the company?",
+    "ground_truth": "Americas, Europe, Greater China, Japan and Rest of Asia Pacific",
+    "contexts": [
+      "®\n\n, a personalized fitness service; Apple Music\n\n®\n\n, which offers users a curated listening experience with on-demand radio stations; Apple News+\n\n®\n\n, a news and magazine service; and Apple TV\n\n®\n\n, which offers exclusive original content and live sports.\n\nPayment Services\n\nThe Company offers payment services, including Apple Card\n\n®\n\n, a co-branded credit card, and Apple Pay\n\n®\n\n, a cashless payment service.\n\nSegments\n\nThe Company manages its business primarily on a geographic basis. The Company’s reportable segments consist of the Americas, Europe, Greater China, Japan and Rest of Asia Pacific. Americas includes both North and South America. Europe includes European countries, as well as India, the Middle East and Africa. Greater China includes China mainland, Hong Kong and Taiwan. Rest of Asia Pacific includes Australia, New Zealand and those Asian countries not included in the Company’s other reportable segments. Although the reportable segments provide similar hardware and software products and similar services, each one is managed separately to better align with the location of the Company’s customers and distribution partners and the unique market dynamics of each geographic region.\n\nMarkets and Distribution\n\nThe Company’s customers are primarily in the consumer, small and mid-sized business, education, enterprise and government markets. The Company sells its products and resells third-party products in most of its major markets directly to customers through its retail and online stores and its direct sales force. The Company sells its services in the same markets through its various service platforms. The Company also employs a variety of indirect distribution channels, such as third-party cellular network carriers and other resellers, for the sale of its products and certain of its services. During 2025, the Company’s net sales through its direct and indirect distribution channels accounted for 40% and 60%, respectively, of total net sales."
+    ],
+    "chunk_id": [
+      "79465617-7f37-4def-8aaf-df5f18e7afdd"
+    ],
+    "source_chunk_ids": [
+      "79465617-7f37-4def-8aaf-df5f18e7afdd"
+    ]
+  },
+  {
+    "id": "golden_28",
+    "category": "numeric_precision",
+    "company": "Apple",
+    "fiscal_year": "2025",
+    "expected_decline": false,
+    "question": "According to Apple's fiscal year 2025 Form 10-K, during fiscal year 2025, what percentages of Apple's total net sales were accounted for by its direct and indirect distribution channels, respectively?",
+    "ground_truth": "40% and 60%, respectively",
+    "contexts": [
+      "The Company’s customers are primarily in the consumer, small and mid-sized business, education, enterprise and government markets. The Company sells its products and resells third-party products in most of its major markets directly to customers through its retail and online stores and its direct sales force. The Company sells its services in the same markets through its various service platforms. The Company also employs a variety of indirect distribution channels, such as third-party cellular network carriers and other resellers, for the sale of its products and certain of its services. During 2025, the Company’s net sales through its direct and indirect distribution channels accounted for 40% and 60%, respectively, of total net sales.\n\nCompetition\n\nThe markets for the Company’s products and services are highly competitive and are characterized by aggressive price competition, downward pressure on gross margins, continual improvement in product performance, and price sensitivity on the part of consumers and businesses. The markets in which the Company competes are further defined by frequent introduction of new products and services, short product life cycles, evolving industry standards, and rapid adoption of technological advancements by competitors. Many of the Company’s competitors seek to compete primarily through aggressive pricing and very low cost structures, and by imitating the Company’s products and infringing on its intellectual property.\n\nApple Inc. | 2025 Form 10-K | 2\n\nThe Company’s ability to compete successfully depends heavily on ensuring the continuing and timely introduction of innovative new products, services and technologies to the marketplace. The Company designs and develops nearly the entire solution for its products, including the hardware, operating system, numerous software applications and related services. Principal competitive factors important to the Company include price, product and service features (including security features), relative price and performance, product and service quality and reliability, design and technology innovation, a strong third-party software and accessories ecosystem, marketing and distribution capability, service and support, corporate reputation, and the ability to effectively protect and enforce the Company’s intellectual property rights."
+    ],
+    "chunk_id": [
+      "b882f19b-8b89-4ab1-af55-9a6688ec8475"
+    ],
+    "source_chunk_ids": [
+      "b882f19b-8b89-4ab1-af55-9a6688ec8475"
+    ]
+  },
+  {
+    "id": "golden_29",
+    "category": "numeric_precision",
+    "company": "Apple",
+    "fiscal_year": "2025",
+    "expected_decline": false,
+    "question": "According to the Item 1 section of Apple's fiscal year 2025 Form 10-K, new products introduced by Apple often utilize custom components available from how many sources?",
+    "ground_truth": "only one source",
+    "contexts": [
+      "The Company uses some custom components that are not commonly used by its competitors, and new products introduced by the Company often utilize custom components available from only one source. When a component or product uses new technologies, initial capacity constraints may exist until the suppliers’ yields have matured or their manufacturing capacities have increased. The Company has entered into agreements for the supply of many components; however, the Company may not be able to extend or renew agreements for the supply of components on similar terms, or at all, and may not be successful in obtaining sufficient quantities from its suppliers or in a timely manner, or in identifying and obtaining sufficient quantities from an alternative source. In addition, component suppliers may fail, be subject to consolidation within a particular industry, or decide to concentrate on the production of common components instead of components customized to meet the Company’s requirements, further limiting the Company’s ability to obtain sufficient quantities of components on commercially reasonable terms, or at all.\n\nResearch and Development\n\nBecause the industries in which the Company competes are characterized by rapid technological advances, the Company’s ability to compete successfully depends heavily upon its ability to ensure a continual and timely flow of competitive products, services and technologies to the marketplace. The Company continues to develop new technologies to enhance existing products and services, and to expand the range of its offerings through research and development (“R&D”), licensing of intellectual property and acquisition of third-party businesses and technology."
+    ],
+    "chunk_id": [
+      "71dc97f3-b7b7-4de1-adf2-b7bb3057f347"
+    ],
+    "source_chunk_ids": [
+      "71dc97f3-b7b7-4de1-adf2-b7bb3057f347"
+    ]
+  },
+  {
+    "id": "golden_30",
+    "category": "unanswerable",
+    "company": "Netflix",
+    "fiscal_year": "2023",
+    "expected_decline": true,
+    "question": "According to Netflix's fiscal year 2023 Form 10-K, what were Netflix's total streaming revenues and operating income in fiscal year 2023?",
+    "ground_truth": "The provided documents do not contain this information.",
+    "contexts": [],
+    "chunk_id": [],
+    "source_chunk_ids": []
+  },
+  {
+    "id": "golden_31",
+    "category": "unanswerable",
+    "company": "Netflix",
+    "fiscal_year": "2024",
+    "expected_decline": true,
+    "question": "What was Netflix's global subscriber churn rate and average revenue per user (ARPU) in the fourth quarter of fiscal year 2024 according to its filings?",
+    "ground_truth": "The provided documents do not contain this information.",
+    "contexts": [],
+    "chunk_id": [],
+    "source_chunk_ids": []
+  },
+  {
+    "id": "golden_32",
+    "category": "unanswerable",
+    "company": "Meta",
+    "fiscal_year": "2023",
+    "expected_decline": true,
+    "question": "According to Meta's fiscal year 2023 Form 10-K, what was the internal engineering budget and expense allocation for the Reality Labs Orion augmented reality glasses project in fiscal year 2023?",
+    "ground_truth": "The provided documents do not contain this information.",
+    "contexts": [],
+    "chunk_id": [],
+    "source_chunk_ids": []
+  }
+]
