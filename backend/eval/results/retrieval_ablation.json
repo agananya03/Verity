@@ -2,19 +2,20 @@
   "report_label": "DEV SET (n=18, design tuned on these questions)",
   "fingerprint": {
     "classifier_py": "16b34f1434d6844d69694c4f2c0accbb005d106f3f0fbb611b2eb99f3de6cf12",
-    "golden_set_json": "9aa5e1cf329e410afa1d89a23d422cbda5b4cf3e3d80043a5550f76098c64bac",
+    "golden_set_json": "55caa52adfc666e8b1dcc2df7122b9720049a566f7b1a5fdb5d9632e1305af9c",
     "retrieval_py": "1a700973445d32dcb5433cda8a70596a23d6381578bfeac68d2997762ed30e1e",
-    "combined": "c1055e94d91df4fbc3a837a9082108cfdc4f153125d5d8b46febbcee0322e6fa"
+    "combined": "eb9390d00f701eca7759a0036c7670a1db301ae754f09ea50038c19c5cfe9edb"
   },
   "metadata": {
     "report_label": "DEV SET (n=18, design tuned on these questions)",
     "fingerprint": {
       "classifier_py": "16b34f1434d6844d69694c4f2c0accbb005d106f3f0fbb611b2eb99f3de6cf12",
-      "golden_set_json": "9aa5e1cf329e410afa1d89a23d422cbda5b4cf3e3d80043a5550f76098c64bac",
+      "golden_set_json": "55caa52adfc666e8b1dcc2df7122b9720049a566f7b1a5fdb5d9632e1305af9c",
       "retrieval_py": "1a700973445d32dcb5433cda8a70596a23d6381578bfeac68d2997762ed30e1e",
-      "combined": "c1055e94d91df4fbc3a837a9082108cfdc4f153125d5d8b46febbcee0322e6fa"
+      "combined": "eb9390d00f701eca7759a0036c7670a1db301ae754f09ea50038c19c5cfe9edb"
     },
-    "timestamp": "2026-11-12T15:36:23.153238+00:00",
+    "golden_set_path": "C:\\Users\\ASUS\\OneDrive\\Desktop\\verity\\backend\\eval\\golden_set.json",
+    "timestamp": "2026-11-14T11:46:59.541913+00:00",
     "total_golden_items": 32,
     "eligible_items_count": 18,
     "excluded_items_count": 14,
@@ -124,8 +125,8 @@
       "hub_share": 0.6667,
       "hub_chunk_id": "70e50532-5a2f-551e-9433-5af27acfb4ff",
       "hub_count": 12,
-      "latency_mean_ms": 455.1,
-      "latency_p95_ms": 719.7,
+      "latency_mean_ms": 243.2,
+      "latency_p95_ms": 248.1,
       "n": 18
     },
     "dense_filtered": {
@@ -141,8 +142,8 @@
       "hub_share": 0.5556,
       "hub_chunk_id": "97e04e65-82f0-5217-bb0d-57f54d63ccf8",
       "hub_count": 10,
-      "latency_mean_ms": 641.9,
-      "latency_p95_ms": 1033.5,
+      "latency_mean_ms": 466.7,
+      "latency_p95_ms": 469.4,
       "n": 18
     },
     "bm25_filtered": {
@@ -158,8 +159,8 @@
       "hub_share": 0.5556,
       "hub_chunk_id": "97e04e65-82f0-5217-bb0d-57f54d63ccf8",
       "hub_count": 10,
-      "latency_mean_ms": 34.3,
-      "latency_p95_ms": 53.2,
+      "latency_mean_ms": 26.0,
+      "latency_p95_ms": 45.7,
       "n": 18
     },
     "rrf_raw_filtered": {
@@ -175,8 +176,8 @@
       "hub_share": 0.6111,
       "hub_chunk_id": "97e04e65-82f0-5217-bb0d-57f54d63ccf8",
       "hub_count": 11,
-      "latency_mean_ms": 404.9,
-      "latency_p95_ms": 444.3,
+      "latency_mean_ms": 269.7,
+      "latency_p95_ms": 293.3,
       "n": 18
     },
     "rrf_clean_v2": {
@@ -192,8 +193,8 @@
       "hub_share": 0.2222,
       "hub_chunk_id": "681f8256-617a-56b3-8afb-878e2406935e",
       "hub_count": 4,
-      "latency_mean_ms": 377.9,
-      "latency_p95_ms": 524.0,
+      "latency_mean_ms": 258.8,
+      "latency_p95_ms": 281.5,
       "n": 18
     },
     "rrf_clean_v2_peryear_v1": {
@@ -209,8 +210,8 @@
       "hub_share": 0.2778,
       "hub_chunk_id": "70e50532-5a2f-551e-9433-5af27acfb4ff",
       "hub_count": 5,
-      "latency_mean_ms": 486.9,
-      "latency_p95_ms": 781.2,
+      "latency_mean_ms": 320.3,
+      "latency_p95_ms": 561.3,
       "n": 18
     },
     "production_retrieve": {
@@ -226,8 +227,8 @@
       "hub_share": 0.2778,
       "hub_chunk_id": "ff8dcd62-5714-5dbc-a09a-f8c2da4fa3a5",
       "hub_count": 5,
-      "latency_mean_ms": 470.6,
-      "latency_p95_ms": 810.1,
+      "latency_mean_ms": 319.3,
+      "latency_p95_ms": 548.1,
       "n": 18
     },
     "dense_clean_v2": {
@@ -243,8 +244,8 @@
       "hub_share": 0.2778,
       "hub_chunk_id": "681f8256-617a-56b3-8afb-878e2406935e",
       "hub_count": 5,
-      "latency_mean_ms": 353.6,
-      "latency_p95_ms": 399.6,
+      "latency_mean_ms": 240.4,
+      "latency_p95_ms": 243.7,
       "n": 18
     },
     "bm25_clean_v2": {
@@ -260,8 +261,8 @@
       "hub_share": 0.2778,
       "hub_chunk_id": "08b54639-515c-523a-8dd3-9bb76340801b",
       "hub_count": 5,
-      "latency_mean_ms": 23.7,
-      "latency_p95_ms": 43.3,
+      "latency_mean_ms": 19.5,
+      "latency_p95_ms": 39.6,
       "n": 18
     },
     "rrf_clean_v1": {
@@ -277,8 +278,8 @@
       "hub_share": 0.2778,
       "hub_chunk_id": "70e50532-5a2f-551e-9433-5af27acfb4ff",
       "hub_count": 5,
-      "latency_mean_ms": 504.3,
-      "latency_p95_ms": 832.5,
+      "latency_mean_ms": 260.8,
+      "latency_p95_ms": 295.5,
       "n": 18
     },
     "rrf_bm25_weighted": {
@@ -294,8 +295,8 @@
       "hub_share": 0.6111,
       "hub_chunk_id": "97e04e65-82f0-5217-bb0d-57f54d63ccf8",
       "hub_count": 11,
-      "latency_mean_ms": 854.8,
-      "latency_p95_ms": 1797.9,
+      "latency_mean_ms": 326.6,
+      "latency_p95_ms": 452.4,
       "n": 18
     },
     "rrf_rerank": {
@@ -311,8 +312,8 @@
       "hub_share": 0.6667,
       "hub_chunk_id": "97e04e65-82f0-5217-bb0d-57f54d63ccf8",
       "hub_count": 12,
-      "latency_mean_ms": 2689.8,
-      "latency_p95_ms": 2900.8,
+      "latency_mean_ms": 2331.0,
+      "latency_p95_ms": 2522.3,
       "n": 18
     },
     "bm25_rerank": {
@@ -328,8 +329,8 @@
       "hub_share": 0.6667,
       "hub_chunk_id": "97e04e65-82f0-5217-bb0d-57f54d63ccf8",
       "hub_count": 12,
-      "latency_mean_ms": 2294.8,
-      "latency_p95_ms": 2448.9,
+      "latency_mean_ms": 2091.5,
+      "latency_p95_ms": 2251.5,
       "n": 18
     }
   },
@@ -346,8 +347,8 @@
           "hub_share": 0.5714,
           "hub_chunk_id": "70e50532-5a2f-551e-9433-5af27acfb4ff",
           "hub_count": 8,
-          "latency_mean_ms": 344.3,
-          "latency_p95_ms": 416.5
+          "latency_mean_ms": 243.1,
+          "latency_p95_ms": 251.2
         },
         "dense_filtered": {
           "hit@8": 0.5,
@@ -358,8 +359,8 @@
           "hub_share": 0.4286,
           "hub_chunk_id": "5e820ce9-6fd2-5d7e-a3e7-fed844a43aa0",
           "hub_count": 6,
-          "latency_mean_ms": 612.9,
-          "latency_p95_ms": 862.3
+          "latency_mean_ms": 466.4,
+          "latency_p95_ms": 469.5
         },
         "bm25_filtered": {
           "hit@8": 0.9286,
@@ -370,8 +371,8 @@
           "hub_share": 0.5,
           "hub_chunk_id": "97e04e65-82f0-5217-bb0d-57f54d63ccf8",
           "hub_count": 7,
-          "latency_mean_ms": 29.8,
-          "latency_p95_ms": 38.0
+          "latency_mean_ms": 20.7,
+          "latency_p95_ms": 26.2
         },
         "rrf_raw_filtered": {
           "hit@8": 0.7143,
@@ -382,8 +383,8 @@
           "hub_share": 0.5,
           "hub_chunk_id": "97e04e65-82f0-5217-bb0d-57f54d63ccf8",
           "hub_count": 7,
-          "latency_mean_ms": 401.3,
-          "latency_p95_ms": 448.6
+          "latency_mean_ms": 263.9,
+          "latency_p95_ms": 270.0
         },
         "rrf_clean_v2": {
           "hit@8": 1.0,
@@ -394,8 +395,8 @@
           "hub_share": 0.2143,
           "hub_chunk_id": "681f8256-617a-56b3-8afb-878e2406935e",
           "hub_count": 3,
-          "latency_mean_ms": 381.0,
-          "latency_p95_ms": 537.5
+          "latency_mean_ms": 254.1,
+          "latency_p95_ms": 259.7
         },
         "rrf_clean_v2_peryear_v1": {
           "hit@8": 1.0,
@@ -406,8 +407,8 @@
           "hub_share": 0.2143,
           "hub_chunk_id": "681f8256-617a-56b3-8afb-878e2406935e",
           "hub_count": 3,
-          "latency_mean_ms": 403.3,
-          "latency_p95_ms": 485.3
+          "latency_mean_ms": 253.6,
+          "latency_p95_ms": 259.8
         },
         "production_retrieve": {
           "hit@8": 1.0,
@@ -418,8 +419,8 @@
           "hub_share": 0.2143,
           "hub_chunk_id": "681f8256-617a-56b3-8afb-878e2406935e",
           "hub_count": 3,
-          "latency_mean_ms": 382.9,
-          "latency_p95_ms": 507.6
+          "latency_mean_ms": 254.3,
+          "latency_p95_ms": 262.7
         },
         "dense_clean_v2": {
           "hit@8": 0.9286,
@@ -430,8 +431,8 @@
           "hub_share": 0.2857,
           "hub_chunk_id": "681f8256-617a-56b3-8afb-878e2406935e",
           "hub_count": 4,
-          "latency_mean_ms": 346.6,
-          "latency_p95_ms": 396.0
+          "latency_mean_ms": 239.7,
+          "latency_p95_ms": 241.1
         },
         "bm25_clean_v2": {
           "hit@8": 1.0,
@@ -442,8 +443,8 @@
           "hub_share": 0.3571,
           "hub_chunk_id": "08b54639-515c-523a-8dd3-9bb76340801b",
           "hub_count": 5,
-          "latency_mean_ms": 18.6,
-          "latency_p95_ms": 26.9
+          "latency_mean_ms": 14.0,
+          "latency_p95_ms": 18.9
         },
         "rrf_clean_v1": {
           "hit@8": 1.0,
@@ -454,8 +455,8 @@
           "hub_share": 0.2143,
           "hub_chunk_id": "681f8256-617a-56b3-8afb-878e2406935e",
           "hub_count": 3,
-          "latency_mean_ms": 409.4,
-          "latency_p95_ms": 599.9
+          "latency_mean_ms": 253.2,
+          "latency_p95_ms": 260.5
         },
         "rrf_bm25_weighted": {
           "hit@8": 0.7143,
@@ -466,8 +467,8 @@
           "hub_share": 0.5,
           "hub_chunk_id": "97e04e65-82f0-5217-bb0d-57f54d63ccf8",
           "hub_count": 7,
-          "latency_mean_ms": 384.7,
-          "latency_p95_ms": 464.3
+          "latency_mean_ms": 336.4,
+          "latency_p95_ms": 622.8
         },
         "rrf_rerank": {
           "hit@8": 0.3571,
@@ -478,8 +479,8 @@
           "hub_share": 0.5714,
           "hub_chunk_id": "487f1522-8c58-5d1d-807a-f1caf7a14736",
           "hub_count": 8,
-          "latency_mean_ms": 2668.4,
-          "latency_p95_ms": 2836.0
+          "latency_mean_ms": 2300.2,
+          "latency_p95_ms": 2395.8
         },
         "bm25_rerank": {
           "hit@8": 0.4286,
@@ -490,8 +491,8 @@
           "hub_share": 0.5714,
           "hub_chunk_id": "487f1522-8c58-5d1d-807a-f1caf7a14736",
           "hub_count": 8,
-          "latency_mean_ms": 2274.8,
-          "latency_p95_ms": 2394.4
+          "latency_mean_ms": 2060.7,
+          "latency_p95_ms": 2125.6
         }
       }
     },
@@ -507,8 +508,8 @@
           "hub_share": 1.0,
           "hub_chunk_id": "70e50532-5a2f-551e-9433-5af27acfb4ff",
           "hub_count": 4,
-          "latency_mean_ms": 843.3,
-          "latency_p95_ms": 2092.4
+          "latency_mean_ms": 243.8,
+          "latency_p95_ms": 245.3
         },
         "dense_filtered": {
           "hit@8": 1.0,
@@ -519,8 +520,8 @@
           "hub_share": 1.0,
           "hub_chunk_id": "70e50532-5a2f-551e-9433-5af27acfb4ff",
           "hub_count": 4,
-          "latency_mean_ms": 743.3,
-          "latency_p95_ms": 1044.1
+          "latency_mean_ms": 467.6,
+          "latency_p95_ms": 468.3
         },
         "bm25_filtered": {
           "hit@8": 0.75,
@@ -531,8 +532,8 @@
           "hub_share": 1.0,
           "hub_chunk_id": "70e50532-5a2f-551e-9433-5af27acfb4ff",
           "hub_count": 4,
-          "latency_mean_ms": 50.3,
-          "latency_p95_ms": 53.2
+          "latency_mean_ms": 44.5,
+          "latency_p95_ms": 63.1
         },
         "rrf_raw_filtered": {
           "hit@8": 0.75,
@@ -543,8 +544,8 @@
           "hub_share": 1.0,
           "hub_chunk_id": "70e50532-5a2f-551e-9433-5af27acfb4ff",
           "hub_count": 4,
-          "latency_mean_ms": 417.7,
-          "latency_p95_ms": 429.3
+          "latency_mean_ms": 289.8,
+          "latency_p95_ms": 304.3
         },
         "rrf_clean_v2": {
           "hit@8": 0.75,
@@ -555,8 +556,8 @@
           "hub_share": 0.75,
           "hub_chunk_id": "70e50532-5a2f-551e-9433-5af27acfb4ff",
           "hub_count": 3,
-          "latency_mean_ms": 367.2,
-          "latency_p95_ms": 386.6
+          "latency_mean_ms": 275.4,
+          "latency_p95_ms": 283.0
         },
         "rrf_clean_v2_peryear_v1": {
           "hit@8": 0.75,
@@ -567,8 +568,8 @@
           "hub_share": 1.0,
           "hub_chunk_id": "70e50532-5a2f-551e-9433-5af27acfb4ff",
           "hub_count": 4,
-          "latency_mean_ms": 779.6,
-          "latency_p95_ms": 796.8
+          "latency_mean_ms": 553.6,
+          "latency_p95_ms": 569.0
         },
         "production_retrieve": {
           "hit@8": 1.0,
@@ -579,8 +580,8 @@
           "hub_share": 0.75,
           "hub_chunk_id": "70e50532-5a2f-551e-9433-5af27acfb4ff",
           "hub_count": 3,
-          "latency_mean_ms": 777.6,
-          "latency_p95_ms": 820.0
+          "latency_mean_ms": 546.6,
+          "latency_p95_ms": 553.5
         },
         "dense_clean_v2": {
           "hit@8": 1.0,
@@ -591,8 +592,8 @@
           "hub_share": 1.0,
           "hub_chunk_id": "b0cf1104-bec6-5e5b-8711-cece88499c98",
           "hub_count": 4,
-          "latency_mean_ms": 378.1,
-          "latency_p95_ms": 401.6
+          "latency_mean_ms": 242.9,
+          "latency_p95_ms": 244.7
         },
         "bm25_clean_v2": {
           "hit@8": 0.75,
@@ -603,8 +604,8 @@
           "hub_share": 0.75,
           "hub_chunk_id": "70e50532-5a2f-551e-9433-5af27acfb4ff",
           "hub_count": 3,
-          "latency_mean_ms": 41.5,
-          "latency_p95_ms": 48.0
+          "latency_mean_ms": 38.6,
+          "latency_p95_ms": 46.3
         },
         "rrf_clean_v1": {
           "hit@8": 0.5,
@@ -615,8 +616,8 @@
           "hub_share": 1.0,
           "hub_chunk_id": "70e50532-5a2f-551e-9433-5af27acfb4ff",
           "hub_count": 4,
-          "latency_mean_ms": 836.4,
-          "latency_p95_ms": 1835.3
+          "latency_mean_ms": 287.5,
+          "latency_p95_ms": 305.0
         },
         "rrf_bm25_weighted": {
           "hit@8": 0.75,
@@ -627,8 +628,8 @@
           "hub_share": 1.0,
           "hub_chunk_id": "70e50532-5a2f-551e-9433-5af27acfb4ff",
           "hub_count": 4,
-          "latency_mean_ms": 2500.3,
-          "latency_p95_ms": 7298.0
+          "latency_mean_ms": 292.1,
+          "latency_p95_ms": 305.9
         },
         "rrf_rerank": {
           "hit@8": 0.5,
@@ -639,8 +640,8 @@
           "hub_share": 1.0,
           "hub_chunk_id": "70e50532-5a2f-551e-9433-5af27acfb4ff",
           "hub_count": 4,
-          "latency_mean_ms": 2764.7,
-          "latency_p95_ms": 2914.1
+          "latency_mean_ms": 2438.8,
+          "latency_p95_ms": 2547.4
         },
         "bm25_rerank": {
           "hit@8": 0.5,
@@ -651,8 +652,8 @@
           "hub_share": 1.0,
           "hub_chunk_id": "70e50532-5a2f-551e-9433-5af27acfb4ff",
           "hub_count": 4,
-          "latency_mean_ms": 2365.0,
-          "latency_p95_ms": 2502.2
+          "latency_mean_ms": 2199.3,
+          "latency_p95_ms": 2328.7
         }
       }
     }
@@ -670,8 +671,8 @@
           "hub_share": 0.6,
           "hub_chunk_id": "70e50532-5a2f-551e-9433-5af27acfb4ff",
           "hub_count": 6,
-          "latency_mean_ms": 360.4,
-          "latency_p95_ms": 418.6
+          "latency_mean_ms": 243.3,
+          "latency_p95_ms": 254.1
         },
         "dense_filtered": {
           "hit@8": 0.6,
@@ -682,8 +683,8 @@
           "hub_share": 0.4,
           "hub_chunk_id": "97e04e65-82f0-5217-bb0d-57f54d63ccf8",
           "hub_count": 4,
-          "latency_mean_ms": 613.0,
-          "latency_p95_ms": 910.7
+          "latency_mean_ms": 466.0,
+          "latency_p95_ms": 467.4
         },
         "bm25_filtered": {
           "hit@8": 0.9,
@@ -694,8 +695,8 @@
           "hub_share": 0.4,
           "hub_chunk_id": "487f1522-8c58-5d1d-807a-f1caf7a14736",
           "hub_count": 4,
-          "latency_mean_ms": 29.4,
-          "latency_p95_ms": 38.4
+          "latency_mean_ms": 19.8,
+          "latency_p95_ms": 26.7
         },
         "rrf_raw_filtered": {
           "hit@8": 0.7,
@@ -706,8 +707,8 @@
           "hub_share": 0.4,
           "hub_chunk_id": "97e04e65-82f0-5217-bb0d-57f54d63ccf8",
           "hub_count": 4,
-          "latency_mean_ms": 399.2,
-          "latency_p95_ms": 447.2
+          "latency_mean_ms": 262.5,
+          "latency_p95_ms": 269.9
         },
         "rrf_clean_v2": {
           "hit@8": 1.0,
@@ -718,8 +719,8 @@
           "hub_share": 0.3,
           "hub_chunk_id": "930e9238-a68e-5d97-9459-75216496d663",
           "hub_count": 3,
-          "latency_mean_ms": 364.9,
-          "latency_p95_ms": 485.0
+          "latency_mean_ms": 254.3,
+          "latency_p95_ms": 260.6
         },
         "rrf_clean_v2_peryear_v1": {
           "hit@8": 1.0,
@@ -730,8 +731,8 @@
           "hub_share": 0.3,
           "hub_chunk_id": "930e9238-a68e-5d97-9459-75216496d663",
           "hub_count": 3,
-          "latency_mean_ms": 402.6,
-          "latency_p95_ms": 487.9
+          "latency_mean_ms": 253.9,
+          "latency_p95_ms": 260.8
         },
         "production_retrieve": {
           "hit@8": 1.0,
@@ -742,8 +743,8 @@
           "hub_share": 0.3,
           "hub_chunk_id": "930e9238-a68e-5d97-9459-75216496d663",
           "hub_count": 3,
-          "latency_mean_ms": 363.9,
-          "latency_p95_ms": 459.7
+          "latency_mean_ms": 254.3,
+          "latency_p95_ms": 262.9
         },
         "dense_clean_v2": {
           "hit@8": 0.9,
@@ -754,8 +755,8 @@
           "hub_share": 0.4,
           "hub_chunk_id": "9b4df331-03dc-529d-a232-d85a4b8094d1",
           "hub_count": 4,
-          "latency_mean_ms": 353.2,
-          "latency_p95_ms": 396.8
+          "latency_mean_ms": 239.6,
+          "latency_p95_ms": 241.1
         },
         "bm25_clean_v2": {
           "hit@8": 1.0,
@@ -766,8 +767,8 @@
           "hub_share": 0.4,
           "hub_chunk_id": "08b54639-515c-523a-8dd3-9bb76340801b",
           "hub_count": 4,
-          "latency_mean_ms": 18.7,
-          "latency_p95_ms": 25.9
+          "latency_mean_ms": 14.2,
+          "latency_p95_ms": 19.7
         },
         "rrf_clean_v1": {
           "hit@8": 1.0,
@@ -778,8 +779,8 @@
           "hub_share": 0.3,
           "hub_chunk_id": "930e9238-a68e-5d97-9459-75216496d663",
           "hub_count": 3,
-          "latency_mean_ms": 433.4,
-          "latency_p95_ms": 603.6
+          "latency_mean_ms": 253.5,
+          "latency_p95_ms": 260.7
         },
         "rrf_bm25_weighted": {
           "hit@8": 0.7,
@@ -790,8 +791,8 @@
           "hub_share": 0.4,
           "hub_chunk_id": "97e04e65-82f0-5217-bb0d-57f54d63ccf8",
           "hub_count": 4,
-          "latency_mean_ms": 390.8,
-          "latency_p95_ms": 482.8
+          "latency_mean_ms": 263.0,
+          "latency_p95_ms": 269.0
         },
         "rrf_rerank": {
           "hit@8": 0.4,
@@ -802,8 +803,8 @@
           "hub_share": 0.5,
           "hub_chunk_id": "04b92e64-9720-5401-a83e-2da3fd614788",
           "hub_count": 5,
-          "latency_mean_ms": 2663.8,
-          "latency_p95_ms": 2853.9
+          "latency_mean_ms": 2290.4,
+          "latency_p95_ms": 2355.1
         },
         "bm25_rerank": {
           "hit@8": 0.4,
@@ -814,8 +815,8 @@
           "hub_share": 0.5,
           "hub_chunk_id": "04b92e64-9720-5401-a83e-2da3fd614788",
           "hub_count": 5,
-          "latency_mean_ms": 2266.8,
-          "latency_p95_ms": 2371.6
+          "latency_mean_ms": 2056.9,
+          "latency_p95_ms": 2110.0
         }
       }
     },
@@ -831,8 +832,8 @@
           "hub_share": 0.5,
           "hub_chunk_id": "197b2341-12cf-5a5c-92c6-b890a16b3c1c",
           "hub_count": 2,
-          "latency_mean_ms": 303.8,
-          "latency_p95_ms": 322.3
+          "latency_mean_ms": 242.5,
+          "latency_p95_ms": 244.5
         },
         "dense_filtered": {
           "hit@8": 0.25,
@@ -843,8 +844,8 @@
           "hub_share": 0.75,
           "hub_chunk_id": "5e820ce9-6fd2-5d7e-a3e7-fed844a43aa0",
           "hub_count": 3,
-          "latency_mean_ms": 612.8,
-          "latency_p95_ms": 627.8
+          "latency_mean_ms": 467.3,
+          "latency_p95_ms": 469.5
         },
         "bm25_filtered": {
           "hit@8": 1.0,
@@ -855,8 +856,8 @@
           "hub_share": 0.75,
           "hub_chunk_id": "97e04e65-82f0-5217-bb0d-57f54d63ccf8",
           "hub_count": 3,
-          "latency_mean_ms": 30.8,
-          "latency_p95_ms": 35.5
+          "latency_mean_ms": 22.8,
+          "latency_p95_ms": 24.4
         },
         "rrf_raw_filtered": {
           "hit@8": 0.75,
@@ -867,8 +868,8 @@
           "hub_share": 0.75,
           "hub_chunk_id": "97e04e65-82f0-5217-bb0d-57f54d63ccf8",
           "hub_count": 3,
-          "latency_mean_ms": 406.6,
-          "latency_p95_ms": 439.4
+          "latency_mean_ms": 267.5,
+          "latency_p95_ms": 269.8
         },
         "rrf_clean_v2": {
           "hit@8": 1.0,
@@ -879,8 +880,8 @@
           "hub_share": 0.5,
           "hub_chunk_id": "449dc77f-325a-5e01-8585-52d2af0efdb2",
           "hub_count": 2,
-          "latency_mean_ms": 421.3,
-          "latency_p95_ms": 556.5
+          "latency_mean_ms": 253.5,
+          "latency_p95_ms": 255.9
         },
         "rrf_clean_v2_peryear_v1": {
           "hit@8": 1.0,
@@ -891,8 +892,8 @@
           "hub_share": 0.5,
           "hub_chunk_id": "449dc77f-325a-5e01-8585-52d2af0efdb2",
           "hub_count": 2,
-          "latency_mean_ms": 404.9,
-          "latency_p95_ms": 416.3
+          "latency_mean_ms": 252.7,
+          "latency_p95_ms": 255.6
         },
         "production_retrieve": {
           "hit@8": 1.0,
@@ -903,8 +904,8 @@
           "hub_share": 0.5,
           "hub_chunk_id": "449dc77f-325a-5e01-8585-52d2af0efdb2",
           "hub_count": 2,
-          "latency_mean_ms": 430.4,
-          "latency_p95_ms": 501.3
+          "latency_mean_ms": 254.5,
+          "latency_p95_ms": 260.4
         },
         "dense_clean_v2": {
           "hit@8": 1.0,
@@ -915,8 +916,8 @@
           "hub_share": 0.5,
           "hub_chunk_id": "681f8256-617a-56b3-8afb-878e2406935e",
           "hub_count": 2,
-          "latency_mean_ms": 329.9,
-          "latency_p95_ms": 381.6
+          "latency_mean_ms": 239.8,
+          "latency_p95_ms": 240.7
         },
         "bm25_clean_v2": {
           "hit@8": 1.0,
@@ -927,8 +928,8 @@
           "hub_share": 0.5,
           "hub_chunk_id": "6a029b39-3278-56bf-bed2-44b8f4c98eab",
           "hub_count": 2,
-          "latency_mean_ms": 18.1,
-          "latency_p95_ms": 25.5
+          "latency_mean_ms": 13.7,
+          "latency_p95_ms": 16.1
         },
         "rrf_clean_v1": {
           "hit@8": 1.0,
@@ -939,8 +940,8 @@
           "hub_share": 0.5,
           "hub_chunk_id": "01c69402-1ce2-5a5c-b309-c9b28e05dbbf",
           "hub_count": 2,
-          "latency_mean_ms": 349.3,
-          "latency_p95_ms": 406.1
+          "latency_mean_ms": 252.4,
+          "latency_p95_ms": 254.7
         },
         "rrf_bm25_weighted": {
           "hit@8": 0.75,
@@ -951,8 +952,8 @@
           "hub_share": 0.75,
           "hub_chunk_id": "97e04e65-82f0-5217-bb0d-57f54d63ccf8",
           "hub_count": 3,
-          "latency_mean_ms": 369.4,
-          "latency_p95_ms": 422.3
+          "latency_mean_ms": 519.9,
+          "latency_p95_ms": 1125.8
         },
         "rrf_rerank": {
           "hit@8": 0.25,
@@ -963,8 +964,8 @@
           "hub_share": 0.75,
           "hub_chunk_id": "487f1522-8c58-5d1d-807a-f1caf7a14736",
           "hub_count": 3,
-          "latency_mean_ms": 2679.6,
-          "latency_p95_ms": 2750.3
+          "latency_mean_ms": 2324.9,
+          "latency_p95_ms": 2396.9
         },
         "bm25_rerank": {
           "hit@8": 0.5,
@@ -975,8 +976,8 @@
           "hub_share": 0.75,
           "hub_chunk_id": "487f1522-8c58-5d1d-807a-f1caf7a14736",
           "hub_count": 3,
-          "latency_mean_ms": 2294.7,
-          "latency_p95_ms": 2406.0
+          "latency_mean_ms": 2070.2,
+          "latency_p95_ms": 2135.9
         }
       }
     },
@@ -992,8 +993,8 @@
           "hub_share": 1.0,
           "hub_chunk_id": "70e50532-5a2f-551e-9433-5af27acfb4ff",
           "hub_count": 4,
-          "latency_mean_ms": 843.3,
-          "latency_p95_ms": 2092.4
+          "latency_mean_ms": 243.8,
+          "latency_p95_ms": 245.3
         },
         "dense_filtered": {
           "hit@8": 1.0,
@@ -1004,8 +1005,8 @@
           "hub_share": 1.0,
           "hub_chunk_id": "70e50532-5a2f-551e-9433-5af27acfb4ff",
           "hub_count": 4,
-          "latency_mean_ms": 743.3,
-          "latency_p95_ms": 1044.1
+          "latency_mean_ms": 467.6,
+          "latency_p95_ms": 468.3
         },
         "bm25_filtered": {
           "hit@8": 0.75,
@@ -1016,8 +1017,8 @@
           "hub_share": 1.0,
           "hub_chunk_id": "70e50532-5a2f-551e-9433-5af27acfb4ff",
           "hub_count": 4,
-          "latency_mean_ms": 50.3,
-          "latency_p95_ms": 53.2
+          "latency_mean_ms": 44.5,
+          "latency_p95_ms": 63.1
         },
         "rrf_raw_filtered": {
           "hit@8": 0.75,
@@ -1028,8 +1029,8 @@
           "hub_share": 1.0,
           "hub_chunk_id": "70e50532-5a2f-551e-9433-5af27acfb4ff",
           "hub_count": 4,
-          "latency_mean_ms": 417.7,
-          "latency_p95_ms": 429.3
+          "latency_mean_ms": 289.8,
+          "latency_p95_ms": 304.3
         },
         "rrf_clean_v2": {
           "hit@8": 0.75,
@@ -1040,8 +1041,8 @@
           "hub_share": 0.75,
           "hub_chunk_id": "70e50532-5a2f-551e-9433-5af27acfb4ff",
           "hub_count": 3,
-          "latency_mean_ms": 367.2,
-          "latency_p95_ms": 386.6
+          "latency_mean_ms": 275.4,
+          "latency_p95_ms": 283.0
         },
         "rrf_clean_v2_peryear_v1": {
           "hit@8": 0.75,
@@ -1052,8 +1053,8 @@
           "hub_share": 1.0,
           "hub_chunk_id": "70e50532-5a2f-551e-9433-5af27acfb4ff",
           "hub_count": 4,
-          "latency_mean_ms": 779.6,
-          "latency_p95_ms": 796.8
+          "latency_mean_ms": 553.6,
+          "latency_p95_ms": 569.0
         },
         "production_retrieve": {
           "hit@8": 1.0,
@@ -1064,8 +1065,8 @@
           "hub_share": 0.75,
           "hub_chunk_id": "70e50532-5a2f-551e-9433-5af27acfb4ff",
           "hub_count": 3,
-          "latency_mean_ms": 777.6,
-          "latency_p95_ms": 820.0
+          "latency_mean_ms": 546.6,
+          "latency_p95_ms": 553.5
         },
         "dense_clean_v2": {
           "hit@8": 1.0,
@@ -1076,8 +1077,8 @@
           "hub_share": 1.0,
           "hub_chunk_id": "b0cf1104-bec6-5e5b-8711-cece88499c98",
           "hub_count": 4,
-          "latency_mean_ms": 378.1,
-          "latency_p95_ms": 401.6
+          "latency_mean_ms": 242.9,
+          "latency_p95_ms": 244.7
         },
         "bm25_clean_v2": {
           "hit@8": 0.75,
@@ -1088,8 +1089,8 @@
           "hub_share": 0.75,
           "hub_chunk_id": "70e50532-5a2f-551e-9433-5af27acfb4ff",
           "hub_count": 3,
-          "latency_mean_ms": 41.5,
-          "latency_p95_ms": 48.0
+          "latency_mean_ms": 38.6,
+          "latency_p95_ms": 46.3
         },
         "rrf_clean_v1": {
           "hit@8": 0.5,
@@ -1100,8 +1101,8 @@
           "hub_share": 1.0,
           "hub_chunk_id": "70e50532-5a2f-551e-9433-5af27acfb4ff",
           "hub_count": 4,
-          "latency_mean_ms": 836.4,
-          "latency_p95_ms": 1835.3
+          "latency_mean_ms": 287.5,
+          "latency_p95_ms": 305.0
         },
         "rrf_bm25_weighted": {
           "hit@8": 0.75,
@@ -1112,8 +1113,8 @@
           "hub_share": 1.0,
           "hub_chunk_id": "70e50532-5a2f-551e-9433-5af27acfb4ff",
           "hub_count": 4,
-          "latency_mean_ms": 2500.3,
-          "latency_p95_ms": 7298.0
+          "latency_mean_ms": 292.1,
+          "latency_p95_ms": 305.9
         },
         "rrf_rerank": {
           "hit@8": 0.5,
@@ -1124,8 +1125,8 @@
           "hub_share": 1.0,
           "hub_chunk_id": "70e50532-5a2f-551e-9433-5af27acfb4ff",
           "hub_count": 4,
-          "latency_mean_ms": 2764.7,
-          "latency_p95_ms": 2914.1
+          "latency_mean_ms": 2438.8,
+          "latency_p95_ms": 2547.4
         },
         "bm25_rerank": {
           "hit@8": 0.5,
@@ -1136,8 +1137,8 @@
           "hub_share": 1.0,
           "hub_chunk_id": "70e50532-5a2f-551e-9433-5af27acfb4ff",
           "hub_count": 4,
-          "latency_mean_ms": 2365.0,
-          "latency_p95_ms": 2502.2
+          "latency_mean_ms": 2199.3,
+          "latency_p95_ms": 2328.7
         }
       }
     }
@@ -1181,7 +1182,7 @@
             "hit@20": 0.0,
             "recall@20": 0.0
           },
-          "latency_ms": 304.31
+          "latency_ms": 243.4
         },
         "dense_filtered": {
           "query_used": "According to Apple's fiscal year 2025 Form 10-K, through what methods does the company expand the range of its offerings and develop new technologies?",
@@ -1224,7 +1225,7 @@
             "hit@20": 0.0,
             "recall@20": 0.0
           },
-          "latency_ms": 651.7
+          "latency_ms": 465.1
         },
         "bm25_filtered": {
           "query_used": "According to Apple's fiscal year 2025 Form 10-K, through what methods does the company expand the range of its offerings and develop new technologies?",
@@ -1267,7 +1268,7 @@
             "hit@20": 1.0,
             "recall@20": 1.0
           },
-          "latency_ms": 25.59
+          "latency_ms": 19.51
         },
         "rrf_raw_filtered": {
           "query_used": "According to Apple's fiscal year 2025 Form 10-K, through what methods does the company expand the range of its offerings and develop new technologies?",
@@ -1310,7 +1311,7 @@
             "hit@20": 1.0,
             "recall@20": 1.0
           },
-          "latency_ms": 344.62
+          "latency_ms": 261.46
         },
         "rrf_clean_v2": {
           "query_used": "Through what methods does the company expand the range of its offerings and develop new technologies?",
@@ -1353,7 +1354,7 @@
             "hit@20": 1.0,
             "recall@20": 1.0
           },
-          "latency_ms": 513.87
+          "latency_ms": 253.99
         },
         "rrf_clean_v2_peryear_v1": {
           "query_used": "Through what methods does the company expand the range of its offerings and develop new technologies?",
@@ -1396,7 +1397,7 @@
             "hit@20": 1.0,
             "recall@20": 1.0
           },
-          "latency_ms": 362.46
+          "latency_ms": 251.67
         },
         "production_retrieve": {
           "query_used": "According to Apple's fiscal year 2025 Form 10-K, through what methods does the company expand the range of its offerings and develop new technologies?",
@@ -1439,7 +1440,7 @@
             "hit@20": 1.0,
             "recall@20": 1.0
           },
-          "latency_ms": 407.33
+          "latency_ms": 251.99
         },
         "dense_clean_v2": {
           "query_used": "Through what methods does the company expand the range of its offerings and develop new technologies?",
@@ -1482,7 +1483,7 @@
             "hit@20": 1.0,
             "recall@20": 1.0
           },
-          "latency_ms": 392.9
+          "latency_ms": 239.09
         },
         "bm25_clean_v2": {
           "query_used": "Through what methods does the company expand the range of its offerings and develop new technologies?",
@@ -1525,7 +1526,7 @@
             "hit@20": 1.0,
             "recall@20": 1.0
           },
-          "latency_ms": 18.35
+          "latency_ms": 13.25
         },
         "rrf_clean_v1": {
           "query_used": "Through what methods does the company expand the range of its offerings and develop new technologies?",
@@ -1568,7 +1569,7 @@
             "hit@20": 1.0,
             "recall@20": 1.0
           },
-          "latency_ms": 414.0
+          "latency_ms": 250.56
         },
         "rrf_bm25_weighted": {
           "query_used": "According to Apple's fiscal year 2025 Form 10-K, through what methods does the company expand the range of its offerings and develop new technologies?",
@@ -1611,7 +1612,7 @@
             "hit@20": 1.0,
             "recall@20": 1.0
           },
-          "latency_ms": 329.62
+          "latency_ms": 262.6
         },
         "rrf_rerank": {
           "query_used": "According to Apple's fiscal year 2025 Form 10-K, through what methods does the company expand the range of its offerings and develop new technologies?",
@@ -1654,7 +1655,7 @@
             "hit@20": 0.0,
             "recall@20": 0.0
           },
-          "latency_ms": 2647.58
+          "latency_ms": 2388.75
         },
         "bm25_rerank": {
           "query_used": "According to Apple's fiscal year 2025 Form 10-K, through what methods does the company expand the range of its offerings and develop new technologies?",
@@ -1697,7 +1698,7 @@
             "hit@20": 0.0,
             "recall@20": 0.0
           },
-          "latency_ms": 2221.52
+          "latency_ms": 2106.73
         }
       }
     },
@@ -1739,7 +1740,7 @@
             "hit@20": 1.0,
             "recall@20": 1.0
           },
-          "latency_ms": 318.92
+          "latency_ms": 240.28
         },
         "dense_filtered": {
           "query_used": "According to Apple's fiscal year 2025 Form 10-K, what subscription-based digital content services are listed under Apple's Services offerings?",
@@ -1782,7 +1783,7 @@
             "hit@20": 1.0,
             "recall@20": 1.0
           },
-          "latency_ms": 570.48
+          "latency_ms": 465.64
         },
         "bm25_filtered": {
           "query_used": "According to Apple's fiscal year 2025 Form 10-K, what subscription-based digital content services are listed under Apple's Services offerings?",
@@ -1825,7 +1826,7 @@
             "hit@20": 1.0,
             "recall@20": 1.0
           },
-          "latency_ms": 28.95
+          "latency_ms": 16.93
         },
         "rrf_raw_filtered": {
           "query_used": "According to Apple's fiscal year 2025 Form 10-K, what subscription-based digital content services are listed under Apple's Services offerings?",
@@ -1868,7 +1869,7 @@
             "hit@20": 1.0,
             "recall@20": 1.0
           },
-          "latency_ms": 329.31
+          "latency_ms": 258.45
         },
         "rrf_clean_v2": {
           "query_used": "What subscription-based digital content services are listed under Apple's Services offerings?",
@@ -1911,7 +1912,7 @@
             "hit@20": 1.0,
             "recall@20": 1.0
           },
-          "latency_ms": 301.25
+          "latency_ms": 253.0
         },
         "rrf_clean_v2_peryear_v1": {
           "query_used": "What subscription-based digital content services are listed under Apple's Services offerings?",
@@ -1954,7 +1955,7 @@
             "hit@20": 1.0,
             "recall@20": 1.0
           },
-          "latency_ms": 493.74
+          "latency_ms": 249.88
         },
         "production_retrieve": {
           "query_used": "According to Apple's fiscal year 2025 Form 10-K, what subscription-based digital content services are listed under Apple's Services offerings?",
@@ -1997,7 +1998,7 @@
             "hit@20": 1.0,
             "recall@20": 1.0
           },
-          "latency_ms": 327.04
+          "latency_ms": 249.65
         },
         "dense_clean_v2": {
           "query_used": "What subscription-based digital content services are listed under Apple's Services offerings?",
@@ -2040,7 +2041,7 @@
             "hit@20": 1.0,
             "recall@20": 1.0
           },
-          "latency_ms": 299.77
+          "latency_ms": 238.94
         },
         "bm25_clean_v2": {
           "query_used": "What subscription-based digital content services are listed under Apple's Services offerings?",
@@ -2083,7 +2084,7 @@
             "hit@20": 1.0,
             "recall@20": 1.0
           },
-          "latency_ms": 13.71
+          "latency_ms": 10.55
         },
         "rrf_clean_v1": {
           "query_used": "What subscription-based digital content services are listed under Services offerings?",
@@ -2126,7 +2127,7 @@
             "hit@20": 1.0,
             "recall@20": 1.0
           },
-          "latency_ms": 300.65
+          "latency_ms": 248.64
         },
         "rrf_bm25_weighted": {
           "query_used": "According to Apple's fiscal year 2025 Form 10-K, what subscription-based digital content services are listed under Apple's Services offerings?",
@@ -2169,7 +2170,7 @@
             "hit@20": 1.0,
             "recall@20": 1.0
           },
-          "latency_ms": 421.97
+          "latency_ms": 261.27
         },
         "rrf_rerank": {
           "query_used": "According to Apple's fiscal year 2025 Form 10-K, what subscription-based digital content services are listed under Apple's Services offerings?",
@@ -2212,7 +2213,7 @@
             "hit@20": 1.0,
             "recall@20": 1.0
           },
-          "latency_ms": 2576.0
+          "latency_ms": 2267.13
         },
         "bm25_rerank": {
           "query_used": "According to Apple's fiscal year 2025 Form 10-K, what subscription-based digital content services are listed under Apple's Services offerings?",
@@ -2255,7 +2256,7 @@
             "hit@20": 1.0,
             "recall@20": 1.0
           },
-          "latency_ms": 2375.7
+          "latency_ms": 2011.89
         }
       }
     },
@@ -2297,7 +2298,7 @@
             "hit@20": 1.0,
             "recall@20": 1.0
           },
-          "latency_ms": 344.53
+          "latency_ms": 239.43
         },
         "dense_filtered": {
           "query_used": "According to Apple's fiscal year 2024 Form 10-K, what are the principal competitive factors important to the company?",
@@ -2340,7 +2341,7 @@
             "hit@20": 1.0,
             "recall@20": 1.0
           },
-          "latency_ms": 306.52
+          "latency_ms": 466.74
         },
         "bm25_filtered": {
           "query_used": "According to Apple's fiscal year 2024 Form 10-K, what are the principal competitive factors important to the company?",
@@ -2383,7 +2384,7 @@
             "hit@20": 1.0,
             "recall@20": 1.0
           },
-          "latency_ms": 27.88
+          "latency_ms": 15.1
         },
         "rrf_raw_filtered": {
           "query_used": "According to Apple's fiscal year 2024 Form 10-K, what are the principal competitive factors important to the company?",
@@ -2426,7 +2427,7 @@
             "hit@20": 1.0,
             "recall@20": 1.0
           },
-          "latency_ms": 462.81
+          "latency_ms": 258.73
         },
         "rrf_clean_v2": {
           "query_used": "What are the principal competitive factors important to the company?",
@@ -2469,7 +2470,7 @@
             "hit@20": 1.0,
             "recall@20": 1.0
           },
-          "latency_ms": 347.83
+          "latency_ms": 249.6
         },
         "rrf_clean_v2_peryear_v1": {
           "query_used": "What are the principal competitive factors important to the company?",
@@ -2512,7 +2513,7 @@
             "hit@20": 1.0,
             "recall@20": 1.0
           },
-          "latency_ms": 406.2
+          "latency_ms": 249.9
         },
         "production_retrieve": {
           "query_used": "According to Apple's fiscal year 2024 Form 10-K, what are the principal competitive factors important to the company?",
@@ -2555,7 +2556,7 @@
             "hit@20": 1.0,
             "recall@20": 1.0
           },
-          "latency_ms": 302.61
+          "latency_ms": 249.89
         },
         "dense_clean_v2": {
           "query_used": "What are the principal competitive factors important to the company?",
@@ -2598,7 +2599,7 @@
             "hit@20": 1.0,
             "recall@20": 1.0
           },
-          "latency_ms": 398.59
+          "latency_ms": 239.02
         },
         "bm25_clean_v2": {
           "query_used": "What are the principal competitive factors important to the company?",
@@ -2641,7 +2642,7 @@
             "hit@20": 1.0,
             "recall@20": 1.0
           },
-          "latency_ms": 11.55
+          "latency_ms": 10.63
         },
         "rrf_clean_v1": {
           "query_used": "What are the principal competitive factors important to the company?",
@@ -2684,7 +2685,7 @@
             "hit@20": 1.0,
             "recall@20": 1.0
           },
-          "latency_ms": 418.5
+          "latency_ms": 248.58
         },
         "rrf_bm25_weighted": {
           "query_used": "According to Apple's fiscal year 2024 Form 10-K, what are the principal competitive factors important to the company?",
@@ -2727,7 +2728,7 @@
             "hit@20": 1.0,
             "recall@20": 1.0
           },
-          "latency_ms": 417.04
+          "latency_ms": 255.58
         },
         "rrf_rerank": {
           "query_used": "According to Apple's fiscal year 2024 Form 10-K, what are the principal competitive factors important to the company?",
@@ -2770,7 +2771,7 @@
             "hit@20": 1.0,
             "recall@20": 1.0
           },
-          "latency_ms": 2804.7
+          "latency_ms": 2274.67
         },
         "bm25_rerank": {
           "query_used": "According to Apple's fiscal year 2024 Form 10-K, what are the principal competitive factors important to the company?",
@@ -2813,7 +2814,7 @@
             "hit@20": 1.0,
             "recall@20": 1.0
           },
-          "latency_ms": 2268.8
+          "latency_ms": 2112.71
         }
       }
     },
@@ -2855,7 +2856,7 @@
             "hit@20": 0.0,
             "recall@20": 0.0
           },
-          "latency_ms": 309.21
+          "latency_ms": 244.87
         },
         "dense_filtered": {
           "query_used": "According to Apple's fiscal year 2024 Form 10-K, what percentages of total net sales did Apple generate through its direct and indirect distribution channels in fiscal year 2024, respectively?",
@@ -2898,7 +2899,7 @@
             "hit@20": 0.0,
             "recall@20": 0.0
           },
-          "latency_ms": 630.0
+          "latency_ms": 469.42
         },
         "bm25_filtered": {
           "query_used": "According to Apple's fiscal year 2024 Form 10-K, what percentages of total net sales did Apple generate through its direct and indirect distribution channels in fiscal year 2024, respectively?",
@@ -2941,7 +2942,7 @@
             "hit@20": 1.0,
             "recall@20": 1.0
           },
-          "latency_ms": 31.78
+          "latency_ms": 22.02
         },
         "rrf_raw_filtered": {
           "query_used": "According to Apple's fiscal year 2024 Form 10-K, what percentages of total net sales did Apple generate through its direct and indirect distribution channels in fiscal year 2024, respectively?",
@@ -2984,7 +2985,7 @@
             "hit@20": 0.0,
             "recall@20": 0.0
           },
-          "latency_ms": 430.29
+          "latency_ms": 266.6
         },
         "rrf_clean_v2": {
           "query_used": "What percentages of total net sales did Apple generate through its direct and indirect distribution channels respectively?",
@@ -3027,7 +3028,7 @@
             "hit@20": 1.0,
             "recall@20": 1.0
           },
-          "latency_ms": 581.25
+          "latency_ms": 255.93
         },
         "rrf_clean_v2_peryear_v1": {
           "query_used": "What percentages of total net sales did Apple generate through its direct and indirect distribution channels respectively?",
@@ -3070,7 +3071,7 @@
             "hit@20": 1.0,
             "recall@20": 1.0
           },
-          "latency_ms": 417.59
+          "latency_ms": 252.83
         },
         "production_retrieve": {
           "query_used": "According to Apple's fiscal year 2024 Form 10-K, what percentages of total net sales did Apple generate through its direct and indirect distribution channels in fiscal year 2024, respectively?",
@@ -3113,7 +3114,7 @@
             "hit@20": 1.0,
             "recall@20": 1.0
           },
-          "latency_ms": 517.91
+          "latency_ms": 254.44
         },
         "dense_clean_v2": {
           "query_used": "What percentages of total net sales did Apple generate through its direct and indirect distribution channels respectively?",
@@ -3156,7 +3157,7 @@
             "hit@20": 1.0,
             "recall@20": 1.0
           },
-          "latency_ms": 376.51
+          "latency_ms": 239.99
         },
         "bm25_clean_v2": {
           "query_used": "What percentages of total net sales did Apple generate through its direct and indirect distribution channels respectively?",
@@ -3199,7 +3200,7 @@
             "hit@20": 1.0,
             "recall@20": 1.0
           },
-          "latency_ms": 18.88
+          "latency_ms": 12.92
         },
         "rrf_clean_v1": {
           "query_used": "What percentages of total net sales did generate through its direct and indirect distribution channels respectively?",
@@ -3242,7 +3243,7 @@
             "hit@20": 1.0,
             "recall@20": 1.0
           },
-          "latency_ms": 345.83
+          "latency_ms": 251.64
         },
         "rrf_bm25_weighted": {
           "query_used": "According to Apple's fiscal year 2024 Form 10-K, what percentages of total net sales did Apple generate through its direct and indirect distribution channels in fiscal year 2024, respectively?",
@@ -3285,7 +3286,7 @@
             "hit@20": 0.0,
             "recall@20": 0.0
           },
-          "latency_ms": 398.76
+          "latency_ms": 267.91
         },
         "rrf_rerank": {
           "query_used": "According to Apple's fiscal year 2024 Form 10-K, what percentages of total net sales did Apple generate through its direct and indirect distribution channels in fiscal year 2024, respectively?",
@@ -3328,7 +3329,7 @@
             "hit@20": 1.0,
             "recall@20": 1.0
           },
-          "latency_ms": 2612.38
+          "latency_ms": 2272.35
         },
         "bm25_rerank": {
           "query_used": "According to Apple's fiscal year 2024 Form 10-K, what percentages of total net sales did Apple generate through its direct and indirect distribution channels in fiscal year 2024, respectively?",
@@ -3371,7 +3372,7 @@
             "hit@20": 1.0,
             "recall@20": 1.0
           },
-          "latency_ms": 2252.09
+          "latency_ms": 2032.09
         }
       }
     },
@@ -3413,7 +3414,7 @@
             "hit@20": 1.0,
             "recall@20": 1.0
           },
-          "latency_ms": 412.92
+          "latency_ms": 239.91
         },
         "dense_filtered": {
           "query_used": "According to Apple's fiscal year 2024 Form 10-K, what subscription-based digital content services are explicitly detailed under Apple's Services offerings?",
@@ -3456,7 +3457,7 @@
             "hit@20": 1.0,
             "recall@20": 1.0
           },
-          "latency_ms": 312.65
+          "latency_ms": 465.6
         },
         "bm25_filtered": {
           "query_used": "According to Apple's fiscal year 2024 Form 10-K, what subscription-based digital content services are explicitly detailed under Apple's Services offerings?",
@@ -3499,7 +3500,7 @@
             "hit@20": 1.0,
             "recall@20": 1.0
           },
-          "latency_ms": 23.36
+          "latency_ms": 17.35
         },
         "rrf_raw_filtered": {
           "query_used": "According to Apple's fiscal year 2024 Form 10-K, what subscription-based digital content services are explicitly detailed under Apple's Services offerings?",
@@ -3542,7 +3543,7 @@
             "hit@20": 1.0,
             "recall@20": 1.0
           },
-          "latency_ms": 391.05
+          "latency_ms": 259.39
         },
         "rrf_clean_v2": {
           "query_used": "What subscription-based digital content services are explicitly detailed under Apple's Services offerings?",
@@ -3585,7 +3586,7 @@
             "hit@20": 1.0,
             "recall@20": 1.0
           },
-          "latency_ms": 312.65
+          "latency_ms": 250.01
         },
         "rrf_clean_v2_peryear_v1": {
           "query_used": "What subscription-based digital content services are explicitly detailed under Apple's Services offerings?",
@@ -3628,7 +3629,7 @@
             "hit@20": 1.0,
             "recall@20": 1.0
           },
-          "latency_ms": 418.51
+          "latency_ms": 250.46
         },
         "production_retrieve": {
           "query_used": "According to Apple's fiscal year 2024 Form 10-K, what subscription-based digital content services are explicitly detailed under Apple's Services offerings?",
@@ -3671,7 +3672,7 @@
             "hit@20": 1.0,
             "recall@20": 1.0
           },
-          "latency_ms": 303.29
+          "latency_ms": 249.43
         },
         "dense_clean_v2": {
           "query_used": "What subscription-based digital content services are explicitly detailed under Apple's Services offerings?",
@@ -3714,7 +3715,7 @@
             "hit@20": 1.0,
             "recall@20": 1.0
           },
-          "latency_ms": 286.34
+          "latency_ms": 239.77
         },
         "bm25_clean_v2": {
           "query_used": "What subscription-based digital content services are explicitly detailed under Apple's Services offerings?",
@@ -3757,7 +3758,7 @@
             "hit@20": 1.0,
             "recall@20": 1.0
           },
-          "latency_ms": 15.9
+          "latency_ms": 11.13
         },
         "rrf_clean_v1": {
           "query_used": "What subscription-based digital content services are explicitly detailed under Services offerings?",
@@ -3800,7 +3801,7 @@
             "hit@20": 1.0,
             "recall@20": 1.0
           },
-          "latency_ms": 407.19
+          "latency_ms": 248.68
         },
         "rrf_bm25_weighted": {
           "query_used": "According to Apple's fiscal year 2024 Form 10-K, what subscription-based digital content services are explicitly detailed under Apple's Services offerings?",
@@ -3843,7 +3844,7 @@
             "hit@20": 1.0,
             "recall@20": 1.0
           },
-          "latency_ms": 322.24
+          "latency_ms": 258.08
         },
         "rrf_rerank": {
           "query_used": "According to Apple's fiscal year 2024 Form 10-K, what subscription-based digital content services are explicitly detailed under Apple's Services offerings?",
@@ -3886,7 +3887,7 @@
             "hit@20": 1.0,
             "recall@20": 1.0
           },
-          "latency_ms": 2566.46
+          "latency_ms": 2264.45
         },
         "bm25_rerank": {
           "query_used": "According to Apple's fiscal year 2024 Form 10-K, what subscription-based digital content services are explicitly detailed under Apple's Services offerings?",
@@ -3929,7 +3930,7 @@
             "hit@20": 1.0,
             "recall@20": 1.0
           },
-          "latency_ms": 2210.42
+          "latency_ms": 2089.56
         }
       }
     },
@@ -3971,7 +3972,7 @@
             "hit@20": 0.0,
             "recall@20": 0.0
           },
-          "latency_ms": 355.6
+          "latency_ms": 262.87
         },
         "dense_filtered": {
           "query_used": "According to Apple's fiscal year 2025 Form 10-K, what does the company primarily rely on for its success, despite viewing the ownership of intellectual property rights as an important factor in differentiating its business?",
@@ -4014,7 +4015,7 @@
             "hit@20": 1.0,
             "recall@20": 1.0
           },
-          "latency_ms": 777.55
+          "latency_ms": 467.97
         },
         "bm25_filtered": {
           "query_used": "According to Apple's fiscal year 2025 Form 10-K, what does the company primarily rely on for its success, despite viewing the ownership of intellectual property rights as an important factor in differentiating its business?",
@@ -4057,7 +4058,7 @@
             "hit@20": 1.0,
             "recall@20": 1.0
           },
-          "latency_ms": 41.32
+          "latency_ms": 29.28
         },
         "rrf_raw_filtered": {
           "query_used": "According to Apple's fiscal year 2025 Form 10-K, what does the company primarily rely on for its success, despite viewing the ownership of intellectual property rights as an important factor in differentiating its business?",
@@ -4100,7 +4101,7 @@
             "hit@20": 1.0,
             "recall@20": 1.0
           },
-          "latency_ms": 395.2
+          "latency_ms": 270.22
         },
         "rrf_clean_v2": {
           "query_used": "What does the company primarily rely on for its success, despite viewing the ownership of intellectual property rights as an important factor in differentiating its business?",
@@ -4143,7 +4144,7 @@
             "hit@20": 1.0,
             "recall@20": 1.0
           },
-          "latency_ms": 342.07
+          "latency_ms": 262.53
         },
         "rrf_clean_v2_peryear_v1": {
           "query_used": "What does the company primarily rely on for its success, despite viewing the ownership of intellectual property rights as an important factor in differentiating its business?",
@@ -4186,7 +4187,7 @@
             "hit@20": 1.0,
             "recall@20": 1.0
           },
-          "latency_ms": 480.7
+          "latency_ms": 263.05
         },
         "production_retrieve": {
           "query_used": "According to Apple's fiscal year 2025 Form 10-K, what does the company primarily rely on for its success, despite viewing the ownership of intellectual property rights as an important factor in differentiating its business?",
@@ -4229,7 +4230,7 @@
             "hit@20": 1.0,
             "recall@20": 1.0
           },
-          "latency_ms": 316.05
+          "latency_ms": 265.03
         },
         "dense_clean_v2": {
           "query_used": "What does the company primarily rely on for its success, despite viewing the ownership of intellectual property rights as an important factor in differentiating its business?",
@@ -4272,7 +4273,7 @@
             "hit@20": 1.0,
             "recall@20": 1.0
           },
-          "latency_ms": 302.47
+          "latency_ms": 241.49
         },
         "bm25_clean_v2": {
           "query_used": "What does the company primarily rely on for its success, despite viewing the ownership of intellectual property rights as an important factor in differentiating its business?",
@@ -4315,7 +4316,7 @@
             "hit@20": 1.0,
             "recall@20": 1.0
           },
-          "latency_ms": 27.4
+          "latency_ms": 21.51
         },
         "rrf_clean_v1": {
           "query_used": "What does the company primarily rely on for its success, despite viewing the ownership of intellectual property rights as an important factor in differentiating its business?",
@@ -4358,7 +4359,7 @@
             "hit@20": 1.0,
             "recall@20": 1.0
           },
-          "latency_ms": 372.72
+          "latency_ms": 261.25
         },
         "rrf_bm25_weighted": {
           "query_used": "According to Apple's fiscal year 2025 Form 10-K, what does the company primarily rely on for its success, despite viewing the ownership of intellectual property rights as an important factor in differentiating its business?",
@@ -4401,7 +4402,7 @@
             "hit@20": 1.0,
             "recall@20": 1.0
           },
-          "latency_ms": 361.44
+          "latency_ms": 269.91
         },
         "rrf_rerank": {
           "query_used": "According to Apple's fiscal year 2025 Form 10-K, what does the company primarily rely on for its success, despite viewing the ownership of intellectual property rights as an important factor in differentiating its business?",
@@ -4444,7 +4445,7 @@
             "hit@20": 0.0,
             "recall@20": 0.0
           },
-          "latency_ms": 2630.2
+          "latency_ms": 2293.12
         },
         "bm25_rerank": {
           "query_used": "According to Apple's fiscal year 2025 Form 10-K, what does the company primarily rely on for its success, despite viewing the ownership of intellectual property rights as an important factor in differentiating its business?",
@@ -4487,7 +4488,7 @@
             "hit@20": 0.0,
             "recall@20": 0.0
           },
-          "latency_ms": 2366.54
+          "latency_ms": 2053.6
         }
       }
     },
@@ -4529,7 +4530,7 @@
             "hit@20": 1.0,
             "recall@20": 1.0
           },
-          "latency_ms": 350.68
+          "latency_ms": 243.12
         },
         "dense_filtered": {
           "query_used": "According to Apple's fiscal year 2025 Form 10-K, what factors can cause initial capacity constraints when the company introduces a component or product that utilizes new technologies?",
@@ -4572,7 +4573,7 @@
             "hit@20": 1.0,
             "recall@20": 1.0
           },
-          "latency_ms": 619.53
+          "latency_ms": 465.75
         },
         "bm25_filtered": {
           "query_used": "According to Apple's fiscal year 2025 Form 10-K, what factors can cause initial capacity constraints when the company introduces a component or product that utilizes new technologies?",
@@ -4615,7 +4616,7 @@
             "hit@20": 1.0,
             "recall@20": 1.0
           },
-          "latency_ms": 28.72
+          "latency_ms": 20.72
         },
         "rrf_raw_filtered": {
           "query_used": "According to Apple's fiscal year 2025 Form 10-K, what factors can cause initial capacity constraints when the company introduces a component or product that utilizes new technologies?",
@@ -4658,7 +4659,7 @@
             "hit@20": 1.0,
             "recall@20": 1.0
           },
-          "latency_ms": 424.52
+          "latency_ms": 261.72
         },
         "rrf_clean_v2": {
           "query_used": "What factors can cause initial capacity constraints when the company introduces a component or product that utilizes new technologies?",
@@ -4701,7 +4702,7 @@
             "hit@20": 1.0,
             "recall@20": 1.0
           },
-          "latency_ms": 326.38
+          "latency_ms": 258.17
         },
         "rrf_clean_v2_peryear_v1": {
           "query_used": "What factors can cause initial capacity constraints when the company introduces a component or product that utilizes new technologies?",
@@ -4744,7 +4745,7 @@
             "hit@20": 1.0,
             "recall@20": 1.0
           },
-          "latency_ms": 307.9
+          "latency_ms": 253.72
         },
         "production_retrieve": {
           "query_used": "According to Apple's fiscal year 2025 Form 10-K, what factors can cause initial capacity constraints when the company introduces a component or product that utilizes new technologies?",
@@ -4787,7 +4788,7 @@
             "hit@20": 1.0,
             "recall@20": 1.0
           },
-          "latency_ms": 366.07
+          "latency_ms": 255.11
         },
         "dense_clean_v2": {
           "query_used": "What factors can cause initial capacity constraints when the company introduces a component or product that utilizes new technologies?",
@@ -4830,7 +4831,7 @@
             "hit@20": 1.0,
             "recall@20": 1.0
           },
-          "latency_ms": 390.4
+          "latency_ms": 239.41
         },
         "bm25_clean_v2": {
           "query_used": "What factors can cause initial capacity constraints when the company introduces a component or product that utilizes new technologies?",
@@ -4873,7 +4874,7 @@
             "hit@20": 1.0,
             "recall@20": 1.0
           },
-          "latency_ms": 23.42
+          "latency_ms": 16.7
         },
         "rrf_clean_v1": {
           "query_used": "What factors can cause initial capacity constraints when the company introduces a component or product that utilizes new technologies?",
@@ -4916,7 +4917,7 @@
             "hit@20": 1.0,
             "recall@20": 1.0
           },
-          "latency_ms": 400.26
+          "latency_ms": 254.23
         },
         "rrf_bm25_weighted": {
           "query_used": "According to Apple's fiscal year 2025 Form 10-K, what factors can cause initial capacity constraints when the company introduces a component or product that utilizes new technologies?",
@@ -4959,7 +4960,7 @@
             "hit@20": 1.0,
             "recall@20": 1.0
           },
-          "latency_ms": 524.3
+          "latency_ms": 265.03
         },
         "rrf_rerank": {
           "query_used": "According to Apple's fiscal year 2025 Form 10-K, what factors can cause initial capacity constraints when the company introduces a component or product that utilizes new technologies?",
@@ -5002,7 +5003,7 @@
             "hit@20": 1.0,
             "recall@20": 1.0
           },
-          "latency_ms": 2668.9
+          "latency_ms": 2265.31
         },
         "bm25_rerank": {
           "query_used": "According to Apple's fiscal year 2025 Form 10-K, what factors can cause initial capacity constraints when the company introduces a component or product that utilizes new technologies?",
@@ -5045,7 +5046,7 @@
             "hit@20": 1.0,
             "recall@20": 1.0
           },
-          "latency_ms": 2274.64
+          "latency_ms": 2035.09
         }
       }
     },
@@ -5087,7 +5088,7 @@
             "hit@20": 0.0,
             "recall@20": 0.0
           },
-          "latency_ms": 423.19
+          "latency_ms": 241.63
         },
         "dense_filtered": {
           "query_used": "According to Apple's fiscal year 2024 Form 10-K, what historical trend does Apple observe regarding its net sales in the first quarter of its fiscal year, and what drives this trend?",
@@ -5130,7 +5131,7 @@
             "hit@20": 1.0,
             "recall@20": 1.0
           },
-          "latency_ms": 651.22
+          "latency_ms": 466.73
         },
         "bm25_filtered": {
           "query_used": "According to Apple's fiscal year 2024 Form 10-K, what historical trend does Apple observe regarding its net sales in the first quarter of its fiscal year, and what drives this trend?",
@@ -5173,7 +5174,7 @@
             "hit@20": 1.0,
             "recall@20": 1.0
           },
-          "latency_ms": 34.83
+          "latency_ms": 23.48
         },
         "rrf_raw_filtered": {
           "query_used": "According to Apple's fiscal year 2024 Form 10-K, what historical trend does Apple observe regarding its net sales in the first quarter of its fiscal year, and what drives this trend?",
@@ -5216,7 +5217,7 @@
             "hit@20": 1.0,
             "recall@20": 1.0
           },
-          "latency_ms": 415.43
+          "latency_ms": 269.57
         },
         "rrf_clean_v2": {
           "query_used": "What historical trend does Apple observe regarding its net sales in the first quarter of its fiscal year, and what drives this trend?",
@@ -5259,7 +5260,7 @@
             "hit@20": 1.0,
             "recall@20": 1.0
           },
-          "latency_ms": 449.72
+          "latency_ms": 258.04
         },
         "rrf_clean_v2_peryear_v1": {
           "query_used": "What historical trend does Apple observe regarding its net sales in the first quarter of its fiscal year, and what drives this trend?",
@@ -5302,7 +5303,7 @@
             "hit@20": 1.0,
             "recall@20": 1.0
           },
-          "latency_ms": 355.99
+          "latency_ms": 258.02
         },
         "production_retrieve": {
           "query_used": "According to Apple's fiscal year 2024 Form 10-K, what historical trend does Apple observe regarding its net sales in the first quarter of its fiscal year, and what drives this trend?",
@@ -5345,7 +5346,7 @@
             "hit@20": 1.0,
             "recall@20": 1.0
           },
-          "latency_ms": 502.1
+          "latency_ms": 260.21
         },
         "dense_clean_v2": {
           "query_used": "What historical trend does Apple observe regarding its net sales in the first quarter of its fiscal year, and what drives this trend?",
@@ -5388,7 +5389,7 @@
             "hit@20": 1.0,
             "recall@20": 1.0
           },
-          "latency_ms": 393.83
+          "latency_ms": 240.73
         },
         "bm25_clean_v2": {
           "query_used": "What historical trend does Apple observe regarding its net sales in the first quarter of its fiscal year, and what drives this trend?",
@@ -5431,7 +5432,7 @@
             "hit@20": 1.0,
             "recall@20": 1.0
           },
-          "latency_ms": 23.97
+          "latency_ms": 17.55
         },
         "rrf_clean_v1": {
           "query_used": "What historical trend does observe regarding its net sales in the first quarter of its fiscal year, and what drives this trend?",
@@ -5474,7 +5475,7 @@
             "hit@20": 1.0,
             "recall@20": 1.0
           },
-          "latency_ms": 403.16
+          "latency_ms": 259.71
         },
         "rrf_bm25_weighted": {
           "query_used": "According to Apple's fiscal year 2024 Form 10-K, what historical trend does Apple observe regarding its net sales in the first quarter of its fiscal year, and what drives this trend?",
@@ -5517,7 +5518,7 @@
             "hit@20": 1.0,
             "recall@20": 1.0
           },
-          "latency_ms": 432.0
+          "latency_ms": 267.88
         },
         "rrf_rerank": {
           "query_used": "According to Apple's fiscal year 2024 Form 10-K, what historical trend does Apple observe regarding its net sales in the first quarter of its fiscal year, and what drives this trend?",
@@ -5560,7 +5561,7 @@
             "hit@20": 0.0,
             "recall@20": 0.0
           },
-          "latency_ms": 2624.77
+          "latency_ms": 2294.72
         },
         "bm25_rerank": {
           "query_used": "According to Apple's fiscal year 2024 Form 10-K, what historical trend does Apple observe regarding its net sales in the first quarter of its fiscal year, and what drives this trend?",
@@ -5603,7 +5604,7 @@
             "hit@20": 0.0,
             "recall@20": 0.0
           },
-          "latency_ms": 2180.44
+          "latency_ms": 2036.48
         }
       }
     },
@@ -5645,7 +5646,7 @@
             "hit@20": 1.0,
             "recall@20": 1.0
           },
-          "latency_ms": 368.57
+          "latency_ms": 241.55
         },
         "dense_filtered": {
           "query_used": "According to Apple's fiscal year 2023 Form 10-K, what specific consequences could result if Apple is unable to satisfy changing regulations regarding product import and export?",
@@ -5688,7 +5689,7 @@
             "hit@20": 1.0,
             "recall@20": 1.0
           },
-          "latency_ms": 601.89
+          "latency_ms": 465.51
         },
         "bm25_filtered": {
           "query_used": "According to Apple's fiscal year 2023 Form 10-K, what specific consequences could result if Apple is unable to satisfy changing regulations regarding product import and export?",
@@ -5731,7 +5732,7 @@
             "hit@20": 1.0,
             "recall@20": 1.0
           },
-          "latency_ms": 25.73
+          "latency_ms": 20.25
         },
         "rrf_raw_filtered": {
           "query_used": "According to Apple's fiscal year 2023 Form 10-K, what specific consequences could result if Apple is unable to satisfy changing regulations regarding product import and export?",
@@ -5774,7 +5775,7 @@
             "hit@20": 1.0,
             "recall@20": 1.0
           },
-          "latency_ms": 392.73
+          "latency_ms": 262.57
         },
         "rrf_clean_v2": {
           "query_used": "What specific consequences could result if Apple is unable to satisfy changing regulations regarding product import and export?",
@@ -5817,7 +5818,7 @@
             "hit@20": 1.0,
             "recall@20": 1.0
           },
-          "latency_ms": 327.47
+          "latency_ms": 254.22
         },
         "rrf_clean_v2_peryear_v1": {
           "query_used": "What specific consequences could result if Apple is unable to satisfy changing regulations regarding product import and export?",
@@ -5860,7 +5861,7 @@
             "hit@20": 1.0,
             "recall@20": 1.0
           },
-          "latency_ms": 419.19
+          "latency_ms": 254.26
         },
         "production_retrieve": {
           "query_used": "According to Apple's fiscal year 2023 Form 10-K, what specific consequences could result if Apple is unable to satisfy changing regulations regarding product import and export?",
@@ -5903,7 +5904,7 @@
             "hit@20": 1.0,
             "recall@20": 1.0
           },
-          "latency_ms": 311.7
+          "latency_ms": 256.59
         },
         "dense_clean_v2": {
           "query_used": "What specific consequences could result if Apple is unable to satisfy changing regulations regarding product import and export?",
@@ -5946,7 +5947,7 @@
             "hit@20": 1.0,
             "recall@20": 1.0
           },
-          "latency_ms": 373.89
+          "latency_ms": 239.77
         },
         "bm25_clean_v2": {
           "query_used": "What specific consequences could result if Apple is unable to satisfy changing regulations regarding product import and export?",
@@ -5989,7 +5990,7 @@
             "hit@20": 1.0,
             "recall@20": 1.0
           },
-          "latency_ms": 19.41
+          "latency_ms": 14.34
         },
         "rrf_clean_v1": {
           "query_used": "What specific consequences could result if is unable to satisfy changing regulations regarding product import and export?",
@@ -6032,7 +6033,7 @@
             "hit@20": 1.0,
             "recall@20": 1.0
           },
-          "latency_ms": 611.8
+          "latency_ms": 253.49
         },
         "rrf_bm25_weighted": {
           "query_used": "According to Apple's fiscal year 2023 Form 10-K, what specific consequences could result if Apple is unable to satisfy changing regulations regarding product import and export?",
@@ -6075,7 +6076,7 @@
             "hit@20": 1.0,
             "recall@20": 1.0
           },
-          "latency_ms": 322.92
+          "latency_ms": 264.52
         },
         "rrf_rerank": {
           "query_used": "According to Apple's fiscal year 2023 Form 10-K, what specific consequences could result if Apple is unable to satisfy changing regulations regarding product import and export?",
@@ -6118,7 +6119,7 @@
             "hit@20": 1.0,
             "recall@20": 1.0
           },
-          "latency_ms": 2573.23
+          "latency_ms": 2269.04
         },
         "bm25_rerank": {
           "query_used": "According to Apple's fiscal year 2023 Form 10-K, what specific consequences could result if Apple is unable to satisfy changing regulations regarding product import and export?",
@@ -6161,7 +6162,7 @@
             "hit@20": 1.0,
             "recall@20": 1.0
           },
-          "latency_ms": 2297.17
+          "latency_ms": 2027.14
         }
       }
     },
@@ -6203,7 +6204,7 @@
             "hit@20": 0.0,
             "recall@20": 0.0
           },
-          "latency_ms": 319.43
+          "latency_ms": 240.54
         },
         "dense_filtered": {
           "query_used": "According to Apple's fiscal year 2025 Form 10-K, what specific characteristics define the global markets in which the company offers its products and services?",
@@ -6246,7 +6247,7 @@
             "hit@20": 0.0,
             "recall@20": 0.0
           },
-          "latency_ms": 618.43
+          "latency_ms": 466.05
         },
         "bm25_filtered": {
           "query_used": "According to Apple's fiscal year 2025 Form 10-K, what specific characteristics define the global markets in which the company offers its products and services?",
@@ -6289,7 +6290,7 @@
             "hit@20": 0.0,
             "recall@20": 0.0
           },
-          "latency_ms": 31.87
+          "latency_ms": 19.6
         },
         "rrf_raw_filtered": {
           "query_used": "According to Apple's fiscal year 2025 Form 10-K, what specific characteristics define the global markets in which the company offers its products and services?",
@@ -6332,7 +6333,7 @@
             "hit@20": 0.0,
             "recall@20": 0.0
           },
-          "latency_ms": 408.42
+          "latency_ms": 263.0
         },
         "rrf_clean_v2": {
           "query_used": "What specific characteristics define the global markets in which the company offers its products and services?",
@@ -6375,7 +6376,7 @@
             "hit@20": 1.0,
             "recall@20": 1.0
           },
-          "latency_ms": 408.52
+          "latency_ms": 253.45
         },
         "rrf_clean_v2_peryear_v1": {
           "query_used": "What specific characteristics define the global markets in which the company offers its products and services?",
@@ -6418,7 +6419,7 @@
             "hit@20": 1.0,
             "recall@20": 1.0
           },
-          "latency_ms": 405.33
+          "latency_ms": 257.9
         },
         "production_retrieve": {
           "query_used": "According to Apple's fiscal year 2025 Form 10-K, what specific characteristics define the global markets in which the company offers its products and services?",
@@ -6461,7 +6462,7 @@
             "hit@20": 1.0,
             "recall@20": 1.0
           },
-          "latency_ms": 395.42
+          "latency_ms": 255.73
         },
         "dense_clean_v2": {
           "query_used": "What specific characteristics define the global markets in which the company offers its products and services?",
@@ -6504,7 +6505,7 @@
             "hit@20": 1.0,
             "recall@20": 1.0
           },
-          "latency_ms": 299.74
+          "latency_ms": 239.79
         },
         "bm25_clean_v2": {
           "query_used": "What specific characteristics define the global markets in which the company offers its products and services?",
@@ -6547,7 +6548,7 @@
             "hit@20": 1.0,
             "recall@20": 1.0
           },
-          "latency_ms": 20.03
+          "latency_ms": 16.58
         },
         "rrf_clean_v1": {
           "query_used": "What specific characteristics define the global markets in which the company offers its products and services?",
@@ -6590,7 +6591,7 @@
             "hit@20": 1.0,
             "recall@20": 1.0
           },
-          "latency_ms": 593.47
+          "latency_ms": 260.04
         },
         "rrf_bm25_weighted": {
           "query_used": "According to Apple's fiscal year 2025 Form 10-K, what specific characteristics define the global markets in which the company offers its products and services?",
@@ -6633,7 +6634,7 @@
             "hit@20": 0.0,
             "recall@20": 0.0
           },
-          "latency_ms": 352.64
+          "latency_ms": 264.03
         },
         "rrf_rerank": {
           "query_used": "According to Apple's fiscal year 2025 Form 10-K, what specific characteristics define the global markets in which the company offers its products and services?",
@@ -6676,7 +6677,7 @@
             "hit@20": 0.0,
             "recall@20": 0.0
           },
-          "latency_ms": 2894.21
+          "latency_ms": 2313.99
         },
         "bm25_rerank": {
           "query_used": "According to Apple's fiscal year 2025 Form 10-K, what specific characteristics define the global markets in which the company offers its products and services?",
@@ -6719,7 +6720,7 @@
             "hit@20": 0.0,
             "recall@20": 0.0
           },
-          "latency_ms": 2280.98
+          "latency_ms": 2050.44
         }
       }
     },
@@ -6761,7 +6762,7 @@
             "hit@20": 0.0,
             "recall@20": 0.0
           },
-          "latency_ms": 406.02
+          "latency_ms": 240.3
         },
         "dense_filtered": {
           "query_used": "According to Apple's fiscal year 2023 Form 10-K, what specific areas are gauged through the company's employee sentiment surveys?",
@@ -6804,7 +6805,7 @@
             "hit@20": 0.0,
             "recall@20": 0.0
           },
-          "latency_ms": 1019.58
+          "latency_ms": 465.32
         },
         "bm25_filtered": {
           "query_used": "According to Apple's fiscal year 2023 Form 10-K, what specific areas are gauged through the company's employee sentiment surveys?",
@@ -6847,7 +6848,7 @@
             "hit@20": 1.0,
             "recall@20": 1.0
           },
-          "latency_ms": 25.54
+          "latency_ms": 15.88
         },
         "rrf_raw_filtered": {
           "query_used": "According to Apple's fiscal year 2023 Form 10-K, what specific areas are gauged through the company's employee sentiment surveys?",
@@ -6890,7 +6891,7 @@
             "hit@20": 1.0,
             "recall@20": 1.0
           },
-          "latency_ms": 428.12
+          "latency_ms": 259.64
         },
         "rrf_clean_v2": {
           "query_used": "What specific areas are gauged through the company's employee sentiment surveys?",
@@ -6933,7 +6934,7 @@
             "hit@20": 1.0,
             "recall@20": 1.0
           },
-          "latency_ms": 319.09
+          "latency_ms": 250.27
         },
         "rrf_clean_v2_peryear_v1": {
           "query_used": "What specific areas are gauged through the company's employee sentiment surveys?",
@@ -6976,7 +6977,7 @@
             "hit@20": 1.0,
             "recall@20": 1.0
           },
-          "latency_ms": 375.95
+          "latency_ms": 250.36
         },
         "production_retrieve": {
           "query_used": "According to Apple's fiscal year 2023 Form 10-K, what specific areas are gauged through the company's employee sentiment surveys?",
@@ -7019,7 +7020,7 @@
             "hit@20": 1.0,
             "recall@20": 1.0
           },
-          "latency_ms": 407.81
+          "latency_ms": 249.09
         },
         "dense_clean_v2": {
           "query_used": "What specific areas are gauged through the company's employee sentiment surveys?",
@@ -7062,7 +7063,7 @@
             "hit@20": 1.0,
             "recall@20": 1.0
           },
-          "latency_ms": 394.55
+          "latency_ms": 238.13
         },
         "bm25_clean_v2": {
           "query_used": "What specific areas are gauged through the company's employee sentiment surveys?",
@@ -7105,7 +7106,7 @@
             "hit@20": 1.0,
             "recall@20": 1.0
           },
-          "latency_ms": 13.64
+          "latency_ms": 9.64
         },
         "rrf_clean_v1": {
           "query_used": "What specific areas are gauged through the company's employee sentiment surveys?",
@@ -7148,7 +7149,7 @@
             "hit@20": 1.0,
             "recall@20": 1.0
           },
-          "latency_ms": 412.59
+          "latency_ms": 250.3
         },
         "rrf_bm25_weighted": {
           "query_used": "According to Apple's fiscal year 2023 Form 10-K, what specific areas are gauged through the company's employee sentiment surveys?",
@@ -7191,7 +7192,7 @@
             "hit@20": 1.0,
             "recall@20": 1.0
           },
-          "latency_ms": 423.8
+          "latency_ms": 260.85
         },
         "rrf_rerank": {
           "query_used": "According to Apple's fiscal year 2023 Form 10-K, what specific areas are gauged through the company's employee sentiment surveys?",
@@ -7234,7 +7235,7 @@
             "hit@20": 0.0,
             "recall@20": 0.0
           },
-          "latency_ms": 2652.38
+          "latency_ms": 2272.73
         },
         "bm25_rerank": {
           "query_used": "According to Apple's fiscal year 2023 Form 10-K, what specific areas are gauged through the company's employee sentiment surveys?",
@@ -7277,7 +7278,7 @@
             "hit@20": 0.0,
             "recall@20": 0.0
           },
-          "latency_ms": 2191.43
+          "latency_ms": 2044.94
         }
       }
     },
@@ -7324,7 +7325,7 @@
             "hit@20": 1.0,
             "recall@20": 0.5
           },
-          "latency_ms": 299.07
+          "latency_ms": 243.41
         },
         "dense_filtered": {
           "query_used": "Comparing Apple's Item 1 disclosures in its fiscal year 2023 and fiscal year 2024 Form 10-K filings, what specific changes were made to the listed models in the iPhone line, and what new category of devices was added to the definition of 'Wearables' in fiscal year 2024?",
@@ -7367,7 +7368,7 @@
             "hit@20": 1.0,
             "recall@20": 1.0
           },
-          "latency_ms": 656.28
+          "latency_ms": 467.81
         },
         "bm25_filtered": {
           "query_used": "Comparing Apple's Item 1 disclosures in its fiscal year 2023 and fiscal year 2024 Form 10-K filings, what specific changes were made to the listed models in the iPhone line, and what new category of devices was added to the definition of 'Wearables' in fiscal year 2024?",
@@ -7410,7 +7411,7 @@
             "hit@20": 1.0,
             "recall@20": 1.0
           },
-          "latency_ms": 44.49
+          "latency_ms": 33.04
         },
         "rrf_raw_filtered": {
           "query_used": "Comparing Apple's Item 1 disclosures in its fiscal year 2023 and fiscal year 2024 Form 10-K filings, what specific changes were made to the listed models in the iPhone line, and what new category of devices was added to the definition of 'Wearables' in fiscal year 2024?",
@@ -7453,7 +7454,7 @@
             "hit@20": 1.0,
             "recall@20": 1.0
           },
-          "latency_ms": 417.86
+          "latency_ms": 283.75
         },
         "rrf_clean_v2": {
           "query_used": "Comparing Apple's Item 1 disclosures in its fiscal year 2023 and fiscal year 2024, what specific changes were made to the listed models in the iPhone line, and what new category of devices was added to the definition of 'Wearables' in fiscal year 2024?",
@@ -7496,7 +7497,7 @@
             "hit@20": 1.0,
             "recall@20": 1.0
           },
-          "latency_ms": 372.35
+          "latency_ms": 276.51
         },
         "rrf_clean_v2_peryear_v1": {
           "query_used": "Comparing Apple's Item 1 disclosures in its fiscal year 2023 and fiscal year 2024, what specific changes were made to the listed models in the iPhone line, and what new category of devices was added to the definition of 'Wearables' in fiscal year 2024?",
@@ -7539,7 +7540,7 @@
             "hit@20": 1.0,
             "recall@20": 1.0
           },
-          "latency_ms": 766.28
+          "latency_ms": 552.24
         },
         "production_retrieve": {
           "query_used": "Comparing Apple's Item 1 disclosures in its fiscal year 2023 and fiscal year 2024 Form 10-K filings, what specific changes were made to the listed models in the iPhone line, and what new category of devices was added to the definition of 'Wearables' in fiscal year 2024?",
@@ -7582,7 +7583,7 @@
             "hit@20": 1.0,
             "recall@20": 1.0
           },
-          "latency_ms": 822.07
+          "latency_ms": 545.13
         },
         "dense_clean_v2": {
           "query_used": "Comparing Apple's Item 1 disclosures in its fiscal year 2023 and fiscal year 2024, what specific changes were made to the listed models in the iPhone line, and what new category of devices was added to the definition of 'Wearables' in fiscal year 2024?",
@@ -7625,7 +7626,7 @@
             "hit@20": 1.0,
             "recall@20": 1.0
           },
-          "latency_ms": 357.03
+          "latency_ms": 240.7
         },
         "bm25_clean_v2": {
           "query_used": "Comparing Apple's Item 1 disclosures in its fiscal year 2023 and fiscal year 2024, what specific changes were made to the listed models in the iPhone line, and what new category of devices was added to the definition of 'Wearables' in fiscal year 2024?",
@@ -7668,7 +7669,7 @@
             "hit@20": 1.0,
             "recall@20": 1.0
           },
-          "latency_ms": 42.04
+          "latency_ms": 34.37
         },
         "rrf_clean_v1": {
           "query_used": "Comparing Item 1 disclosures in its fiscal year 2023 and fiscal year 2024, what specific changes were made to the listed models in the iPhone line, and what new category of devices was added to the definition of 'Wearables' in fiscal year 2024?",
@@ -7711,7 +7712,7 @@
             "hit@20": 1.0,
             "recall@20": 1.0
           },
-          "latency_ms": 402.43
+          "latency_ms": 276.5
         },
         "rrf_bm25_weighted": {
           "query_used": "Comparing Apple's Item 1 disclosures in its fiscal year 2023 and fiscal year 2024 Form 10-K filings, what specific changes were made to the listed models in the iPhone line, and what new category of devices was added to the definition of 'Wearables' in fiscal year 2024?",
@@ -7754,7 +7755,7 @@
             "hit@20": 1.0,
             "recall@20": 1.0
           },
-          "latency_ms": 412.93
+          "latency_ms": 279.72
         },
         "rrf_rerank": {
           "query_used": "Comparing Apple's Item 1 disclosures in its fiscal year 2023 and fiscal year 2024 Form 10-K filings, what specific changes were made to the listed models in the iPhone line, and what new category of devices was added to the definition of 'Wearables' in fiscal year 2024?",
@@ -7797,7 +7798,7 @@
             "hit@20": 1.0,
             "recall@20": 0.5
           },
-          "latency_ms": 2688.38
+          "latency_ms": 2345.71
         },
         "bm25_rerank": {
           "query_used": "Comparing Apple's Item 1 disclosures in its fiscal year 2023 and fiscal year 2024 Form 10-K filings, what specific changes were made to the listed models in the iPhone line, and what new category of devices was added to the definition of 'Wearables' in fiscal year 2024?",
@@ -7840,7 +7841,7 @@
             "hit@20": 1.0,
             "recall@20": 0.5
           },
-          "latency_ms": 2159.12
+          "latency_ms": 2062.06
         }
       }
     },
@@ -7887,7 +7888,7 @@
             "hit@20": 1.0,
             "recall@20": 1.0
           },
-          "latency_ms": 324.53
+          "latency_ms": 243.95
         },
         "dense_filtered": {
           "query_used": "Based on Apple's Form 10-K filings, what is the operating system associated with Apple's line of smartwatches as described in its fiscal year 2023 filing, and what is the operating system associated with Apple's first spatial computer, Apple Vision Pro, as described in its fiscal year 2024 filing?",
@@ -7930,7 +7931,7 @@
             "hit@20": 1.0,
             "recall@20": 1.0
           },
-          "latency_ms": 611.21
+          "latency_ms": 468.29
         },
         "bm25_filtered": {
           "query_used": "Based on Apple's Form 10-K filings, what is the operating system associated with Apple's line of smartwatches as described in its fiscal year 2023 filing, and what is the operating system associated with Apple's first spatial computer, Apple Vision Pro, as described in its fiscal year 2024 filing?",
@@ -7973,7 +7974,7 @@
             "hit@20": 1.0,
             "recall@20": 1.0
           },
-          "latency_ms": 53.23
+          "latency_ms": 41.99
         },
         "rrf_raw_filtered": {
           "query_used": "Based on Apple's Form 10-K filings, what is the operating system associated with Apple's line of smartwatches as described in its fiscal year 2023 filing, and what is the operating system associated with Apple's first spatial computer, Apple Vision Pro, as described in its fiscal year 2024 filing?",
@@ -8016,7 +8017,7 @@
             "hit@20": 1.0,
             "recall@20": 1.0
           },
-          "latency_ms": 408.29
+          "latency_ms": 290.97
         },
         "rrf_clean_v2": {
           "query_used": "What is the operating system associated with Apple's line of smartwatches as described in its fiscal year 2023 filing, and what is the operating system associated with Apple's first spatial computer, Apple Vision Pro, as described in its fiscal year 2024 filing?",
@@ -8059,7 +8060,7 @@
             "hit@20": 1.0,
             "recall@20": 1.0
           },
-          "latency_ms": 327.52
+          "latency_ms": 281.2
         },
         "rrf_clean_v2_peryear_v1": {
           "query_used": "What is the operating system associated with Apple's line of smartwatches as described in its fiscal year 2023 filing, and what is the operating system associated with Apple's first spatial computer, Apple Vision Pro, as described in its fiscal year 2024 filing?",
@@ -8102,7 +8103,7 @@
             "hit@20": 1.0,
             "recall@20": 1.0
           },
-          "latency_ms": 800.11
+          "latency_ms": 559.59
         },
         "production_retrieve": {
           "query_used": "Based on Apple's Form 10-K filings, what is the operating system associated with Apple's line of smartwatches as described in its fiscal year 2023 filing, and what is the operating system associated with Apple's first spatial computer, Apple Vision Pro, as described in its fiscal year 2024 filing?",
@@ -8145,7 +8146,7 @@
             "hit@20": 1.0,
             "recall@20": 1.0
           },
-          "latency_ms": 808.0
+          "latency_ms": 546.91
         },
         "dense_clean_v2": {
           "query_used": "What is the operating system associated with Apple's line of smartwatches as described in its fiscal year 2023 filing, and what is the operating system associated with Apple's first spatial computer, Apple Vision Pro, as described in its fiscal year 2024 filing?",
@@ -8188,7 +8189,7 @@
             "hit@20": 1.0,
             "recall@20": 1.0
           },
-          "latency_ms": 368.43
+          "latency_ms": 243.52
         },
         "bm25_clean_v2": {
           "query_used": "What is the operating system associated with Apple's line of smartwatches as described in its fiscal year 2023 filing, and what is the operating system associated with Apple's first spatial computer, Apple Vision Pro, as described in its fiscal year 2024 filing?",
@@ -8231,7 +8232,7 @@
             "hit@20": 1.0,
             "recall@20": 1.0
           },
-          "latency_ms": 49.0
+          "latency_ms": 34.08
         },
         "rrf_clean_v1": {
           "query_used": "What is the operating system associated with line of smartwatches as described in its fiscal year 2023 filing, and what is the operating system associated with first spatial computer, Vision Pro, as described in its fiscal year 2024 filing?",
@@ -8274,7 +8275,7 @@
             "hit@20": 1.0,
             "recall@20": 1.0
           },
-          "latency_ms": 432.12
+          "latency_ms": 272.97
         },
         "rrf_bm25_weighted": {
           "query_used": "Based on Apple's Form 10-K filings, what is the operating system associated with Apple's line of smartwatches as described in its fiscal year 2023 filing, and what is the operating system associated with Apple's first spatial computer, Apple Vision Pro, as described in its fiscal year 2024 filing?",
@@ -8317,7 +8318,7 @@
             "hit@20": 1.0,
             "recall@20": 1.0
           },
-          "latency_ms": 492.49
+          "latency_ms": 281.61
         },
         "rrf_rerank": {
           "query_used": "Based on Apple's Form 10-K filings, what is the operating system associated with Apple's line of smartwatches as described in its fiscal year 2023 filing, and what is the operating system associated with Apple's first spatial computer, Apple Vision Pro, as described in its fiscal year 2024 filing?",
@@ -8360,7 +8361,7 @@
             "hit@20": 1.0,
             "recall@20": 1.0
           },
-          "latency_ms": 2938.15
+          "latency_ms": 2339.64
         },
         "bm25_rerank": {
           "query_used": "Based on Apple's Form 10-K filings, what is the operating system associated with Apple's line of smartwatches as described in its fiscal year 2023 filing, and what is the operating system associated with Apple's first spatial computer, Apple Vision Pro, as described in its fiscal year 2024 filing?",
@@ -8403,7 +8404,7 @@
             "hit@20": 1.0,
             "recall@20": 1.0
           },
-          "latency_ms": 2513.63
+          "latency_ms": 2235.0
         }
       }
     },
@@ -8450,7 +8451,7 @@
             "hit@20": 1.0,
             "recall@20": 0.5
           },
-          "latency_ms": 2399.94
+          "latency_ms": 242.48
         },
         "dense_filtered": {
           "query_used": "According to Apple's Item 1 disclosures in its fiscal year 2023 and fiscal year 2024 Form 10-K filings, what are the specific operating systems that power the iPhone and iPad product lines, and what are the five reportable geographic segments through which Apple manages its business?",
@@ -8493,7 +8494,7 @@
             "hit@20": 1.0,
             "recall@20": 0.5
           },
-          "latency_ms": 593.28
+          "latency_ms": 468.26
         },
         "bm25_filtered": {
           "query_used": "According to Apple's Item 1 disclosures in its fiscal year 2023 and fiscal year 2024 Form 10-K filings, what are the specific operating systems that power the iPhone and iPad product lines, and what are the five reportable geographic segments through which Apple manages its business?",
@@ -8536,7 +8537,7 @@
             "hit@20": 1.0,
             "recall@20": 1.0
           },
-          "latency_ms": 50.13
+          "latency_ms": 36.09
         },
         "rrf_raw_filtered": {
           "query_used": "According to Apple's Item 1 disclosures in its fiscal year 2023 and fiscal year 2024 Form 10-K filings, what are the specific operating systems that power the iPhone and iPad product lines, and what are the five reportable geographic segments through which Apple manages its business?",
@@ -8579,7 +8580,7 @@
             "hit@20": 1.0,
             "recall@20": 0.5
           },
-          "latency_ms": 431.34
+          "latency_ms": 277.84
         },
         "rrf_clean_v2": {
           "query_used": "What are the specific operating systems that power the iPhone and iPad product lines, and what are the five reportable geographic segments through which Apple manages its business?",
@@ -8622,7 +8623,7 @@
             "hit@20": 1.0,
             "recall@20": 1.0
           },
-          "latency_ms": 381.35
+          "latency_ms": 260.74
         },
         "rrf_clean_v2_peryear_v1": {
           "query_used": "What are the specific operating systems that power the iPhone and iPad product lines, and what are the five reportable geographic segments through which Apple manages its business?",
@@ -8665,7 +8666,7 @@
             "hit@20": 1.0,
             "recall@20": 1.0
           },
-          "latency_ms": 774.14
+          "latency_ms": 532.05
         },
         "production_retrieve": {
           "query_used": "According to Apple's Item 1 disclosures in its fiscal year 2023 and fiscal year 2024 Form 10-K filings, what are the specific operating systems that power the iPhone and iPad product lines, and what are the five reportable geographic segments through which Apple manages its business?",
@@ -8708,7 +8709,7 @@
             "hit@20": 1.0,
             "recall@20": 1.0
           },
-          "latency_ms": 725.14
+          "latency_ms": 539.87
         },
         "dense_clean_v2": {
           "query_used": "What are the specific operating systems that power the iPhone and iPad product lines, and what are the five reportable geographic segments through which Apple manages its business?",
@@ -8751,7 +8752,7 @@
             "hit@20": 1.0,
             "recall@20": 1.0
           },
-          "latency_ms": 405.13
+          "latency_ms": 242.4
         },
         "bm25_clean_v2": {
           "query_used": "What are the specific operating systems that power the iPhone and iPad product lines, and what are the five reportable geographic segments through which Apple manages its business?",
@@ -8794,7 +8795,7 @@
             "hit@20": 1.0,
             "recall@20": 1.0
           },
-          "latency_ms": 42.31
+          "latency_ms": 47.71
         },
         "rrf_clean_v1": {
           "query_used": "According to Item 1 disclosures in its fiscal year 2023 and fiscal year 2024, what are the specific operating systems that power the iPhone and iPad product lines, and what are the five reportable geographic segments through which manages its business?",
@@ -8837,7 +8838,7 @@
             "hit@20": 1.0,
             "recall@20": 1.0
           },
-          "latency_ms": 428.12
+          "latency_ms": 307.09
         },
         "rrf_bm25_weighted": {
           "query_used": "According to Apple's Item 1 disclosures in its fiscal year 2023 and fiscal year 2024 Form 10-K filings, what are the specific operating systems that power the iPhone and iPad product lines, and what are the five reportable geographic segments through which Apple manages its business?",
@@ -8880,7 +8881,7 @@
             "hit@20": 1.0,
             "recall@20": 1.0
           },
-          "latency_ms": 619.32
+          "latency_ms": 306.94
         },
         "rrf_rerank": {
           "query_used": "According to Apple's Item 1 disclosures in its fiscal year 2023 and fiscal year 2024 Form 10-K filings, what are the specific operating systems that power the iPhone and iPad product lines, and what are the five reportable geographic segments through which Apple manages its business?",
@@ -8923,7 +8924,7 @@
             "hit@20": 1.0,
             "recall@20": 0.5
           },
-          "latency_ms": 2777.99
+          "latency_ms": 2516.91
         },
         "bm25_rerank": {
           "query_used": "According to Apple's Item 1 disclosures in its fiscal year 2023 and fiscal year 2024 Form 10-K filings, what are the specific operating systems that power the iPhone and iPad product lines, and what are the five reportable geographic segments through which Apple manages its business?",
@@ -8966,7 +8967,7 @@
             "hit@20": 1.0,
             "recall@20": 0.5
           },
-          "latency_ms": 2349.93
+          "latency_ms": 2154.91
         }
       }
     },
@@ -9013,7 +9014,7 @@
             "hit@20": 1.0,
             "recall@20": 0.5
           },
-          "latency_ms": 349.55
+          "latency_ms": 245.55
         },
         "dense_filtered": {
           "query_used": "According to Apple's Item 1 disclosures in its fiscal year 2023 and fiscal year 2024 Form 10-K filings, what are the operating systems used for the iPhone and smartwatch product lines, and what percentage of Apple's total net sales was generated through indirect distribution channels in fiscal year 2024?",
@@ -9056,7 +9057,7 @@
             "hit@20": 1.0,
             "recall@20": 0.5
           },
-          "latency_ms": 1112.5
+          "latency_ms": 466.12
         },
         "bm25_filtered": {
           "query_used": "According to Apple's Item 1 disclosures in its fiscal year 2023 and fiscal year 2024 Form 10-K filings, what are the operating systems used for the iPhone and smartwatch product lines, and what percentage of Apple's total net sales was generated through indirect distribution channels in fiscal year 2024?",
@@ -9099,7 +9100,7 @@
             "hit@20": 1.0,
             "recall@20": 0.5
           },
-          "latency_ms": 53.18
+          "latency_ms": 66.86
         },
         "rrf_raw_filtered": {
           "query_used": "According to Apple's Item 1 disclosures in its fiscal year 2023 and fiscal year 2024 Form 10-K filings, what are the operating systems used for the iPhone and smartwatch product lines, and what percentage of Apple's total net sales was generated through indirect distribution channels in fiscal year 2024?",
@@ -9142,7 +9143,7 @@
             "hit@20": 1.0,
             "recall@20": 0.5
           },
-          "latency_ms": 413.15
+          "latency_ms": 306.67
         },
         "rrf_clean_v2": {
           "query_used": "What are the operating systems used for the iPhone and smartwatch product lines, and what percentage of Apple's total net sales was generated through indirect distribution channels in fiscal year 2024?",
@@ -9185,7 +9186,7 @@
             "hit@20": 1.0,
             "recall@20": 1.0
           },
-          "latency_ms": 387.47
+          "latency_ms": 283.32
         },
         "rrf_clean_v2_peryear_v1": {
           "query_used": "What are the operating systems used for the iPhone and smartwatch product lines, and what percentage of Apple's total net sales was generated through indirect distribution channels in fiscal year 2024?",
@@ -9228,7 +9229,7 @@
             "hit@20": 1.0,
             "recall@20": 0.5
           },
-          "latency_ms": 777.83
+          "latency_ms": 570.68
         },
         "production_retrieve": {
           "query_used": "According to Apple's Item 1 disclosures in its fiscal year 2023 and fiscal year 2024 Form 10-K filings, what are the operating systems used for the iPhone and smartwatch product lines, and what percentage of Apple's total net sales was generated through indirect distribution channels in fiscal year 2024?",
@@ -9271,7 +9272,7 @@
             "hit@20": 1.0,
             "recall@20": 0.5
           },
-          "latency_ms": 755.05
+          "latency_ms": 554.62
         },
         "dense_clean_v2": {
           "query_used": "What are the operating systems used for the iPhone and smartwatch product lines, and what percentage of Apple's total net sales was generated through indirect distribution channels in fiscal year 2024?",
@@ -9314,7 +9315,7 @@
             "hit@20": 1.0,
             "recall@20": 0.5
           },
-          "latency_ms": 381.75
+          "latency_ms": 244.87
         },
         "bm25_clean_v2": {
           "query_used": "What are the operating systems used for the iPhone and smartwatch product lines, and what percentage of Apple's total net sales was generated through indirect distribution channels in fiscal year 2024?",
@@ -9357,41 +9358,41 @@
             "hit@20": 1.0,
             "recall@20": 0.5
           },
-          "latency_ms": 32.64
+          "latency_ms": 38.13
         },
         "rrf_clean_v1": {
           "query_used": "According to Item 1 disclosures in its fiscal year 2023 and fiscal year 2024, what are the operating systems used for the iPhone and smartwatch product lines, and what percentage of total net sales was generated through indirect distribution channels in fiscal year 2024?",
           "retrieved_chunk_ids": [
             "70e50532-5a2f-551e-9433-5af27acfb4ff",
-            "e60c3e5e-dcc1-58cb-8e88-0a4d7dd1b403",
-            "97e04e65-82f0-5217-bb0d-57f54d63ccf8",
-            "b3d91828-079a-5d4e-8627-01a5ec66c43e",
-            "11a43055-f932-5e5f-bbb8-46ebaf56c4e8",
             "ccae4618-69c4-5b89-998d-b33622689521",
-            "31ac9471-0310-5d18-8236-d57080c67fd1",
-            "447dd5eb-6650-5317-b998-0f0f90a75f22",
-            "858723cf-b1eb-5410-9f2d-2f43fbce830e",
-            "1002a08c-a091-54cc-8910-a5948e4e27fe",
-            "681f8256-617a-56b3-8afb-878e2406935e",
-            "04b92e64-9720-5401-a83e-2da3fd614788",
-            "41b87538-67d6-5ad1-983a-a669f05797ef",
-            "9908f268-63bb-561c-bd95-f5f3240ff6a8",
-            "d4c71095-f913-5c3c-9536-7380573ea632",
-            "021f7646-50be-5de7-a3f6-5f4498b0b9c0",
-            "79ad380d-2276-5021-9c1b-e3011b9c725b",
-            "9df547af-6b7b-59df-b345-a5b537b205d6",
-            "6a029b39-3278-56bf-bed2-44b8f4c98eab",
-            "24af3623-8fd2-5309-978b-1e7970a17186",
+            "97e04e65-82f0-5217-bb0d-57f54d63ccf8",
             "7f12a42c-6837-5e23-8ffa-03a8f7f3ed62",
-            "569d4f0d-22d6-55a2-8777-e0dbc4269d99",
-            "837b56f3-1bbe-5922-83f9-e5989198857f",
-            "c602c547-382a-5efc-9e35-6c5ae628f1c4",
-            "487f1522-8c58-5d1d-807a-f1caf7a14736",
+            "11a43055-f932-5e5f-bbb8-46ebaf56c4e8",
+            "e60c3e5e-dcc1-58cb-8e88-0a4d7dd1b403",
+            "681f8256-617a-56b3-8afb-878e2406935e",
             "5e820ce9-6fd2-5d7e-a3e7-fed844a43aa0",
+            "4b9ac683-7f8a-551d-aaff-2728f0edad31",
+            "24af3623-8fd2-5309-978b-1e7970a17186",
             "366e59b6-0a35-5a77-8246-e9da86b548b3",
             "2a656265-ac03-51e1-b24d-4ffd897637df",
-            "acbfef73-01ad-58c5-bbe4-1f7449d3b415",
-            "4b9ac683-7f8a-551d-aaff-2728f0edad31"
+            "2b72b2ee-0f29-55fb-8238-d0450358c088",
+            "b3d91828-079a-5d4e-8627-01a5ec66c43e",
+            "197b2341-12cf-5a5c-92c6-b890a16b3c1c",
+            "31ac9471-0310-5d18-8236-d57080c67fd1",
+            "b0cf1104-bec6-5e5b-8711-cece88499c98",
+            "447dd5eb-6650-5317-b998-0f0f90a75f22",
+            "6965f390-84bb-5114-901f-413f2263530b",
+            "858723cf-b1eb-5410-9f2d-2f43fbce830e",
+            "9d8819cc-9fb8-5215-8b93-d343ca90facf",
+            "1002a08c-a091-54cc-8910-a5948e4e27fe",
+            "ff8dcd62-5714-5dbc-a09a-f8c2da4fa3a5",
+            "d58de3e1-d481-5d26-a843-0b98f3ae3777",
+            "04b92e64-9720-5401-a83e-2da3fd614788",
+            "8ba9a968-ac11-52a2-8f40-8721e74733d9",
+            "41b87538-67d6-5ad1-983a-a669f05797ef",
+            "1c3f7469-a505-57c5-8776-ad27fbd27cd7",
+            "9908f268-63bb-561c-bd95-f5f3240ff6a8",
+            "d4c71095-f913-5c3c-9536-7380573ea632"
           ],
           "metrics": {
             "hit@8": 0.0,
@@ -9400,7 +9401,7 @@
             "hit@20": 1.0,
             "recall@20": 0.5
           },
-          "latency_ms": 2082.94
+          "latency_ms": 293.45
         },
         "rrf_bm25_weighted": {
           "query_used": "According to Apple's Item 1 disclosures in its fiscal year 2023 and fiscal year 2024 Form 10-K filings, what are the operating systems used for the iPhone and smartwatch product lines, and what percentage of Apple's total net sales was generated through indirect distribution channels in fiscal year 2024?",
@@ -9443,7 +9444,7 @@
             "hit@20": 0.0,
             "recall@20": 0.0
           },
-          "latency_ms": 8476.54
+          "latency_ms": 300.23
         },
         "rrf_rerank": {
           "query_used": "According to Apple's Item 1 disclosures in its fiscal year 2023 and fiscal year 2024 Form 10-K filings, what are the operating systems used for the iPhone and smartwatch product lines, and what percentage of Apple's total net sales was generated through indirect distribution channels in fiscal year 2024?",
@@ -9486,7 +9487,7 @@
             "hit@20": 1.0,
             "recall@20": 0.5
           },
-          "latency_ms": 2654.28
+          "latency_ms": 2552.78
         },
         "bm25_rerank": {
           "query_used": "According to Apple's Item 1 disclosures in its fiscal year 2023 and fiscal year 2024 Form 10-K filings, what are the operating systems used for the iPhone and smartwatch product lines, and what percentage of Apple's total net sales was generated through indirect distribution channels in fiscal year 2024?",
@@ -9529,7 +9530,7 @@
             "hit@20": 0.0,
             "recall@20": 0.0
           },
-          "latency_ms": 2437.44
+          "latency_ms": 2345.23
         }
       }
     },
@@ -9571,7 +9572,7 @@
             "hit@20": 0.0,
             "recall@20": 0.0
           },
-          "latency_ms": 285.98
+          "latency_ms": 242.45
         },
         "dense_filtered": {
           "query_used": "According to the Segments section of Apple's fiscal year 2025 Form 10-K, what are the reportable geographic segments of the company?",
@@ -9614,7 +9615,7 @@
             "hit@20": 1.0,
             "recall@20": 1.0
           },
-          "latency_ms": 610.59
+          "latency_ms": 469.54
         },
         "bm25_filtered": {
           "query_used": "According to the Segments section of Apple's fiscal year 2025 Form 10-K, what are the reportable geographic segments of the company?",
@@ -9657,7 +9658,7 @@
             "hit@20": 1.0,
             "recall@20": 1.0
           },
-          "latency_ms": 26.27
+          "latency_ms": 24.52
         },
         "rrf_raw_filtered": {
           "query_used": "According to the Segments section of Apple's fiscal year 2025 Form 10-K, what are the reportable geographic segments of the company?",
@@ -9700,7 +9701,7 @@
             "hit@20": 1.0,
             "recall@20": 1.0
           },
-          "latency_ms": 426.3
+          "latency_ms": 269.89
         },
         "rrf_clean_v2": {
           "query_used": "What are the reportable geographic segments of the company?",
@@ -9743,7 +9744,7 @@
             "hit@20": 1.0,
             "recall@20": 1.0
           },
-          "latency_ms": 313.74
+          "latency_ms": 250.99
         },
         "rrf_clean_v2_peryear_v1": {
           "query_used": "What are the reportable geographic segments of the company?",
@@ -9786,7 +9787,7 @@
             "hit@20": 1.0,
             "recall@20": 1.0
           },
-          "latency_ms": 389.31
+          "latency_ms": 250.77
         },
         "production_retrieve": {
           "query_used": "According to the Segments section of Apple's fiscal year 2025 Form 10-K, what are the reportable geographic segments of the company?",
@@ -9829,7 +9830,7 @@
             "hit@20": 1.0,
             "recall@20": 1.0
           },
-          "latency_ms": 406.96
+          "latency_ms": 250.7
         },
         "dense_clean_v2": {
           "query_used": "What are the reportable geographic segments of the company?",
@@ -9872,7 +9873,7 @@
             "hit@20": 1.0,
             "recall@20": 1.0
           },
-          "latency_ms": 269.73
+          "latency_ms": 240.84
         },
         "bm25_clean_v2": {
           "query_used": "What are the reportable geographic segments of the company?",
@@ -9915,7 +9916,7 @@
             "hit@20": 1.0,
             "recall@20": 1.0
           },
-          "latency_ms": 11.96
+          "latency_ms": 10.5
         },
         "rrf_clean_v1": {
           "query_used": "What are the reportable geographic segments of the company?",
@@ -9958,7 +9959,7 @@
             "hit@20": 1.0,
             "recall@20": 1.0
           },
-          "latency_ms": 322.34
+          "latency_ms": 253.61
         },
         "rrf_bm25_weighted": {
           "query_used": "According to the Segments section of Apple's fiscal year 2025 Form 10-K, what are the reportable geographic segments of the company?",
@@ -10001,7 +10002,7 @@
             "hit@20": 1.0,
             "recall@20": 1.0
           },
-          "latency_ms": 325.87
+          "latency_ms": 270.8
         },
         "rrf_rerank": {
           "query_used": "According to the Segments section of Apple's fiscal year 2025 Form 10-K, what are the reportable geographic segments of the company?",
@@ -10044,7 +10045,7 @@
             "hit@20": 1.0,
             "recall@20": 1.0
           },
-          "latency_ms": 2740.07
+          "latency_ms": 2408.79
         },
         "bm25_rerank": {
           "query_used": "According to the Segments section of Apple's fiscal year 2025 Form 10-K, what are the reportable geographic segments of the company?",
@@ -10087,7 +10088,7 @@
             "hit@20": 1.0,
             "recall@20": 1.0
           },
-          "latency_ms": 2429.21
+          "latency_ms": 2057.84
         }
       }
     },
@@ -10129,7 +10130,7 @@
             "hit@20": 0.0,
             "recall@20": 0.0
           },
-          "latency_ms": 324.55
+          "latency_ms": 241.73
         },
         "dense_filtered": {
           "query_used": "According to Apple's fiscal year 2025 Form 10-K, during fiscal year 2025, what percentages of Apple's total net sales were accounted for by its direct and indirect distribution channels, respectively?",
@@ -10172,7 +10173,7 @@
             "hit@20": 1.0,
             "recall@20": 1.0
           },
-          "latency_ms": 615.33
+          "latency_ms": 465.18
         },
         "bm25_filtered": {
           "query_used": "According to Apple's fiscal year 2025 Form 10-K, during fiscal year 2025, what percentages of Apple's total net sales were accounted for by its direct and indirect distribution channels, respectively?",
@@ -10215,7 +10216,7 @@
             "hit@20": 1.0,
             "recall@20": 1.0
           },
-          "latency_ms": 36.17
+          "latency_ms": 23.43
         },
         "rrf_raw_filtered": {
           "query_used": "According to Apple's fiscal year 2025 Form 10-K, during fiscal year 2025, what percentages of Apple's total net sales were accounted for by its direct and indirect distribution channels, respectively?",
@@ -10258,7 +10259,7 @@
             "hit@20": 1.0,
             "recall@20": 1.0
           },
-          "latency_ms": 441.02
+          "latency_ms": 269.1
         },
         "rrf_clean_v2": {
           "query_used": "What percentages of Apple's total net sales were accounted for by its direct and indirect distribution channels, respectively?",
@@ -10301,7 +10302,7 @@
             "hit@20": 1.0,
             "recall@20": 1.0
           },
-          "latency_ms": 374.43
+          "latency_ms": 255.7
         },
         "rrf_clean_v2_peryear_v1": {
           "query_used": "What percentages of Apple's total net sales were accounted for by its direct and indirect distribution channels, respectively?",
@@ -10344,7 +10345,7 @@
             "hit@20": 1.0,
             "recall@20": 1.0
           },
-          "latency_ms": 408.84
+          "latency_ms": 256.03
         },
         "production_retrieve": {
           "query_used": "According to Apple's fiscal year 2025 Form 10-K, during fiscal year 2025, what percentages of Apple's total net sales were accounted for by its direct and indirect distribution channels, respectively?",
@@ -10387,7 +10388,7 @@
             "hit@20": 1.0,
             "recall@20": 1.0
           },
-          "latency_ms": 406.26
+          "latency_ms": 261.41
         },
         "dense_clean_v2": {
           "query_used": "What percentages of Apple's total net sales were accounted for by its direct and indirect distribution channels, respectively?",
@@ -10430,7 +10431,7 @@
             "hit@20": 1.0,
             "recall@20": 1.0
           },
-          "latency_ms": 382.51
+          "latency_ms": 238.95
         },
         "bm25_clean_v2": {
           "query_used": "What percentages of Apple's total net sales were accounted for by its direct and indirect distribution channels, respectively?",
@@ -10473,7 +10474,7 @@
             "hit@20": 1.0,
             "recall@20": 1.0
           },
-          "latency_ms": 26.63
+          "latency_ms": 14.81
         },
         "rrf_clean_v1": {
           "query_used": "What percentages of total net sales were accounted for by its direct and indirect distribution channels, respectively?",
@@ -10516,7 +10517,7 @@
             "hit@20": 1.0,
             "recall@20": 1.0
           },
-          "latency_ms": 416.7
+          "latency_ms": 254.92
         },
         "rrf_bm25_weighted": {
           "query_used": "According to Apple's fiscal year 2025 Form 10-K, during fiscal year 2025, what percentages of Apple's total net sales were accounted for by its direct and indirect distribution channels, respectively?",
@@ -10559,7 +10560,7 @@
             "hit@20": 1.0,
             "recall@20": 1.0
           },
-          "latency_ms": 426.42
+          "latency_ms": 1276.65
         },
         "rrf_rerank": {
           "query_used": "According to Apple's fiscal year 2025 Form 10-K, during fiscal year 2025, what percentages of Apple's total net sales were accounted for by its direct and indirect distribution channels, respectively?",
@@ -10602,7 +10603,7 @@
             "hit@20": 1.0,
             "recall@20": 1.0
           },
-          "latency_ms": 2752.07
+          "latency_ms": 2288.76
         },
         "bm25_rerank": {
           "query_used": "According to Apple's fiscal year 2025 Form 10-K, during fiscal year 2025, what percentages of Apple's total net sales were accounted for by its direct and indirect distribution channels, respectively?",
@@ -10645,7 +10646,7 @@
             "hit@20": 1.0,
             "recall@20": 1.0
           },
-          "latency_ms": 2223.06
+          "latency_ms": 2041.02
         }
       }
     },
@@ -10687,7 +10688,7 @@
             "hit@20": 0.0,
             "recall@20": 0.0
           },
-          "latency_ms": 295.6
+          "latency_ms": 240.91
         },
         "dense_filtered": {
           "query_used": "According to the Item 1 section of Apple's fiscal year 2025 Form 10-K, new products introduced by Apple often utilize custom components available from how many sources?",
@@ -10730,7 +10731,7 @@
             "hit@20": 1.0,
             "recall@20": 1.0
           },
-          "latency_ms": 595.12
+          "latency_ms": 465.15
         },
         "bm25_filtered": {
           "query_used": "According to the Item 1 section of Apple's fiscal year 2025 Form 10-K, new products introduced by Apple often utilize custom components available from how many sources?",
@@ -10773,7 +10774,7 @@
             "hit@20": 1.0,
             "recall@20": 1.0
           },
-          "latency_ms": 29.0
+          "latency_ms": 21.38
         },
         "rrf_raw_filtered": {
           "query_used": "According to the Item 1 section of Apple's fiscal year 2025 Form 10-K, new products introduced by Apple often utilize custom components available from how many sources?",
@@ -10816,7 +10817,7 @@
             "hit@20": 1.0,
             "recall@20": 1.0
           },
-          "latency_ms": 328.65
+          "latency_ms": 264.29
         },
         "rrf_clean_v2": {
           "query_used": "New products introduced by Apple often utilize custom components available from how many sources?",
@@ -10859,7 +10860,7 @@
             "hit@20": 1.0,
             "recall@20": 1.0
           },
-          "latency_ms": 415.93
+          "latency_ms": 251.25
         },
         "rrf_clean_v2_peryear_v1": {
           "query_used": "New products introduced by Apple often utilize custom components available from how many sources?",
@@ -10902,7 +10903,7 @@
             "hit@20": 1.0,
             "recall@20": 1.0
           },
-          "latency_ms": 404.04
+          "latency_ms": 251.1
         },
         "production_retrieve": {
           "query_used": "According to the Item 1 section of Apple's fiscal year 2025 Form 10-K, new products introduced by Apple often utilize custom components available from how many sources?",
@@ -10945,7 +10946,7 @@
             "hit@20": 1.0,
             "recall@20": 1.0
           },
-          "latency_ms": 390.65
+          "latency_ms": 251.63
         },
         "dense_clean_v2": {
           "query_used": "New products introduced by Apple often utilize custom components available from how many sources?",
@@ -10988,7 +10989,7 @@
             "hit@20": 1.0,
             "recall@20": 1.0
           },
-          "latency_ms": 291.05
+          "latency_ms": 239.45
         },
         "bm25_clean_v2": {
           "query_used": "New products introduced by Apple often utilize custom components available from how many sources?",
@@ -11031,7 +11032,7 @@
             "hit@20": 1.0,
             "recall@20": 1.0
           },
-          "latency_ms": 15.01
+          "latency_ms": 16.37
         },
         "rrf_clean_v1": {
           "query_used": "New products introduced by often utilize custom components available from how many sources?",
@@ -11074,7 +11075,7 @@
             "hit@20": 1.0,
             "recall@20": 1.0
           },
-          "latency_ms": 312.26
+          "latency_ms": 249.26
         },
         "rrf_bm25_weighted": {
           "query_used": "According to the Item 1 section of Apple's fiscal year 2025 Form 10-K, new products introduced by Apple often utilize custom components available from how many sources?",
@@ -11117,7 +11118,7 @@
             "hit@20": 1.0,
             "recall@20": 1.0
           },
-          "latency_ms": 326.62
+          "latency_ms": 264.32
         },
         "rrf_rerank": {
           "query_used": "According to the Item 1 section of Apple's fiscal year 2025 Form 10-K, new products introduced by Apple often utilize custom components available from how many sources?",
@@ -11160,7 +11161,7 @@
             "hit@20": 1.0,
             "recall@20": 1.0
           },
-          "latency_ms": 2613.96
+          "latency_ms": 2329.62
         },
         "bm25_rerank": {
           "query_used": "According to the Item 1 section of Apple's fiscal year 2025 Form 10-K, new products introduced by Apple often utilize custom components available from how many sources?",
@@ -11203,7 +11204,7 @@
             "hit@20": 1.0,
             "recall@20": 1.0
           },
-          "latency_ms": 2274.53
+          "latency_ms": 2149.66
         }
       }
     }

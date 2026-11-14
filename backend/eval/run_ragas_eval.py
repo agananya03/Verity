@@ -136,11 +136,14 @@ def get_git_commit_hash() -> str:
         return "unknown"
 
 
-def compute_pipeline_fingerprint() -> str:
+from backend.eval.retrieval_ablation import normalize_bytes_newlines
+
+
+def compute_pipeline_fingerprint(golden_set_path: Optional[Path] = None) -> str:
     """
     Computes a deterministic pipeline fingerprint based on:
-    - Sorted hashes of all Python files in backend/agent/**/*.py.
-    - Hash of backend/eval/golden_set.json.
+    - Sorted hashes of all Python files in backend/agent/**/*.py (CRLF normalized to LF).
+    - Hash of benchmark dataset file (golden_set.json or specified golden-path, CRLF normalized to LF).
     (Git commit hash is excluded from the comparison value so that committing
     without code changes does not break resume).
     """
@@ -155,18 +158,20 @@ def compute_pipeline_fingerprint() -> str:
             hasher.update(rel_path.encode("utf-8"))
             try:
                 content = py_file.read_bytes()
-                hasher.update(hashlib.sha256(content).digest())
+                normalized = normalize_bytes_newlines(content)
+                hasher.update(hashlib.sha256(normalized).digest())
             except Exception as e:
                 logger.warning(f"Failed to read {py_file} for fingerprint: {e}")
 
-    # 2. golden_set.json
-    golden_set_path = BASE_DIR / "eval" / "golden_set.json"
-    if golden_set_path.exists():
+    # 2. Golden benchmark file
+    g_path = golden_set_path or (BASE_DIR / "eval" / "golden_set.json")
+    if g_path.exists():
         try:
-            content = golden_set_path.read_bytes()
-            hasher.update(hashlib.sha256(content).digest())
+            content = g_path.read_bytes()
+            normalized = normalize_bytes_newlines(content)
+            hasher.update(hashlib.sha256(normalized).digest())
         except Exception as e:
-            logger.warning(f"Failed to read {golden_set_path} for fingerprint: {e}")
+            logger.warning(f"Failed to read {g_path} for fingerprint: {e}")
 
     return hasher.hexdigest()
 
@@ -562,13 +567,14 @@ def run_generation_stage(
     delay: float = 0.0,
     seed: int = 42,
     restart: bool = False,
+    golden_set_path: Optional[Path] = None,
 ) -> Dict[str, Any]:
     """
     Stage 1: Generates answers and contexts for benchmark questions.
     Enforces quota budget checks prior to each question, stopping gracefully with exit code 2 if exhausted.
     """
     items: List[Dict[str, Any]] = []
-    current_fingerprint = compute_pipeline_fingerprint()
+    current_fingerprint = compute_pipeline_fingerprint(golden_set_path=golden_set_path)
 
     # If --restart is requested, archive any existing answers file and reset start_from to 1
     if restart and answers_path.exists():
@@ -883,6 +889,7 @@ def run_judge_stage(
     ledger: QuotaLedger,
     fast_eval: bool = False,
     seed: int = 42,
+    golden_set_path: Optional[Path] = None,
 ) -> Dict[str, Any]:
     """
     Stage 2: Loads answers from {config}_answers.json, computes deterministic retrieval metrics
@@ -1123,7 +1130,7 @@ def run_judge_stage(
         "bench_model": role_models["bench_model"],
         "timestamp": datetime.datetime.now(datetime.timezone.utc).isoformat(),
         "git_commit_hash": get_git_commit_hash(),
-        "pipeline_fingerprint": compute_pipeline_fingerprint(),
+        "pipeline_fingerprint": compute_pipeline_fingerprint(golden_set_path=golden_set_path),
         "golden_set_size": golden_set_size,
         "seed": seed,
         "total_evaluated": len(all_items),
@@ -1255,6 +1262,12 @@ def main():
         action="store_true",
         help="Archive existing answers file to {config}_answers_archived_{timestamp}.json and start clean from question 1.",
     )
+    parser.add_argument(
+        "--golden-path",
+        type=str,
+        default=str(BASE_DIR / "eval" / "golden_set.json"),
+        help="Path to golden benchmark JSON file (default: backend/eval/golden_set.json).",
+    )
     args = parser.parse_args()
 
     # Set random seeds
@@ -1278,9 +1291,9 @@ def main():
     if "none" in raw_metrics:
         metrics_to_run = []
 
-    golden_set_path = BASE_DIR / "eval" / "golden_set.json"
+    golden_set_path = Path(args.golden_path).resolve()
     if not golden_set_path.exists():
-        logger.error(f"Benchmark file golden_set.json not found at: {golden_set_path}")
+        logger.error(f"Benchmark file {golden_set_path.name} not found at: {golden_set_path}")
         sys.exit(1)
 
     with open(golden_set_path, "r", encoding="utf-8") as f:
@@ -1351,6 +1364,7 @@ def main():
             delay=args.delay,
             seed=args.seed,
             restart=args.restart,
+            golden_set_path=golden_set_path,
         )
 
     # Stage 2: Judge generated answers
@@ -1365,6 +1379,7 @@ def main():
             ledger=ledger,
             fast_eval=args.fast_eval,
             seed=args.seed,
+            golden_set_path=golden_set_path,
         )
 
 

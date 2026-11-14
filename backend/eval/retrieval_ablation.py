@@ -67,21 +67,33 @@ OUTPUT_MD_PATH = RESULTS_DIR / "retrieval_ablation.md"
 REPORT_LABEL = "DEV SET (n=18, design tuned on these questions)"
 
 
-def compute_fingerprint() -> Dict[str, str]:
+def normalize_bytes_newlines(content: bytes) -> bytes:
+    """Normalizes CRLF to LF so fingerprints are platform-independent across Windows and Linux."""
+    return content.replace(b"\r\n", b"\n")
+
+
+def hash_file_normalized(path: Path) -> str:
+    """Computes SHA-256 of file contents after normalizing CRLF to LF."""
+    content = path.read_bytes()
+    normalized = normalize_bytes_newlines(content)
+    return hashlib.sha256(normalized).hexdigest()
+
+
+def compute_fingerprint(golden_set_path: Optional[Path] = None) -> Dict[str, str]:
     """
     Computes SHA-256 hashes of core pipeline code and golden dataset
-    to fingerprint each ablation evaluation run.
+    to fingerprint each ablation evaluation run, normalizing CRLF to LF.
     """
     files = {
         "retrieval_py": BASE_DIR / "agent" / "retrieval.py",
         "classifier_py": BASE_DIR / "agent" / "nodes" / "classifier.py",
-        "golden_set_json": GOLDEN_SET_PATH,
+        "golden_set_json": golden_set_path or GOLDEN_SET_PATH,
     }
     hashes: Dict[str, str] = {}
     combined = hashlib.sha256()
     for name, path in sorted(files.items()):
         if path.exists():
-            h = hashlib.sha256(path.read_bytes()).hexdigest()
+            h = hash_file_normalized(path)
             hashes[name] = h
             combined.update(f"{name}:{h}".encode("utf-8"))
         else:
@@ -605,6 +617,7 @@ def run_ablation_study(
     golden_set: List[Dict[str, Any]],
     configs: Optional[List[RetrievalConfig]] = None,
     limit_depth: int = 30,
+    golden_set_path: Optional[Path] = None,
 ) -> Dict[str, Any]:
     """
     Executes the retrieval ablation study across eligible golden items.
@@ -780,13 +793,19 @@ def run_ablation_study(
                 "latency_p95_ms": cat_p95_lat,
             }
 
-    fingerprint = compute_fingerprint()
+    fingerprint = compute_fingerprint(golden_set_path=golden_set_path)
+    label_to_use = (
+        f"HELDOUT SET (n={len(eligible_items)})"
+        if (golden_set_path and "heldout" in str(golden_set_path).lower())
+        else REPORT_LABEL
+    )
     results_payload = {
-        "report_label": REPORT_LABEL,
+        "report_label": label_to_use,
         "fingerprint": fingerprint,
         "metadata": {
-            "report_label": REPORT_LABEL,
+            "report_label": label_to_use,
             "fingerprint": fingerprint,
+            "golden_set_path": str(golden_set_path or GOLDEN_SET_PATH),
             "timestamp": datetime.datetime.now(datetime.timezone.utc).isoformat(),
             "total_golden_items": len(golden_set),
             "eligible_items_count": len(eligible_items),
@@ -1188,18 +1207,29 @@ def run_reranker_sanity_check(golden_set: List[Dict[str, Any]]) -> Dict[str, Any
 # Main Script Execution
 # =============================================================================
 def main():
-    if not GOLDEN_SET_PATH.exists():
-        logger.error(f"Golden set not found at {GOLDEN_SET_PATH}")
+    import argparse
+    parser = argparse.ArgumentParser(description="Retrieval Ablation Study")
+    parser.add_argument(
+        "--golden-path",
+        type=str,
+        default=str(GOLDEN_SET_PATH),
+        help="Path to golden set JSON file (default: backend/eval/golden_set.json)",
+    )
+    args = parser.parse_args()
+
+    golden_path = Path(args.golden_path).resolve()
+    if not golden_path.exists():
+        logger.error(f"Golden set not found at {golden_path}")
         return
 
-    with open(GOLDEN_SET_PATH, "r", encoding="utf-8") as f:
+    with open(golden_path, "r", encoding="utf-8") as f:
         golden_set = json.load(f)
 
     # 1. Run Part A Reranker Sanity Check
     run_reranker_sanity_check(golden_set)
 
-    # 2. Run Main Retrieval Ablation Study (All 10 Configurations)
-    results = run_ablation_study(golden_set)
+    # 2. Run Main Retrieval Ablation Study (All Configurations)
+    results = run_ablation_study(golden_set, golden_set_path=golden_path)
 
     # 3. Save JSON results
     RESULTS_DIR.mkdir(parents=True, exist_ok=True)
