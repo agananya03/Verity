@@ -348,6 +348,30 @@ def test_validate_answer_leakage():
     assert "REJECT_ANSWER_LEAKAGE" in msg_entity
     assert "Mandiant" in msg_entity
 
+    # Sentence-initial capitalized finance word false-positive test ("Awards" case)
+    q_awards = "What equity awards were granted to executive officers in fiscal 2023?"
+    gt_awards = "Awards granted under the equity incentive plan consisted of restricted stock units."
+    ok_awards, msg_awards = validate_answer_leakage(
+        question=q_awards,
+        ground_truth=gt_awards,
+        fiscal_year="2023",
+        company="Alphabet",
+    )
+    assert ok_awards is True
+    assert msg_awards == "VALID"
+
+    # Common finance words in answer (shares, expenses, liabilities, estimates, plans) do NOT trigger leakage
+    q_fin = "How did the company manage liabilities, expenses, and share repurchase plans?"
+    gt_fin = "Liabilities and operating expenses were managed through disciplined share repurchase plans and estimates."
+    ok_fin, msg_fin = validate_answer_leakage(
+        question=q_fin,
+        ground_truth=gt_fin,
+        fiscal_year="2023",
+        company="Alphabet",
+    )
+    assert ok_fin is True
+    assert msg_fin == "VALID"
+
 
 def test_default_reject_behavior_and_review_csv(tmp_path: Path):
     chunk_text = "Alphabet reported total capital expenditures of $32,251 million in fiscal 2023."
@@ -684,4 +708,360 @@ def test_golden_path_cli_arguments():
     )
     args2 = parser2.parse_args(["--golden-path", "backend/eval/golden_heldout.json"])
     assert args2.golden_path == "backend/eval/golden_heldout.json"
+
+
+# =============================================================================
+# 5. Candidate Post-Processing and Multi-Year Verification Tests (fix_candidates.py)
+# =============================================================================
+def test_count_distinct_numeric_figures():
+    from backend.eval.fix_candidates import count_distinct_numeric_figures
+
+    # Numbers and percentages with 4-digit years filtered out
+    text1 = "Revenue of $50,000 grew by 15.5% compared to 2024."
+    assert count_distinct_numeric_figures(text1) == 2  # 50000, 15.5 (2024 ignored)
+
+    # Narrative text with only years
+    text2 = "In 2023 and 2025, operating expenses were stable across all segments."
+    assert count_distinct_numeric_figures(text2) == 0
+
+    # Two figures
+    text3 = "Gross margin was $100 million vs $250 million."
+    assert count_distinct_numeric_figures(text3) == 2  # 100, 250
+
+    # Single figure
+    text4 = "As of January 25, 2026, there are zero accrued contingencies of $45."
+    assert count_distinct_numeric_figures(text4) == 2  # 25, 45 (2026 ignored)
+
+
+def test_fix_missing_company():
+    from backend.eval.fix_candidates import fix_missing_company
+
+    items = [
+        {
+            "id": "heldout_01",
+            "company": "Apple",
+            "question": "What was total research and development expense?",
+        },
+        {
+            "id": "heldout_02",
+            "company": "Microsoft",
+            "question": "How did Microsoft report cloud segment revenues?",
+        },
+        {
+            "id": "heldout_03",
+            "company": "Amazon",
+            "question": "Amazon AWS operating margin comparison",
+        },
+    ]
+
+    fixed, rewrites = fix_missing_company(items)
+    assert rewrites == 1
+    # First item lacked Apple, should have "At Apple, " prepended and first letter lowercased
+    assert fixed[0]["question"] == "At Apple, what was total research and development expense?"
+    assert fixed[0]["original_question"] == "What was total research and development expense?"
+    assert "Prepended 'At Apple, '" in fixed[0]["rewrite_applied"]
+
+    # Items already having the company name are untouched
+    assert fixed[1]["question"] == "How did Microsoft report cloud segment revenues?"
+    assert "original_question" not in fixed[1]
+    assert fixed[2]["question"] == "Amazon AWS operating margin comparison"
+
+
+def test_fix_repeated_across_years_disambiguation():
+    from backend.eval.fix_candidates import fix_repeated_across_years
+
+    # Shared text in both 2024 and 2025
+    shared_quote = "Amy Hood was appointed Executive Vice President and Chief Financial Officer in July 2013."
+    chunks = [
+        {
+            "chunk_id": "c1",
+            "company": "Microsoft",
+            "fiscal_year": "2024",
+            "section": "Item 1",
+            "text": f"Leadership info: {shared_quote} Other 2024 details.",
+        },
+        {
+            "chunk_id": "c2",
+            "company": "Microsoft",
+            "fiscal_year": "2025",
+            "section": "Item 1",
+            "text": f"Leadership info: {shared_quote} Other 2025 details.",
+        },
+    ]
+
+    # Candidate with ambiguous repeated quote lacking fiscal year
+    candidate = {
+        "id": "heldout_55",
+        "company": "Microsoft",
+        "fiscal_year": "2024",
+        "section": "Item 1",
+        "chunk_id": "c1",
+        "question": "Who serves as Chief Financial Officer?",
+        "ground_truth": "Amy Hood",
+        "supporting_quote": shared_quote,
+        "validator_flags": ["AMBIGUOUS_REPEATED_ACROSS_YEARS"],
+        "default_reject": True,
+        "category": "simple_lookup",
+        "question_style": "natural prose",
+    }
+
+    fixed, rewrites, passed = fix_repeated_across_years([candidate], chunks)
+    assert rewrites == 1
+    assert passed == 1
+    # Check that candidate now has a disambiguating year phrase and passed
+    assert "2024" in fixed[0]["question"]
+    assert fixed[0]["default_reject"] is False
+    assert "Disambiguated repeated quote" in fixed[0]["rewrite_applied"]
+
+
+def test_fix_comparison_style_rejection():
+    from backend.eval.fix_candidates import fix_comparison_style
+
+    items = [
+        # Comparison style but narrative GT with 0 distinct figures
+        {
+            "id": "heldout_10",
+            "company": "Amazon",
+            "fiscal_year": "2024",
+            "section": "Item 7",
+            "question_style": "comparison-of-two-figures style where the chunk allows",
+            "question": "How did revenue recognize compared to services?",
+            "ground_truth": "Revenue from services is recognized over time as performance obligations are met.",
+            "supporting_quote": "Revenue from services is recognized over time as performance obligations are met.",
+            "validator_flags": [],
+            "default_reject": False,
+        },
+        # Comparison style with 2 distinct figures -> should NOT be rejected
+        {
+            "id": "heldout_20",
+            "company": "Apple",
+            "fiscal_year": "2025",
+            "section": "Item 7",
+            "question_style": "comparison-of-two-figures style where the chunk allows",
+            "question": "What was the difference between product sales and service sales?",
+            "ground_truth": "Product sales were $294,868 million compared to service sales of $96,169 million.",
+            "supporting_quote": "Product sales were $294,868 million compared to service sales of $96,169 million.",
+            "validator_flags": [],
+            "default_reject": False,
+        },
+    ]
+
+    fixed, rejected_count = fix_comparison_style(items)
+    assert rejected_count == 1
+    assert fixed[0]["default_reject"] is True
+    assert "REJECT_COMPARISON_NOT_SUPPORTED" in fixed[0]["validator_flags"][0]
+
+    # Second item remains accepted
+    assert fixed[1]["default_reject"] is False
+
+
+def test_validate_multi_year_item_both_chunks():
+    from backend.eval.fix_candidates import validate_multi_year_item
+
+    chunk1 = {
+        "chunk_id": "c1",
+        "company": "Apple",
+        "fiscal_year": "2024",
+        "item_section": "Item 7",
+        "text": "Total net sales were $383,285 million in 2024.",
+    }
+    chunk2 = {
+        "chunk_id": "c2",
+        "company": "Apple",
+        "fiscal_year": "2025",
+        "item_section": "Item 7",
+        "text": "Total net sales reached $391,035 million in 2025.",
+    }
+
+    # Valid item with quotes in both chunks
+    valid_item = {
+        "question": "How did Apple's total net sales change between fiscal 2024 and 2025?",
+        "ground_truth": "Sales grew from $383,285 million to $391,035 million.",
+        "supporting_quotes": [
+            "Total net sales were $383,285 million in 2024.",
+            "Total net sales reached $391,035 million in 2025.",
+        ],
+    }
+    is_valid, errors, combined = validate_multi_year_item(valid_item, chunk1, chunk2, [])
+    assert is_valid is True
+    assert errors == ["PASS"]
+    assert "383,285" in combined and "391,035" in combined
+
+    # Invalid quote in chunk 2 (contains ellipsis)
+    invalid_item = {
+        "question": "How did Apple's total net sales change between fiscal 2024 and 2025?",
+        "ground_truth": "Sales grew from $383,285 million to $391,035 million.",
+        "supporting_quotes": [
+            "Total net sales were $383,285 million in 2024.",
+            "Total net sales...",
+        ],
+    }
+    is_valid2, errors2, _ = validate_multi_year_item(invalid_item, chunk1, chunk2, [])
+    assert is_valid2 is False
+    assert any("REJECT_QUOTE_CONTAINS_ELLIPSIS" in e for e in errors2)
+
+
+def test_sample_multi_year_candidate_pairs():
+    from backend.eval.fix_candidates import sample_multi_year_candidate_pairs
+
+    mock_chunks = [
+        {"chunk_id": "c1", "company": "Apple", "fiscal_year": "2024", "item_section": "Item 7", "text": "A" * 350},
+        {"chunk_id": "c2", "company": "Apple", "fiscal_year": "2025", "item_section": "Item 7", "text": "B" * 350},
+        {"chunk_id": "c3", "company": "Apple", "fiscal_year": "2024", "item_section": "Item 1", "text": "C" * 350},
+        {"chunk_id": "c4", "company": "Apple", "fiscal_year": "2025", "item_section": "Item 1", "text": "D" * 350},
+        {"chunk_id": "c5", "company": "Apple", "fiscal_year": "2024", "item_section": "Item 8", "text": "E" * 350},
+    ]
+
+    pairs_dict = sample_multi_year_candidate_pairs(
+        chunks=mock_chunks,
+        dev_chunk_ids=set(),
+        targets={"Apple": 2},
+    )
+    assert "Apple" in pairs_dict
+    pairs = pairs_dict["Apple"]
+    assert len(pairs) >= 2
+    for p1, p2 in pairs:
+        assert p1["company"] == "Apple" and p2["company"] == "Apple"
+        assert p1["fiscal_year"] != p2["fiscal_year"]
+        assert p1["item_section"] == p2["item_section"]
+
+
+# =============================================================================
+# 6. ID Uniqueness and New Validator Tests
+# =============================================================================
+def test_enforce_unique_candidate_ids_and_prefixes(tmp_path):
+    from backend.eval.generate_candidates import write_candidates_json, write_review_csv
+
+    # Test distinct prefixes
+    candidates = [
+        {"id": "heldout_01", "company": "Apple", "question": "Q1"},
+        {"id": "heldout_mh_01", "company": "Apple", "question": "Q2"},
+        {"id": "heldout_un_01", "company": "Apple", "question": "Q3"},
+    ]
+    json_path = tmp_path / "candidates.json"
+    csv_path = tmp_path / "review.csv"
+
+    write_candidates_json(candidates, json_path)
+    write_review_csv(candidates, csv_path)
+    assert json_path.exists()
+    assert csv_path.exists()
+
+    # Test duplicate ID causes ValueError in write_candidates_json
+    dup_candidates = [
+        {"id": "heldout_01", "company": "Apple", "question": "Q1"},
+        {"id": "heldout_01", "company": "Apple", "question": "Q2"},
+    ]
+    with pytest.raises(ValueError, match="Candidate IDs must be unique"):
+        write_candidates_json(dup_candidates, tmp_path / "dup.json")
+
+    # Test duplicate ID causes ValueError in write_review_csv
+    with pytest.raises(ValueError, match="Candidate IDs must be unique"):
+        write_review_csv(dup_candidates, tmp_path / "dup.csv")
+
+
+def test_validate_question_year_matches_filing():
+    from backend.eval.generate_candidates import validate_question_year_matches_filing
+
+    # Single-chunk matching year -> passes
+    ok1, msg1 = validate_question_year_matches_filing(
+        question="What was Apple's total revenue in fiscal year 2024?",
+        fiscal_year="2024",
+    )
+    assert ok1 is True
+    assert msg1 == "VALID"
+
+    # Single-chunk mismatched year -> fails
+    ok2, msg2 = validate_question_year_matches_filing(
+        question="What was Apple's total revenue in fiscal year 2023?",
+        fiscal_year="2024",
+    )
+    assert ok2 is False
+    assert "REJECT_QUESTION_YEAR_MISMATCH" in msg2
+
+    # Question with no year mentioned -> passes
+    ok3, msg3 = validate_question_year_matches_filing(
+        question="What does the filing state regarding research and development expenses?",
+        fiscal_year="2024",
+    )
+    assert ok3 is True
+    assert msg3 == "VALID"
+
+    # Multi-year matching one or both filings' years -> passes
+    ok4, msg4 = validate_question_year_matches_filing(
+        question="How did NVIDIA's data center revenue change between FY2024 and FY2025?",
+        fiscal_year="2024/2025",
+        is_multi_year=True,
+    )
+    assert ok4 is True
+    assert msg4 == "VALID"
+
+    # Multi-year naming an extraneous year -> fails
+    ok5, msg5 = validate_question_year_matches_filing(
+        question="How did revenue change from 2022 to 2024?",
+        fiscal_year="2024/2025",
+        is_multi_year=True,
+    )
+    assert ok5 is False
+    assert "REJECT_QUESTION_YEAR_MISMATCH" in msg5
+
+    # Unanswerable inquiry -> exempt, passes
+    ok6, msg6 = validate_question_year_matches_filing(
+        question="What was Apple's total research and development expense in fiscal year 2020?",
+        fiscal_year="2020",
+        is_unanswerable=True,
+    )
+    assert ok6 is True
+    assert msg6 == "VALID"
+
+
+def test_validate_multi_year_adjacent_years():
+    from backend.eval.generate_candidates import validate_multi_year_adjacent_years
+
+    # Adjacent pairs pass
+    ok1, msg1 = validate_multi_year_adjacent_years("2023/2024")
+    assert ok1 is True
+    assert msg1 == "VALID"
+
+    ok2, msg2 = validate_multi_year_adjacent_years("2024/2025")
+    assert ok2 is True
+    assert msg2 == "VALID"
+
+    ok3, msg3 = validate_multi_year_adjacent_years("2025/2026")
+    assert ok3 is True
+    assert msg3 == "VALID"
+
+    # Non-adjacent pairs fail
+    ok4, msg4 = validate_multi_year_adjacent_years("2023/2025")
+    assert ok4 is False
+    assert "REJECT_MULTI_YEAR_NON_ADJACENT_YEARS" in msg4
+
+    ok5, msg5 = validate_multi_year_adjacent_years("2024/2026")
+    assert ok5 is False
+    assert "REJECT_MULTI_YEAR_NON_ADJACENT_YEARS" in msg5
+
+
+def test_validate_ground_truth_supported_by_quotes():
+    from backend.eval.generate_candidates import validate_ground_truth_supported_by_quotes
+
+    # Case 1: Both quotes are substantive and support GT
+    gt1 = "In 2024, iPad net sales were $26,694 million. In 2025, iPad net sales grew to $28,023 million."
+    sq1 = "iPad net sales were $26,694 million for 2024. || iPad net sales increased to $28,023 million during 2025."
+    ok1, msg1 = validate_ground_truth_supported_by_quotes(gt1, sq1)
+    assert ok1 is True
+    assert msg1 == "VALID"
+
+    # Case 2: Quote 2 is a brief executive title/signature block (< 6 words)
+    gt2 = "In 2024, foreign exchange had no material impact. In 2025, internal controls were certified by Satya Nadella."
+    sq2 = "Fluctuations in the U.S. dollar did not have a material impact on revenue in 2024. || Satya Nadella\n\nChief Executive Officer"
+    ok2, msg2 = validate_ground_truth_supported_by_quotes(gt2, sq2)
+    assert ok2 is False
+    assert "FLAG_GROUND_TRUTH_NOT_CLEARLY_SUPPORTED_BY_BOTH_QUOTES" in msg2
+
+    # Case 3: Quote ends abruptly with dangling punctuation
+    gt3 = "In 2025, losses for pending litigation were accrued when probable."
+    sq3 = "If information becomes available that causes us to determine that a loss in any of our pending litigation, || Second quote is complete."
+    ok3, msg3 = validate_ground_truth_supported_by_quotes(gt3, sq3)
+    assert ok3 is False
+    assert "FLAG_GROUND_TRUTH_NOT_CLEARLY_SUPPORTED_BY_BOTH_QUOTES" in msg3
+
 

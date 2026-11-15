@@ -279,24 +279,32 @@ COMMON_CONTEXT_WORDS: Set[str] = {
     "may", "june", "july", "august", "september", "october", "november", "form",
     "10-k", "10k", "sec", "filing", "filings", "report", "reported", "reporting",
     "statement", "statements", "consolidated", "item", "items", "section", "sections",
-    "total", "net", "sales", "revenue", "revenues", "income", "expense", "expenses",
+    "total", "net", "sales", "revenue", "revenues", "income", "incomes", "expense", "expenses",
     "cost", "costs", "dollar", "dollars", "share", "shares", "stock", "common",
     "million", "millions", "billion", "billions", "thousand", "thousands",
-    "percent", "percentage", "rate", "basis", "points", "amount", "amounts",
+    "percent", "percentage", "rate", "rates", "basis", "points", "amount", "amounts",
     "cash", "flow", "flows", "asset", "assets", "liability", "liabilities", "equity",
     "operating", "operations", "operation", "service", "services", "product", "products",
     "segment", "segments", "business", "businesses", "capital", "expenditure", "expenditures",
     "capex", "depreciation", "amortization", "tax", "taxes", "effective", "interest",
-    "debt", "gain", "loss", "losses", "profit", "margins", "margin", "gross",
+    "debt", "gain", "gains", "loss", "losses", "profit", "margins", "margin", "gross",
     "research", "development", "administrative", "general", "selling", "marketing",
     "marketable", "securities", "repurchase", "repurchases", "dividend", "dividends",
-    "diluted", "basic", "per", "earning", "earnings", "carrying", "value", "fair",
+    "diluted", "basic", "per", "earning", "earnings", "carrying", "value", "values", "fair",
     "note", "notes", "table", "information", "accounting", "policy", "policies",
     "united", "states", "america", "international", "global", "geographic", "region",
     "headcount", "employees", "workforce", "personnel", "officer", "officers", "executive",
-    "approximately", "estimated", "increase", "decrease", "higher", "lower", "compared",
+    "approximately", "estimated", "estimates", "estimate", "increase", "decrease", "higher", "lower", "compared",
     "prior", "current", "subsequent", "growth", "payable", "receivable", "inventory",
     "goodwill", "intangible", "lease", "leases", "commitments", "contingencies",
+    # Additional common English & finance words (avoid false-positive leakage)
+    "awards", "award", "plans", "plan", "unit", "units", "options", "option",
+    "grant", "grants", "granted", "vesting", "compensation", "benefit", "benefits",
+    "provisions", "provision", "allowance", "allowances", "contract", "contracts",
+    "agreement", "agreements", "settlement", "settlements", "restructuring",
+    "severance", "claims", "litigation", "regulatory", "regulations", "requirements",
+    "requirement", "factors", "factor", "conditions", "condition", "management",
+    "customer", "customers", "supplier", "suppliers", "vendor", "vendors", "distribution",
 }
 
 
@@ -312,6 +320,7 @@ def validate_answer_leakage(
     (numbers with 3+ digits, years, and capitalized or rare words not already
     in the company/section context) appear in the question, except the fiscal
     year of the target filing.
+    Ignores common English and finance words and sentence-initial capitalized words.
     Flag: REJECT_ANSWER_LEAKAGE.
     """
     if not question or not ground_truth:
@@ -357,20 +366,26 @@ def validate_answer_leakage(
         for part in re.findall(r"\b\w+\b", item_section.lower()):
             context_words.add(part)
 
-    # Scan ground_truth for capitalized tokens
-    gt_tokens = re.findall(r"\b[A-Za-z][A-Za-z0-9_-]*\b", ground_truth)
-    for token in gt_tokens:
-        clean_tok = token.strip("-_")
-        if len(clean_tok) < 4:
-            continue
-        lower_tok = clean_tok.lower()
-        if lower_tok in context_words:
-            continue
+    # Scan ground_truth by sentence to ignore sentence-initial capitalization
+    sentences = re.split(r"(?<=[.!?])\s+", ground_truth.strip())
+    for sent in sentences:
+        words = re.findall(r"\b[A-Za-z][A-Za-z0-9_-]*\b", sent)
+        for idx, token in enumerate(words):
+            # Ignore sentence-initial capitalized words in multi-word sentences
+            if idx == 0 and len(words) > 1:
+                continue
 
-        if clean_tok[0].isupper():
-            token_pattern = r"\b" + re.escape(clean_tok) + r"\b"
-            if re.search(token_pattern, question, re.IGNORECASE):
-                return False, f"REJECT_ANSWER_LEAKAGE: '{clean_tok}'"
+            clean_tok = token.strip("-_")
+            if len(clean_tok) < 4:
+                continue
+            lower_tok = clean_tok.lower()
+            if lower_tok in context_words:
+                continue
+
+            if clean_tok[0].isupper():
+                token_pattern = r"\b" + re.escape(clean_tok) + r"\b"
+                if re.search(token_pattern, question, re.IGNORECASE):
+                    return False, f"REJECT_ANSWER_LEAKAGE: '{clean_tok}'"
 
     return True, "VALID"
 
@@ -456,6 +471,136 @@ def validate_cross_filing_name_ambiguity(
     return flags
 
 
+# =============================================================================
+# Filing Year and Ground Truth Support Validators
+# =============================================================================
+COMMON_GT_STOPWORDS: Set[str] = {
+    "that", "this", "with", "from", "have", "were", "which", "their", "about",
+    "between", "fiscal", "year", "company", "report", "filing", "stated", "noted",
+    "discussed", "compared", "during", "these", "under", "other", "also", "into",
+    "over", "such", "than", "each", "both", "more", "most", "some", "only", "same",
+    "been", "being", "having", "first", "second", "third", "fourth", "annual",
+}
+
+
+def extract_question_years(question: str) -> Set[str]:
+    """
+    Extracts all fiscal years (4-digit 1990-2040, or FY-form) named in the question.
+    Handles FY2024, FY24, fiscal 2024, 2024, etc.
+    """
+    years = set()
+    # FY forms: FY2024, FY24, FY 2024
+    for m in re.finditer(r"\bFY\s*(\d{2,4})\b", question, re.IGNORECASE):
+        y = m.group(1)
+        if len(y) == 2:
+            years.add("20" + y)
+        elif len(y) == 4:
+            years.add(y)
+
+    # 4-digit calendar years 1990-2040
+    for m in re.finditer(r"\b(19\d\d|20[0-4]\d)\b", question):
+        years.add(m.group(1))
+
+    return years
+
+
+def validate_question_year_matches_filing(
+    question: str,
+    fiscal_year: str,
+    is_multi_year: bool = False,
+    is_unanswerable: bool = False,
+) -> Tuple[bool, str]:
+    """
+    Validates that any fiscal year named in the question matches the filing's fiscal year:
+    - For single-chunk items: if question names a year differing from chunk's fiscal_year, reject.
+    - For multi-year items: if question names a year that is not one of the two filings' years, reject.
+    - Unanswerable inquiries (no gold chunk) are exempt.
+    Returns (is_valid, message).
+    """
+    if is_unanswerable:
+        return True, "VALID"
+
+    q_years = extract_question_years(question)
+    if not q_years:
+        return True, "VALID"
+
+    if is_multi_year or "/" in fiscal_year:
+        valid_years = {str(y).strip() for y in fiscal_year.split("/") if y.strip()}
+        mismatched = q_years - valid_years
+        if mismatched:
+            sorted_m = ", ".join(sorted(mismatched))
+            sorted_v = "/".join(sorted(valid_years))
+            return False, f"REJECT_QUESTION_YEAR_MISMATCH (question names {sorted_m}, but filings are {sorted_v})"
+    else:
+        valid_year = str(fiscal_year).strip()
+        mismatched = q_years - {valid_year}
+        if mismatched:
+            sorted_m = ", ".join(sorted(mismatched))
+            return False, f"REJECT_QUESTION_YEAR_MISMATCH (question names {sorted_m}, but filing is {valid_year})"
+
+    return True, "VALID"
+
+
+def validate_multi_year_adjacent_years(fiscal_year_str: str) -> Tuple[bool, str]:
+    """
+    Requires adjacent fiscal years for multi-year items (e.g. 2023/2024, 2024/2025, 2025/2026).
+    Rejects non-adjacent pairs (e.g. 2023/2025, 2024/2026).
+    """
+    years = [int(y.strip()) for y in fiscal_year_str.split("/") if y.strip().isdigit()]
+    if len(years) != 2:
+        return False, "REJECT_MULTI_YEAR_NON_ADJACENT_YEARS (requires exactly two fiscal years)"
+    if abs(years[0] - years[1]) != 1:
+        return False, f"REJECT_MULTI_YEAR_NON_ADJACENT_YEARS ({years[0]} and {years[1]} are not adjacent)"
+    return True, "VALID"
+
+
+def validate_ground_truth_supported_by_quotes(
+    ground_truth: str,
+    supporting_quote_str: str,
+) -> Tuple[bool, str]:
+    """
+    Flags for human attention if ground truth in a multi-year comparison item
+    is not clearly supported by both quotes:
+    - Requires 2 distinct supporting quotes.
+    - Each quote must have substantive content (at least 6 words, not just titles/signatures).
+    - Ground truth must share at least 2 substantive content terms/figures with each quote.
+    - Neither quote should end with dangling incomplete punctuation or prepositions.
+    """
+    quotes = [q.strip() for q in supporting_quote_str.split(" || ") if q.strip()]
+    if len(quotes) < 2:
+        return False, "FLAG_GROUND_TRUTH_NOT_CLEARLY_SUPPORTED_BY_BOTH_QUOTES (missing two distinct quotes)"
+
+    q1, q2 = quotes[0], quotes[1]
+
+    # Check substantive length of quotes
+    if len(q1.split()) < 6 or len(q1) < 30:
+        return False, "FLAG_GROUND_TRUTH_NOT_CLEARLY_SUPPORTED_BY_BOTH_QUOTES (Quote 1 is too brief, <6 words or <30 chars)"
+    if len(q2.split()) < 6 or len(q2) < 30:
+        return False, "FLAG_GROUND_TRUTH_NOT_CLEARLY_SUPPORTED_BY_BOTH_QUOTES (Quote 2 is too brief, <6 words or <30 chars)"
+
+    # Dangling punctuation or incomplete phrase at quote end
+    dangling = (",", ";", ":", "•", "-", " of", " in", " for", " with", " regarding", " to")
+    if q1.rstrip().endswith(dangling):
+        return False, "FLAG_GROUND_TRUTH_NOT_CLEARLY_SUPPORTED_BY_BOTH_QUOTES (Quote 1 ends with dangling punctuation or incomplete phrase)"
+    if q2.rstrip().endswith(dangling):
+        return False, "FLAG_GROUND_TRUTH_NOT_CLEARLY_SUPPORTED_BY_BOTH_QUOTES (Quote 2 ends with dangling punctuation or incomplete phrase)"
+
+    # Token overlap with ground truth
+    w_gt = set(re.findall(r"\b[a-z0-9]{3,}\b", ground_truth.lower())) - COMMON_GT_STOPWORDS
+    w_q1 = set(re.findall(r"\b[a-z0-9]{3,}\b", q1.lower())) - COMMON_GT_STOPWORDS
+    w_q2 = set(re.findall(r"\b[a-z0-9]{3,}\b", q2.lower())) - COMMON_GT_STOPWORDS
+
+    ov1 = w_gt & w_q1
+    ov2 = w_gt & w_q2
+
+    if len(ov1) < 2:
+        return False, f"FLAG_GROUND_TRUTH_NOT_CLEARLY_SUPPORTED_BY_BOTH_QUOTES (Quote 1 shares only {len(ov1)} content terms with GT)"
+    if len(ov2) < 2:
+        return False, f"FLAG_GROUND_TRUTH_NOT_CLEARLY_SUPPORTED_BY_BOTH_QUOTES (Quote 2 shares only {len(ov2)} content terms with GT)"
+
+    return True, "VALID"
+
+
 def run_all_validators(
     candidate: Dict[str, Any],
     chunk_text: str,
@@ -533,6 +678,20 @@ def run_all_validators(
         str(candidate.get("fiscal_year", "")),
     )
     flags.extend(sec_flags)
+
+    # Check question fiscal year matches filing year
+    is_my = len(candidate.get("source_chunk_ids", [])) > 1 or candidate.get("category") == "multi_hop"
+    is_un = candidate.get("category") == "unanswerable" or str(candidate.get("id", "")).startswith("heldout_un_")
+    ok_yr, msg_yr = validate_question_year_matches_filing(
+        question=candidate["question"],
+        fiscal_year=str(candidate.get("fiscal_year", "")),
+        is_multi_year=is_my,
+        is_unanswerable=is_un,
+    )
+    if not ok_yr:
+        flags.append(msg_yr)
+        is_acceptable = False
+        should_reject = True
 
     # Any failed validator defaults to should_reject = True
     if not is_acceptable or should_reject:
@@ -889,21 +1048,66 @@ def generate_multi_year_candidate_llm(
 # =============================================================================
 # CSV and JSON Writers
 # =============================================================================
+def extract_chunk_excerpt(chunk_text: str, quote: str, window: int = 125) -> str:
+    """Extracts approximately 250 characters around the quote from chunk_text."""
+    if not chunk_text or not quote:
+        return ""
+    idx = chunk_text.find(quote)
+    if idx == -1:
+        norm_chunk = " ".join(chunk_text.split())
+        norm_quote = " ".join(quote.split())
+        idx = norm_chunk.find(norm_quote)
+        if idx != -1:
+            chunk_text = norm_chunk
+            quote = norm_quote
+        else:
+            return chunk_text[:250] + (" [...]" if len(chunk_text) > 250 else "")
+
+    start = max(0, idx - window)
+    end = min(len(chunk_text), idx + len(quote) + window)
+    prefix = "[...] " if start > 0 else ""
+    suffix = " [...]" if end < len(chunk_text) else ""
+    return prefix + chunk_text[start:end].strip() + suffix
+
+
 def write_candidates_json(candidates: List[Dict[str, Any]], path: Path) -> None:
-    """Writes candidates list to JSON."""
+    """Writes candidates list to JSON, asserting candidate ID uniqueness."""
+    ids = [c["id"] for c in candidates if "id" in c]
+    if len(ids) != len(set(ids)):
+        from collections import Counter
+        duplicates = [item for item, count in Counter(ids).items() if count > 1]
+        raise ValueError(f"Candidate IDs must be unique! Found duplicates: {duplicates}")
+
     path.parent.mkdir(parents=True, exist_ok=True)
     with open(path, "w", encoding="utf-8") as f:
         json.dump(candidates, f, indent=2, ensure_ascii=False)
     logger.info(f"Saved {len(candidates)} candidates to JSON: {path}")
 
 
-def write_review_csv(candidates: List[Dict[str, Any]], path: Path) -> None:
+def write_review_csv(
+    candidates: List[Dict[str, Any]],
+    path: Path,
+    chunks: Optional[List[Dict[str, Any]]] = None,
+) -> None:
     """
     Writes candidates to review CSV with columns:
-    id,company,fiscal_year,section,category,question_style,question,ground_truth,supporting_quote,validator_flags,accept,edit,reject
-    Any item with a failed validator defaults to reject="x", accept="".
-    Only fully passing items default to accept="x", reject="".
+    id,company,fiscal_year,section,category,question_style,question,ground_truth,supporting_quote,chunk_text_excerpt,final_status,reject_reason,rewrite_applied,original_question,validator_flags,accept,edit,reject
+    Asserts uniqueness of candidate IDs.
     """
+    ids = [c["id"] for c in candidates if "id" in c]
+    if len(ids) != len(set(ids)):
+        from collections import Counter
+        duplicates = [item for item, count in Counter(ids).items() if count > 1]
+        raise ValueError(f"Candidate IDs must be unique! Found duplicates: {duplicates}")
+
+    if chunks is None and DEFAULT_CHUNKS_PATH.exists():
+        try:
+            with open(DEFAULT_CHUNKS_PATH, "r", encoding="utf-8") as f:
+                chunks = json.load(f)
+        except Exception:
+            chunks = []
+    chunk_lookup = {c["chunk_id"]: c for c in (chunks or []) if c.get("chunk_id")}
+
     path.parent.mkdir(parents=True, exist_ok=True)
     fieldnames = [
         "id",
@@ -915,6 +1119,11 @@ def write_review_csv(candidates: List[Dict[str, Any]], path: Path) -> None:
         "question",
         "ground_truth",
         "supporting_quote",
+        "chunk_text_excerpt",
+        "final_status",
+        "reject_reason",
+        "rewrite_applied",
+        "original_question",
         "validator_flags",
         "accept",
         "edit",
@@ -925,6 +1134,37 @@ def write_review_csv(candidates: List[Dict[str, Any]], path: Path) -> None:
         writer.writeheader()
         for c in candidates:
             is_rejected = bool(c.get("default_reject", False))
+            flags = c.get("validator_flags", ["PASS"])
+
+            # Reject reason: extract all failing flags
+            reject_reasons = [
+                f for f in flags
+                if any(f.startswith(p) for p in ["REJECT_", "AMBIGUOUS_", "CHUNK1_", "CHUNK2_", "FLAG_"])
+            ]
+            reject_reason_str = "; ".join(reject_reasons) if (is_rejected and reject_reasons) else ""
+
+            # Excerpt extraction
+            excerpt_str = ""
+            sq = c.get("supporting_quote", "")
+            sc_ids = c.get("source_chunk_ids", [])
+            cid = c.get("chunk_id") or (sc_ids[0] if sc_ids else None)
+
+            if len(sc_ids) > 1:
+                quotes = sq.split(" || ")
+                excerpts = []
+                for i, s_id in enumerate(sc_ids):
+                    c_obj = chunk_lookup.get(s_id, {})
+                    c_text = c_obj.get("text", "")
+                    q_text = quotes[i] if i < len(quotes) else ""
+                    ex = extract_chunk_excerpt(c_text, q_text)
+                    c_yr = c_obj.get("fiscal_year", f"Chunk {i+1}")
+                    excerpts.append(f"[{c_yr}]: {ex}")
+                excerpt_str = " || ".join(excerpts)
+            elif cid:
+                c_obj = chunk_lookup.get(cid, {})
+                c_text = c_obj.get("text", "")
+                excerpt_str = extract_chunk_excerpt(c_text, sq)
+
             writer.writerow({
                 "id": c.get("id", ""),
                 "company": c.get("company", ""),
@@ -934,8 +1174,13 @@ def write_review_csv(candidates: List[Dict[str, Any]], path: Path) -> None:
                 "question_style": c.get("question_style", ""),
                 "question": c.get("question", ""),
                 "ground_truth": c.get("ground_truth", ""),
-                "supporting_quote": c.get("supporting_quote", ""),
-                "validator_flags": "; ".join(c.get("validator_flags", ["PASS"])),
+                "supporting_quote": sq,
+                "chunk_text_excerpt": excerpt_str,
+                "final_status": "REJECT" if is_rejected else "ACCEPT",
+                "reject_reason": reject_reason_str,
+                "rewrite_applied": c.get("rewrite_applied", ""),
+                "original_question": c.get("original_question", ""),
+                "validator_flags": "; ".join(flags),
                 "accept": "" if is_rejected else "x",
                 "edit": "",
                 "reject": "x" if is_rejected else "",
@@ -1072,13 +1317,12 @@ def run_generation_pipeline(
             })
 
         # Multi-year templates
-        m_start = len(dry_candidates) + 1
-        for idx, (c1, c2) in enumerate(sampled_multi_pairs, start=m_start):
+        for idx, (c1, c2) in enumerate(sampled_multi_pairs, start=1):
             comp = c1.get("company", "")
             yr1 = str(c1.get("fiscal_year", ""))
             yr2 = str(c2.get("fiscal_year", ""))
             dry_candidates.append({
-                "id": f"heldout_{idx:02d}",
+                "id": f"heldout_mh_{idx:02d}",
                 "company": comp,
                 "fiscal_year": f"{yr1}/{yr2}",
                 "section": f"{c1.get('item_section', '')}/{c2.get('item_section', '')}",
@@ -1093,10 +1337,9 @@ def run_generation_pipeline(
             })
 
         # Unanswerable templates
-        u_start = len(dry_candidates) + 1
-        for idx, u in enumerate(unanswerable_items, start=u_start):
+        for idx, u in enumerate(unanswerable_items, start=1):
             dry_candidates.append({
-                "id": f"heldout_{idx:02d}",
+                "id": f"heldout_un_{idx:02d}",
                 "company": u["company"],
                 "fiscal_year": u["fiscal_year"],
                 "section": "None",
@@ -1194,11 +1437,11 @@ def run_generation_pipeline(
     # 2. Multi-year generation (only if --limit is not restricting to single chunks)
     if sampled_multi_pairs:
         m_offset = len(candidates) + 1
-        for idx, (c1, c2) in enumerate(sampled_multi_pairs, start=m_offset):
+        for idx, (c1, c2) in enumerate(sampled_multi_pairs, start=1):
             if delay > 0:
                 time.sleep(delay)
 
-            item_id = f"heldout_{idx:02d}"
+            item_id = f"heldout_mh_{idx:02d}"
             comp = c1.get("company", "")
             yr1 = str(c1.get("fiscal_year", ""))
             yr2 = str(c2.get("fiscal_year", ""))
@@ -1228,10 +1471,9 @@ def run_generation_pipeline(
 
     # 3. Add unanswerable questions (cost 0 LLM calls)
     if unanswerable_items:
-        u_offset = len(candidates) + 1
-        for idx, u in enumerate(unanswerable_items, start=u_offset):
+        for idx, u in enumerate(unanswerable_items, start=1):
             candidates.append({
-                "id": f"heldout_{idx:02d}",
+                "id": f"heldout_un_{idx:02d}",
                 "company": u["company"],
                 "fiscal_year": u["fiscal_year"],
                 "section": "None",
