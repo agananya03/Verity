@@ -24,15 +24,19 @@ from pathlib import Path
 from typing import Any, Dict, List
 
 from backend.eval.generate_candidates import (
+    QUESTION_STYLES,
     is_table_chunk,
     sample_heldout_chunks,
     sample_multi_year_pairs,
     validate_6gram_overlap,
-    validate_cross_filing_ambiguity,
+    validate_answer_leakage,
+    validate_cross_filing_name_ambiguity,
     validate_duplicate,
     validate_no_preamble,
+    validate_quote_unique_across_filings,
     validate_supporting_quote,
     run_all_validators,
+    write_review_csv,
 )
 from backend.eval.merge_reviewed import (
     find_matching_chunk_for_quote,
@@ -139,33 +143,95 @@ def test_validate_duplicate():
     assert msg_new == "VALID"
 
 
-def test_validate_cross_filing_ambiguity():
+def test_validate_quote_unique_across_filings():
+    mock_chunks = [
+        {
+            "chunk_id": "chunk_apple_2025_risk",
+            "company": "Apple",
+            "fiscal_year": "2025",
+            "text": "The Company is subject to complex and evolving international laws and regulations regarding privacy and data protection.",
+        },
+        {
+            "chunk_id": "chunk_apple_2024_risk",
+            "company": "Apple",
+            "fiscal_year": "2024",
+            "text": "The Company is subject to complex and evolving international laws and regulations regarding privacy and data protection.",
+        },
+        {
+            "chunk_id": "chunk_apple_2025_revenue",
+            "company": "Apple",
+            "fiscal_year": "2025",
+            "text": "Total net sales in fiscal 2025 reached $391.0 billion compared to $383.3 billion in 2024.",
+        },
+    ]
+
+    repeated_quote = "The Company is subject to complex and evolving international laws and regulations regarding privacy and data protection."
+    unique_quote = "Total net sales in fiscal 2025 reached $391.0 billion"
+
+    # Case 1: Quote repeats in another fiscal year (2024) and question omits target year (2025)
+    # Must flag AMBIGUOUS_REPEATED_ACROSS_YEARS and reject
+    ok_rep, msg_rep, rej_rep = validate_quote_unique_across_filings(
+        supporting_quote=repeated_quote,
+        question="What laws and regulations regarding privacy is the Company subject to?",
+        company="Apple",
+        fiscal_year="2025",
+        all_chunks=mock_chunks,
+    )
+    assert ok_rep is False
+    assert "AMBIGUOUS_REPEATED_ACROSS_YEARS" in msg_rep
+    assert rej_rep is True
+
+    # Case 2: Quote repeats in another fiscal year, BUT question explicitly names its own target year (2025)
+    # Passes because question disambiguates the year
+    ok_dis, msg_dis, rej_dis = validate_quote_unique_across_filings(
+        supporting_quote=repeated_quote,
+        question="In fiscal 2025, what privacy and data protection regulations was Apple subject to?",
+        company="Apple",
+        fiscal_year="2025",
+        all_chunks=mock_chunks,
+    )
+    assert ok_dis is True
+    assert "REPEATED_ACROSS_YEARS_DISAMBIGUATED" in msg_dis
+    assert rej_dis is False
+
+    # Case 3: Quote does NOT repeat in another fiscal year
+    # Passes cleanly
+    ok_uniq, msg_uniq, rej_uniq = validate_quote_unique_across_filings(
+        supporting_quote=unique_quote,
+        question="What were Apple's total net sales in fiscal 2025?",
+        company="Apple",
+        fiscal_year="2025",
+        all_chunks=mock_chunks,
+    )
+    assert ok_uniq is True
+    assert msg_uniq == "VALID"
+    assert rej_uniq is False
+
+
+def test_validate_cross_filing_name_ambiguity():
     # Question omitting company name
-    ok_no_comp, msg_no_comp = validate_cross_filing_ambiguity(
+    flags_no_comp = validate_cross_filing_name_ambiguity(
         "What were total net sales and operating income in 2025?",
         company="Apple",
         fiscal_year="2025",
     )
-    assert ok_no_comp is False
-    assert "FLAG_NO_COMPANY_NAME" in msg_no_comp
+    assert "FLAG_NO_COMPANY_NAME" in flags_no_comp
 
-    # Question omitting fiscal year for time-bound metric
-    ok_no_yr, msg_no_yr = validate_cross_filing_ambiguity(
+    # Question omitting fiscal year
+    flags_no_yr = validate_cross_filing_name_ambiguity(
         "What was Apple's total net sales across all product lines?",
         company="Apple",
         fiscal_year="2025",
     )
-    assert ok_no_yr is False
-    assert "FLAG_NO_FISCAL_YEAR" in msg_no_yr
+    assert "FLAG_NO_FISCAL_YEAR" in flags_no_yr
 
     # Fully specified question
-    ok_good, msg_good = validate_cross_filing_ambiguity(
+    flags_good = validate_cross_filing_name_ambiguity(
         "What was Apple's total net sales in fiscal year 2025?",
         company="Apple",
         fiscal_year="2025",
     )
-    assert ok_good is True
-    assert msg_good == "VALID"
+    assert flags_good == []
 
 
 def test_run_all_validators_integration():
@@ -176,9 +242,199 @@ def test_run_all_validators_integration():
         "company": "Apple",
         "fiscal_year": "2025",
     }
-    is_ok, flags = run_all_validators(candidate_good, chunk_text, existing_questions=[])
+    is_ok, flags, should_reject = run_all_validators(candidate_good, chunk_text, existing_questions=[])
     assert is_ok is True
+    assert should_reject is False
     assert "PASS" in flags
+
+    # Integration test with cross-year repeated quote in all_chunks
+    other_chunk = {
+        "chunk_id": "other_yr_chunk",
+        "company": "Apple",
+        "fiscal_year": "2024",
+        "text": chunk_text,
+    }
+    candidate_ambig = {
+        "question": "What are the five reportable geographic segments of Apple?",
+        "supporting_quote": chunk_text,
+        "company": "Apple",
+        "fiscal_year": "2025",
+    }
+    is_ok2, flags2, should_reject2 = run_all_validators(
+        candidate_ambig, chunk_text, existing_questions=[], all_chunks=[other_chunk]
+    )
+    assert is_ok2 is False
+    assert should_reject2 is True
+    assert any("AMBIGUOUS_REPEATED_ACROSS_YEARS" in f for f in flags2)
+
+
+def test_validate_supporting_quote_ellipsis_rule():
+    chunk_narrative = (
+        "During fiscal year 2025, the Company repurchased 402 million shares of common stock "
+        "for $95 billion under its share repurchase program."
+    )
+    chunk_with_ellipsis = (
+        "The Company continues to develop new technologies... and to expand its product range."
+    )
+
+    # 1. Quote with standard ellipsis '...' where chunk does NOT have it -> REJECT
+    quote_with_dots = "repurchased 402 million shares ... under its share repurchase program"
+    ok1, reason1, _ = validate_supporting_quote(quote_with_dots, chunk_narrative)
+    assert ok1 is False
+    assert reason1 == "REJECT_QUOTE_CONTAINS_ELLIPSIS"
+
+    # 2. Quote with unicode ellipsis '…' where chunk does NOT have it -> REJECT
+    quote_with_unicode = "repurchased 402 million shares … under its share repurchase program"
+    ok2, reason2, _ = validate_supporting_quote(quote_with_unicode, chunk_narrative)
+    assert ok2 is False
+    assert reason2 == "REJECT_QUOTE_CONTAINS_ELLIPSIS"
+
+    # 3. Chunk literally contains '...' and quote matches -> VALID
+    quote_valid_ellipsis = "develop new technologies... and to expand"
+    ok3, reason3, _ = validate_supporting_quote(quote_valid_ellipsis, chunk_with_ellipsis)
+    assert ok3 is True
+    assert "VALID" in reason3
+
+
+def test_validate_answer_leakage():
+    # User's explicit prompt example:
+    # question: "What target year did Alphabet set in its 2030 sustainability plan?" with ground truth "by the year 2030"
+    q_leak = "What target year did Alphabet set in its 2030 sustainability plan?"
+    gt_leak = "Alphabet set a goal to achieve net-zero emissions across all of its operations and value chain by the year 2030."
+    ok_leak, msg_leak = validate_answer_leakage(
+        question=q_leak,
+        ground_truth=gt_leak,
+        fiscal_year="2023",
+        company="Alphabet",
+    )
+    assert ok_leak is False
+    assert "REJECT_ANSWER_LEAKAGE" in msg_leak
+    assert "2030" in msg_leak
+
+    # 3+ digit number in ground truth leaked into question
+    q_num_leak = "Why did Alphabet's research and development expense rise to 45427 million in 2023?"
+    gt_num = "Research and development expense reached $45,427 million in fiscal 2023."
+    ok_num, msg_num = validate_answer_leakage(
+        question=q_num_leak,
+        ground_truth=gt_num,
+        fiscal_year="2023",
+        company="Alphabet",
+    )
+    assert ok_num is False
+    assert "REJECT_ANSWER_LEAKAGE" in msg_num
+
+    # Target fiscal year is present in both ground truth and question -> Exempted, PASS
+    q_clean = "What was Alphabet's total revenue in fiscal year 2023?"
+    gt_clean = "In fiscal year 2023, Alphabet reported total revenues of $307,394 million."
+    ok_clean, msg_clean = validate_answer_leakage(
+        question=q_clean,
+        ground_truth=gt_clean,
+        fiscal_year="2023",
+        company="Alphabet",
+    )
+    assert ok_clean is True
+    assert msg_clean == "VALID"
+
+    # Distinctive capitalized entity leaked into question
+    q_entity = "What strategic advantage did Alphabet gain from acquiring Mandiant?"
+    gt_entity = "The Company completed the acquisition of Mandiant to bolster cybersecurity offerings."
+    ok_entity, msg_entity = validate_answer_leakage(
+        question=q_entity,
+        ground_truth=gt_entity,
+        fiscal_year="2022",
+        company="Alphabet",
+    )
+    assert ok_entity is False
+    assert "REJECT_ANSWER_LEAKAGE" in msg_entity
+    assert "Mandiant" in msg_entity
+
+
+def test_default_reject_behavior_and_review_csv(tmp_path: Path):
+    chunk_text = "Alphabet reported total capital expenditures of $32,251 million in fiscal 2023."
+
+    # 1. Candidate with failed validator (answer leakage)
+    cand_failed = {
+        "id": "heldout_01",
+        "company": "Alphabet",
+        "fiscal_year": "2023",
+        "section": "Item 7",
+        "category": "numeric_precision",
+        "question_style": "natural prose",
+        "question": "Why did Alphabet spend 32251 million on capital expenditures?",
+        "ground_truth": "Alphabet reported total capital expenditures of $32,251 million.",
+        "supporting_quote": "Alphabet reported total capital expenditures of $32,251 million in fiscal 2023.",
+    }
+    is_ok_f, flags_f, should_reject_f = run_all_validators(
+        cand_failed, chunk_text, existing_questions=[]
+    )
+    assert is_ok_f is False
+    assert should_reject_f is True
+    assert any("REJECT_ANSWER_LEAKAGE" in f for f in flags_f)
+    cand_failed["validator_flags"] = flags_f
+    cand_failed["default_reject"] = should_reject_f
+
+    # 2. Fully passing candidate
+    cand_passed = {
+        "id": "heldout_02",
+        "company": "Alphabet",
+        "fiscal_year": "2023",
+        "section": "Item 7",
+        "category": "numeric_precision",
+        "question_style": "short direct question",
+        "question": "What was Alphabet's total capital expenditures in fiscal year 2023?",
+        "ground_truth": "$32,251 million",
+        "supporting_quote": "Alphabet reported total capital expenditures of $32,251 million in fiscal 2023.",
+    }
+    is_ok_p, flags_p, should_reject_p = run_all_validators(
+        cand_passed, chunk_text, existing_questions=[]
+    )
+    assert is_ok_p is True
+    assert should_reject_p is False
+    cand_passed["validator_flags"] = flags_p
+    cand_passed["default_reject"] = should_reject_p
+
+    # Write to temporary review CSV
+    csv_file = tmp_path / "review_test.csv"
+    write_review_csv([cand_failed, cand_passed], csv_file)
+
+    # Verify CSV format and default reject/accept markers
+    with open(csv_file, "r", encoding="utf-8") as f:
+        reader = list(csv.DictReader(f))
+
+    assert len(reader) == 2
+    row_failed = reader[0]
+    row_passed = reader[1]
+
+    # Verify question_style column exists
+    assert "question_style" in row_failed
+    assert row_failed["question_style"] == "natural prose"
+    assert row_passed["question_style"] == "short direct question"
+
+    # Failed item must default to reject="x" and accept=""
+    assert row_failed["reject"] == "x"
+    assert row_failed["accept"] == ""
+
+    # Passed item must default to accept="x" and reject=""
+    assert row_passed["accept"] == "x"
+    assert row_passed["reject"] == ""
+
+
+def test_question_styles_cycling():
+    expected_styles = [
+        "natural prose",
+        "short direct question",
+        "keyword-style phrase",
+        "paraphrase (no copied terms from the chunk)",
+        '"what does the filing say about" style',
+        "comparison-of-two-figures style where the chunk allows",
+    ]
+    assert QUESTION_STYLES == expected_styles
+
+    # Deterministic cycling verification
+    cycled = [QUESTION_STYLES[(idx - 1) % len(QUESTION_STYLES)] for idx in range(1, 8)]
+    assert cycled[0] == "natural prose"
+    assert cycled[5] == "comparison-of-two-figures style where the chunk allows"
+    assert cycled[6] == "natural prose"  # Cycles back to index 0
 
 
 # =============================================================================

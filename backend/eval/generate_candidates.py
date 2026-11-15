@@ -8,14 +8,18 @@ Builds a held-out benchmark candidate pool kept strictly separate from the dev s
    - Items 1, 1A, 7, 8 (including table-heavy Item 7/8 chunks)
    - Strictly excludes any chunks in backend/eval/golden_set.json (dev set).
 2. Generates ~12 multi-year comparison question pairs (same company, two fiscal years).
-3. Generates ~12 plausible unanswerable questions (out-of-corpus companies, years, or non-10-K facts).
-4. Uses BENCH_MODEL (gemini-3.5-flash-lite) through QuotaLedger (max 100 calls, honoring ledger stops).
+3. Generates ~12 plausible unanswerable questions (out-of-corpus companies, years, or non-10-K facts; 0 LLM calls).
+4. Uses BENCH_MODEL (gemini-3.5-flash-lite) through QuotaLedger (default max 110 calls, honoring ledger stops).
 5. Validates candidates:
    - supporting_quote must be an exact substring of chunk text
    - Rejects questions with 6-gram overlap with chunk text
    - Rejects duplicate questions
-   - Flags questions ambiguous across filings (missing company or fiscal year context)
-6. Outputs candidates.json and review.csv with empty accept/edit/reject columns for manual review.
+   - Cross-filing uniqueness: compares supporting_quote against chunks of the same company in other fiscal years.
+     If it repeats verbatim in another year without the question explicitly naming its year, flags AMBIGUOUS_REPEATED_ACROSS_YEARS
+     and sets default review status to reject.
+6. Outputs:
+   - Dry run writes strictly to candidates_dryrun.json and review_dryrun.csv.
+   - Real run writes to candidates.json and review.csv.
 """
 
 import argparse
@@ -27,6 +31,7 @@ import os
 import random
 import re
 import sys
+import time
 from collections import Counter, defaultdict
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Set, Tuple
@@ -50,8 +55,10 @@ DEFAULT_CHUNKS_PATH = BASE_DIR / "data" / "processed" / "chunks.json"
 DEFAULT_DEV_SET_PATH = BASE_DIR / "eval" / "golden_set.json"
 DEFAULT_OUTPUT_JSON = BASE_DIR / "eval" / "results" / "candidates.json"
 DEFAULT_OUTPUT_CSV = BASE_DIR / "eval" / "results" / "review.csv"
+DEFAULT_DRYRUN_JSON = BASE_DIR / "eval" / "results" / "candidates_dryrun.json"
+DEFAULT_DRYRUN_CSV = BASE_DIR / "eval" / "results" / "review_dryrun.csv"
 
-# Unanswerable question templates (out-of-corpus companies, years, or non-10-K facts)
+# Unanswerable question templates (out-of-corpus companies, years, or non-10-K facts; cost 0 LLM calls)
 UNANSWERABLE_TEMPLATES: List[Dict[str, Any]] = [
     {
         "company": "Tesla",
@@ -152,11 +159,18 @@ def normalize_text_for_matching(text: str) -> str:
 def validate_supporting_quote(quote: str, chunk_text: str) -> Tuple[bool, str, Optional[str]]:
     """
     Validates that supporting_quote is an exact substring of chunk_text.
+    Rejects any quote containing '...' or '…' unless that exact text appears in the chunk.
     If exact match fails but normalized whitespace matches, extracts the exact verbatim slice.
     Returns (is_valid, reason, verbatim_matched_quote).
     """
     if not quote or len(quote.strip()) < 10:
         return False, "REJECT_QUOTE_EMPTY_OR_TOO_SHORT", None
+
+    # Ellipsis check: reject if quote contains '...' or '…' not present in chunk_text
+    if "..." in quote and "..." not in chunk_text:
+        return False, "REJECT_QUOTE_CONTAINS_ELLIPSIS", None
+    if "…" in quote and "…" not in chunk_text:
+        return False, "REJECT_QUOTE_CONTAINS_ELLIPSIS", None
 
     # 1. Direct exact substring match
     if quote in chunk_text:
@@ -167,7 +181,6 @@ def validate_supporting_quote(quote: str, chunk_text: str) -> Tuple[bool, str, O
     norm_chunk = normalize_text_for_matching(chunk_text)
 
     if norm_q in norm_chunk:
-        # Locate start and end in original chunk_text
         words = norm_q.split()
         if len(words) >= 3:
             first_words = re.escape(words[0]) + r"\s+" + re.escape(words[1])
@@ -246,14 +259,180 @@ def validate_duplicate(
     return True, "VALID"
 
 
-def validate_cross_filing_ambiguity(
+COMMON_CONTEXT_WORDS: Set[str] = {
+    # Grammar, determiners, pronouns, prepositions
+    "the", "a", "an", "and", "or", "in", "on", "at", "to", "for", "of", "with",
+    "by", "from", "as", "is", "are", "was", "were", "be", "been", "being",
+    "have", "has", "had", "do", "does", "did", "this", "that", "these", "those",
+    "it", "its", "they", "their", "them", "we", "our", "us", "which", "what",
+    "who", "whom", "whose", "where", "when", "why", "how", "all", "each", "every",
+    "both", "neither", "either", "one", "two", "three", "four", "five", "six",
+    "seven", "eight", "nine", "ten", "first", "second", "third", "other", "into",
+    "than", "then", "more", "most", "less", "least", "some", "any", "no", "not",
+    "only", "same", "such", "also", "well", "even", "about", "after", "before",
+    "between", "under", "over", "above", "below", "up", "down", "out", "off",
+    "through", "during", "including", "included", "excludes", "excluded",
+    # Financial & filing terminology
+    "company", "corporation", "inc", "corp", "co", "firm", "group", "enterprise",
+    "fiscal", "year", "years", "annual", "quarter", "quarterly", "period", "periods",
+    "ended", "ending", "date", "december", "january", "february", "march", "april",
+    "may", "june", "july", "august", "september", "october", "november", "form",
+    "10-k", "10k", "sec", "filing", "filings", "report", "reported", "reporting",
+    "statement", "statements", "consolidated", "item", "items", "section", "sections",
+    "total", "net", "sales", "revenue", "revenues", "income", "expense", "expenses",
+    "cost", "costs", "dollar", "dollars", "share", "shares", "stock", "common",
+    "million", "millions", "billion", "billions", "thousand", "thousands",
+    "percent", "percentage", "rate", "basis", "points", "amount", "amounts",
+    "cash", "flow", "flows", "asset", "assets", "liability", "liabilities", "equity",
+    "operating", "operations", "operation", "service", "services", "product", "products",
+    "segment", "segments", "business", "businesses", "capital", "expenditure", "expenditures",
+    "capex", "depreciation", "amortization", "tax", "taxes", "effective", "interest",
+    "debt", "gain", "loss", "losses", "profit", "margins", "margin", "gross",
+    "research", "development", "administrative", "general", "selling", "marketing",
+    "marketable", "securities", "repurchase", "repurchases", "dividend", "dividends",
+    "diluted", "basic", "per", "earning", "earnings", "carrying", "value", "fair",
+    "note", "notes", "table", "information", "accounting", "policy", "policies",
+    "united", "states", "america", "international", "global", "geographic", "region",
+    "headcount", "employees", "workforce", "personnel", "officer", "officers", "executive",
+    "approximately", "estimated", "increase", "decrease", "higher", "lower", "compared",
+    "prior", "current", "subsequent", "growth", "payable", "receivable", "inventory",
+    "goodwill", "intangible", "lease", "leases", "commitments", "contingencies",
+}
+
+
+def validate_answer_leakage(
+    question: str,
+    ground_truth: str,
+    fiscal_year: str,
+    company: str = "",
+    item_section: str = "",
+) -> Tuple[bool, str]:
+    """
+    Rejects a question if distinctive tokens from the ground_truth_answer
+    (numbers with 3+ digits, years, and capitalized or rare words not already
+    in the company/section context) appear in the question, except the fiscal
+    year of the target filing.
+    Flag: REJECT_ANSWER_LEAKAGE.
+    """
+    if not question or not ground_truth:
+        return True, "VALID"
+
+    # Extract target filing years to exempt
+    exempt_years = set(re.findall(r"\b202[0-9]\b", str(fiscal_year)))
+
+    # 1. Numbers with 3+ digits and 4-digit years in ground_truth
+    gt_num_tokens = set(re.findall(r"\b\d{3,}\b", ground_truth))
+    comma_matches = re.findall(r"\b\d{1,3}(?:,\d{3})+\b", ground_truth)
+    for cm in comma_matches:
+        gt_num_tokens.add(cm)
+        gt_num_tokens.add(cm.replace(",", ""))
+
+    for num in sorted(gt_num_tokens):
+        # Exclude target filing fiscal year
+        if num in exempt_years:
+            continue
+        # Check if number appears in question
+        num_pattern = r"(?<!\d)" + re.escape(num) + r"(?!\d)"
+        if re.search(num_pattern, question):
+            return False, f"REJECT_ANSWER_LEAKAGE: '{num}'"
+
+    # 2. Capitalized or rare distinctive words in ground_truth
+    context_words = set(COMMON_CONTEXT_WORDS)
+    if company:
+        for part in re.findall(r"\b\w+\b", company.lower()):
+            context_words.add(part)
+        comp_lower = company.lower()
+        if "apple" in comp_lower:
+            context_words.update(["apple", "iphone", "ipad", "mac", "watch"])
+        elif "microsoft" in comp_lower:
+            context_words.update(["microsoft", "azure", "windows", "xbox"])
+        elif "alphabet" in comp_lower:
+            context_words.update(["alphabet", "google", "youtube", "android"])
+        elif "amazon" in comp_lower:
+            context_words.update(["amazon", "aws", "prime"])
+        elif "nvidia" in comp_lower:
+            context_words.update(["nvidia", "geforce", "cuda"])
+
+    if item_section:
+        for part in re.findall(r"\b\w+\b", item_section.lower()):
+            context_words.add(part)
+
+    # Scan ground_truth for capitalized tokens
+    gt_tokens = re.findall(r"\b[A-Za-z][A-Za-z0-9_-]*\b", ground_truth)
+    for token in gt_tokens:
+        clean_tok = token.strip("-_")
+        if len(clean_tok) < 4:
+            continue
+        lower_tok = clean_tok.lower()
+        if lower_tok in context_words:
+            continue
+
+        if clean_tok[0].isupper():
+            token_pattern = r"\b" + re.escape(clean_tok) + r"\b"
+            if re.search(token_pattern, question, re.IGNORECASE):
+                return False, f"REJECT_ANSWER_LEAKAGE: '{clean_tok}'"
+
+    return True, "VALID"
+
+
+def validate_quote_unique_across_filings(
+    supporting_quote: str,
     question: str,
     company: str,
     fiscal_year: str,
-) -> Tuple[bool, str]:
+    all_chunks: List[Dict[str, Any]],
+) -> Tuple[bool, str, bool]:
     """
-    Flags questions whose terms may be ambiguous across filings
-    (e.g. omits company name or fiscal year for time-bound metrics).
+    Normalizes whitespace and compares the supporting_quote against ALL chunks of the same company
+    in OTHER fiscal years.
+    If it appears verbatim there, the item is ambiguous unless the question explicitly names its own fiscal year;
+    flags it AMBIGUOUS_REPEATED_ACROSS_YEARS and sets default review status to reject (should_reject = True).
+    Returns (is_valid, flag_message, should_reject).
+    """
+    if not supporting_quote or len(supporting_quote.strip()) < 10:
+        return True, "VALID", False
+
+    norm_quote = normalize_text_for_matching(supporting_quote)
+    target_comp = company.lower()
+    target_years = set(re.findall(r"\b202[0-9]\b", str(fiscal_year)))
+
+    # Chunks of same company in other fiscal years
+    other_year_chunks = [
+        c for c in all_chunks
+        if c.get("company", "").lower() == target_comp
+        and (not target_years or str(c.get("fiscal_year", "")).strip() not in target_years)
+    ]
+
+    matched_other_years: Set[str] = set()
+    for c in other_year_chunks:
+        if norm_quote in normalize_text_for_matching(c.get("text", "")):
+            matched_other_years.add(str(c.get("fiscal_year", "")))
+
+    if matched_other_years:
+        q_lower = question.lower()
+        if target_years:
+            names_own_year = all(y in q_lower for y in target_years)
+        else:
+            names_own_year = str(fiscal_year).lower() in q_lower
+
+        other_yrs_str = ", ".join(sorted(matched_other_years))
+        if not names_own_year:
+            flag_msg = f"AMBIGUOUS_REPEATED_ACROSS_YEARS (quote also in FY{other_yrs_str}; question omits year)"
+            return False, flag_msg, True  # Set default review status to reject
+        else:
+            flag_msg = f"REPEATED_ACROSS_YEARS_DISAMBIGUATED (quote in FY{other_yrs_str}; question names target year)"
+            return True, flag_msg, False
+
+    return True, "VALID", False
+
+
+def validate_cross_filing_name_ambiguity(
+    question: str,
+    company: str,
+    fiscal_year: str,
+) -> List[str]:
+    """
+    Secondary check: flags questions omitting company name or fiscal year context.
     """
     q_lower = question.lower()
     has_company = (
@@ -265,7 +444,6 @@ def validate_cross_filing_ambiguity(
         or (company == "NVIDIA" and any(k in q_lower for k in ["geforce", "cuda", "hopper", "blackwell", "nvidia"]))
     )
 
-    # Check if year or years are present
     years = re.findall(r"\b202[0-9]\b", q_lower)
     has_year = len(years) > 0
 
@@ -275,22 +453,22 @@ def validate_cross_filing_ambiguity(
     if not has_year and fiscal_year != "None":
         flags.append("FLAG_NO_FISCAL_YEAR")
 
-    if flags:
-        return False, "AMBIGUOUS_ACROSS_FILINGS: " + ", ".join(flags)
-    return True, "VALID"
+    return flags
 
 
 def run_all_validators(
     candidate: Dict[str, Any],
     chunk_text: str,
     existing_questions: List[str],
-) -> Tuple[bool, List[str]]:
+    all_chunks: Optional[List[Dict[str, Any]]] = None,
+) -> Tuple[bool, List[str], bool]:
     """
     Runs the full validation suite on a generated question candidate.
-    Returns (is_acceptable, flags_list).
+    Returns (is_acceptable, flags_list, should_reject).
     """
     flags: List[str] = []
     is_acceptable = True
+    should_reject = False
 
     # Check preamble
     ok_pre, msg_pre = validate_no_preamble(candidate["question"])
@@ -319,19 +497,52 @@ def run_all_validators(
         flags.append(msg_dup)
         is_acceptable = False
 
-    # Check cross-filing ambiguity (warning flag, does not force hard rejection)
-    ok_amb, msg_amb = validate_cross_filing_ambiguity(
+    # Check answer leakage
+    ok_leak, msg_leak = validate_answer_leakage(
+        question=candidate["question"],
+        ground_truth=candidate.get("ground_truth", ""),
+        fiscal_year=str(candidate.get("fiscal_year", "")),
+        company=candidate.get("company", ""),
+        item_section=candidate.get("section", ""),
+    )
+    if not ok_leak:
+        flags.append(msg_leak)
+        is_acceptable = False
+
+    # Check quote uniqueness across other fiscal years of the same company
+    if all_chunks:
+        ok_rep, msg_rep, rej_flag = validate_quote_unique_across_filings(
+            supporting_quote=candidate.get("supporting_quote", ""),
+            question=candidate["question"],
+            company=candidate.get("company", ""),
+            fiscal_year=str(candidate.get("fiscal_year", "")),
+            all_chunks=all_chunks,
+        )
+        if not ok_rep:
+            flags.append(msg_rep)
+            if rej_flag:
+                should_reject = True
+                is_acceptable = False
+        elif msg_rep != "VALID":
+            flags.append(msg_rep)
+
+    # Secondary name-based check
+    sec_flags = validate_cross_filing_name_ambiguity(
         candidate["question"],
         candidate.get("company", ""),
         str(candidate.get("fiscal_year", "")),
     )
-    if not ok_amb:
-        flags.append(msg_amb)
+    flags.extend(sec_flags)
+
+    # Any failed validator defaults to should_reject = True
+    if not is_acceptable or should_reject:
+        should_reject = True
+        is_acceptable = False
 
     if not flags:
         flags.append("PASS")
 
-    return is_acceptable, flags
+    return is_acceptable, flags, should_reject
 
 
 # =============================================================================
@@ -365,7 +576,6 @@ def sample_heldout_chunks(
     companies = ["Apple", "Microsoft", "Alphabet", "Amazon", "NVIDIA"]
     sampled: List[Dict[str, Any]] = []
 
-    # Map pool: pool_by_comp_year_sec[comp][year][sec] = list of chunks
     pool: Dict[str, Dict[str, Dict[str, List[Dict[str, Any]]]]] = defaultdict(
         lambda: defaultdict(lambda: defaultdict(list))
     )
@@ -452,7 +662,6 @@ def sample_multi_year_pairs(
         if comp in companies and sec in ["Item 1", "Item 7", "Item 8"]:
             comp_sec_pool[comp][sec][yr].append(c)
 
-    # Distribute ~2-3 pairs per company across Item 1, 7, 8
     for comp in companies:
         for sec in ["Item 7", "Item 1", "Item 8"]:
             years = sorted(comp_sec_pool[comp][sec].keys())
@@ -482,8 +691,17 @@ def sample_multi_year_pairs(
 
 
 # =============================================================================
-# LLM Generation (QuotaLedger-Enforced)
+# Question Styles & Prompt Templates
 # =============================================================================
+QUESTION_STYLES: List[str] = [
+    "natural prose",
+    "short direct question",
+    "keyword-style phrase",
+    "paraphrase (no copied terms from the chunk)",
+    '"what does the filing say about" style',
+    "comparison-of-two-figures style where the chunk allows",
+]
+
 SINGLE_CHUNK_PROMPT_TEMPLATE = """You are an expert financial analyst building an evaluation benchmark for SEC 10-K RAG systems.
 
 Given the following 10-K text chunk from {company} (Fiscal Year: {fiscal_year}, Section: {item_section}):
@@ -505,9 +723,16 @@ Strict Requirements:
 1. The question must be answerable from this chunk ALONE.
 2. The question must NOT start with "According to" or "Based on".
 3. The question must NOT copy more than 5 consecutive words from the chunk (paraphrase or use natural financial terminology).
-4. Phrasing variety: vary the phrasing style naturally (e.g. name the company and year naturally in prose, or use direct question style, or keyword inquiry).
+4. REQUIRED QUESTION STYLE: You MUST formulate the question using this exact style: "{question_style}".
+   - "natural prose": Full, grammatically complete sentence with natural financial prose.
+   - "short direct question": Concise, direct question with minimal filler words.
+   - "keyword-style phrase": A concise keyword/search inquiry phrase (e.g. "Apple FY2023 R&D expenditure total").
+   - "paraphrase (no copied terms from the chunk)": Completely paraphrased using synonyms and no copied terms from the chunk.
+   - "\"what does the filing say about\" style": Phrased as "What does the filing state regarding [topic]?" or "What does the filing say about [topic]?"
+   - "comparison-of-two-figures style where the chunk allows": Formulate a question comparing two figures/metrics or periods present in this chunk (or concise lookup if only one figure exists).
 5. For table chunks or financial metrics, ask for specific numbers with exact units (e.g. '$ in millions', 'percentage', 'shares').
-6. supporting_quote MUST be an EXACT, VERBATIM substring copied directly from the text chunk above that proves the answer.
+6. supporting_quote MUST be an EXACT, VERBATIM substring copied directly from the text chunk above that proves the answer. Do NOT use ellipsis ('...' or '…') in the quote unless that exact ellipsis is present in the chunk.
+7. Do NOT leak distinctive parts of the answer (e.g. specific target figures, future years, or secret entities) inside the question itself.
 """
 
 MULTI_YEAR_PROMPT_TEMPLATE = """You are an expert financial analyst building a multi-hop evaluation benchmark for SEC 10-K RAG systems.
@@ -538,10 +763,29 @@ Strict Requirements:
 """
 
 
+def _extract_content_text(resp: Any) -> str:
+    """Safely extracts text content from LangChain response even when content is a list of parts."""
+    content = resp.content if hasattr(resp, "content") else resp
+    if isinstance(content, list):
+        parts = []
+        for p in content:
+            if isinstance(p, str):
+                parts.append(p)
+            elif isinstance(p, dict) and "text" in p:
+                parts.append(p["text"])
+            elif hasattr(p, "text"):
+                parts.append(getattr(p, "text"))
+            else:
+                parts.append(str(p))
+        return "\n".join(parts)
+    return str(content)
+
+
 def generate_candidate_from_chunk_llm(
     chunk: Dict[str, Any],
     bench_model: str,
     ledger: QuotaLedger,
+    question_style: str = "natural prose",
 ) -> Optional[Dict[str, Any]]:
     """
     Invokes BENCH_MODEL through QuotaLedger to generate a candidate QA item.
@@ -565,14 +809,14 @@ def generate_candidate_from_chunk_llm(
         fiscal_year=chunk.get("fiscal_year", ""),
         item_section=chunk.get("item_section", ""),
         text_chunk=chunk.get("text", "")[:3500],
+        question_style=question_style,
     )
 
     try:
         resp = llm.invoke([("user", prompt)])
         ledger.record_call(bench_model, count=1)
-        content = resp.content if hasattr(resp, "content") else str(resp)
+        content = _extract_content_text(resp)
 
-        # Parse JSON
         m = re.search(r"\{.*\}", content, re.DOTALL)
         if not m:
             return None
@@ -623,7 +867,7 @@ def generate_multi_year_candidate_llm(
     try:
         resp = llm.invoke([("user", prompt)])
         ledger.record_call(bench_model, count=1)
-        content = resp.content if hasattr(resp, "content") else str(resp)
+        content = _extract_content_text(resp)
 
         m = re.search(r"\{.*\}", content, re.DOTALL)
         if not m:
@@ -655,8 +899,10 @@ def write_candidates_json(candidates: List[Dict[str, Any]], path: Path) -> None:
 
 def write_review_csv(candidates: List[Dict[str, Any]], path: Path) -> None:
     """
-    Writes candidates to review.csv with columns:
-    id,company,fiscal_year,section,category,question,ground_truth,supporting_quote,validator_flags,accept,edit,reject
+    Writes candidates to review CSV with columns:
+    id,company,fiscal_year,section,category,question_style,question,ground_truth,supporting_quote,validator_flags,accept,edit,reject
+    Any item with a failed validator defaults to reject="x", accept="".
+    Only fully passing items default to accept="x", reject="".
     """
     path.parent.mkdir(parents=True, exist_ok=True)
     fieldnames = [
@@ -665,6 +911,7 @@ def write_review_csv(candidates: List[Dict[str, Any]], path: Path) -> None:
         "fiscal_year",
         "section",
         "category",
+        "question_style",
         "question",
         "ground_truth",
         "supporting_quote",
@@ -677,19 +924,21 @@ def write_review_csv(candidates: List[Dict[str, Any]], path: Path) -> None:
         writer = csv.DictWriter(f, fieldnames=fieldnames)
         writer.writeheader()
         for c in candidates:
+            is_rejected = bool(c.get("default_reject", False))
             writer.writerow({
                 "id": c.get("id", ""),
                 "company": c.get("company", ""),
                 "fiscal_year": c.get("fiscal_year", ""),
                 "section": c.get("section", ""),
                 "category": c.get("category", ""),
+                "question_style": c.get("question_style", ""),
                 "question": c.get("question", ""),
                 "ground_truth": c.get("ground_truth", ""),
                 "supporting_quote": c.get("supporting_quote", ""),
                 "validator_flags": "; ".join(c.get("validator_flags", ["PASS"])),
-                "accept": "",
+                "accept": "" if is_rejected else "x",
                 "edit": "",
-                "reject": "",
+                "reject": "x" if is_rejected else "",
             })
     logger.info(f"Saved {len(candidates)} candidates to review CSV: {path}")
 
@@ -700,10 +949,12 @@ def write_review_csv(candidates: List[Dict[str, Any]], path: Path) -> None:
 def run_generation_pipeline(
     chunks_path: Path = DEFAULT_CHUNKS_PATH,
     dev_set_path: Path = DEFAULT_DEV_SET_PATH,
-    output_json_path: Path = DEFAULT_OUTPUT_JSON,
-    output_csv_path: Path = DEFAULT_OUTPUT_CSV,
+    output_json_path: Optional[Path] = None,
+    output_csv_path: Optional[Path] = None,
     bench_model: str = "gemini-3.5-flash-lite",
-    max_calls: int = 100,
+    max_calls: int = 110,
+    limit: Optional[int] = None,
+    delay: float = 5.0,
     seed: int = 42,
     dry_run: bool = False,
 ) -> Dict[str, Any]:
@@ -711,7 +962,7 @@ def run_generation_pipeline(
     Orchestrates candidate generation, stratification, validation, and writing.
     """
     with open(chunks_path, "r", encoding="utf-8") as f:
-        chunks = json.load(f)
+        chunks: List[Dict[str, Any]] = json.load(f)
 
     dev_chunk_ids: Set[str] = set()
     if dev_set_path.exists():
@@ -722,14 +973,20 @@ def run_generation_pipeline(
                 if it.get("chunk_id"):
                     dev_chunk_ids.add(it["chunk_id"])
 
-    # 1. Stratified sampling of ~90 single chunks
+    # 1. Stratified sampling of single chunks
     sampled_single_chunks = sample_heldout_chunks(chunks, dev_chunk_ids, seed=seed)
 
-    # 2. Sample 12 multi-year pairs
-    sampled_multi_pairs = sample_multi_year_pairs(chunks, dev_chunk_ids, target_pairs=12, seed=seed)
-
-    # 3. Unanswerable items
-    unanswerable_items = list(UNANSWERABLE_TEMPLATES)
+    # If --limit N is specified, generate only the first N planned single-chunk items
+    if limit is not None and limit > 0:
+        sampled_single_chunks = sampled_single_chunks[:limit]
+        sampled_multi_pairs: List[Tuple[Dict[str, Any], Dict[str, Any]]] = []
+        unanswerable_items: List[Dict[str, Any]] = []
+        logger.info(f"--limit {limit} active: generating only the first {limit} single-chunk items (multi-year & unanswerables omitted).")
+    else:
+        # 2. Sample 12 multi-year pairs
+        sampled_multi_pairs = sample_multi_year_pairs(chunks, dev_chunk_ids, target_pairs=12, seed=seed)
+        # 3. Unanswerable items
+        unanswerable_items = list(UNANSWERABLE_TEMPLATES)
 
     planned_single_calls = len(sampled_single_chunks)
     planned_multi_calls = len(sampled_multi_pairs)
@@ -740,24 +997,35 @@ def run_generation_pipeline(
     daily_limit = ledger.get_limit(bench_model)
     rem_budget = ledger.get_remaining_budget(bench_model)
 
+    # Resolve output paths: dry-run writes strictly to candidates_dryrun.json / review_dryrun.csv
+    if dry_run:
+        target_json = output_json_path or DEFAULT_DRYRUN_JSON
+        target_csv = output_csv_path or DEFAULT_DRYRUN_CSV
+    else:
+        target_json = output_json_path or DEFAULT_OUTPUT_JSON
+        target_csv = output_csv_path or DEFAULT_OUTPUT_CSV
+
     print("\n" + "=" * 80)
     print("HELD-OUT BENCHMARK CANDIDATE GENERATION PLAN")
     print("=" * 80)
-    print(f"Corpus Chunks:           {len(chunks)}")
-    print(f"Dev Set Chunks Excluded: {len(dev_chunk_ids)}")
-    print(f"Sampled Single Chunks:   {planned_single_calls} (stratified across 5 companies, all FYs, Items 1/1A/7/8)")
-    print(f"Sampled Multi-Year Pairs:{planned_multi_calls} (across 5 companies)")
-    print(f"Unanswerable Items:      {len(unanswerable_items)} (out-of-corpus companies, years, non-10-K facts)")
-    print(f"Total Benchmark Target:  {planned_single_calls + planned_multi_calls + len(unanswerable_items)} items")
+    print(f"Corpus Chunks:                 {len(chunks)}")
+    print(f"Dev Set Chunks Excluded:       {len(dev_chunk_ids)}")
+    print(f"Sampled Single Chunks:         {planned_single_calls} (stratified across 5 companies, all FYs, Items 1/1A/7/8)")
+    print(f"Sampled Multi-Year Pairs:      {planned_multi_calls} (across 5 companies)")
+    print(f"Fixed Unanswerable Items:      {len(unanswerable_items)} (Fixed templates; cost EXACTLY 0 LLM calls)")
+    print(f"Total Benchmark Target Items:  {planned_single_calls + planned_multi_calls + len(unanswerable_items)}")
     print("-" * 80)
-    print("QUOTA LEDGER STATUS:")
-    print(f"  Target Model:          {bench_model}")
-    print(f"  Max Calls Cap:         {max_calls}")
-    print(f"  Planned LLM Calls:     {total_planned_calls} ({planned_single_calls} single + {planned_multi_calls} multi-year)")
-    print(f"  Used Today (Pacific):  {used_today} requests")
-    print(f"  Effective Daily Limit: {daily_limit} requests (0.8 safety factor)")
-    print(f"  Remaining Budget:      {rem_budget} requests")
-    print(f"  Budget Sufficient:     {'YES' if rem_budget >= total_planned_calls else 'NO (will stop gracefully)'}")
+    print("PLANNED LLM CALL COUNT & QUOTA LEDGER USAGE:")
+    print(f"  Target Model:                {bench_model}")
+    print(f"  Max Calls Cap:               {max_calls}")
+    print(f"  Planned Single-Chunk Calls:  {planned_single_calls}")
+    print(f"  Planned Multi-Year Calls:    {planned_multi_calls}")
+    print(f"  TOTAL PLANNED LLM CALLS:     {total_planned_calls} (within max {max_calls} cap)")
+    print(f"  Unanswerable Items Call Cost:0 calls (100% fixed zero-cost templates)")
+    print(f"  Used Today (Pacific):        {used_today} requests")
+    print(f"  Effective Daily Limit:       {daily_limit} requests (0.8 safety factor applied to 500)")
+    print(f"  Remaining Budget Today:      {rem_budget} requests")
+    print(f"  Budget Sufficient:           {'YES' if rem_budget >= total_planned_calls else 'NO (will stop gracefully)'}")
     print("=" * 80)
 
     # Breakdown by company & section
@@ -776,7 +1044,8 @@ def run_generation_pipeline(
     print(f"  Table-heavy Item 7/8 chunks included: {table_chunk_count}/{planned_single_calls}")
 
     if dry_run:
-        print("\n[DRY-RUN MODE] Zero LLM calls executed. Preparing template outputs for inspection...")
+        print("\n[DRY-RUN MODE] Zero LLM calls executed. Preparing dry-run template outputs...")
+        print("Note: The 12 unanswerable items are fixed templates that cost zero LLM calls.")
         dry_candidates: List[Dict[str, Any]] = []
 
         # Single chunk templates
@@ -785,16 +1054,19 @@ def run_generation_pipeline(
             comp = chunk.get("company", "")
             yr = str(chunk.get("fiscal_year", ""))
             sec = chunk.get("item_section", "")
+            style = QUESTION_STYLES[(idx - 1) % len(QUESTION_STYLES)]
             dry_candidates.append({
                 "id": f"heldout_{idx:02d}",
                 "company": comp,
                 "fiscal_year": yr,
                 "section": sec,
                 "category": "numeric_precision" if is_table_chunk(chunk) else "simple_lookup",
-                "question": f"[DRY-RUN TEMPLATE] Question for {comp} FY{yr} ({sec}) chunk {cid[:8]}",
+                "question_style": style,
+                "question": f"[DRY-RUN TEMPLATE: {style}] Question for {comp} FY{yr} ({sec}) chunk {cid[:8]}",
                 "ground_truth": "[DRY-RUN TEMPLATE] Ground truth answer derived from chunk text.",
                 "supporting_quote": chunk.get("text", "")[:120].strip(),
                 "validator_flags": ["PASS"],
+                "default_reject": False,
                 "chunk_id": cid,
                 "source_chunk_ids": [cid],
             })
@@ -811,10 +1083,12 @@ def run_generation_pipeline(
                 "fiscal_year": f"{yr1}/{yr2}",
                 "section": f"{c1.get('item_section', '')}/{c2.get('item_section', '')}",
                 "category": "multi_hop",
+                "question_style": "comparison-of-two-figures style where the chunk allows",
                 "question": f"[DRY-RUN TEMPLATE] Compare {comp} FY{yr1} and FY{yr2} metric",
                 "ground_truth": "[DRY-RUN TEMPLATE] Multi-year synthesized answer.",
                 "supporting_quote": f"{c1.get('text', '')[:60]} || {c2.get('text', '')[:60]}",
                 "validator_flags": ["PASS"],
+                "default_reject": False,
                 "source_chunk_ids": [c1.get("chunk_id"), c2.get("chunk_id")],
             })
 
@@ -827,20 +1101,22 @@ def run_generation_pipeline(
                 "fiscal_year": u["fiscal_year"],
                 "section": "None",
                 "category": "unanswerable",
+                "question_style": "unanswerable inquiry",
                 "question": u["question"],
                 "ground_truth": u["ground_truth"],
                 "supporting_quote": "",
                 "validator_flags": ["PASS"],
+                "default_reject": False,
                 "source_chunk_ids": [],
             })
 
-        write_candidates_json(dry_candidates, output_json_path)
-        write_review_csv(dry_candidates, output_csv_path)
+        write_candidates_json(dry_candidates, target_json)
+        write_review_csv(dry_candidates, target_csv)
 
         print("\nDry-run completed successfully.")
         print(f"Generated {len(dry_candidates)} candidate templates.")
-        print(f"  JSON output: {output_json_path}")
-        print(f"  CSV output:  {output_csv_path}")
+        print(f"  Dry-run JSON output: {target_json}")
+        print(f"  Dry-run CSV output:  {target_csv}")
         return {
             "status": "dry_run_complete",
             "planned_calls": total_planned_calls,
@@ -849,21 +1125,29 @@ def run_generation_pipeline(
         }
 
     # Full LLM Generation Mode
-    logger.info("Starting candidate LLM generation with BENCH_MODEL...")
+    logger.info(f"Starting candidate LLM generation with {bench_model} (delay={delay}s, limit={limit})...")
     candidates: List[Dict[str, Any]] = []
     existing_questions: List[str] = []
 
     # 1. Single chunk generation
     for idx, chunk in enumerate(sampled_single_chunks, start=1):
+        if idx > 1 and delay > 0:
+            logger.info(f"Waiting {delay}s between calls to stay under rate limit (15 RPM)...")
+            time.sleep(delay)
+
         item_id = f"heldout_{idx:02d}"
         comp = chunk.get("company", "")
         yr = str(chunk.get("fiscal_year", ""))
         sec = chunk.get("item_section", "")
         cid = chunk.get("chunk_id", "")
+        style = QUESTION_STYLES[(idx - 1) % len(QUESTION_STYLES)]
 
-        logger.info(f"[{idx}/{planned_single_calls}] Generating candidate for {comp} {yr} {sec} ({cid[:8]})...")
-        res = generate_candidate_from_chunk_llm(chunk, bench_model=bench_model, ledger=ledger)
+        logger.info(f"[{idx}/{planned_single_calls}] Calling {bench_model} ({style}) for {comp} FY{yr} {sec} ({cid[:8]})...")
+        res = generate_candidate_from_chunk_llm(
+            chunk, bench_model=bench_model, ledger=ledger, question_style=style
+        )
         if not res:
+            logger.warning(f"Failed to generate item for {item_id}")
             continue
 
         cand_record = {
@@ -872,6 +1156,7 @@ def run_generation_pipeline(
             "fiscal_year": yr,
             "section": sec,
             "category": res["category"],
+            "question_style": style,
             "question": res["question"],
             "ground_truth": res["ground_truth"],
             "supporting_quote": res["supporting_quote"],
@@ -880,86 +1165,134 @@ def run_generation_pipeline(
         }
 
         # Run validators
-        is_ok, flags = run_all_validators(cand_record, chunk.get("text", ""), existing_questions)
+        is_ok, flags, default_reject = run_all_validators(
+            candidate=cand_record,
+            chunk_text=chunk.get("text", ""),
+            existing_questions=existing_questions,
+            all_chunks=chunks,
+        )
         cand_record["validator_flags"] = flags
+        cand_record["default_reject"] = default_reject
         candidates.append(cand_record)
         existing_questions.append(res["question"])
 
-    # 2. Multi-year generation
-    m_offset = len(candidates) + 1
-    for idx, (c1, c2) in enumerate(sampled_multi_pairs, start=m_offset):
-        item_id = f"heldout_{idx:02d}"
-        comp = c1.get("company", "")
-        yr1 = str(c1.get("fiscal_year", ""))
-        yr2 = str(c2.get("fiscal_year", ""))
-        sec = f"{c1.get('item_section', '')}/{c2.get('item_section', '')}"
+        # Detailed item console print
+        review_status = "REJECT" if default_reject else "ACCEPT"
+        print(f"\n" + "-" * 78)
+        print(f"ITEM [{idx}/{planned_single_calls}]: {item_id} | {comp} FY{yr} ({sec})")
+        print(f"Chunk ID:         {cid}")
+        print(f"Question Style:   {style}")
+        print(f"Question:         {res['question']}")
+        print(f"Ground Truth:     {res['ground_truth']}")
+        print(f"Supporting Quote: {res['supporting_quote']}")
+        print(f"Validator Status: {'PASSED' if is_ok else 'FAILED'}")
+        print(f"Validator Flags:  {'; '.join(flags)}")
+        print(f"Review Status:    {review_status}")
+        print(f"Quota Ledger:     Used today: {ledger.get_used_today(bench_model)}/{ledger.get_limit(bench_model)} (Remaining: {ledger.get_remaining_budget(bench_model)})")
+        print("-" * 78)
 
-        logger.info(f"[{idx}] Generating multi-year comparison for {comp} FY{yr1} vs FY{yr2}...")
-        res = generate_multi_year_candidate_llm(c1, c2, bench_model=bench_model, ledger=ledger)
-        if not res:
-            continue
+    # 2. Multi-year generation (only if --limit is not restricting to single chunks)
+    if sampled_multi_pairs:
+        m_offset = len(candidates) + 1
+        for idx, (c1, c2) in enumerate(sampled_multi_pairs, start=m_offset):
+            if delay > 0:
+                time.sleep(delay)
 
-        cand_record = {
-            "id": item_id,
-            "company": comp,
-            "fiscal_year": f"{yr1}/{yr2}",
-            "section": sec,
-            "category": "multi_hop",
-            "question": res["question"],
-            "ground_truth": res["ground_truth"],
-            "supporting_quote": res["supporting_quote"],
-            "source_chunk_ids": [c1.get("chunk_id"), c2.get("chunk_id")],
-            "validator_flags": ["PASS"],
-        }
-        candidates.append(cand_record)
-        existing_questions.append(res["question"])
+            item_id = f"heldout_{idx:02d}"
+            comp = c1.get("company", "")
+            yr1 = str(c1.get("fiscal_year", ""))
+            yr2 = str(c2.get("fiscal_year", ""))
+            sec = f"{c1.get('item_section', '')}/{c2.get('item_section', '')}"
 
-    # 3. Add unanswerable questions
-    u_offset = len(candidates) + 1
-    for idx, u in enumerate(unanswerable_items, start=u_offset):
-        candidates.append({
-            "id": f"heldout_{idx:02d}",
-            "company": u["company"],
-            "fiscal_year": u["fiscal_year"],
-            "section": "None",
-            "category": "unanswerable",
-            "question": u["question"],
-            "ground_truth": u["ground_truth"],
-            "supporting_quote": "",
-            "validator_flags": ["PASS"],
-            "source_chunk_ids": [],
-        })
+            logger.info(f"[{idx}] Generating multi-year comparison for {comp} FY{yr1} vs FY{yr2}...")
+            res = generate_multi_year_candidate_llm(c1, c2, bench_model=bench_model, ledger=ledger)
+            if not res:
+                continue
 
-    write_candidates_json(candidates, output_json_path)
-    write_review_csv(candidates, output_csv_path)
+            cand_record = {
+                "id": item_id,
+                "company": comp,
+                "fiscal_year": f"{yr1}/{yr2}",
+                "section": sec,
+                "category": "multi_hop",
+                "question_style": "comparison-of-two-figures style where the chunk allows",
+                "question": res["question"],
+                "ground_truth": res["ground_truth"],
+                "supporting_quote": res["supporting_quote"],
+                "source_chunk_ids": [c1.get("chunk_id"), c2.get("chunk_id")],
+                "validator_flags": ["PASS"],
+                "default_reject": False,
+            }
+            candidates.append(cand_record)
+            existing_questions.append(res["question"])
+
+    # 3. Add unanswerable questions (cost 0 LLM calls)
+    if unanswerable_items:
+        u_offset = len(candidates) + 1
+        for idx, u in enumerate(unanswerable_items, start=u_offset):
+            candidates.append({
+                "id": f"heldout_{idx:02d}",
+                "company": u["company"],
+                "fiscal_year": u["fiscal_year"],
+                "section": "None",
+                "category": "unanswerable",
+                "question_style": "unanswerable inquiry",
+                "question": u["question"],
+                "ground_truth": u["ground_truth"],
+                "supporting_quote": "",
+                "validator_flags": ["PASS"],
+                "default_reject": False,
+                "source_chunk_ids": [],
+            })
+
+    write_candidates_json(candidates, target_json)
+    write_review_csv(candidates, target_csv)
+
+    print("\n" + "=" * 80)
+    print("CANDIDATE GENERATION RUN COMPLETE")
+    print("=" * 80)
+    print(f"Total Generated Candidates: {len(candidates)}")
+    print(f"Output JSON:                {target_json}")
+    print(f"Output Review CSV:          {target_csv}")
+    print(f"Total Calls Made This Run:  {ledger.run_calls}")
+    print(f"Model:                      {bench_model}")
+    print(f"Ledger Used Today:          {ledger.get_used_today(bench_model)} / {ledger.get_limit(bench_model)}")
+    print(f"Remaining Budget:           {ledger.get_remaining_budget(bench_model)}")
+    print("=" * 80 + "\n")
 
     return {
         "status": "generation_complete",
         "total_generated": len(candidates),
-        "output_json": str(output_json_path),
-        "output_csv": str(output_csv_path),
+        "output_json": str(target_json),
+        "output_csv": str(target_csv),
+        "calls_made": ledger.run_calls,
+        "remaining_budget": rem_budget,
     }
 
 
 def main():
     parser = argparse.ArgumentParser(description="Generate candidates for held-out evaluation benchmark.")
-    parser.add_argument("--dry-run", action="store_true", help="Inspect planned sampling, quota ledger usage, and generate templates with zero LLM calls.")
+    parser.add_argument("--dry-run", action="store_true", help="Inspect planned sampling, quota ledger usage, and generate dry-run templates with zero LLM calls.")
     parser.add_argument("--chunks-path", type=str, default=str(DEFAULT_CHUNKS_PATH), help="Path to chunks.json")
     parser.add_argument("--dev-set-path", type=str, default=str(DEFAULT_DEV_SET_PATH), help="Path to dev golden_set.json")
-    parser.add_argument("--output-json", type=str, default=str(DEFAULT_OUTPUT_JSON), help="Output candidates.json path")
-    parser.add_argument("--output-csv", type=str, default=str(DEFAULT_OUTPUT_CSV), help="Output review.csv path")
+    parser.add_argument("--output-json", type=str, default=None, help="Output candidates.json path (or candidates_dryrun.json for dry-run)")
+    parser.add_argument("--output-csv", type=str, default=None, help="Output review.csv path (or review_dryrun.csv for dry-run)")
     parser.add_argument("--model", type=str, default=os.getenv("BENCH_MODEL", "gemini-3.5-flash-lite"), help="BENCH_MODEL name")
-    parser.add_argument("--max-calls", type=int, default=100, help="Maximum LLM calls cap")
+    parser.add_argument("--max-calls", type=int, default=110, help="Maximum LLM calls cap (default: 110)")
+    parser.add_argument("--limit", type=int, default=None, help="Generate only the first N planned single-chunk items")
+    parser.add_argument("--delay", type=float, default=5.0, help="Delay in seconds between LLM calls (default: 5.0)")
     parser.add_argument("--seed", type=int, default=42, help="Random seed for sampling")
     args = parser.parse_args()
 
     run_generation_pipeline(
         chunks_path=Path(args.chunks_path),
         dev_set_path=Path(args.dev_set_path),
-        output_json_path=Path(args.output_json),
-        output_csv_path=Path(args.output_csv),
+        output_json_path=Path(args.output_json) if args.output_json else None,
+        output_csv_path=Path(args.output_csv) if args.output_csv else None,
         bench_model=args.model,
         max_calls=args.max_calls,
+        limit=args.limit,
+        delay=args.delay,
         seed=args.seed,
         dry_run=args.dry_run,
     )
@@ -967,4 +1300,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
