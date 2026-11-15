@@ -214,21 +214,29 @@ def run_diagnostics() -> None:
     print("3. POOL QUALITY & RANK DISTRIBUTION")
     print("=" * 80)
 
-    # Compute ranks up to 50
+    # Compute ranks up to 50:
+    # Use official ablation ranking for ranks 1-30 so Hit@8 and Hit@20 exactly match
+    # sections 2 and 4, then extend with pool cache for ranks 31-50.
     config_ranks: Dict[str, List[Optional[int]]] = {cfg: [] for cfg in configs}
     for it in answerable_items:
         qid = it["id"]
         golds = set(it["source_chunk_ids"])
         for cfg in configs:
-            cand_ids = pool_cache.get(qid, {}).get(cfg, [])
-            if not cand_ids:
-                # Fall back to ablation top 30
-                cand_ids = ablation_item_map.get(qid, {}).get("configs", {}).get(cfg, {}).get("retrieved_chunk_ids", [])
+            abl_cids = ablation_item_map.get(qid, {}).get("configs", {}).get(cfg, {}).get("retrieved_chunk_ids", [])
             found_rank: Optional[int] = None
-            for idx, cid in enumerate(cand_ids, start=1):
+            for idx, cid in enumerate(abl_cids, start=1):
                 if cid in golds:
                     found_rank = idx
                     break
+            if found_rank is None:
+                # Check pool cache for rank 31-50
+                pool_cids = pool_cache.get(qid, {}).get(cfg, [])
+                for idx, cid in enumerate(pool_cids[len(abl_cids):], start=len(abl_cids) + 1):
+                    if idx > 50:
+                        break
+                    if cid in golds:
+                        found_rank = idx
+                        break
             config_ranks[cfg].append(found_rank)
 
     print(f"{'Configuration':22s} | {'Hit@8':15s} | {'Hit@20':15s} | {'Hit@50':15s}")
@@ -397,17 +405,23 @@ def run_diagnostics() -> None:
         # First 200 chars of gold chunk
         gold_excerpt = gold_chunk.get("text", "")[:200].replace("\n", " ").strip()
 
-        # Ranks across configs
+        # Ranks across configs (ablation top-30 first, pool cache 31-50 next)
         ranks_desc = []
         for cfg in configs:
-            cids = pool_cache.get(sid, {}).get(cfg, [])
-            if not cids:
-                cids = abl_it.get("configs", {}).get(cfg, {}).get("retrieved_chunk_ids", [])
+            abl_cids = abl_it.get("configs", {}).get(cfg, {}).get("retrieved_chunk_ids", [])
             r: Optional[int] = None
-            for r_idx, c in enumerate(cids, start=1):
+            for r_idx, c in enumerate(abl_cids, start=1):
                 if c in golds:
                     r = r_idx
                     break
+            if r is None:
+                pool_cids = pool_cache.get(sid, {}).get(cfg, [])
+                for r_idx, c in enumerate(pool_cids[len(abl_cids):], start=len(abl_cids) + 1):
+                    if r_idx > 50:
+                        break
+                    if c in golds:
+                        r = r_idx
+                        break
             ranks_desc.append(f"{cfg}: {r if r is not None else '>50'}")
 
         # Top 3 retrieved chunks for production_retrieve

@@ -1,0 +1,2378 @@
+[
+  {
+    "id": "heldout_01",
+    "company": "Alphabet",
+    "fiscal_year": "2023",
+    "section": "Item 1",
+    "category": "simple_lookup",
+    "question_style": "natural prose",
+    "question": "What is Alphabet's corporate goal regarding total greenhouse gas reduction across its entire business value network by the end of the decade?",
+    "ground_truth": "Alphabet aims to achieve net-zero emissions across all of its operations and value chain by 2030, specifically targeting a 50% reduction in combined Scope 1, Scope 2 (market-based), and Scope 3 absolute emissions compared to its 2019 baseline before 2030, while neutralizing remaining emissions through nature-based and technology-based carbon removal investments.",
+    "supporting_quote": "In 2021, we set an ambitious goal to achieve net-zero emissions across all of our operations and value chain, by 2030. To accomplish this, we aim to reduce 50% of our combined Scope 1, Scope 2 (market-based), and Scope 3 absolute emissions (versus our 2019 baseline) before 2030, and plan to invest in nature-based and technology-based carbon removal solutions to neutralize our remaining emissions.",
+    "chunk_id": "75423b6e-b5ae-5281-bc19-4d560dadb600",
+    "source_chunk_ids": [
+      "75423b6e-b5ae-5281-bc19-4d560dadb600"
+    ],
+    "validator_flags": [
+      "FLAG_NO_FISCAL_YEAR"
+    ],
+    "default_reject": false
+  },
+  {
+    "id": "heldout_02",
+    "company": "Alphabet",
+    "fiscal_year": "2023",
+    "section": "Item 1A",
+    "category": "simple_lookup",
+    "question_style": "short direct question",
+    "question": "At Alphabet, what factors impact workforce retention and talent acquisition?",
+    "ground_truth": "Workforce retention and talent acquisition are impacted by intense industry competition, competitor poaching, the potential limitations of equity awards and compensation programs, restrictive immigration policies and regulatory changes, and adjustments to hybrid work models or corporate culture.",
+    "supporting_quote": "Competition in our industry for qualified employees is intense, and certain of our competitors have directly targeted, and may continue to target, our employees. In addition, our compensation arrangements, such as our equity award programs, may not always be successful in attracting new employees and retaining and motivating our existing employees. Restrictive immigration policy and regulatory changes may also affect our ability to hire, mobilize, or retain some of our global talent.",
+    "chunk_id": "743d0783-18ba-5119-a5a1-e242089a4d15",
+    "source_chunk_ids": [
+      "743d0783-18ba-5119-a5a1-e242089a4d15"
+    ],
+    "validator_flags": [
+      "FLAG_NO_COMPANY_NAME",
+      "FLAG_NO_FISCAL_YEAR"
+    ],
+    "default_reject": false,
+    "original_question": "What factors impact workforce retention and talent acquisition?",
+    "rewrite_applied": "Prepended 'At Alphabet, '"
+  },
+  {
+    "id": "heldout_03",
+    "company": "Alphabet",
+    "fiscal_year": "2023",
+    "section": "Item 7",
+    "category": "numeric_precision",
+    "question_style": "keyword-style phrase",
+    "question": "Alphabet 2023 APAC constant currency revenue growth rate percentage",
+    "ground_truth": "For the year ended December 31, 2023, the constant currency revenue growth rate for APAC was 13%.",
+    "supporting_quote": "APAC47,024 51,514 (1,759)53,273 10 %(3)%13 %",
+    "chunk_id": "b4a408bd-668b-5681-b2f6-64d69eb15ac1",
+    "source_chunk_ids": [
+      "b4a408bd-668b-5681-b2f6-64d69eb15ac1"
+    ],
+    "validator_flags": [
+      "REJECT_ANSWER_LEAKAGE: 'APAC'"
+    ],
+    "default_reject": true
+  },
+  {
+    "id": "heldout_04",
+    "company": "Alphabet",
+    "fiscal_year": "2023",
+    "section": "Item 7",
+    "category": "numeric_precision",
+    "question_style": "paraphrase (no copied terms from the chunk)",
+    "question": "At Alphabet, what was the total dollar amount spent on innovative technical investigation and engineering efforts during the fiscal year 2023?",
+    "ground_truth": "$45,427 million",
+    "supporting_quote": "Research and development expenses$39,500 $45,427",
+    "chunk_id": "67cea926-b163-55c8-90d8-a9c89bd53fa8",
+    "source_chunk_ids": [
+      "67cea926-b163-55c8-90d8-a9c89bd53fa8"
+    ],
+    "validator_flags": [
+      "FLAG_NO_COMPANY_NAME"
+    ],
+    "default_reject": false,
+    "original_question": "What was the total dollar amount spent on innovative technical investigation and engineering efforts during the fiscal year 2023?",
+    "rewrite_applied": "Prepended 'At Alphabet, '"
+  },
+  {
+    "id": "heldout_05",
+    "company": "Alphabet",
+    "fiscal_year": "2023",
+    "section": "Item 8",
+    "category": "numeric_precision",
+    "question_style": "\"what does the filing say about\" style",
+    "question": "At Alphabet, what does the filing say about the total carrying value of marketable and non-marketable equity securities as of the end of fiscal year 2023, expressed in millions of dollars?",
+    "ground_truth": "$34,739 million",
+    "supporting_quote": "Carrying value$5,156 $28,529 $33,685 $5,973 $28,766 $34,739",
+    "chunk_id": "74f07476-9e15-580c-b541-2a7af6abffe0",
+    "source_chunk_ids": [
+      "74f07476-9e15-580c-b541-2a7af6abffe0"
+    ],
+    "validator_flags": [
+      "REJECT_6GRAM_OVERLAP: 'marketable and non marketable equity securities'",
+      "FLAG_NO_COMPANY_NAME"
+    ],
+    "default_reject": true,
+    "original_question": "What does the filing say about the total carrying value of marketable and non-marketable equity securities as of the end of fiscal year 2023, expressed in millions of dollars?",
+    "rewrite_applied": "Prepended 'At Alphabet, '"
+  },
+  {
+    "id": "heldout_06",
+    "company": "Alphabet",
+    "fiscal_year": "2023",
+    "section": "Item 8",
+    "category": "numeric_precision",
+    "question_style": "comparison-of-two-figures style where the chunk allows",
+    "question": "At Alphabet, how did the initial monetary penalty imposed by the European Commission for Android-related distribution practices compare to the subsequent amount set by the General Court?",
+    "ground_truth": "The initial fine imposed by the European Commission was €4.3 billion (or $5.1 billion as of June 30, 2018), which was subsequently reduced by the General Court to €4.1 billion.",
+    "supporting_quote": "The EC decision imposed a €4.3 billion ($5.1 billion as of June 30, 2018) fine and directed the termination of the conduct at issue. On October 9, 2018, we appealed the EC decision, and on October 29, 2018, we implemented changes to certain of our Android distribution practices. On September 14, 2022, the General Court reduced the fine from €4.3 billion to €4.1 billion.",
+    "chunk_id": "21995a10-c2d1-5a45-a05a-f5795c1cf482",
+    "source_chunk_ids": [
+      "21995a10-c2d1-5a45-a05a-f5795c1cf482"
+    ],
+    "validator_flags": [
+      "REJECT_ANSWER_LEAKAGE: 'European'",
+      "FLAG_NO_FISCAL_YEAR"
+    ],
+    "default_reject": true,
+    "original_question": "How did the initial monetary penalty imposed by the European Commission for Android-related distribution practices compare to the subsequent amount set by the General Court?",
+    "rewrite_applied": "Prepended 'At Alphabet, '"
+  },
+  {
+    "id": "heldout_07",
+    "company": "Alphabet",
+    "fiscal_year": "2024",
+    "section": "Item 1",
+    "category": "simple_lookup",
+    "question_style": "natural prose",
+    "question": "At Alphabet, how many products with a user base exceeding the two billion mark integrate the company's natively multimodal AI model?",
+    "ground_truth": "All seven of the company's products that have two billion users are using Gemini.",
+    "supporting_quote": "Today, all seven of our two billion-user products — Android, Chrome, Gmail, Maps, Play Store, Search, and YouTube — are using Gemini.",
+    "chunk_id": "ab66a173-493f-59d6-b9fc-fe55158ad8d0",
+    "source_chunk_ids": [
+      "ab66a173-493f-59d6-b9fc-fe55158ad8d0"
+    ],
+    "validator_flags": [
+      "FLAG_NO_COMPANY_NAME",
+      "FLAG_NO_FISCAL_YEAR"
+    ],
+    "default_reject": false,
+    "original_question": "How many products with a user base exceeding the two billion mark integrate the company's natively multimodal AI model?",
+    "rewrite_applied": "Prepended 'At Alphabet, '"
+  },
+  {
+    "id": "heldout_08",
+    "company": "Alphabet",
+    "fiscal_year": "2024",
+    "section": "Item 1A",
+    "category": "numeric_precision",
+    "question_style": "short direct question",
+    "question": "At Alphabet, what proportion of total consolidated revenue came from outside the United States during the 2024 fiscal year?",
+    "ground_truth": "International revenues accounted for approximately 51% of Alphabet's consolidated revenues in 2024.",
+    "supporting_quote": "International revenues accounted for approximately 51% of our consolidated revenues in 2024.",
+    "chunk_id": "a6485820-ebf9-58bd-96cb-fec79d04205d",
+    "source_chunk_ids": [
+      "a6485820-ebf9-58bd-96cb-fec79d04205d"
+    ],
+    "validator_flags": [
+      "FLAG_NO_COMPANY_NAME"
+    ],
+    "default_reject": false,
+    "original_question": "What proportion of total consolidated revenue came from outside the United States during the 2024 fiscal year?",
+    "rewrite_applied": "Prepended 'At Alphabet, '"
+  },
+  {
+    "id": "heldout_09",
+    "company": "Alphabet",
+    "fiscal_year": "2024",
+    "section": "Item 7",
+    "category": "numeric_precision",
+    "question_style": "keyword-style phrase",
+    "question": "Alphabet fiscal year 2024 operating margin percentage",
+    "ground_truth": "32%",
+    "supporting_quote": "Operating margin27 %32 %5 %",
+    "chunk_id": "d37f5898-3084-5c75-b600-3d44de3ee51c",
+    "source_chunk_ids": [
+      "d37f5898-3084-5c75-b600-3d44de3ee51c"
+    ],
+    "validator_flags": [
+      "PASS"
+    ],
+    "default_reject": false
+  },
+  {
+    "id": "heldout_10",
+    "company": "Alphabet",
+    "fiscal_year": "2024",
+    "section": "Item 7",
+    "category": "numeric_precision",
+    "question_style": "paraphrase (no copied terms from the chunk)",
+    "question": "At Alphabet, what was the total capital returned to investors via equity buybacks during the 2024 fiscal period?",
+    "ground_truth": "$62.0 billion (or $62,047 million for the total 379 million shares repurchased)",
+    "supporting_quote": "During 2024, we repurchased and subsequently retired 379 million shares for $62.0 billion.",
+    "chunk_id": "efd6d356-1c8d-5715-9ff7-28f61a2df7a6",
+    "source_chunk_ids": [
+      "efd6d356-1c8d-5715-9ff7-28f61a2df7a6"
+    ],
+    "validator_flags": [
+      "FLAG_NO_COMPANY_NAME"
+    ],
+    "default_reject": false,
+    "original_question": "What was the total capital returned to investors via equity buybacks during the 2024 fiscal period?",
+    "rewrite_applied": "Prepended 'At Alphabet, '"
+  },
+  {
+    "id": "heldout_11",
+    "company": "Alphabet",
+    "fiscal_year": "2024",
+    "section": "Item 8",
+    "category": "numeric_precision",
+    "question_style": "\"what does the filing say about\" style",
+    "question": "At Alphabet, what does the filing say about the total operating lease expenses for the twelve-month period concluding at the end of 2023, measured in millions?",
+    "ground_truth": "$3,362 million",
+    "supporting_quote": "Operating lease cost$2,900 $3,362 $3,304",
+    "chunk_id": "29771415-9ba7-5534-bb60-7cb02e75848d",
+    "source_chunk_ids": [
+      "29771415-9ba7-5534-bb60-7cb02e75848d"
+    ],
+    "validator_flags": [
+      "FLAG_NO_COMPANY_NAME",
+      "REJECT_QUESTION_YEAR_MISMATCH (question names 2023, but filing is 2024)"
+    ],
+    "default_reject": true,
+    "original_question": "What does the filing say about the total operating lease expenses for the twelve-month period concluding at the end of 2023, measured in millions?",
+    "rewrite_applied": "Prepended 'At Alphabet, '"
+  },
+  {
+    "id": "heldout_12",
+    "company": "Alphabet",
+    "fiscal_year": "2024",
+    "section": "Item 8",
+    "category": "multi_hop-like single-chunk",
+    "question_style": "comparison-of-two-figures style where the chunk allows",
+    "question": "How do the revenue recognition criteria differ between subscription-based cloud services and consumption-based cloud services, per Alphabet's fiscal 2024 annual report?",
+    "ground_truth": "Revenues for cloud services provided on a consumption basis are recognized when the customer utilizes the services based on the quantity consumed, whereas revenues for subscription-based cloud services are recognized ratably over the contract term as the customer receives and consumes the benefits.",
+    "supporting_quote": "Revenues related to cloud services provided on a consumption basis are recognized when the customer utilizes the services, based on the quantity of services consumed. Revenues related to cloud services provided on a subscription basis are recognized ratably over the contract term as the customer receives and consumes the benefits of the cloud services.",
+    "chunk_id": "2804cf00-6599-56ce-b698-4c38b1343dda",
+    "source_chunk_ids": [
+      "2804cf00-6599-56ce-b698-4c38b1343dda"
+    ],
+    "validator_flags": [
+      "REPEATED_ACROSS_YEARS_DISAMBIGUATED (quote in FY2023; question names target year)",
+      "REJECT_COMPARISON_NOT_SUPPORTED (found 0 distinct figures in GT)"
+    ],
+    "default_reject": true,
+    "original_question": "How do the revenue recognition criteria differ between subscription-based cloud services and consumption-based cloud services?",
+    "rewrite_applied": "Disambiguated repeated quote: appended 'per Alphabet's fiscal 2024 annual report'"
+  },
+  {
+    "id": "heldout_13",
+    "company": "Alphabet",
+    "fiscal_year": "2025",
+    "section": "Item 1",
+    "category": "simple_lookup",
+    "question_style": "natural prose",
+    "question": "At Alphabet, how are the incoming funds for the non-core operating segments primarily generated?",
+    "ground_truth": "Revenues from Other Bets are generated primarily from the sale of autonomous transportation and internet services.",
+    "supporting_quote": "Revenues from Other Bets are generated primarily from the sale of autonomous transportation and internet services.",
+    "chunk_id": "00247843-0f6c-5834-b936-343f80981b05",
+    "source_chunk_ids": [
+      "00247843-0f6c-5834-b936-343f80981b05"
+    ],
+    "validator_flags": [
+      "FLAG_NO_COMPANY_NAME",
+      "FLAG_NO_FISCAL_YEAR"
+    ],
+    "default_reject": false,
+    "original_question": "How are the incoming funds for the non-core operating segments primarily generated?",
+    "rewrite_applied": "Prepended 'At Alphabet, '"
+  },
+  {
+    "id": "heldout_14",
+    "company": "Alphabet",
+    "fiscal_year": "2025",
+    "section": "Item 1A",
+    "category": "simple_lookup",
+    "question_style": "short direct question",
+    "question": "What potential negative impacts on society from artificial intelligence deployments are identified as risk factors for the company, in Alphabet's FY2025 10-K?",
+    "ground_truth": "Unintended consequences, uses, or customization of AI tools and systems may negatively impact human rights, privacy, employment, or other societal concerns, potentially leading to litigation, reputational damage, regulatory scrutiny, and harm to the company's financial condition and operating results.",
+    "supporting_quote": "Unintended consequences, uses, or customization of our AI tools and systems may negatively affect human rights, privacy, employment, or other social concerns, which may result in claims, lawsuits, brand or reputational harm, and increased regulatory scrutiny, any of which could harm our business, financial condition, and operating results.",
+    "chunk_id": "57fd20ac-7bcc-5ec1-bbb0-428d0e84fb97",
+    "source_chunk_ids": [
+      "57fd20ac-7bcc-5ec1-bbb0-428d0e84fb97"
+    ],
+    "validator_flags": [
+      "REPEATED_ACROSS_YEARS_DISAMBIGUATED (quote in FY2023, 2024; question names target year)",
+      "FLAG_NO_FISCAL_YEAR"
+    ],
+    "default_reject": false,
+    "original_question": "What potential negative impacts on society from artificial intelligence deployments are identified as risk factors for the company?",
+    "rewrite_applied": "Disambiguated repeated quote: appended 'in Alphabet's FY2025 10-K'"
+  },
+  {
+    "id": "heldout_15",
+    "company": "Alphabet",
+    "fiscal_year": "2025",
+    "section": "Item 7",
+    "category": "numeric_precision",
+    "question_style": "keyword-style phrase",
+    "question": "Alphabet Traffic Acquisition Costs (TAC) total for fiscal year 2025 in millions",
+    "ground_truth": "$59,926 million",
+    "supporting_quote": "TAC$54,900 $59,926",
+    "chunk_id": "20cac537-8b52-5381-abe7-f824f62f9892",
+    "source_chunk_ids": [
+      "20cac537-8b52-5381-abe7-f824f62f9892"
+    ],
+    "validator_flags": [
+      "PASS"
+    ],
+    "default_reject": false
+  },
+  {
+    "id": "heldout_16",
+    "company": "Alphabet",
+    "fiscal_year": "2025",
+    "section": "Item 7",
+    "category": "simple_lookup",
+    "question_style": "paraphrase (no copied terms from the chunk)",
+    "question": "At Alphabet, how might the integration of machine learning features into consumer and enterprise tools alter financial monetization models?",
+    "ground_truth": "Integrating artificial intelligence into products and services may lead to different monetization methods compared to historical offerings, potentially impacting revenue growth rates and margin trajectories.",
+    "supporting_quote": "As we continue to incorporate AI into our products and services, such as with AI Overviews and AI Mode in Search, and with enterprise AI solutions on our Google Cloud Platform, we may monetize differently than our historical consumer and enterprise offerings which could affect revenue growth rates and margin trends.",
+    "chunk_id": "5d62019d-00ca-59f9-912e-880879d5e588",
+    "source_chunk_ids": [
+      "5d62019d-00ca-59f9-912e-880879d5e588"
+    ],
+    "validator_flags": [
+      "FLAG_NO_COMPANY_NAME",
+      "FLAG_NO_FISCAL_YEAR"
+    ],
+    "default_reject": false,
+    "original_question": "How might the integration of machine learning features into consumer and enterprise tools alter financial monetization models?",
+    "rewrite_applied": "Prepended 'At Alphabet, '"
+  },
+  {
+    "id": "heldout_17",
+    "company": "Alphabet",
+    "fiscal_year": "2025",
+    "section": "Item 8",
+    "category": "numeric_precision",
+    "question_style": "\"what does the filing say about\" style",
+    "question": "At Alphabet, what does the filing say about the total undiscounted lease obligations for operating agreements at the conclusion of fiscal year 2025?",
+    "ground_truth": "$18,251 million",
+    "supporting_quote": "Total undiscounted lease payments\n\n18,251",
+    "chunk_id": "d9e8fd3a-4333-536d-8eae-701e39be7b09",
+    "source_chunk_ids": [
+      "d9e8fd3a-4333-536d-8eae-701e39be7b09"
+    ],
+    "validator_flags": [
+      "FLAG_NO_COMPANY_NAME"
+    ],
+    "default_reject": false,
+    "original_question": "What does the filing say about the total undiscounted lease obligations for operating agreements at the conclusion of fiscal year 2025?",
+    "rewrite_applied": "Prepended 'At Alphabet, '"
+  },
+  {
+    "id": "heldout_18",
+    "company": "Alphabet",
+    "fiscal_year": "2025",
+    "section": "Item 8",
+    "category": "numeric_precision",
+    "question_style": "comparison-of-two-figures style where the chunk allows",
+    "question": "At Alphabet, how did the amount of future funding commitments for private company and renewable energy holdings change between the close of fiscal year 2024 and fiscal year 2025?",
+    "ground_truth": "Future funding commitments decreased from $1.5 billion as of December 31, 2024, to $1.1 billion as of December 31, 2025.",
+    "supporting_quote": "As of December 31, 2024 and 2025, future funding commitments were $1.5 billion and $1.1 billion, respectively.",
+    "chunk_id": "13ca7d24-3010-525f-86ae-a77304858481",
+    "source_chunk_ids": [
+      "13ca7d24-3010-525f-86ae-a77304858481"
+    ],
+    "validator_flags": [
+      "REJECT_ANSWER_LEAKAGE: '2024'",
+      "FLAG_NO_COMPANY_NAME",
+      "REJECT_QUESTION_YEAR_MISMATCH (question names 2024, but filing is 2025)"
+    ],
+    "default_reject": true,
+    "original_question": "How did the amount of future funding commitments for private company and renewable energy holdings change between the close of fiscal year 2024 and fiscal year 2025?",
+    "rewrite_applied": "Prepended 'At Alphabet, '"
+  },
+  {
+    "id": "heldout_19",
+    "company": "Amazon",
+    "fiscal_year": "2023",
+    "section": "Item 1",
+    "category": "simple_lookup",
+    "question_style": "natural prose",
+    "question": "At Amazon, who serves as the Chief Executive Officer of the company as of the filing date provided?",
+    "ground_truth": "Andrew R. Jassy serves as President and Chief Executive Officer.",
+    "supporting_quote": "Andrew R. Jassy56President and Chief Executive Officer",
+    "chunk_id": "70776e01-4fc8-50be-b9ed-6b0415321c7d",
+    "source_chunk_ids": [
+      "70776e01-4fc8-50be-b9ed-6b0415321c7d"
+    ],
+    "validator_flags": [
+      "REJECT_ANSWER_LEAKAGE: 'Chief'",
+      "FLAG_NO_COMPANY_NAME",
+      "FLAG_NO_FISCAL_YEAR"
+    ],
+    "default_reject": true,
+    "original_question": "Who serves as the Chief Executive Officer of the company as of the filing date provided?",
+    "rewrite_applied": "Prepended 'At Amazon, '"
+  },
+  {
+    "id": "heldout_20",
+    "company": "Amazon",
+    "fiscal_year": "2023",
+    "section": "Item 1A",
+    "category": "simple_lookup",
+    "question_style": "short direct question",
+    "question": "At Amazon, what factors complicate foreign business licensing and certification?",
+    "ground_truth": "Foreign business licensing and certification requirements apply to imports, exports, web services, and electronic devices, serving as one of the regulatory challenges for international sales and operations.",
+    "supporting_quote": "•business licensing or certification requirements, such as for imports, exports, web services, and electronic devices;",
+    "chunk_id": "7afd49fd-1186-5ea9-b879-ab8669988bd8",
+    "source_chunk_ids": [
+      "7afd49fd-1186-5ea9-b879-ab8669988bd8"
+    ],
+    "validator_flags": [
+      "REJECT_ANSWER_LEAKAGE: 'Foreign'",
+      "FLAG_NO_COMPANY_NAME",
+      "FLAG_NO_FISCAL_YEAR"
+    ],
+    "default_reject": true,
+    "original_question": "What factors complicate foreign business licensing and certification?",
+    "rewrite_applied": "Prepended 'At Amazon, '"
+  },
+  {
+    "id": "heldout_21",
+    "company": "Amazon",
+    "fiscal_year": "2023",
+    "section": "Item 7",
+    "category": "simple_lookup",
+    "question_style": "keyword-style phrase",
+    "question": "Amazon operating cost categorization and working capital management, for fiscal 2023",
+    "ground_truth": "Amazon categorizes its operational expenses into variable costs (such as product, content, payment processing, fulfillment, and AWS running costs) and fixed costs (such as technology infrastructure and fulfillment network capacity). To manage working capital efficiently, the company aims to turn inventory rapidly and collect payments from consumers via credit cards before settling liabilities with vendors and suppliers.",
+    "supporting_quote": "Our variable costs include product and content costs, payment processing and related transaction costs, picking, packaging, and preparing orders for shipment, transportation, customer service support, costs necessary to run AWS, and a portion of our marketing costs. Our fixed costs include the costs necessary to build and run our technology infrastructure; to build, enhance, and add features to our online stores, web services, electronic devices, and digital offerings; and to build and optimize our fulfillment network.",
+    "chunk_id": "0c264c96-88c4-5a24-8670-8d6e670986b9",
+    "source_chunk_ids": [
+      "0c264c96-88c4-5a24-8670-8d6e670986b9"
+    ],
+    "validator_flags": [
+      "REPEATED_ACROSS_YEARS_DISAMBIGUATED (quote in FY2024, 2025; question names target year)"
+    ],
+    "default_reject": false,
+    "original_question": "Amazon operating cost categorization and working capital management",
+    "rewrite_applied": "Disambiguated repeated quote: appended 'for fiscal 2023'"
+  },
+  {
+    "id": "heldout_22",
+    "company": "Amazon",
+    "fiscal_year": "2023",
+    "section": "Item 7",
+    "category": "numeric_precision",
+    "question_style": "paraphrase (no copied terms from the chunk)",
+    "question": "At Amazon, what was the total expenditure for outbound product delivery services incurred by the corporation during the year ended December 31, 2023?",
+    "ground_truth": "$89.5 billion",
+    "supporting_quote": "Shipping costs were $83.5 billion and $89.5 billion in 2022 and 2023.",
+    "chunk_id": "84a05a04-ae65-5497-8396-6f0d9007ec93",
+    "source_chunk_ids": [
+      "84a05a04-ae65-5497-8396-6f0d9007ec93"
+    ],
+    "validator_flags": [
+      "FLAG_NO_COMPANY_NAME"
+    ],
+    "default_reject": false,
+    "original_question": "What was the total expenditure for outbound product delivery services incurred by the corporation during the year ended December 31, 2023?",
+    "rewrite_applied": "Prepended 'At Amazon, '"
+  },
+  {
+    "id": "heldout_23",
+    "company": "Amazon",
+    "fiscal_year": "2023",
+    "section": "Item 8",
+    "category": "numeric_precision",
+    "question_style": "\"what does the filing say about\" style",
+    "question": "At Amazon, what does the filing say about the capital expenditures for the cloud computing division during the latest reported fiscal year?",
+    "ground_truth": "In 2023, total net additions to property and equipment for the AWS segment were $24,843 million.",
+    "supporting_quote": "AWS (2)22,047 27,755 24,843\n\nCorporate2,622 2,688 1,828\n\nConsolidated$72,325 $60,836 $48,344",
+    "chunk_id": "52e7e2f4-465c-5e65-bbaf-a4eba72c4995",
+    "source_chunk_ids": [
+      "52e7e2f4-465c-5e65-bbaf-a4eba72c4995"
+    ],
+    "validator_flags": [
+      "FLAG_NO_COMPANY_NAME",
+      "FLAG_NO_FISCAL_YEAR"
+    ],
+    "default_reject": false,
+    "original_question": "What does the filing say about the capital expenditures for the cloud computing division during the latest reported fiscal year?",
+    "rewrite_applied": "Prepended 'At Amazon, '"
+  },
+  {
+    "id": "heldout_24",
+    "company": "Amazon",
+    "fiscal_year": "2023",
+    "section": "Item 8",
+    "category": "numeric_precision",
+    "question_style": "comparison-of-two-figures style where the chunk allows",
+    "question": "At Amazon, what is the change in the total unearned revenue balance between the end of fiscal year 2022 and the end of fiscal year 2023?",
+    "ground_truth": "Total unearned revenue increased from $16.1 billion as of December 31, 2022, to $20.6 billion as of December 31, 2023.",
+    "supporting_quote": "Our total unearned revenue as of December 31, 2022 was $16.1 billion, of which $12.4 billion was recognized as revenue during the year ended December 31, 2023 and our total unearned revenue as of December 31, 2023 was $20.6 billion.",
+    "chunk_id": "a5e62af5-84d6-599b-8e33-ccfe109f8951",
+    "source_chunk_ids": [
+      "a5e62af5-84d6-599b-8e33-ccfe109f8951"
+    ],
+    "validator_flags": [
+      "REJECT_ANSWER_LEAKAGE: '2022'",
+      "FLAG_NO_COMPANY_NAME",
+      "REJECT_QUESTION_YEAR_MISMATCH (question names 2022, but filing is 2023)"
+    ],
+    "default_reject": true,
+    "original_question": "What is the change in the total unearned revenue balance between the end of fiscal year 2022 and the end of fiscal year 2023?",
+    "rewrite_applied": "Prepended 'At Amazon, '"
+  },
+  {
+    "id": "heldout_25",
+    "company": "Amazon",
+    "fiscal_year": "2024",
+    "section": "Item 1",
+    "category": "simple_lookup",
+    "question_style": "natural prose",
+    "question": "At Amazon, who holds the position of chief executive officer for the cloud computing division as of January 2025?",
+    "ground_truth": "Matthew S. Garman",
+    "supporting_quote": "Matthew S. Garman48CEO Amazon Web Services",
+    "chunk_id": "d74f19e6-4f6a-5847-9fbc-88ad63d7eef1",
+    "source_chunk_ids": [
+      "d74f19e6-4f6a-5847-9fbc-88ad63d7eef1"
+    ],
+    "validator_flags": [
+      "FLAG_NO_COMPANY_NAME",
+      "REJECT_QUESTION_YEAR_MISMATCH (question names 2025, but filing is 2024)"
+    ],
+    "default_reject": true,
+    "original_question": "Who holds the position of chief executive officer for the cloud computing division as of January 2025?",
+    "rewrite_applied": "Prepended 'At Amazon, '"
+  },
+  {
+    "id": "heldout_26",
+    "company": "Amazon",
+    "fiscal_year": "2024",
+    "section": "Item 1A",
+    "category": "simple_lookup",
+    "question_style": "short direct question",
+    "question": "What resource price increases and inflationary cost pressures are identified as potential operational factors, per Amazon's fiscal 2024 annual report?",
+    "ground_truth": "Amazon notes that factors such as the availability and price increases of transportation (including fuel), land, water, energy, paper and packing commodities, hardware, and technology infrastructure—often driven by inflationary pressures—can impact operations.",
+    "supporting_quote": "availability of and increases in the prices of transportation (including fuel), resources such as land, water, and energy, commodities like paper and packing supplies and hardware products, and technology infrastructure products, including as a result of inflationary pressures;",
+    "chunk_id": "c1f5e0dc-96ec-56b7-969e-0f297671f695",
+    "source_chunk_ids": [
+      "c1f5e0dc-96ec-56b7-969e-0f297671f695"
+    ],
+    "validator_flags": [
+      "REPEATED_ACROSS_YEARS_DISAMBIGUATED (quote in FY2023, 2025; question names target year)"
+    ],
+    "default_reject": false,
+    "original_question": "What resource price increases and inflationary cost pressures are identified as potential operational factors?",
+    "rewrite_applied": "Disambiguated repeated quote: appended 'per Amazon's fiscal 2024 annual report'"
+  },
+  {
+    "id": "heldout_27",
+    "company": "Amazon",
+    "fiscal_year": "2024",
+    "section": "Item 7",
+    "category": "numeric_precision",
+    "question_style": "keyword-style phrase",
+    "question": "Amazon AWS revenue fiscal year 2024 absolute amount in millions",
+    "ground_truth": "$107,556 million",
+    "supporting_quote": "AWS90,757 107,556",
+    "chunk_id": "583b9bb4-8509-5bca-9848-e2b5d441d870",
+    "source_chunk_ids": [
+      "583b9bb4-8509-5bca-9848-e2b5d441d870"
+    ],
+    "validator_flags": [
+      "REPEATED_ACROSS_YEARS_DISAMBIGUATED (quote in FY2025; question names target year)"
+    ],
+    "default_reject": false
+  },
+  {
+    "id": "heldout_28",
+    "company": "Amazon",
+    "fiscal_year": "2024",
+    "section": "Item 7",
+    "category": "numeric_precision",
+    "question_style": "paraphrase (no copied terms from the chunk)",
+    "question": "At Amazon, what is the projected revenue range for the opening quarter of 2025?",
+    "ground_truth": "Net sales are expected to be between $151.0 billion and $155.5 billion for the first quarter of 2025.",
+    "supporting_quote": "•Net sales are expected to be between $151.0 billion and $155.5 billion, or to grow between 5% and 9% compared with first quarter 2024.",
+    "chunk_id": "d1384b85-5649-550a-a590-cfc1e897639a",
+    "source_chunk_ids": [
+      "d1384b85-5649-550a-a590-cfc1e897639a"
+    ],
+    "validator_flags": [
+      "REJECT_ANSWER_LEAKAGE: '2025'",
+      "FLAG_NO_COMPANY_NAME",
+      "REJECT_QUESTION_YEAR_MISMATCH (question names 2025, but filing is 2024)"
+    ],
+    "default_reject": true,
+    "original_question": "What is the projected revenue range for the opening quarter of 2025?",
+    "rewrite_applied": "Prepended 'At Amazon, '"
+  },
+  {
+    "id": "heldout_29",
+    "company": "Amazon",
+    "fiscal_year": "2024",
+    "section": "Item 8",
+    "category": "numeric_precision",
+    "question_style": "\"what does the filing say about\" style",
+    "question": "At Amazon, what does the filing say about the net additions to property and equipment for the AWS business division in the most recent fiscal year listed?",
+    "ground_truth": "$53,267 million",
+    "supporting_quote": "AWS (2)27,755 24,843 53,267",
+    "chunk_id": "ea0b95b5-2e3e-591f-a9c6-0696dc539457",
+    "source_chunk_ids": [
+      "ea0b95b5-2e3e-591f-a9c6-0696dc539457"
+    ],
+    "validator_flags": [
+      "REJECT_6GRAM_OVERLAP: 'net additions to property and equipment'",
+      "FLAG_NO_FISCAL_YEAR"
+    ],
+    "default_reject": true,
+    "original_question": "What does the filing say about the net additions to property and equipment for the AWS business division in the most recent fiscal year listed?",
+    "rewrite_applied": "Prepended 'At Amazon, '"
+  },
+  {
+    "id": "heldout_30",
+    "company": "Amazon",
+    "fiscal_year": "2024",
+    "section": "Item 8",
+    "category": "numeric_precision",
+    "question_style": "comparison-of-two-figures style where the chunk allows",
+    "question": "At Amazon, how did the valuation results for marketable equity securities change between the fiscal year ending in 2023 and the fiscal year ending in 2024?",
+    "ground_truth": "In 2023, the valuation gains were $984 million, whereas in 2024, the valuation losses were $(1,278) million.",
+    "supporting_quote": "Marketable equity securities valuation gains (losses)$(13,870)$984 $(1,278)",
+    "chunk_id": "e88e4771-7182-5fb1-a844-0fc70faa1014",
+    "source_chunk_ids": [
+      "e88e4771-7182-5fb1-a844-0fc70faa1014"
+    ],
+    "validator_flags": [
+      "REJECT_ANSWER_LEAKAGE: '2023'",
+      "FLAG_NO_COMPANY_NAME",
+      "REJECT_QUESTION_YEAR_MISMATCH (question names 2023, but filing is 2024)"
+    ],
+    "default_reject": true,
+    "original_question": "How did the valuation results for marketable equity securities change between the fiscal year ending in 2023 and the fiscal year ending in 2024?",
+    "rewrite_applied": "Prepended 'At Amazon, '"
+  },
+  {
+    "id": "heldout_31",
+    "company": "Amazon",
+    "fiscal_year": "2025",
+    "section": "Item 1",
+    "category": "simple_lookup",
+    "question_style": "natural prose",
+    "question": "Which executive holds the position of Chief Financial Officer for the company, in Amazon's FY2025 10-K?",
+    "ground_truth": "Brian T. Olsavsky",
+    "supporting_quote": "Brian T. Olsavsky. Mr. Olsavsky has served as Senior Vice President and Chief Financial Officer since June 2015",
+    "chunk_id": "25040aa7-130f-51c3-96e4-e6788dff233b",
+    "source_chunk_ids": [
+      "25040aa7-130f-51c3-96e4-e6788dff233b"
+    ],
+    "validator_flags": [
+      "REPEATED_ACROSS_YEARS_DISAMBIGUATED (quote in FY2023, 2024; question names target year)",
+      "FLAG_NO_FISCAL_YEAR"
+    ],
+    "default_reject": false,
+    "original_question": "Which executive holds the position of Chief Financial Officer for the company?",
+    "rewrite_applied": "Disambiguated repeated quote: appended 'in Amazon's FY2025 10-K'"
+  },
+  {
+    "id": "heldout_32",
+    "company": "Amazon",
+    "fiscal_year": "2025",
+    "section": "Item 1A",
+    "category": "simple_lookup",
+    "question_style": "short direct question",
+    "question": "At Amazon, what factors cause sales volatility?",
+    "ground_truth": "Sales and operating results fluctuate due to factors including the ability to retain and increase sales to existing customers, attract new customers, satisfy customer demands, retain and expand the network of sellers, offer products on favorable terms, manage inventory, fulfill orders, face competition, and adapt to changes in usage or adoption rates of the internet, e-commerce, electronic devices, web services, satellite communications services, and artificial intelligence and machine learning technologies.",
+    "supporting_quote": "Our sales and operating results will also fluctuate for many other reasons, including due to factors described elsewhere in this section and the following:\n\n•our ability to retain and increase sales to existing customers, attract new customers, and satisfy our customers’ demands;\n\n•our ability to retain and expand our network of sellers;\n\n•our ability to offer products on favorable terms, manage inventory, and fulfill orders;\n\n•the introduction of competitive stores, websites, products, services, price decreases, or improvements;\n\n•changes in usage or adoption rates of the internet, e-commerce, electronic devices, web services, satellite communications services, and artificial intelligence and machine learning technologies, products, and services, including outside the U.S.;",
+    "chunk_id": "5edc35f2-f694-54a3-9053-fa4934c46090",
+    "source_chunk_ids": [
+      "5edc35f2-f694-54a3-9053-fa4934c46090"
+    ],
+    "validator_flags": [
+      "FLAG_NO_COMPANY_NAME",
+      "FLAG_NO_FISCAL_YEAR"
+    ],
+    "default_reject": false,
+    "original_question": "What factors cause sales volatility?",
+    "rewrite_applied": "Prepended 'At Amazon, '"
+  },
+  {
+    "id": "heldout_33",
+    "company": "Amazon",
+    "fiscal_year": "2025",
+    "section": "Item 7",
+    "category": "simple_lookup",
+    "question_style": "keyword-style phrase",
+    "question": "Amazon variable cost components enumeration, for fiscal 2025",
+    "ground_truth": "Amazon's variable costs include product and content costs, payment processing and related transaction costs, picking, packaging, and preparing orders for shipment, transportation, customer service support, costs necessary to run AWS, and a portion of marketing costs.",
+    "supporting_quote": "Our variable costs include product and content costs, payment processing and related transaction costs, picking, packaging, and preparing orders for shipment, transportation, customer service support, costs necessary to run AWS, and a portion of our marketing costs.",
+    "chunk_id": "b48038a0-63e1-55cf-9259-eb8dff2b6756",
+    "source_chunk_ids": [
+      "b48038a0-63e1-55cf-9259-eb8dff2b6756"
+    ],
+    "validator_flags": [
+      "REPEATED_ACROSS_YEARS_DISAMBIGUATED (quote in FY2023, 2024; question names target year)"
+    ],
+    "default_reject": false,
+    "original_question": "Amazon variable cost components enumeration",
+    "rewrite_applied": "Disambiguated repeated quote: appended 'for fiscal 2025'"
+  },
+  {
+    "id": "heldout_34",
+    "company": "Amazon",
+    "fiscal_year": "2025",
+    "section": "Item 7",
+    "category": "numeric_precision",
+    "question_style": "paraphrase (no copied terms from the chunk)",
+    "question": "At Amazon, how much did currency fluctuations add to tech and infrastructure expenses during fiscal year 2025?",
+    "ground_truth": "Changes in foreign exchange rates increased technology and infrastructure costs by $312 million in 2025.",
+    "supporting_quote": "Changes in foreign exchange rates increased technology and infrastructure costs by $312 million in 2025.",
+    "chunk_id": "118c6037-193a-549f-81c0-30759d657856",
+    "source_chunk_ids": [
+      "118c6037-193a-549f-81c0-30759d657856"
+    ],
+    "validator_flags": [
+      "FLAG_NO_COMPANY_NAME"
+    ],
+    "default_reject": false,
+    "original_question": "How much did currency fluctuations add to tech and infrastructure expenses during fiscal year 2025?",
+    "rewrite_applied": "Prepended 'At Amazon, '"
+  },
+  {
+    "id": "heldout_35",
+    "company": "Amazon",
+    "fiscal_year": "2025",
+    "section": "Item 8",
+    "category": "numeric_precision",
+    "question_style": "\"what does the filing say about\" style",
+    "question": "At Amazon, what does the filing say about the principal amount of newly issued senior notes for the fiscal period ending December 31, 2025?",
+    "ground_truth": "$15.0 billion",
+    "supporting_quote": "including $15.0 billion issued in November 2025 for general corporate purposes.",
+    "chunk_id": "cd9df240-9ff2-56fe-954b-e73c7e8c4eb0",
+    "source_chunk_ids": [
+      "cd9df240-9ff2-56fe-954b-e73c7e8c4eb0"
+    ],
+    "validator_flags": [
+      "FLAG_NO_COMPANY_NAME"
+    ],
+    "default_reject": false,
+    "original_question": "What does the filing say about the principal amount of newly issued senior notes for the fiscal period ending December 31, 2025?",
+    "rewrite_applied": "Prepended 'At Amazon, '"
+  },
+  {
+    "id": "heldout_36",
+    "company": "Amazon",
+    "fiscal_year": "2025",
+    "section": "Item 8",
+    "category": "numeric_precision",
+    "question_style": "comparison-of-two-figures style where the chunk allows",
+    "question": "At Amazon, what is the difference between the fair value of convertible notes recorded on the consolidated balance sheet and the associated pre-tax unrealized gain included in accumulated other comprehensive income as of December 31, 2025?",
+    "ground_truth": "$6.3 billion ($45.8 billion estimated fair value minus $39.5 billion associated pre-tax unrealized gain)",
+    "supporting_quote": "As of December 31, 2025, the estimated fair value of our convertible notes recorded on our consolidated balance sheet was approximately $45.8 billion, and the associated pre-tax unrealized gain included in “Accumulated other comprehensive income (loss)” was $39.5 billion.",
+    "chunk_id": "269a7485-a90d-57a9-a433-a157128271e3",
+    "source_chunk_ids": [
+      "269a7485-a90d-57a9-a433-a157128271e3"
+    ],
+    "validator_flags": [
+      "REJECT_6GRAM_OVERLAP: 'the associated pre tax unrealized gain'",
+      "FLAG_NO_COMPANY_NAME"
+    ],
+    "default_reject": true,
+    "original_question": "What is the difference between the fair value of convertible notes recorded on the consolidated balance sheet and the associated pre-tax unrealized gain included in accumulated other comprehensive income as of December 31, 2025?",
+    "rewrite_applied": "Prepended 'At Amazon, '"
+  },
+  {
+    "id": "heldout_37",
+    "company": "Apple",
+    "fiscal_year": "2023",
+    "section": "Item 1",
+    "category": "numeric_precision",
+    "question_style": "natural prose",
+    "question": "At Apple, what proportion of total revenue was generated via third-party cellular carriers, wholesalers, and other secondary pathways for the 2023 fiscal period?",
+    "ground_truth": "63% of total net sales",
+    "supporting_quote": "During 2023, the Company’s net sales through its direct and indirect distribution channels accounted for 37% and 63%, respectively, of total net sales.",
+    "chunk_id": "41b87538-67d6-5ad1-983a-a669f05797ef",
+    "source_chunk_ids": [
+      "41b87538-67d6-5ad1-983a-a669f05797ef"
+    ],
+    "validator_flags": [
+      "FLAG_NO_COMPANY_NAME"
+    ],
+    "default_reject": false,
+    "original_question": "What proportion of total revenue was generated via third-party cellular carriers, wholesalers, and other secondary pathways for the 2023 fiscal period?",
+    "rewrite_applied": "Prepended 'At Apple, '"
+  },
+  {
+    "id": "heldout_38",
+    "company": "Apple",
+    "fiscal_year": "2023",
+    "section": "Item 1A",
+    "category": "simple_lookup",
+    "question_style": "short direct question",
+    "question": "What potential negative consequences could Apple face if its merchandise importation is subjected to sudden regulatory restrictions, per Apple's fiscal 2023 annual report?",
+    "ground_truth": "Apple's merchandise could face bans, delays, or importation prohibitions, which would lead to material adverse effects on the company's business, reputation, operational results, and financial condition.",
+    "supporting_quote": "As a result, the Company’s products could be banned, delayed or prohibited from importation, which could materially adversely affect the Company’s business, reputation, results of operations and financial condition.",
+    "chunk_id": "7b80c127-51c6-52d9-9571-c00622000f71",
+    "source_chunk_ids": [
+      "7b80c127-51c6-52d9-9571-c00622000f71"
+    ],
+    "validator_flags": [
+      "REPEATED_ACROSS_YEARS_DISAMBIGUATED (quote in FY2024; question names target year)"
+    ],
+    "default_reject": false,
+    "original_question": "What potential negative consequences could Apple face if its merchandise importation is subjected to sudden regulatory restrictions?",
+    "rewrite_applied": "Disambiguated repeated quote: appended 'per Apple's fiscal 2023 annual report'"
+  },
+  {
+    "id": "heldout_39",
+    "company": "Apple",
+    "fiscal_year": "2023",
+    "section": "Item 7",
+    "category": "simple_lookup",
+    "question_style": "keyword-style phrase",
+    "question": "At Apple, uncertain tax positions and legal contingencies financial impact evaluation criteria",
+    "ground_truth": "The evaluation of uncertain tax positions requires significant judgment in interpreting GAAP and complex tax laws, while recording liabilities for legal proceedings depends on whether a loss is probable and reasonably estimable. Management exercises significant judgment in both areas, and unfavorable resolutions could materially affect Apple's financial condition and operating results.",
+    "supporting_quote": "The evaluation of the Company’s uncertain tax positions involves significant judgment in the interpretation and application of GAAP and complex domestic and international tax laws, including the Act and matters related to the allocation of international taxation rights between countries. Although management believes the Company’s reserves are reasonable, no assurance can be given that the final outcome of these uncertainties will not be different from that which is reflected in the Company’s reserves.",
+    "chunk_id": "4573532f-34be-55f8-8c66-6bf912a0d48f",
+    "source_chunk_ids": [
+      "4573532f-34be-55f8-8c66-6bf912a0d48f"
+    ],
+    "validator_flags": [
+      "FLAG_NO_COMPANY_NAME",
+      "FLAG_NO_FISCAL_YEAR"
+    ],
+    "default_reject": false,
+    "original_question": "uncertain tax positions and legal contingencies financial impact evaluation criteria",
+    "rewrite_applied": "Prepended 'At Apple, '"
+  },
+  {
+    "id": "heldout_40",
+    "company": "Apple",
+    "fiscal_year": "2023",
+    "section": "Item 7",
+    "category": "simple_lookup",
+    "question_style": "paraphrase (no copied terms from the chunk)",
+    "question": "What factors does leadership rely on when formulating calculations for carrying values of obligations and assets, in Apple's FY2023 10-K?",
+    "ground_truth": "Management bases its estimates on historical experience and on various other assumptions it believes to be reasonable under the circumstances, the results of which form the basis for making judgments about the carrying values of assets and liabilities.",
+    "supporting_quote": "Management bases its estimates on historical experience and on various other assumptions it believes to be reasonable under the circumstances, the results of which form the basis for making judgments about the carrying values of assets and liabilities.",
+    "chunk_id": "b4cae64a-545e-595e-89b5-af6c9292bbe2",
+    "source_chunk_ids": [
+      "b4cae64a-545e-595e-89b5-af6c9292bbe2"
+    ],
+    "validator_flags": [
+      "REPEATED_ACROSS_YEARS_DISAMBIGUATED (quote in FY2024, 2025; question names target year)",
+      "FLAG_NO_FISCAL_YEAR"
+    ],
+    "default_reject": false,
+    "original_question": "What factors does leadership rely on when formulating calculations for carrying values of obligations and assets?",
+    "rewrite_applied": "Disambiguated repeated quote: appended 'in Apple's FY2023 10-K'"
+  },
+  {
+    "id": "heldout_41",
+    "company": "Apple",
+    "fiscal_year": "2023",
+    "section": "Item 8",
+    "category": "simple_lookup",
+    "question_style": "\"what does the filing say about\" style",
+    "question": "At Apple, what does the filing say about the opinion issued regarding the consolidated balance sheets for the fiscal year ended September 30, 2023?",
+    "ground_truth": "The independent registered public accounting firm issued an opinion stating that the financial statements present fairly, in all material respects, the financial position of Apple Inc. at September 30, 2023 and September 24, 2022, and the results of its operations and cash flows in conformity with U.S. generally accepted accounting principles.",
+    "supporting_quote": "In our opinion, the financial statements present fairly, in all material respects, the financial position of Apple Inc. at September 30, 2023 and September 24, 2022, and the results of its operations and its cash flows for each of the three years in the period ended September 30, 2023, in conformity with U.S. generally accepted accounting principles.",
+    "chunk_id": "b0b30de3-9702-5c6e-860c-fa32baca0aab",
+    "source_chunk_ids": [
+      "b0b30de3-9702-5c6e-860c-fa32baca0aab"
+    ],
+    "validator_flags": [
+      "FLAG_NO_COMPANY_NAME"
+    ],
+    "default_reject": false,
+    "original_question": "What does the filing say about the opinion issued regarding the consolidated balance sheets for the fiscal year ended September 30, 2023?",
+    "rewrite_applied": "Prepended 'At Apple, '"
+  },
+  {
+    "id": "heldout_42",
+    "company": "Apple",
+    "fiscal_year": "2023",
+    "section": "Item 8",
+    "category": "multi_hop-like single-chunk",
+    "question_style": "comparison-of-two-figures style where the chunk allows",
+    "question": "At Apple, how does the timing of revenue recognition for transferred physical devices differ from that of bundled recurring service features?",
+    "ground_truth": "Revenue allocated to delivered hardware and bundled software is recognized when control transfers to the buyer upon shipment, whereas revenue allocated to product-related bundled services and unspecified software upgrades is deferred and recognized ratably on a straight-line basis over the expected service provision period.",
+    "supporting_quote": "Revenue allocated to the delivered hardware and bundled software is recognized when control has transferred to the customer, which generally occurs when the product is shipped. Revenue allocated to the product-related bundled services and unspecified software upgrade rights is deferred and recognized on a straight-line basis over the estimated period they are expected to be provided.",
+    "chunk_id": "daee6eef-2178-5295-96da-8320c2b50241",
+    "source_chunk_ids": [
+      "daee6eef-2178-5295-96da-8320c2b50241"
+    ],
+    "validator_flags": [
+      "FLAG_NO_COMPANY_NAME",
+      "FLAG_NO_FISCAL_YEAR",
+      "REJECT_COMPARISON_NOT_SUPPORTED (found 0 distinct figures in GT)"
+    ],
+    "default_reject": true,
+    "original_question": "How does the timing of revenue recognition for transferred physical devices differ from that of bundled recurring service features?",
+    "rewrite_applied": "Prepended 'At Apple, '"
+  },
+  {
+    "id": "heldout_43",
+    "company": "Apple",
+    "fiscal_year": "2024",
+    "section": "Item 1",
+    "category": "numeric_precision",
+    "question_style": "natural prose",
+    "question": "At Apple, what was the total headcount of full-time equivalent staff at the close of fiscal year 2024?",
+    "ground_truth": "As of September 28, 2024, the Company had approximately 164,000 full-time equivalent employees.",
+    "supporting_quote": "As of September 28, 2024, the Company had approximately 164,000 full-time equivalent employees.",
+    "chunk_id": "b3d91828-079a-5d4e-8627-01a5ec66c43e",
+    "source_chunk_ids": [
+      "b3d91828-079a-5d4e-8627-01a5ec66c43e"
+    ],
+    "validator_flags": [
+      "FLAG_NO_COMPANY_NAME"
+    ],
+    "default_reject": false,
+    "original_question": "What was the total headcount of full-time equivalent staff at the close of fiscal year 2024?",
+    "rewrite_applied": "Prepended 'At Apple, '"
+  },
+  {
+    "id": "heldout_44",
+    "company": "Apple",
+    "fiscal_year": "2024",
+    "section": "Item 1A",
+    "category": "simple_lookup",
+    "question_style": "short direct question",
+    "question": "What protection limitations exist for Apple's IT network?",
+    "ground_truth": "Apple's security measures and insurance coverage may not be sufficient for all eventualities or losses, as they remain vulnerable to hacking, ransomware, employee errors, fraud, and system failures.",
+    "supporting_quote": "As with all companies, these security measures may not be sufficient for all eventualities and are vulnerable to hacking, ransomware attacks, employee error, malfeasance, system error, faulty password management or other irregularities.",
+    "chunk_id": "676dd6fd-2b90-5723-975c-f8595bd50444",
+    "source_chunk_ids": [
+      "676dd6fd-2b90-5723-975c-f8595bd50444"
+    ],
+    "validator_flags": [
+      "FLAG_NO_FISCAL_YEAR"
+    ],
+    "default_reject": false
+  },
+  {
+    "id": "heldout_45",
+    "company": "Apple",
+    "fiscal_year": "2024",
+    "section": "Item 7",
+    "category": "other",
+    "question_style": "keyword-style phrase",
+    "question": "Apple uncertain tax positions and ordinary course litigation financial impact evaluation criteria, for fiscal 2024",
+    "ground_truth": "Management determines tax reserves and legal liabilities by exercising significant judgment in interpreting GAAP, complex domestic and international tax laws (such as the TCJA), and evaluating probabilities where losses are both probable and reasonably estimable. These reserves and liabilities are subject to adjustment as facts and circumstances change, and unexpected resolutions could materially impact the company's financial condition and operating results.",
+    "supporting_quote": "The evaluation of the Company’s uncertain tax positions involves significant judgment in the interpretation and application of GAAP and complex domestic and international tax laws, including the TCJA and the allocation of international taxation rights between countries. Although management believes the Company’s reserves are reasonable, no assurance can be given that the final outcome of these uncertainties will not be different from that reflected in the Company’s reserves.",
+    "chunk_id": "0bdbe7cc-a07d-5bee-a5b5-7342cbed3cbc",
+    "source_chunk_ids": [
+      "0bdbe7cc-a07d-5bee-a5b5-7342cbed3cbc"
+    ],
+    "validator_flags": [
+      "REPEATED_ACROSS_YEARS_DISAMBIGUATED (quote in FY2025; question names target year)"
+    ],
+    "default_reject": false,
+    "original_question": "Apple uncertain tax positions and ordinary course litigation financial impact evaluation criteria",
+    "rewrite_applied": "Disambiguated repeated quote: appended 'for fiscal 2024'"
+  },
+  {
+    "id": "heldout_46",
+    "company": "Apple",
+    "fiscal_year": "2024",
+    "section": "Item 7",
+    "category": "numeric_precision",
+    "question_style": "paraphrase (no copied terms from the chunk)",
+    "question": "At Apple, what was the aggregate principal value of outstanding fixed-rate debt instruments held by the corporation as of the conclusion of fiscal year 2024?",
+    "ground_truth": "As of September 28, 2024, the company had outstanding fixed-rate notes with varying maturities for an aggregate principal amount of $97.3 billion.",
+    "supporting_quote": "As of September 28, 2024, the Company had outstanding fixed-rate notes with varying maturities for an aggregate principal amount of $97.3 billion (collectively the “Notes”), with $10.9 billion payable within 12 months.",
+    "chunk_id": "fc2bd0ab-8aa5-50ec-964b-4d5e3fe54306",
+    "source_chunk_ids": [
+      "fc2bd0ab-8aa5-50ec-964b-4d5e3fe54306"
+    ],
+    "validator_flags": [
+      "FLAG_NO_COMPANY_NAME"
+    ],
+    "default_reject": false,
+    "original_question": "What was the aggregate principal value of outstanding fixed-rate debt instruments held by the corporation as of the conclusion of fiscal year 2024?",
+    "rewrite_applied": "Prepended 'At Apple, '"
+  },
+  {
+    "id": "heldout_47",
+    "company": "Apple",
+    "fiscal_year": "2024",
+    "section": "Item 8",
+    "category": "numeric_precision",
+    "question_style": "\"what does the filing say about\" style",
+    "question": "At Apple, what does the filing say about the aggregate value of property, plant, equipment, and other non-current assets belonging to the enterprise at the conclusion of fiscal years 2024 and 2023?",
+    "ground_truth": "The total long-lived assets were $45,680 million as of September 28, 2024, and $43,715 million as of September 30, 2023.",
+    "supporting_quote": "Total long-lived assets$45,680 $43,715",
+    "chunk_id": "164448ed-f8a4-5a63-ad77-63339367f4bb",
+    "source_chunk_ids": [
+      "164448ed-f8a4-5a63-ad77-63339367f4bb"
+    ],
+    "validator_flags": [
+      "REJECT_ANSWER_LEAKAGE: '2023'",
+      "FLAG_NO_COMPANY_NAME",
+      "REJECT_QUESTION_YEAR_MISMATCH (question names 2023, but filing is 2024)"
+    ],
+    "default_reject": true,
+    "original_question": "What does the filing say about the aggregate value of property, plant, equipment, and other non-current assets belonging to the enterprise at the conclusion of fiscal years 2024 and 2023?",
+    "rewrite_applied": "Prepended 'At Apple, '"
+  },
+  {
+    "id": "heldout_48",
+    "company": "Apple",
+    "fiscal_year": "2024",
+    "section": "Item 8",
+    "category": "numeric_precision",
+    "question_style": "comparison-of-two-figures style where the chunk allows",
+    "question": "At Apple, how did the notional value of undocumented foreign exchange hedging contracts change between fiscal year 2023 and fiscal year 2024, expressed in millions of dollars?",
+    "ground_truth": "The notional amount of derivative instruments not designated as accounting hedges for foreign exchange contracts decreased from $104,777 million in 2023 to $91,493 million in 2024.",
+    "supporting_quote": "Derivative instruments not designated as accounting hedges:\n\nForeign exchange contracts$91,493 $104,777",
+    "chunk_id": "2220b951-d51d-5210-a73c-7c3aa0a82373",
+    "source_chunk_ids": [
+      "2220b951-d51d-5210-a73c-7c3aa0a82373"
+    ],
+    "validator_flags": [
+      "REJECT_ANSWER_LEAKAGE: '2023'",
+      "FLAG_NO_COMPANY_NAME",
+      "REJECT_QUESTION_YEAR_MISMATCH (question names 2023, but filing is 2024)"
+    ],
+    "default_reject": true,
+    "original_question": "How did the notional value of undocumented foreign exchange hedging contracts change between fiscal year 2023 and fiscal year 2024, expressed in millions of dollars?",
+    "rewrite_applied": "Prepended 'At Apple, '"
+  },
+  {
+    "id": "heldout_49",
+    "company": "Apple",
+    "fiscal_year": "2025",
+    "section": "Item 1",
+    "category": "numeric_precision",
+    "question_style": "natural prose",
+    "question": "At Apple, what was the total headcount of full-time equivalent staff employed by the technology firm as of late September 2025?",
+    "ground_truth": "As of September 27, 2025, the company employed approximately 166,000 full-time equivalent workers.",
+    "supporting_quote": "As of September 27, 2025, the Company had approximately 166,000 full-time equivalent employees.",
+    "chunk_id": "1002a08c-a091-54cc-8910-a5948e4e27fe",
+    "source_chunk_ids": [
+      "1002a08c-a091-54cc-8910-a5948e4e27fe"
+    ],
+    "validator_flags": [
+      "FLAG_NO_COMPANY_NAME"
+    ],
+    "default_reject": false,
+    "original_question": "What was the total headcount of full-time equivalent staff employed by the technology firm as of late September 2025?",
+    "rewrite_applied": "Prepended 'At Apple, '"
+  },
+  {
+    "id": "heldout_50",
+    "company": "Apple",
+    "fiscal_year": "2025",
+    "section": "Item 1A",
+    "category": "simple_lookup",
+    "question_style": "short direct question",
+    "question": "What is the typical duration covered by manufacturing purchase commitments, per Apple's fiscal 2025 annual report?",
+    "ground_truth": "Manufacturing purchase obligations typically cover forecasted component and manufacturing requirements for periods up to 150 days.",
+    "supporting_quote": "Manufacturing purchase obligations cover the Company’s forecasted component and manufacturing requirements, typically for periods up to 150 days.",
+    "chunk_id": "e9ee49ee-c574-553a-82a3-3627dffbf78b",
+    "source_chunk_ids": [
+      "e9ee49ee-c574-553a-82a3-3627dffbf78b"
+    ],
+    "validator_flags": [
+      "REPEATED_ACROSS_YEARS_DISAMBIGUATED (quote in FY2023, 2024; question names target year)"
+    ],
+    "default_reject": false,
+    "original_question": "What is the typical duration covered by manufacturing purchase commitments?",
+    "rewrite_applied": "Disambiguated repeated quote: appended 'per Apple's fiscal 2025 annual report'"
+  },
+  {
+    "id": "heldout_51",
+    "company": "Apple",
+    "fiscal_year": "2025",
+    "section": "Item 7",
+    "category": "numeric_precision",
+    "question_style": "keyword-style phrase",
+    "question": "Apple FY2025 provision for income taxes",
+    "ground_truth": "$20,719 million",
+    "supporting_quote": "Provision for income taxes$20,719 $29,749 $16,741",
+    "chunk_id": "db8cf84d-72c5-5dd4-a623-8d9ccfc0aba1",
+    "source_chunk_ids": [
+      "db8cf84d-72c5-5dd4-a623-8d9ccfc0aba1"
+    ],
+    "validator_flags": [
+      "FLAG_NO_FISCAL_YEAR"
+    ],
+    "default_reject": false
+  },
+  {
+    "id": "heldout_52",
+    "company": "Apple",
+    "fiscal_year": "2025",
+    "section": "Item 7",
+    "category": "numeric_precision",
+    "question_style": "paraphrase (no copied terms from the chunk)",
+    "question": "At Apple, what is the total monetary value of equity bought back by the corporate entity during the 2025 fiscal period?",
+    "ground_truth": "During fiscal year 2025, the company repurchased $89.3 billion of its common stock.",
+    "supporting_quote": "During 2025, the Company repurchased $89.3 billion of its common stock and paid dividends and dividend equivalents of $15.4 billion.",
+    "chunk_id": "bf36d2d2-84cb-5b60-867b-163be2d9e843",
+    "source_chunk_ids": [
+      "bf36d2d2-84cb-5b60-867b-163be2d9e843"
+    ],
+    "validator_flags": [
+      "FLAG_NO_COMPANY_NAME"
+    ],
+    "default_reject": false,
+    "original_question": "What is the total monetary value of equity bought back by the corporate entity during the 2025 fiscal period?",
+    "rewrite_applied": "Prepended 'At Apple, '"
+  },
+  {
+    "id": "heldout_53",
+    "company": "Apple",
+    "fiscal_year": "2025",
+    "section": "Item 8",
+    "category": "simple_lookup",
+    "question_style": "\"what does the filing say about\" style",
+    "question": "At Apple, what does the filing say about the maximum hedging duration utilized for foreign currency exposure related to term debt transactions?",
+    "ground_truth": "As of September 27, 2025, the maximum length of time over which the Company is hedging its exposure to the variability in future cash flows for term debt–related foreign currency transactions is 17 years.",
+    "supporting_quote": "As of September 27, 2025, the maximum length of time over which the Company is hedging its exposure to the variability in future cash flows for term debt–related foreign currency transactions is 17 years.",
+    "chunk_id": "7a8b89d4-ae47-57fe-8000-7ade1f1a1304",
+    "source_chunk_ids": [
+      "7a8b89d4-ae47-57fe-8000-7ade1f1a1304"
+    ],
+    "validator_flags": [
+      "FLAG_NO_COMPANY_NAME",
+      "FLAG_NO_FISCAL_YEAR"
+    ],
+    "default_reject": false,
+    "original_question": "What does the filing say about the maximum hedging duration utilized for foreign currency exposure related to term debt transactions?",
+    "rewrite_applied": "Prepended 'At Apple, '"
+  },
+  {
+    "id": "heldout_54",
+    "company": "Apple",
+    "fiscal_year": "2025",
+    "section": "Item 8",
+    "category": "numeric_precision",
+    "question_style": "comparison-of-two-figures style where the chunk allows",
+    "question": "At Apple, how did the total value of gross unrecognized tax benefits evolve between the close of fiscal year 2024 and fiscal year 2025?",
+    "ground_truth": "The total amount of gross unrecognized tax benefits increased from $22.0 billion ($22,038 million) as of September 28, 2024, to $23.2 billion ($23,242 million) as of September 27, 2025.",
+    "supporting_quote": "As of September 27, 2025, the total amount of gross unrecognized tax benefits was $23.2 billion... As of September 28, 2024, the total amount of gross unrecognized tax benefits was $22.0 billion...",
+    "chunk_id": "2d926e75-4c5f-5366-8948-dc4742a784ce",
+    "source_chunk_ids": [
+      "2d926e75-4c5f-5366-8948-dc4742a784ce"
+    ],
+    "validator_flags": [
+      "REJECT_QUOTE_CONTAINS_ELLIPSIS",
+      "REJECT_ANSWER_LEAKAGE: '2024'",
+      "FLAG_NO_COMPANY_NAME",
+      "REJECT_QUESTION_YEAR_MISMATCH (question names 2024, but filing is 2025)"
+    ],
+    "default_reject": true,
+    "original_question": "How did the total value of gross unrecognized tax benefits evolve between the close of fiscal year 2024 and fiscal year 2025?",
+    "rewrite_applied": "Prepended 'At Apple, '"
+  },
+  {
+    "id": "heldout_55",
+    "company": "Microsoft",
+    "fiscal_year": "2024",
+    "section": "Item 1",
+    "category": "simple_lookup",
+    "question_style": "natural prose",
+    "question": "Which executive currently holds the position of Chief Financial Officer at Microsoft, in Microsoft's FY2024 10-K?",
+    "ground_truth": "Amy Hood (referred to as Ms. Hood)",
+    "supporting_quote": "Ms. Hood was appointed Executive Vice President and Chief Financial Officer in July 2013, subsequent to her appointment as Chief Financial Officer in May 2013.",
+    "chunk_id": "b33edaee-6226-56c2-9847-8b9717859837",
+    "source_chunk_ids": [
+      "b33edaee-6226-56c2-9847-8b9717859837"
+    ],
+    "validator_flags": [
+      "REPEATED_ACROSS_YEARS_DISAMBIGUATED (quote in FY2025, 2026; question names target year)",
+      "FLAG_NO_FISCAL_YEAR"
+    ],
+    "default_reject": false,
+    "original_question": "Which executive currently holds the position of Chief Financial Officer at Microsoft?",
+    "rewrite_applied": "Disambiguated repeated quote: appended 'in Microsoft's FY2024 10-K'"
+  },
+  {
+    "id": "heldout_56",
+    "company": "Microsoft",
+    "fiscal_year": "2024",
+    "section": "Item 1A",
+    "category": "numeric_precision",
+    "question_style": "short direct question",
+    "question": "At Microsoft, what is the total additional tax payment demanded by the IRS for transfer pricing audits covering tax years 2004 through 2013, for fiscal 2024?",
+    "ground_truth": "The IRS is seeking an additional tax payment of $28.9 billion plus penalties and interest regarding intercompany transfer pricing disputes for the tax years 2004 to 2013.",
+    "supporting_quote": "In the NOPAs, the IRS is seeking an additional tax payment of $28.9 billion plus penalties and interest.",
+    "chunk_id": "08397f89-ef2b-5587-9db8-8af8868ae0f8",
+    "source_chunk_ids": [
+      "08397f89-ef2b-5587-9db8-8af8868ae0f8"
+    ],
+    "validator_flags": [
+      "REJECT_ANSWER_LEAKAGE: '2004'",
+      "REPEATED_ACROSS_YEARS_DISAMBIGUATED (quote in FY2025, 2026; question names target year)",
+      "FLAG_NO_COMPANY_NAME",
+      "REJECT_QUESTION_YEAR_MISMATCH (question names 2004, 2013, but filing is 2024)"
+    ],
+    "default_reject": true,
+    "original_question": "What is the total additional tax payment demanded by the IRS for transfer pricing audits covering tax years 2004 through 2013?",
+    "rewrite_applied": "Disambiguated repeated quote: appended 'for fiscal 2024' (remains rejected: REJECT_ANSWER_LEAKAGE: '2004'; REPEATED_ACROSS_YEARS_DISAMBIGUATED (quote in FY2025, 2026; question names target year); FLAG_NO_COMPANY_NAME); Prepended 'At Microsoft, '"
+  },
+  {
+    "id": "heldout_57",
+    "company": "Microsoft",
+    "fiscal_year": "2024",
+    "section": "Item 7",
+    "category": "numeric_precision",
+    "question_style": "paraphrase (no copied terms from the chunk)",
+    "question": "At Microsoft, what was the total value of liquid funds and near-term market holdings at the close of fiscal year 2024?",
+    "ground_truth": "$75.5 billion",
+    "supporting_quote": "Cash, cash equivalents, and short-term investments totaled $75.5 billion and $111.3 billion as of June 30, 2024 and 2023, respectively.",
+    "chunk_id": "e393570c-c85c-50ac-8d30-3ed9b6260e21",
+    "source_chunk_ids": [
+      "e393570c-c85c-50ac-8d30-3ed9b6260e21"
+    ],
+    "validator_flags": [
+      "FLAG_NO_COMPANY_NAME"
+    ],
+    "default_reject": false,
+    "original_question": "What was the total value of liquid funds and near-term market holdings at the close of fiscal year 2024?",
+    "rewrite_applied": "Prepended 'At Microsoft, '"
+  },
+  {
+    "id": "heldout_58",
+    "company": "Microsoft",
+    "fiscal_year": "2024",
+    "section": "Item 8",
+    "category": "numeric_precision",
+    "question_style": "\"what does the filing say about\" style",
+    "question": "At Microsoft, what does the filing say about the total face value of long-term debt instruments for the period ending June 30, 2024?",
+    "ground_truth": "The total face value of long-term debt as of June 30, 2024, is $51,221 million.",
+    "supporting_quote": "Total face value\n\n51,221",
+    "chunk_id": "c3fc2615-d87c-5049-98b6-70f4fe738277",
+    "source_chunk_ids": [
+      "c3fc2615-d87c-5049-98b6-70f4fe738277"
+    ],
+    "validator_flags": [
+      "FLAG_NO_COMPANY_NAME"
+    ],
+    "default_reject": false,
+    "original_question": "What does the filing say about the total face value of long-term debt instruments for the period ending June 30, 2024?",
+    "rewrite_applied": "Prepended 'At Microsoft, '"
+  },
+  {
+    "id": "heldout_59",
+    "company": "Microsoft",
+    "fiscal_year": "2024",
+    "section": "Item 8",
+    "category": "simple_lookup",
+    "question_style": "comparison-of-two-figures style where the chunk allows",
+    "question": "At Microsoft, how did the external audit firm assess the validity of the applied discount metrics used by company leadership?",
+    "ground_truth": "The auditor evaluated the reasonableness of the discount rates by testing the underlying source information, verifying calculation accuracy, and developing independent estimate ranges to compare against management's chosen rates with the assistance of fair value specialists.",
+    "supporting_quote": "•With the assistance of our fair value specialists, we evaluated the reasonableness of the discount rates by:\n\n-Testing the source information underlying the discount rates and testing the mathematical accuracy of the calculations.\n\n-Developing a range of independent estimates and comparing those to the discount rates selected by management.",
+    "chunk_id": "a182fbe1-f18a-5188-9650-08bda8625630",
+    "source_chunk_ids": [
+      "a182fbe1-f18a-5188-9650-08bda8625630"
+    ],
+    "validator_flags": [
+      "FLAG_NO_COMPANY_NAME",
+      "FLAG_NO_FISCAL_YEAR",
+      "REJECT_COMPARISON_NOT_SUPPORTED (found 0 distinct figures in GT)"
+    ],
+    "default_reject": true,
+    "original_question": "How did the external audit firm assess the validity of the applied discount metrics used by company leadership?",
+    "rewrite_applied": "Prepended 'At Microsoft, '"
+  },
+  {
+    "id": "heldout_60",
+    "company": "Microsoft",
+    "fiscal_year": "2025",
+    "section": "Item 1",
+    "category": "simple_lookup",
+    "question_style": "natural prose",
+    "question": "What is the primary distinction between the two main classifications of original equipment manufacturers that partner with Microsoft, per Microsoft's fiscal 2025 annual report?",
+    "ground_truth": "The primary distinction is that direct OEMs have a direct contractual agreement managed between Microsoft and the manufacturer (covering virtually all multinational companies as well as various regional and local entities), whereas system builders are lower-volume PC manufacturers that acquire Microsoft software for pre-installation and redistribution through the distributor channel rather than a direct relationship.",
+    "supporting_quote": "There are two broad categories of OEMs. The largest category of OEMs are direct OEMs as our relationship with them is managed through a direct agreement between Microsoft and the OEM. We have distribution agreements covering one or more of our products with virtually all the multinational OEMs, including Dell, Hewlett-Packard, Lenovo, and with many regional and local OEMs. The second broad category of OEMs are system builders consisting of lower-volume PC manufacturers, which source Microsoft software for pre-installation and local redistribution primarily through the Microsoft distributor channel rather than through a direct agreement or relationship with Microsoft.",
+    "chunk_id": "3bf438dd-2ed0-5c2d-ba48-134f273ee26b",
+    "source_chunk_ids": [
+      "3bf438dd-2ed0-5c2d-ba48-134f273ee26b"
+    ],
+    "validator_flags": [
+      "REPEATED_ACROSS_YEARS_DISAMBIGUATED (quote in FY2024; question names target year)"
+    ],
+    "default_reject": false,
+    "original_question": "What is the primary distinction between the two main classifications of original equipment manufacturers that partner with Microsoft?",
+    "rewrite_applied": "Disambiguated repeated quote: appended 'per Microsoft's fiscal 2025 annual report'"
+  },
+  {
+    "id": "heldout_61",
+    "company": "Microsoft",
+    "fiscal_year": "2025",
+    "section": "Item 1A",
+    "category": "simple_lookup",
+    "question_style": "short direct question",
+    "question": "What consequences could arise from failing to meet public-sector contracting obligations, in Microsoft's FY2025 10-K?",
+    "ground_truth": "Failing to satisfy government contractual or regulatory requirements can lead to suspension or debarment as a governmental contractor, the imposition of civil and criminal fines and penalties, and potential rescission of contracts under certain circumstances.",
+    "supporting_quote": "If we do not satisfy contractual or regulatory requirements, we could be suspended or debarred as a governmental contractor, we could incur civil and criminal fines and penalties, and under certain circumstances contracts may be rescinded.",
+    "chunk_id": "1246efba-5b57-5d11-9a01-723158b57785",
+    "source_chunk_ids": [
+      "1246efba-5b57-5d11-9a01-723158b57785"
+    ],
+    "validator_flags": [
+      "REPEATED_ACROSS_YEARS_DISAMBIGUATED (quote in FY2026; question names target year)",
+      "FLAG_NO_FISCAL_YEAR"
+    ],
+    "default_reject": false,
+    "original_question": "What consequences could arise from failing to meet public-sector contracting obligations?",
+    "rewrite_applied": "Disambiguated repeated quote: appended 'in Microsoft's FY2025 10-K'"
+  },
+  {
+    "id": "heldout_62",
+    "company": "Microsoft",
+    "fiscal_year": "2025",
+    "section": "Item 7",
+    "category": "numeric_precision",
+    "question_style": "keyword-style phrase",
+    "question": "At Microsoft, productivity and Business Processes segment operating income fiscal year 2025 in millions",
+    "ground_truth": "$69,773 million",
+    "supporting_quote": "Productivity and Business Processes\n\nRevenue\n\n$\n\n120,810\n\n$\n\n106,820\n\n13%\n\nCost of revenue\n\n22,422\n\n19,611\n\n14%\n\nOperating expenses\n\n28,615\n\n27,548\n\n4%\n\nOperating Income\n\n$\n\n69,773\n\n$\n\n59,661\n\n17%",
+    "chunk_id": "ff9e383d-1ce0-58c3-b997-4d628d757b80",
+    "source_chunk_ids": [
+      "ff9e383d-1ce0-58c3-b997-4d628d757b80"
+    ],
+    "validator_flags": [
+      "FLAG_NO_COMPANY_NAME"
+    ],
+    "default_reject": false,
+    "original_question": "Productivity and Business Processes segment operating income fiscal year 2025 in millions",
+    "rewrite_applied": "Prepended 'At Microsoft, '"
+  },
+  {
+    "id": "heldout_63",
+    "company": "Microsoft",
+    "fiscal_year": "2025",
+    "section": "Item 7",
+    "category": "numeric_precision",
+    "question_style": "paraphrase (no copied terms from the chunk)",
+    "question": "At Microsoft, what was the year-over-year growth rate for Azure and other cloud services during the period?",
+    "ground_truth": "Azure and other cloud services revenue grew by 34%.",
+    "supporting_quote": "Azure and other cloud services revenue grew 34% driven by demand for our portfolio of services.",
+    "chunk_id": "02da7d7a-47d0-54f6-9a31-13b1eaf62d1e",
+    "source_chunk_ids": [
+      "02da7d7a-47d0-54f6-9a31-13b1eaf62d1e"
+    ],
+    "validator_flags": [
+      "FLAG_NO_FISCAL_YEAR"
+    ],
+    "default_reject": false,
+    "original_question": "What was the year-over-year growth rate for Azure and other cloud services during the period?",
+    "rewrite_applied": "Prepended 'At Microsoft, '"
+  },
+  {
+    "id": "heldout_64",
+    "company": "Microsoft",
+    "fiscal_year": "2025",
+    "section": "Item 8",
+    "category": "numeric_precision",
+    "question_style": "\"what does the filing say about\" style",
+    "question": "At Microsoft, what does the filing say about the aggregate carrying amount for total debt investments as of June 30, 2024, for fiscal 2025?",
+    "ground_truth": "The total amount for debt investments was $68,209 million.",
+    "supporting_quote": "Total debt investments\n\n$\n\n68,209",
+    "chunk_id": "de1ad3f2-8986-5eaf-9324-1a5948ceef11",
+    "source_chunk_ids": [
+      "de1ad3f2-8986-5eaf-9324-1a5948ceef11"
+    ],
+    "validator_flags": [
+      "REPEATED_ACROSS_YEARS_DISAMBIGUATED (quote in FY2024; question names target year)",
+      "FLAG_NO_COMPANY_NAME",
+      "REJECT_QUESTION_YEAR_MISMATCH (question names 2024, but filing is 2025)"
+    ],
+    "default_reject": true,
+    "original_question": "What does the filing say about the aggregate carrying amount for total debt investments as of June 30, 2024?",
+    "rewrite_applied": "Disambiguated repeated quote: appended 'for fiscal 2025'; Prepended 'At Microsoft, '"
+  },
+  {
+    "id": "heldout_65",
+    "company": "Microsoft",
+    "fiscal_year": "2025",
+    "section": "Item 8",
+    "category": "numeric_precision",
+    "question_style": "comparison-of-two-figures style where the chunk allows",
+    "question": "At Microsoft, what is the specific minimum liquidity requirement and the actual cash investments level maintained as of June 30, 2025?",
+    "ground_truth": "The minimum liquidity requirement is $1.0 billion, and the cash investments held were in excess of $1.0 billion as of June 30, 2025.",
+    "supporting_quote": "require us to maintain minimum liquidity of $1.0 billion. To the extent we fail to meet these requirements, we will be required to post collateral, similar to the standard convention related to over-the-counter derivatives. As of June 30, 2025, our long-term unsecured debt rating was AAA, and cash investments were in excess of $1.0 billion.",
+    "chunk_id": "4780bf8c-7f78-5191-b83a-3601ad22d1aa",
+    "source_chunk_ids": [
+      "4780bf8c-7f78-5191-b83a-3601ad22d1aa"
+    ],
+    "validator_flags": [
+      "FLAG_NO_COMPANY_NAME"
+    ],
+    "default_reject": false,
+    "original_question": "What is the specific minimum liquidity requirement and the actual cash investments level maintained as of June 30, 2025?",
+    "rewrite_applied": "Prepended 'At Microsoft, '"
+  },
+  {
+    "id": "heldout_66",
+    "company": "Microsoft",
+    "fiscal_year": "2026",
+    "section": "Item 1",
+    "category": "simple_lookup",
+    "question_style": "natural prose",
+    "question": "What long-term environmental targets has the technology enterprise set to achieve by the end of the decade, per Microsoft's fiscal 2026 annual report?",
+    "ground_truth": "Microsoft announced goals to become a carbon negative, water positive, and zero waste company by 2030.",
+    "supporting_quote": "In 2020, we announced goals to become a carbon negative, water positive, and zero waste company by 2030.",
+    "chunk_id": "407b7f29-2a47-5160-8118-d969934a2700",
+    "source_chunk_ids": [
+      "407b7f29-2a47-5160-8118-d969934a2700"
+    ],
+    "validator_flags": [
+      "REPEATED_ACROSS_YEARS_DISAMBIGUATED (quote in FY2025; question names target year)"
+    ],
+    "default_reject": false,
+    "original_question": "What long-term environmental targets has the technology enterprise set to achieve by the end of the decade?",
+    "rewrite_applied": "Disambiguated repeated quote: appended 'per Microsoft's fiscal 2026 annual report'"
+  },
+  {
+    "id": "heldout_67",
+    "company": "Microsoft",
+    "fiscal_year": "2026",
+    "section": "Item 1A",
+    "category": "simple_lookup",
+    "question_style": "short direct question",
+    "question": "What potential business impacts could arise from regulatory scrutiny and enforcement regarding artificial intelligence and competition laws, in Microsoft's FY2026 10-K?",
+    "ground_truth": "Competition law enforcement actions, court decisions, and new market regulations may result in fines or hinder the company's ability to provide software benefits to consumers and businesses, reducing product attractiveness and revenue. Additionally, evolving legislative and regulatory actions concerning artificial intelligence, such as the EU's AI Act, could increase operational costs or restrict opportunities and the provision or operation of AI models and services.",
+    "supporting_quote": "Competition law enforcement actions and court decisions along with new market regulations may result in fines or hinder our ability to provide the benefits of our software to consumers and businesses, reducing the attractiveness of our products and the revenue that comes from them.",
+    "chunk_id": "4f8714cc-96f3-5a30-9ed7-51568f31289a",
+    "source_chunk_ids": [
+      "4f8714cc-96f3-5a30-9ed7-51568f31289a"
+    ],
+    "validator_flags": [
+      "REPEATED_ACROSS_YEARS_DISAMBIGUATED (quote in FY2024, 2025; question names target year)",
+      "FLAG_NO_FISCAL_YEAR"
+    ],
+    "default_reject": false,
+    "original_question": "What potential business impacts could arise from regulatory scrutiny and enforcement regarding artificial intelligence and competition laws?",
+    "rewrite_applied": "Disambiguated repeated quote: appended 'in Microsoft's FY2026 10-K'"
+  },
+  {
+    "id": "heldout_68",
+    "company": "Microsoft",
+    "fiscal_year": "2026",
+    "section": "Item 7",
+    "category": "numeric_precision",
+    "question_style": "keyword-style phrase",
+    "question": "Microsoft fiscal year 2026 adjusted diluted earnings per share non-GAAP value",
+    "ground_truth": "$17.28",
+    "supporting_quote": "Adjusted diluted earnings per share (non-GAAP)\n\n$\n\n17.28",
+    "chunk_id": "192845d4-5809-51e7-98c1-b02e775a1be3",
+    "source_chunk_ids": [
+      "192845d4-5809-51e7-98c1-b02e775a1be3"
+    ],
+    "validator_flags": [
+      "REJECT_6GRAM_OVERLAP: 'adjusted diluted earnings per share non'"
+    ],
+    "default_reject": true
+  },
+  {
+    "id": "heldout_69",
+    "company": "Microsoft",
+    "fiscal_year": "2026",
+    "section": "Item 7",
+    "category": "numeric_precision",
+    "question_style": "paraphrase (no copied terms from the chunk)",
+    "question": "At Microsoft, what was the annual growth rate for the enterprise cloud computing division?",
+    "ground_truth": "Azure and other cloud services revenue increased by 41% during the fiscal year.",
+    "supporting_quote": "•Azure and other cloud services revenue increased 41%.",
+    "chunk_id": "543441c4-9035-5510-93ce-7f742fada815",
+    "source_chunk_ids": [
+      "543441c4-9035-5510-93ce-7f742fada815"
+    ],
+    "validator_flags": [
+      "FLAG_NO_COMPANY_NAME",
+      "FLAG_NO_FISCAL_YEAR"
+    ],
+    "default_reject": false,
+    "original_question": "What was the annual growth rate for the enterprise cloud computing division?",
+    "rewrite_applied": "Prepended 'At Microsoft, '"
+  },
+  {
+    "id": "heldout_70",
+    "company": "Microsoft",
+    "fiscal_year": "2026",
+    "section": "Item 8",
+    "category": "numeric_precision",
+    "question_style": "\"what does the filing say about\" style",
+    "question": "At Microsoft, what does the filing say about the valuation allowance amount recorded for the fiscal year ending June 30, 2026?",
+    "ground_truth": "The valuation allowance for fiscal year 2026 was $1,332 million.",
+    "supporting_quote": "Less valuation allowance\n(\n1,332\n)",
+    "chunk_id": "d470c1f0-9b8a-53b2-a68f-212b4a5da889",
+    "source_chunk_ids": [
+      "d470c1f0-9b8a-53b2-a68f-212b4a5da889"
+    ],
+    "validator_flags": [
+      "REJECT_QUOTE_NOT_IN_CHUNK",
+      "FLAG_NO_COMPANY_NAME"
+    ],
+    "default_reject": true,
+    "original_question": "What does the filing say about the valuation allowance amount recorded for the fiscal year ending June 30, 2026?",
+    "rewrite_applied": "Prepended 'At Microsoft, '"
+  },
+  {
+    "id": "heldout_71",
+    "company": "Microsoft",
+    "fiscal_year": "2026",
+    "section": "Item 8",
+    "category": "multi_hop-like single-chunk",
+    "question_style": "comparison-of-two-figures style where the chunk allows",
+    "question": "At Microsoft, how does the timing of revenue recognition differ between perpetual on-premises software licenses and subscription-based cloud offerings?",
+    "ground_truth": "Revenue from distinct on-premises licenses is recognized upfront at the point in time when the software is made available to the customer, whereas revenue related to subscription-based cloud services is recognized ratably over the contract period.",
+    "supporting_quote": "Revenue from distinct on-premises licenses is recognized upfront at the point in time when the software is made available to the customer. [...] Revenue related to cloud services provided on a subscription basis is recognized ratably over the contract period.",
+    "chunk_id": "08da608b-6969-5c76-bfb3-160a599bd112",
+    "source_chunk_ids": [
+      "08da608b-6969-5c76-bfb3-160a599bd112"
+    ],
+    "validator_flags": [
+      "REJECT_QUOTE_CONTAINS_ELLIPSIS",
+      "FLAG_NO_COMPANY_NAME",
+      "FLAG_NO_FISCAL_YEAR",
+      "REJECT_COMPARISON_NOT_SUPPORTED (found 0 distinct figures in GT)"
+    ],
+    "default_reject": true,
+    "original_question": "How does the timing of revenue recognition differ between perpetual on-premises software licenses and subscription-based cloud offerings?",
+    "rewrite_applied": "Prepended 'At Microsoft, '"
+  },
+  {
+    "id": "heldout_72",
+    "company": "NVIDIA",
+    "fiscal_year": "2024",
+    "section": "Item 1",
+    "category": "numeric_precision",
+    "question_style": "natural prose",
+    "question": "At NVIDIA, what proportion of electricity consumption was covered through green energy procurement for the company during the 2023 fiscal period?",
+    "ground_truth": "44%",
+    "supporting_quote": "In fiscal year 2023, we increased the percentage of our total electricity use matched by renewable energy purchases to 44%.",
+    "chunk_id": "9d3f24cf-7c6f-5e76-a12e-f8b62329b807",
+    "source_chunk_ids": [
+      "9d3f24cf-7c6f-5e76-a12e-f8b62329b807"
+    ],
+    "validator_flags": [
+      "FLAG_NO_COMPANY_NAME",
+      "REJECT_QUESTION_YEAR_MISMATCH (question names 2023, but filing is 2024)"
+    ],
+    "default_reject": true,
+    "original_question": "What proportion of electricity consumption was covered through green energy procurement for the company during the 2023 fiscal period?",
+    "rewrite_applied": "Prepended 'At NVIDIA, '"
+  },
+  {
+    "id": "heldout_73",
+    "company": "NVIDIA",
+    "fiscal_year": "2024",
+    "section": "Item 1A",
+    "category": "simple_lookup",
+    "question_style": "short direct question",
+    "question": "What U.S. tax deduction benefits a significant portion of NVIDIA's domestic taxable income?",
+    "ground_truth": "Foreign-derived intangible income, or FDII, qualifies for preferential treatment and benefits a significant portion of NVIDIA's income taxable in the United States.",
+    "supporting_quote": "Most of our income is taxable in the United States, with a significant portion qualifying for preferential treatment as foreign-derived intangible income, or FDII.",
+    "chunk_id": "6e43ffbb-b2e8-5e63-a0bc-a5000cbf5d9d",
+    "source_chunk_ids": [
+      "6e43ffbb-b2e8-5e63-a0bc-a5000cbf5d9d"
+    ],
+    "validator_flags": [
+      "FLAG_NO_FISCAL_YEAR"
+    ],
+    "default_reject": false
+  },
+  {
+    "id": "heldout_74",
+    "company": "NVIDIA",
+    "fiscal_year": "2024",
+    "section": "Item 7",
+    "category": "numeric_precision",
+    "question_style": "keyword-style phrase",
+    "question": "At NVIDIA, compute and Networking segment operating income for fiscal year ended January 28, 2024",
+    "ground_truth": "$32,016 million",
+    "supporting_quote": "Compute & Networking$32,016 $5,083 $26,933 530 %",
+    "chunk_id": "b23b0702-7b6d-5fe0-8a72-8dfc079517d1",
+    "source_chunk_ids": [
+      "b23b0702-7b6d-5fe0-8a72-8dfc079517d1"
+    ],
+    "validator_flags": [
+      "FLAG_NO_COMPANY_NAME"
+    ],
+    "default_reject": false,
+    "original_question": "Compute and Networking segment operating income for fiscal year ended January 28, 2024",
+    "rewrite_applied": "Prepended 'At NVIDIA, '"
+  },
+  {
+    "id": "heldout_75",
+    "company": "NVIDIA",
+    "fiscal_year": "2024",
+    "section": "Item 7",
+    "category": "numeric_precision",
+    "question_style": "paraphrase (no copied terms from the chunk)",
+    "question": "At NVIDIA, what is the expected monetary range for capital expenditures related to property and equipment in the upcoming fiscal year?",
+    "ground_truth": "Approximately $3.5 billion to $4.0 billion.",
+    "supporting_quote": "During fiscal year 2025, we expect to use our existing cash, cash equivalents, and marketable securities, and the cash generated by our operations to fund our capital investments of approximately $3.5 billion to $4.0 billion related to property and equipment.",
+    "chunk_id": "eda2f028-d9a0-5179-943b-53a61405b1f5",
+    "source_chunk_ids": [
+      "eda2f028-d9a0-5179-943b-53a61405b1f5"
+    ],
+    "validator_flags": [
+      "FLAG_NO_COMPANY_NAME",
+      "FLAG_NO_FISCAL_YEAR"
+    ],
+    "default_reject": false,
+    "original_question": "What is the expected monetary range for capital expenditures related to property and equipment in the upcoming fiscal year?",
+    "rewrite_applied": "Prepended 'At NVIDIA, '"
+  },
+  {
+    "id": "heldout_76",
+    "company": "NVIDIA",
+    "fiscal_year": "2024",
+    "section": "Item 8",
+    "category": "numeric_precision",
+    "question_style": "\"what does the filing say about\" style",
+    "question": "At NVIDIA, what does the filing say about the carrying value for privately held company holdings at the conclusion of fiscal year 2024?",
+    "ground_truth": "The carrying value of non-marketable equity securities, which are primarily investments in privately held companies, totaled $1.3 billion as of January 28, 2024.",
+    "supporting_quote": "The carrying value of our non-marketable equity securities totaled $1.3 billion and $288 million as of January 28, 2024 and January 29, 2023, respectively.",
+    "chunk_id": "1582a421-6b5f-5bec-a0f6-be330559abac",
+    "source_chunk_ids": [
+      "1582a421-6b5f-5bec-a0f6-be330559abac"
+    ],
+    "validator_flags": [
+      "FLAG_NO_COMPANY_NAME"
+    ],
+    "default_reject": false,
+    "original_question": "What does the filing say about the carrying value for privately held company holdings at the conclusion of fiscal year 2024?",
+    "rewrite_applied": "Prepended 'At NVIDIA, '"
+  },
+  {
+    "id": "heldout_77",
+    "company": "NVIDIA",
+    "fiscal_year": "2024",
+    "section": "Item 8",
+    "category": "simple_lookup",
+    "question_style": "comparison-of-two-figures style where the chunk allows",
+    "question": "At NVIDIA, how do original maturity timelines distinguish between cash equivalents and marketable securities?",
+    "ground_truth": "Cash equivalents are highly liquid investments with an original maturity of three months or less at the time of purchase, whereas marketable securities consist of highly liquid debt investments with maturities exceeding three months when purchased.",
+    "supporting_quote": "We consider all highly liquid investments that are readily convertible into cash and have an original maturity of three months or less at the time of purchase to be cash equivalents. Marketable securities consist of highly liquid debt investments with maturities of greater than three months when purchased.",
+    "chunk_id": "b4061db5-c26b-5faf-bdf1-fc1ac9974f1d",
+    "source_chunk_ids": [
+      "b4061db5-c26b-5faf-bdf1-fc1ac9974f1d"
+    ],
+    "validator_flags": [
+      "FLAG_NO_COMPANY_NAME",
+      "FLAG_NO_FISCAL_YEAR",
+      "REJECT_COMPARISON_NOT_SUPPORTED (found 0 distinct figures in GT)"
+    ],
+    "default_reject": true,
+    "original_question": "How do original maturity timelines distinguish between cash equivalents and marketable securities?",
+    "rewrite_applied": "Prepended 'At NVIDIA, '"
+  },
+  {
+    "id": "heldout_78",
+    "company": "NVIDIA",
+    "fiscal_year": "2025",
+    "section": "Item 1",
+    "category": "numeric_precision",
+    "question_style": "natural prose",
+    "question": "At NVIDIA, what proportion of the workforce departed from the company during fiscal year 2025?",
+    "ground_truth": "In fiscal year 2025, NVIDIA's overall employee turnover rate was 2.5%.",
+    "supporting_quote": "In fiscal year 2025, our overall turnover rate was 2.5%.",
+    "chunk_id": "693e5347-d9d1-5e5b-8ad5-885b780fb982",
+    "source_chunk_ids": [
+      "693e5347-d9d1-5e5b-8ad5-885b780fb982"
+    ],
+    "validator_flags": [
+      "FLAG_NO_COMPANY_NAME"
+    ],
+    "default_reject": false,
+    "original_question": "What proportion of the workforce departed from the company during fiscal year 2025?",
+    "rewrite_applied": "Prepended 'At NVIDIA, '"
+  },
+  {
+    "id": "heldout_79",
+    "company": "NVIDIA",
+    "fiscal_year": "2025",
+    "section": "Item 1A",
+    "category": "simple_lookup",
+    "question_style": "short direct question",
+    "question": "At NVIDIA, what specific rights does Microsoft hold under its agreement with the company if a third party attempts to purchase a large stake in the common stock, for fiscal 2025?",
+    "ground_truth": "Under the agreement with Microsoft for the Xbox, if a third party offers to purchase at least 30% of the outstanding common stock, Microsoft may possess first and last rights of refusal to acquire that stock.",
+    "supporting_quote": "Under our agreement with Microsoft for the Xbox, if someone makes an offer to purchase at least 30% of our outstanding common stock, Microsoft may have first and last rights of refusal to purchase the stock.",
+    "chunk_id": "794b24a0-cc59-5425-ba7e-33b0f4af51eb",
+    "source_chunk_ids": [
+      "794b24a0-cc59-5425-ba7e-33b0f4af51eb"
+    ],
+    "validator_flags": [
+      "REJECT_ANSWER_LEAKAGE: 'Microsoft'",
+      "REPEATED_ACROSS_YEARS_DISAMBIGUATED (quote in FY2024, 2026; question names target year)",
+      "FLAG_NO_COMPANY_NAME"
+    ],
+    "default_reject": true,
+    "original_question": "What specific rights does Microsoft hold under its agreement with the company if a third party attempts to purchase a large stake in the common stock?",
+    "rewrite_applied": "Disambiguated repeated quote: appended 'for fiscal 2025' (remains rejected: REJECT_ANSWER_LEAKAGE: 'Microsoft'; REPEATED_ACROSS_YEARS_DISAMBIGUATED (quote in FY2024, 2026; question names target year); FLAG_NO_COMPANY_NAME); Prepended 'At NVIDIA, '"
+  },
+  {
+    "id": "heldout_80",
+    "company": "NVIDIA",
+    "fiscal_year": "2025",
+    "section": "Item 7",
+    "category": "numeric_precision",
+    "question_style": "keyword-style phrase",
+    "question": "At NVIDIA, compute and Networking segment operating income fiscal year 2025 in millions",
+    "ground_truth": "$82,875 million",
+    "supporting_quote": "Compute & Networking$82,875 $32,016 $50,859 159 %",
+    "chunk_id": "dc2b5d65-d19f-5f18-afce-80d91d812af1",
+    "source_chunk_ids": [
+      "dc2b5d65-d19f-5f18-afce-80d91d812af1"
+    ],
+    "validator_flags": [
+      "FLAG_NO_COMPANY_NAME"
+    ],
+    "default_reject": false,
+    "original_question": "Compute and Networking segment operating income fiscal year 2025 in millions",
+    "rewrite_applied": "Prepended 'At NVIDIA, '"
+  },
+  {
+    "id": "heldout_81",
+    "company": "NVIDIA",
+    "fiscal_year": "2025",
+    "section": "Item 7",
+    "category": "simple_lookup",
+    "question_style": "paraphrase (no copied terms from the chunk)",
+    "question": "What is the company's policy regarding how interest and penalties associated with unrecognized tax benefits are classified in the financial statements, per NVIDIA's fiscal 2025 annual report?",
+    "ground_truth": "The company's policy is to include interest and penalties related to unrecognized tax benefits as a component of income tax expense.",
+    "supporting_quote": "Our policy is to include interest and penalties related to unrecognized tax benefits as a component of income tax expense.",
+    "chunk_id": "7c8e412b-dfa7-5d90-81b4-2747458117e8",
+    "source_chunk_ids": [
+      "7c8e412b-dfa7-5d90-81b4-2747458117e8"
+    ],
+    "validator_flags": [
+      "REPEATED_ACROSS_YEARS_DISAMBIGUATED (quote in FY2024, 2026; question names target year)"
+    ],
+    "default_reject": false,
+    "original_question": "What is the company's policy regarding how interest and penalties associated with unrecognized tax benefits are classified in the financial statements?",
+    "rewrite_applied": "Disambiguated repeated quote: appended 'per NVIDIA's fiscal 2025 annual report'"
+  },
+  {
+    "id": "heldout_82",
+    "company": "NVIDIA",
+    "fiscal_year": "2025",
+    "section": "Item 8",
+    "category": "numeric_precision",
+    "question_style": "\"what does the filing say about\" style",
+    "question": "At NVIDIA, what does the filing say about the present value of net future minimum lease payments?",
+    "ground_truth": "The present value of net future minimum lease payments as of January 26, 2025, is $1,807 million.",
+    "supporting_quote": "Present value of net future minimum lease payments1,807",
+    "chunk_id": "a169cb97-a7ba-5499-8d9c-91e5323516ad",
+    "source_chunk_ids": [
+      "a169cb97-a7ba-5499-8d9c-91e5323516ad"
+    ],
+    "validator_flags": [
+      "REJECT_6GRAM_OVERLAP: 'present value of net future minimum'",
+      "FLAG_NO_COMPANY_NAME",
+      "FLAG_NO_FISCAL_YEAR"
+    ],
+    "default_reject": true,
+    "original_question": "What does the filing say about the present value of net future minimum lease payments?",
+    "rewrite_applied": "Prepended 'At NVIDIA, '"
+  },
+  {
+    "id": "heldout_83",
+    "company": "NVIDIA",
+    "fiscal_year": "2025",
+    "section": "Item 8",
+    "category": "multi_hop-like single-chunk",
+    "question_style": "comparison-of-two-figures style where the chunk allows",
+    "question": "How do the valuation methodologies and expense recognition models differ between awards tied to corporate financial targets versus those benchmarked against market performance, in NVIDIA's FY2025 10-K?",
+    "ground_truth": "Awards tied to corporate financial targets (PSUs) use the closing trading price minus a dividend yield discount for fair value and are expensed using an accelerated amortization model based on probable performance targets. In contrast, awards benchmarked against market performance (market-based PSUs) use a Monte Carlo simulation for fair value and are recognized using a straight-line attribution method over the requisite employee service period.",
+    "supporting_quote": "We use the closing trading price of our common stock on the date of grant, minus a dividend yield discount, as the fair value of awards of restricted stock units, or RSUs, and performance stock units, or PSUs, that are based on our corporate financial performance targets. We use a Monte Carlo simulation on the date of grant to estimate the fair value of PSUs that are based on our stock performance compared to market performance, or market-based PSUs. The compensation expense for RSUs and market-based PSUs is recognized using a straight-line attribution method over the requisite employee service period while compensation expense for PSUs is recognized using an accelerated amortization model based on performance targets probable of achievement.",
+    "chunk_id": "acbba01e-b7a9-538b-a3f5-52c86c2711bd",
+    "source_chunk_ids": [
+      "acbba01e-b7a9-538b-a3f5-52c86c2711bd"
+    ],
+    "validator_flags": [
+      "REPEATED_ACROSS_YEARS_DISAMBIGUATED (quote in FY2026; question names target year)",
+      "FLAG_NO_FISCAL_YEAR",
+      "REJECT_COMPARISON_NOT_SUPPORTED (found 0 distinct figures in GT)"
+    ],
+    "default_reject": true,
+    "original_question": "How do the valuation methodologies and expense recognition models differ between awards tied to corporate financial targets versus those benchmarked against market performance?",
+    "rewrite_applied": "Disambiguated repeated quote: appended 'in NVIDIA's FY2025 10-K'"
+  },
+  {
+    "id": "heldout_84",
+    "company": "NVIDIA",
+    "fiscal_year": "2026",
+    "section": "Item 1",
+    "category": "numeric_precision",
+    "question_style": "natural prose",
+    "question": "At NVIDIA, what is the timeline range for the expiration dates of the company's currently active patents?",
+    "ground_truth": "The company's currently issued patents have expiration dates ranging from March 2026 to June 2045.",
+    "supporting_quote": "Our currently issued patents have expiration dates from March 2026 to June 2045.",
+    "chunk_id": "0f15e313-54c1-57b4-8785-3a6b6d03cf9e",
+    "source_chunk_ids": [
+      "0f15e313-54c1-57b4-8785-3a6b6d03cf9e"
+    ],
+    "validator_flags": [
+      "FLAG_NO_COMPANY_NAME",
+      "FLAG_NO_FISCAL_YEAR"
+    ],
+    "default_reject": false,
+    "original_question": "What is the timeline range for the expiration dates of the company's currently active patents?",
+    "rewrite_applied": "Prepended 'At NVIDIA, '"
+  },
+  {
+    "id": "heldout_85",
+    "company": "NVIDIA",
+    "fiscal_year": "2026",
+    "section": "Item 1A",
+    "category": "simple_lookup",
+    "question_style": "short direct question",
+    "question": "At NVIDIA, what specific environmental constraints could restrict customer data center expansion and subsequent product consumption, for fiscal 2026?",
+    "ground_truth": "Power or water shortages, land or permitting constraints, or regulations limiting energy, water, or land availability could impair customers' ability to expand data center capacity and consume products and services.",
+    "supporting_quote": "Power or water shortages, land or permitting constraints, or regulations that limit energy, water, or land availability, could impair the ability of our customers to expand their data center capacity and consume our products and services, which may in turn negatively impact our business.",
+    "chunk_id": "db46fc98-9bd3-56a2-a60b-f3c5842ee20a",
+    "source_chunk_ids": [
+      "db46fc98-9bd3-56a2-a60b-f3c5842ee20a"
+    ],
+    "validator_flags": [
+      "REPEATED_ACROSS_YEARS_DISAMBIGUATED (quote in FY2025; question names target year)",
+      "FLAG_NO_COMPANY_NAME"
+    ],
+    "default_reject": false,
+    "original_question": "What specific environmental constraints could restrict customer data center expansion and subsequent product consumption?",
+    "rewrite_applied": "Disambiguated repeated quote: appended 'for fiscal 2026'; Prepended 'At NVIDIA, '"
+  },
+  {
+    "id": "heldout_86",
+    "company": "NVIDIA",
+    "fiscal_year": "2026",
+    "section": "Item 7",
+    "category": "numeric_precision",
+    "question_style": "keyword-style phrase",
+    "question": "NVIDIA fiscal year 2026 compute and networking segment operating income in millions",
+    "ground_truth": "$130,141 million",
+    "supporting_quote": "Compute & Networking\n\n$193,479 $116,193 $77,286 67 %\n\nGraphics22,459 14,304 8,155 57 %",
+    "chunk_id": "8c50e6c3-0bf0-56bc-a987-6c33e8ab9815",
+    "source_chunk_ids": [
+      "8c50e6c3-0bf0-56bc-a987-6c33e8ab9815"
+    ],
+    "validator_flags": [
+      "PASS"
+    ],
+    "default_reject": false
+  },
+  {
+    "id": "heldout_87",
+    "company": "NVIDIA",
+    "fiscal_year": "2026",
+    "section": "Item 7",
+    "category": "simple_lookup",
+    "question_style": "paraphrase (no copied terms from the chunk)",
+    "question": "At NVIDIA, which specific areas of financial reporting does the company identify as involving significant estimation uncertainty and potential material impact on operations?",
+    "ground_truth": "The company's critical accounting estimates are concentrated in inventories, income taxes, non-marketable equity securities, and revenue recognition.",
+    "supporting_quote": "We have critical accounting estimates in the areas of inventories, income taxes, non-marketable equity securities, and revenue recognition.",
+    "chunk_id": "d954b2f6-370b-5225-91aa-38793c337233",
+    "source_chunk_ids": [
+      "d954b2f6-370b-5225-91aa-38793c337233"
+    ],
+    "validator_flags": [
+      "FLAG_NO_COMPANY_NAME",
+      "FLAG_NO_FISCAL_YEAR"
+    ],
+    "default_reject": false,
+    "original_question": "Which specific areas of financial reporting does the company identify as involving significant estimation uncertainty and potential material impact on operations?",
+    "rewrite_applied": "Prepended 'At NVIDIA, '"
+  },
+  {
+    "id": "heldout_88",
+    "company": "NVIDIA",
+    "fiscal_year": "2026",
+    "section": "Item 8",
+    "category": "numeric_precision",
+    "question_style": "\"what does the filing say about\" style",
+    "question": "At NVIDIA, what does the filing say about the deferred tax valuation allowance ending balance for fiscal year 2026?",
+    "ground_truth": "$768",
+    "supporting_quote": "Deferred tax valuation allowance$1,610 $31 (3)$(873)(3)$768",
+    "chunk_id": "ae31028e-0042-55a5-ae42-74c07810c3c7",
+    "source_chunk_ids": [
+      "ae31028e-0042-55a5-ae42-74c07810c3c7"
+    ],
+    "validator_flags": [
+      "FLAG_NO_COMPANY_NAME"
+    ],
+    "default_reject": false,
+    "original_question": "What does the filing say about the deferred tax valuation allowance ending balance for fiscal year 2026?",
+    "rewrite_applied": "Prepended 'At NVIDIA, '"
+  },
+  {
+    "id": "heldout_89",
+    "company": "NVIDIA",
+    "fiscal_year": "2026",
+    "section": "Item 8",
+    "category": "numeric_precision",
+    "question_style": "comparison-of-two-figures style where the chunk allows",
+    "question": "At NVIDIA, how do the accrued contingent liabilities for the disclosed legal proceedings compare between the fiscal year-end date and the prior periods?",
+    "ground_truth": "As of January 25, 2026, there are zero accrued contingent liabilities associated with the described legal proceedings because the company believes that while liabilities are reasonably possible, they are not probable.",
+    "supporting_quote": "As of January 25, 2026, there are no accrued contingent liabilities associated with the legal proceedings described above based on our belief that liabilities, while reasonably possible, are not probable.",
+    "chunk_id": "d4924a41-8610-5dc4-b7aa-16579af21f10",
+    "source_chunk_ids": [
+      "d4924a41-8610-5dc4-b7aa-16579af21f10"
+    ],
+    "validator_flags": [
+      "FLAG_NO_COMPANY_NAME",
+      "FLAG_NO_FISCAL_YEAR",
+      "REJECT_COMPARISON_NOT_SUPPORTED (found 1 distinct figures in GT)"
+    ],
+    "default_reject": true,
+    "original_question": "How do the accrued contingent liabilities for the disclosed legal proceedings compare between the fiscal year-end date and the prior periods?",
+    "rewrite_applied": "Prepended 'At NVIDIA, '"
+  },
+  {
+    "company": "Alphabet",
+    "fiscal_year": "2023/2025",
+    "section": "Item 8/Item 8",
+    "category": "multi_hop",
+    "question_style": "comparison-of-two-figures style where the chunk allows",
+    "question": "How does Alphabet's risk management approach regarding financial counterparties, specifically concerning credit risk and guarantees, span from its 2023 policies on foreign exchange contracts and receivables to its 2025 financial commitments involving power purchase agreements?",
+    "ground_truth": "In 2023, Alphabet managed credit risk for cash equivalents, derivatives like foreign exchange contracts, and unsecured accounts receivable through counterparty creditworthiness assessments, credit limits, and collateral management. By 2025, the company expanded its counterparty risk exposure by providing financial guarantees in the form of backstop agreements totaling up to $5.7 billion to support counterparty procurement of long-lead time equipment for future power purchase agreements.",
+    "supporting_quote": "Foreign exchange contracts are transacted with various financial institutions with high credit standing. Accounts receivable are typically unsecured and are derived from revenues earned from customers located around the world. || We provide financial guarantees to certain counterparties, in the form of backstop agreements with varying terms through August 2026. These backstop agreements support counterparty procurement of long-lead time equipment for our future power purchase agreements.",
+    "source_chunk_ids": [
+      "89e30b26-e626-5058-8ae2-249aae9fdbd4",
+      "a15ab00c-6916-55aa-aa27-e49cffd6a8c8"
+    ],
+    "validator_flags": [
+      "REJECT_MULTI_YEAR_NON_ADJACENT_YEARS (2023 and 2025 are not adjacent)"
+    ],
+    "default_reject": true,
+    "id": "heldout_mh_01"
+  },
+  {
+    "company": "Alphabet",
+    "fiscal_year": "2023/2025",
+    "section": "Item 1A/Item 1A",
+    "category": "multi_hop",
+    "question_style": "comparison-of-two-figures style where the chunk allows",
+    "question": "At Alphabet, how do the potential risks associated with hardware supply contracts and manufacturing commitments mentioned in the 2023 report differ from the challenges regarding device manufacturers and platform adaptation described in the 2025 report?",
+    "ground_truth": "In the 2023 report, the risks center on volume-based pricing, minimum purchase requirements, unconsumed materials, and manufacturing costs tied to hardware supply contracts. In contrast, the 2025 report focuses on the challenges of adapting products for a growing variety of devices, dealing with unique technical standards set by manufacturers, and the risk of failing to attract and retain device makers, suppliers, and distributors.",
+    "supporting_quote": "For instance, because certain of our hardware supply contracts have volume-based pricing or minimum purchase requirements, if the volume of sales of our devices decreases or does not reach projected targets, we could face increased materials and manufacturing costs or other financial liabilities that could make our products more costly per unit to manufacture and harm our financial condition and operating results. || Each manufacturer or distributor may establish unique technical standards for its devices, and our products and services may not be available or may only be available with limited functionality for our users or our advertisers on these devices as a result.",
+    "source_chunk_ids": [
+      "11f0af78-7f89-5220-9f92-7be4845b89c5",
+      "89f9d58f-cbe1-5335-a051-752f54691a6f"
+    ],
+    "validator_flags": [
+      "REJECT_MULTI_YEAR_NON_ADJACENT_YEARS (2023 and 2025 are not adjacent)"
+    ],
+    "default_reject": true,
+    "id": "heldout_mh_02"
+  },
+  {
+    "company": "Alphabet",
+    "fiscal_year": "2023/2025",
+    "section": "Item 7/Item 7",
+    "category": "multi_hop",
+    "question_style": "comparison-of-two-figures style where the chunk allows",
+    "question": "How did Alphabet's methodology for evaluating or altering the useful lives of its hardware infrastructure change between the 2023 and 2025 reporting periods?",
+    "ground_truth": "In fiscal year 2023, Alphabet completed a specific assessment that directly changed the estimated useful life of servers and certain network equipment to six years. By fiscal year 2025, the company shifted description to a broader ongoing process where the reasonableness of useful lives for technical infrastructure and property equipment is assessed periodically or upon triggering events using inputs like historical performance, technology advancements, and deployment plans.",
+    "supporting_quote": "In January 2023, we completed an assessment of the useful lives of our servers and network equipment resulting in a change in the estimated useful life of our servers and certain network equipment to six years. || We assess the reasonableness of the useful lives of our property and equipment periodically or when events indicate a change is necessary.",
+    "source_chunk_ids": [
+      "2394755e-26eb-592d-b170-142b45f95545",
+      "5dd49fe6-3903-5585-b4d7-ec58cab53b1e"
+    ],
+    "validator_flags": [
+      "REJECT_MULTI_YEAR_NON_ADJACENT_YEARS (2023 and 2025 are not adjacent)"
+    ],
+    "default_reject": true,
+    "id": "heldout_mh_03"
+  },
+  {
+    "company": "Amazon",
+    "fiscal_year": "2023/2024",
+    "section": "Item 1A/Item 1A",
+    "category": "multi_hop",
+    "question_style": "comparison-of-two-figures style where the chunk allows",
+    "question": "How did Amazon's disclosures regarding regulatory and compliance risks evolve between 2023 and 2024, specifically regarding the inclusion of artificial intelligence technologies versus international tax framework changes?",
+    "ground_truth": "In the 2023 fiscal year, Amazon explicitly noted that it is subject to regulations and laws governing artificial intelligence technologies and services among its legal and regulatory risks. In the 2024 fiscal year, the company highlighted potential financial impacts from changes to the global tax framework, including unilateral tax measures, European Union global minimum taxes, and revenue-based taxes targeting online commerce.",
+    "supporting_quote": "artificial intelligence technologies and services, and other products and services that we offer or sell. || changes to the global tax framework, competition, and other laws and accounting rules in various jurisdictions.",
+    "source_chunk_ids": [
+      "75950997-c2a1-5499-804c-4a9f9dc32191",
+      "00a49994-54d4-55b0-8aae-3c25a177cf08"
+    ],
+    "validator_flags": [
+      "PASS"
+    ],
+    "default_reject": false,
+    "id": "heldout_mh_04"
+  },
+  {
+    "company": "Amazon",
+    "fiscal_year": "2024/2025",
+    "section": "Item 1/Item 1",
+    "category": "multi_hop",
+    "question_style": "comparison-of-two-figures style where the chunk allows",
+    "question": "How did Amazon's competitive environment regarding technology change between 2024 and 2025, specifically concerning artificial intelligence, and what was the total employee count at the end of the latter fiscal year?",
+    "ground_truth": "In fiscal year 2024, Amazon listed companies providing IT services or products, including cloud infrastructure and AI tools and services, among its competitors. By fiscal year 2025, competition for qualified personnel had intensified, particularly for technical staff including those specializing in artificial intelligence and machine learning technologies, alongside a total workforce of approximately 1,576,000 full-time and part-time employees as of December 31, 2025.",
+    "supporting_quote": "companies that provide information technology services or products, including on-premises or cloud-based infrastructure, tools and services relating to artificial intelligence, and other services; || As of December 31, 2025, we employed approximately 1,576,000 full-time and part-time employees.",
+    "source_chunk_ids": [
+      "459a5ce4-97b1-5644-8744-e3cf7d50cf77",
+      "f35923cd-d896-5f3f-95e6-f3ab5c32fdf3"
+    ],
+    "validator_flags": [
+      "FLAG_GROUND_TRUTH_NOT_CLEARLY_SUPPORTED_BY_BOTH_QUOTES (Quote 1 ends with dangling punctuation or incomplete phrase)"
+    ],
+    "default_reject": true,
+    "id": "heldout_mh_05"
+  },
+  {
+    "company": "Amazon",
+    "fiscal_year": "2023/2025",
+    "section": "Item 7/Item 7",
+    "category": "multi_hop",
+    "question_style": "comparison-of-two-figures style where the chunk allows",
+    "question": "How did Amazon's operating cash flow performance in 2023 relate to tax provision estimates and judgments regarding deferred tax assets across its operating jurisdictions?",
+    "ground_truth": "In 2023, Amazon's operating cash flow increased to $84.9 billion (up from $46.8 billion in 2022) primarily due to higher net income excluding non-cash expenses and working capital changes. Meanwhile, the company's valuation of deferred tax assets and estimates for tax provisions required significant judgment under evolving multi-jurisdictional tax laws and regulations, which impact actual and forecasted earnings.",
+    "supporting_quote": "The increase in operating cash flow in 2023, compared to the prior year, was due to an increase in net income (loss), excluding non-cash expenses, and changes in working capital. || and significant judgment is required in determining our ability to use our deferred tax assets.",
+    "source_chunk_ids": [
+      "0461d55a-1c76-57fa-a482-c413dff78ab2",
+      "d413fc84-3a3e-570b-b710-02d7e1ed0aed"
+    ],
+    "validator_flags": [
+      "REJECT_MULTI_YEAR_NON_ADJACENT_YEARS (2023 and 2025 are not adjacent)"
+    ],
+    "default_reject": true,
+    "id": "heldout_mh_06"
+  },
+  {
+    "company": "Apple",
+    "fiscal_year": "2024/2025",
+    "section": "Item 7/Item 7",
+    "category": "multi_hop",
+    "question_style": "comparison-of-two-figures style where the chunk allows",
+    "question": "At Apple, how did the annual revenue growth trajectory for the iPad segment shift between the 2024 and 2025 fiscal periods, and what specific drivers were cited for its performance in each of those years?",
+    "ground_truth": "In fiscal year 2024, iPad net sales declined by 6% (dropping from $28,300 million in 2023 to $26,694 million in 2024), driven primarily by lower net sales in Greater China. Conversely, in fiscal year 2025, iPad net sales rebounded with a 5% increase to reach $28,023 million, which was primarily propelled by higher net sales of iPad Air, iPad mini, and standard iPad models, though partially offset by lower net sales of the iPad Pro.",
+    "supporting_quote": "iPad26,694 (6)%28,300 (3)%29,292 || iPad net sales increased during 2025 compared to 2024 primarily due to higher net sales of iPad Air, iPad mini and iPad, partially offset by lower net sales of iPad Pro.",
+    "source_chunk_ids": [
+      "24af3623-8fd2-5309-978b-1e7970a17186",
+      "5e820ce9-6fd2-5d7e-a3e7-fed844a43aa0"
+    ],
+    "validator_flags": [
+      "FLAG_GROUND_TRUTH_NOT_CLEARLY_SUPPORTED_BY_BOTH_QUOTES (Quote 1 is too brief, <6 words or <30 chars)"
+    ],
+    "default_reject": true,
+    "id": "heldout_mh_07"
+  },
+  {
+    "company": "Apple",
+    "fiscal_year": "2024/2025",
+    "section": "Item 1/Item 1",
+    "category": "multi_hop",
+    "question_style": "comparison-of-two-figures style where the chunk allows",
+    "question": "At Apple, how did the description of competitor product feature imitation evolve between 2024 and 2025 regarding integrated solutions?",
+    "ground_truth": "In 2024, the company noted that rivals imitate product features or collaborate to offer more competitive integrated solutions. In 2025, the wording evolved to specify that competition intensifies as competitors imitate the approach to providing components seamlessly or work collaboratively on integrated solutions.",
+    "supporting_quote": "The Company faces significant competition as competitors imitate the Company’s product features and applications within their products, or collaborate to offer integrated solutions that are more competitive than those they currently offer. || The Company also expects competition to intensify as competitors imitate the Company’s approach to providing components seamlessly within their offerings or work collaboratively to offer integrated solutions.",
+    "source_chunk_ids": [
+      "a73785f5-4f03-5042-be62-3a4e52bb0479",
+      "bc523619-f1b7-5824-a42a-4b32da4b4f79"
+    ],
+    "validator_flags": [
+      "PASS"
+    ],
+    "default_reject": false,
+    "id": "heldout_mh_08"
+  },
+  {
+    "company": "Microsoft",
+    "fiscal_year": "2024/2025",
+    "section": "Item 7/Item 7",
+    "category": "multi_hop",
+    "question_style": "comparison-of-two-figures style where the chunk allows",
+    "question": "How did Microsoft's disclosure regarding foreign exchange rate impacts evolve between the 2024 fiscal year report and the subsequent year's executive sign-off section?",
+    "ground_truth": "In the 2024 fiscal year report, Microsoft discussed how currency fluctuations and international operations affect revenues and expenses, noting that foreign exchange rate changes did not materially impact reported figures that year. By the 2025 fiscal year report, this operational discussion shifted entirely to a management responsibility statement and internal control attestation signed by Chief Executive Officer Satya Nadella.",
+    "supporting_quote": "Fluctuations in the U.S. dollar relative to certain foreign currencies did not have a material impact on reported revenue and expenses from our international operations in fiscal year 2024. || Satya Nadella\n\nChief Executive Officer",
+    "source_chunk_ids": [
+      "4dad95a3-c21f-5691-8e77-e118323102c4",
+      "3384cb24-c29a-5e3a-8ccd-c245aec21372"
+    ],
+    "validator_flags": [
+      "FLAG_GROUND_TRUTH_NOT_CLEARLY_SUPPORTED_BY_BOTH_QUOTES (Quote 2 is too brief, <6 words or <30 chars)"
+    ],
+    "default_reject": true,
+    "id": "heldout_mh_09"
+  },
+  {
+    "company": "Microsoft",
+    "fiscal_year": "2024/2025",
+    "section": "Item 1/Item 1",
+    "category": "multi_hop",
+    "question_style": "comparison-of-two-figures style where the chunk allows",
+    "question": "At Microsoft, how did the specific competitive landscape details mentioned for Windows and Xbox change between the 2024 and 2025 fiscal years?",
+    "ground_truth": "In the 2024 fiscal year, Microsoft explicitly named specific competitors such as Apple and Google for Windows, CrowdStrike for Microsoft Defender for Endpoint, and Amazon, Apple, Meta, Tencent, Nintendo, and Sony for Xbox and cloud gaming. In the 2025 fiscal year, the explicit naming of these specific external competitors in the competition descriptions for Windows and Xbox was removed.",
+    "supporting_quote": "Windows faces competition from various software products and from alternative platforms and devices, mainly from Apple and Google, and Microsoft Defender for Endpoint competes with CrowdStrike on endpoint security solutions. || Windows faces competition from various software products and from alternative platforms and devices. We believe Windows competes effectively by giving customers choice, value, flexibility, security, an easy-to-use interface, and compatibility with a broad range of hardware and software applications, including those that enable productivity.",
+    "source_chunk_ids": [
+      "6442cd01-cc59-52ee-ad21-50b9843f6011",
+      "680663e7-0496-5b2e-b03d-43ce154c4d95"
+    ],
+    "validator_flags": [
+      "PASS"
+    ],
+    "default_reject": false,
+    "id": "heldout_mh_10"
+  },
+  {
+    "company": "Microsoft",
+    "fiscal_year": "2024/2025",
+    "section": "Item 1/Item 1",
+    "category": "multi_hop",
+    "question_style": "comparison-of-two-figures style where the chunk allows",
+    "question": "How did Microsoft's distribution channels for retail packaged goods compare to its strategies for user acquisition and engagement in search and news advertising across the provided fiscal years?",
+    "ground_truth": "In the 2024 fiscal year, retail packaged products were primarily distributed through independent non-exclusive distributors, authorized replicators, resellers, and retail outlets, while devices were distributed via third-party retailers and volume licensing. In contrast, for the 2025 fiscal year, user acquisition and engagement for the search and news advertising business relied on tools like the Microsoft Edge browser and Bing search engine featuring Microsoft Copilot, alongside various monetization partnerships.",
+    "supporting_quote": "We distribute our retail packaged products primarily through independent non-exclusive distributors, authorized replicators, resellers, and retail outlets. || Our Microsoft Edge browser and Bing search engine with Copilot are key tools to enable user acquisition and engagement, while our technology platform enables accelerated delivery of digital advertising solutions.",
+    "source_chunk_ids": [
+      "95af646b-9424-522e-ac5b-bdca2fdf27a0",
+      "680663e7-0496-5b2e-b03d-43ce154c4d95"
+    ],
+    "validator_flags": [
+      "PASS"
+    ],
+    "default_reject": false,
+    "id": "heldout_mh_11"
+  },
+  {
+    "company": "NVIDIA",
+    "fiscal_year": "2024/2026",
+    "section": "Item 8/Item 8",
+    "category": "multi_hop",
+    "question_style": "comparison-of-two-figures style where the chunk allows",
+    "question": "At NVIDIA, how did the status of legal proceedings regarding channel inventory and crypto impact claims shift between the fiscal year 2024 disclosures and the financial asset metrics reported for fiscal year 2026?",
+    "ground_truth": "In fiscal year 2024, NVIDIA disclosed ongoing derivative actions concerning channel inventory and cryptocurrency mining impacts (such as Lipchitz v. Huang and Horanic v. Huang) that remained stayed pending securities litigation appeals. By fiscal year 2026, the disclosed focus shifted to financial asset reporting, specifically noting $10.5 billion in investments subject to short-term lock-up restrictions, $4.8 billion in long-term marketable equity securities under lock-up through December 2027, and $6.6 billion in net unrealized gains on publicly-held equity securities, with negligible realized gains across fiscal years 2024 to 2026.",
+    "supporting_quote": "The lawsuits assert claims, purportedly on behalf of us, against certain officers and directors of the Company for breach of fiduciary duty, unjust enrichment, insider trading, misappropriation of information, corporate waste and violations of Sections 14(a), 10(b), and 20(a) of the Exchange Act based on the dissemination of allegedly false, and misleading statements related to channel inventory and the impact of cryptocurrency mining on GPU demand. || Net unrealized gains on investments in publicly-held equity securities held at period end were $6.6 billion for fiscal year 2026. Net unrealized gains on investments in publicly-held equity securities held at period end were not significant for fiscal years 2025 and 2024.",
+    "source_chunk_ids": [
+      "65065f69-2467-54c8-bece-e44386e8cfbd",
+      "fdb5f2ae-68f7-53eb-8ac9-f8d66fbf2dce"
+    ],
+    "validator_flags": [
+      "REJECT_MULTI_YEAR_NON_ADJACENT_YEARS (2024 and 2026 are not adjacent)"
+    ],
+    "default_reject": true,
+    "id": "heldout_mh_12"
+  },
+  {
+    "company": "NVIDIA",
+    "fiscal_year": "2025/2026",
+    "section": "Item 8/Item 8",
+    "category": "multi_hop",
+    "question_style": "comparison-of-two-figures style where the chunk allows",
+    "question": "How does NVIDIA's treatment of potential losses from legal contingencies and regulatory proceedings compare to its policy for recording impairments on non-marketable equity securities across fiscal years 2025 and 2026?",
+    "ground_truth": "In fiscal year 2025, NVIDIA records a loss for pending litigation, investigations, or settlements when it determines the loss is probable and can be reasonably estimated, and discloses reasonably possible losses when they can be estimated. In fiscal year 2026, for non-marketable equity securities accounted for under the measurement alternative, the company assesses for impairment using quantitative and qualitative factors, writes down impaired investments to fair value, and records the corresponding charge through Other income, net on the Consolidated Statements of Income.",
+    "supporting_quote": "If information becomes available that causes us to determine that a loss in any of our pending litigation, || If any impairment is identified for non-marketable equity securities, we write down the investment to its fair value and record the corresponding charge through Other income, net on our Consolidated Statements of Income.",
+    "source_chunk_ids": [
+      "84a4a588-1d51-52c0-82cf-d09e539017f5",
+      "a82e72db-cf60-5a02-8820-a37e9df68268"
+    ],
+    "validator_flags": [
+      "FLAG_GROUND_TRUTH_NOT_CLEARLY_SUPPORTED_BY_BOTH_QUOTES (Quote 1 ends with dangling punctuation or incomplete phrase)"
+    ],
+    "default_reject": true,
+    "id": "heldout_mh_13"
+  },
+  {
+    "company": "NVIDIA",
+    "fiscal_year": "2024/2025",
+    "section": "Item 1A/Item 1A",
+    "category": "multi_hop",
+    "question_style": "comparison-of-two-figures style where the chunk allows",
+    "question": "How did NVIDIA's risk profile regarding supply and demand evolve from potential forecasting challenges with indirect channel partners in FY2024 to specific manufacturing vulnerabilities like foundry prioritization and non-cancellable pre-orders in FY2025?",
+    "ground_truth": "In fiscal year 2024, NVIDIA highlighted risks related to forecasting demand through indirect channel partners like OEMs and distributors, noting that underestimation could lead to foundry capacity issues and supply constraints. By fiscal year 2025, the risk disclosures expanded to include specific operational vulnerabilities with suppliers and subcontractors, such as foundries prioritizing competitors' orders, requirements to place non-cancellable orders or prepay for supply in advance, low manufacturing yields, and lead time extensions.",
+    "supporting_quote": "If we underestimate our customers' future demand for our products, our foundry partners may not have adequate lead-time or capacity to increase production and we may not be able to obtain sufficient inventory to fill orders on a timely basis. || •delays in product shipments, shortages, a decrease in product quality and/or higher expenses in the event our subcontractors or foundries prioritize our competitors’ or other customers’ orders over ours;\n\n•requirements to place orders that are not cancellable upon changes in demand or requirements to prepay for supply in advance;",
+    "source_chunk_ids": [
+      "02d986b1-3e35-5c15-9fb4-6a1d98d7bbe5",
+      "b3385827-b0eb-566b-9a8e-4eff2665f422"
+    ],
+    "validator_flags": [
+      "FLAG_GROUND_TRUTH_NOT_CLEARLY_SUPPORTED_BY_BOTH_QUOTES (Quote 2 ends with dangling punctuation or incomplete phrase)"
+    ],
+    "default_reject": true,
+    "id": "heldout_mh_14"
+  },
+  {
+    "id": "heldout_un_01",
+    "company": "Tesla",
+    "fiscal_year": "2022",
+    "section": "None",
+    "category": "unanswerable",
+    "question_style": "unanswerable inquiry",
+    "question": "What was Tesla's total automotive regulatory credit revenue in fiscal year 2022?",
+    "ground_truth": "I don't have enough information to answer this question based on the retrieved SEC filings.",
+    "supporting_quote": "",
+    "validator_flags": [
+      "PASS"
+    ],
+    "default_reject": false,
+    "source_chunk_ids": []
+  },
+  {
+    "id": "heldout_un_02",
+    "company": "Uber",
+    "fiscal_year": "2024",
+    "section": "None",
+    "category": "unanswerable",
+    "question_style": "unanswerable inquiry",
+    "question": "What was Uber's Mobility gross bookings figure for full fiscal year 2024?",
+    "ground_truth": "I don't have enough information to answer this question based on the retrieved SEC filings.",
+    "supporting_quote": "",
+    "validator_flags": [
+      "PASS"
+    ],
+    "default_reject": false,
+    "source_chunk_ids": []
+  },
+  {
+    "id": "heldout_un_03",
+    "company": "Meta",
+    "fiscal_year": "2021",
+    "section": "None",
+    "category": "unanswerable",
+    "question_style": "unanswerable inquiry",
+    "question": "How many daily active users (DAUs) did Meta report across its Family of Apps in fiscal year 2021?",
+    "ground_truth": "I don't have enough information to answer this question based on the retrieved SEC filings.",
+    "supporting_quote": "",
+    "validator_flags": [
+      "PASS"
+    ],
+    "default_reject": false,
+    "source_chunk_ids": []
+  },
+  {
+    "id": "heldout_un_04",
+    "company": "Netflix",
+    "fiscal_year": "2023",
+    "section": "None",
+    "category": "unanswerable",
+    "question_style": "unanswerable inquiry",
+    "question": "What was Netflix's average monthly revenue per paying membership in the UCAN region in fiscal 2023?",
+    "ground_truth": "I don't have enough information to answer this question based on the retrieved SEC filings.",
+    "supporting_quote": "",
+    "validator_flags": [
+      "PASS"
+    ],
+    "default_reject": false,
+    "source_chunk_ids": []
+  },
+  {
+    "id": "heldout_un_05",
+    "company": "Spotify",
+    "fiscal_year": "2024",
+    "section": "None",
+    "category": "unanswerable",
+    "question_style": "unanswerable inquiry",
+    "question": "What was Spotify's ad-supported monthly active user count at the end of fiscal year 2024?",
+    "ground_truth": "I don't have enough information to answer this question based on the retrieved SEC filings.",
+    "supporting_quote": "",
+    "validator_flags": [
+      "PASS"
+    ],
+    "default_reject": false,
+    "source_chunk_ids": []
+  },
+  {
+    "id": "heldout_un_06",
+    "company": "Airbnb",
+    "fiscal_year": "2023",
+    "section": "None",
+    "category": "unanswerable",
+    "question_style": "unanswerable inquiry",
+    "question": "What was Airbnb's total Nights and Seats Booked volume reported in fiscal year 2023?",
+    "ground_truth": "I don't have enough information to answer this question based on the retrieved SEC filings.",
+    "supporting_quote": "",
+    "validator_flags": [
+      "PASS"
+    ],
+    "default_reject": false,
+    "source_chunk_ids": []
+  },
+  {
+    "id": "heldout_un_07",
+    "company": "Salesforce",
+    "fiscal_year": "2023",
+    "section": "None",
+    "category": "unanswerable",
+    "question_style": "unanswerable inquiry",
+    "question": "What was Salesforce's total subscription and support revenue for Service Cloud in fiscal year 2023?",
+    "ground_truth": "I don't have enough information to answer this question based on the retrieved SEC filings.",
+    "supporting_quote": "",
+    "validator_flags": [
+      "PASS"
+    ],
+    "default_reject": false,
+    "source_chunk_ids": []
+  },
+  {
+    "id": "heldout_un_08",
+    "company": "Intel",
+    "fiscal_year": "2022",
+    "section": "None",
+    "category": "unanswerable",
+    "question_style": "unanswerable inquiry",
+    "question": "What was Intel Foundry Services (IFS) operating income in fiscal year 2022?",
+    "ground_truth": "I don't have enough information to answer this question based on the retrieved SEC filings.",
+    "supporting_quote": "",
+    "validator_flags": [
+      "PASS"
+    ],
+    "default_reject": false,
+    "source_chunk_ids": []
+  },
+  {
+    "id": "heldout_un_09",
+    "company": "Apple",
+    "fiscal_year": "2020",
+    "section": "None",
+    "category": "unanswerable",
+    "question_style": "unanswerable inquiry",
+    "question": "What was Apple's total research and development expense in fiscal year 2020?",
+    "ground_truth": "I don't have enough information to answer this question based on the retrieved SEC filings.",
+    "supporting_quote": "",
+    "validator_flags": [
+      "PASS"
+    ],
+    "default_reject": false,
+    "source_chunk_ids": []
+  },
+  {
+    "id": "heldout_un_10",
+    "company": "NVIDIA",
+    "fiscal_year": "2021",
+    "section": "None",
+    "category": "unanswerable",
+    "question_style": "unanswerable inquiry",
+    "question": "What was NVIDIA's professional visualization revenue in fiscal year 2021?",
+    "ground_truth": "I don't have enough information to answer this question based on the retrieved SEC filings.",
+    "supporting_quote": "",
+    "validator_flags": [
+      "PASS"
+    ],
+    "default_reject": false,
+    "source_chunk_ids": []
+  },
+  {
+    "id": "heldout_un_11",
+    "company": "Amazon",
+    "fiscal_year": "2024",
+    "section": "None",
+    "category": "unanswerable",
+    "question_style": "unanswerable inquiry",
+    "question": "What was the intraday high price of Amazon common stock on October 14, 2024?",
+    "ground_truth": "I don't have enough information to answer this question based on the retrieved SEC filings.",
+    "supporting_quote": "",
+    "validator_flags": [
+      "PASS"
+    ],
+    "default_reject": false,
+    "source_chunk_ids": []
+  },
+  {
+    "id": "heldout_un_12",
+    "company": "Microsoft",
+    "fiscal_year": "2025",
+    "section": "None",
+    "category": "unanswerable",
+    "question_style": "unanswerable inquiry",
+    "question": "What is the secret internal hardware architecture codename for Microsoft's 2028 cloud AI chips?",
+    "ground_truth": "I don't have enough information to answer this question based on the retrieved SEC filings.",
+    "supporting_quote": "",
+    "validator_flags": [
+      "PASS"
+    ],
+    "default_reject": false,
+    "source_chunk_ids": []
+  }
+]

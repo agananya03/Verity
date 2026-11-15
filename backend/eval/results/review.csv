@@ -1,0 +1,1053 @@
+id,company,fiscal_year,section,category,question_style,question,ground_truth,supporting_quote,chunk_text_excerpt,final_status,reject_reason,rewrite_applied,original_question,validator_flags,accept,edit,reject
+heldout_01,Alphabet,2023,Item 1,simple_lookup,natural prose,What is Alphabet's corporate goal regarding total greenhouse gas reduction across its entire business value network by the end of the decade?,"Alphabet aims to achieve net-zero emissions across all of its operations and value chain by 2030, specifically targeting a 50% reduction in combined Scope 1, Scope 2 (market-based), and Scope 3 absolute emissions compared to its 2019 baseline before 2030, while neutralizing remaining emissions through nature-based and technology-based carbon removal investments.","In 2021, we set an ambitious goal to achieve net-zero emissions across all of our operations and value chain, by 2030. To accomplish this, we aim to reduce 50% of our combined Scope 1, Scope 2 (market-based), and Scope 3 absolute emissions (versus our 2019 baseline) before 2030, and plan to invest in nature-based and technology-based carbon removal solutions to neutralize our remaining emissions.","[...] have set to push us to contribute meaningfully to helping with climate solutions beyond our own operations and value chain.
+
+In 2021, we set an ambitious goal to achieve net-zero emissions across all of our operations and value chain, by 2030. To accomplish this, we aim to reduce 50% of our combined Scope 1, Scope 2 (market-based), and Scope 3 absolute emissions (versus our 2019 baseline) before 2030, and plan to invest in nature-based and technology-based carbon removal solutions to neutralize our remaining emissions. We have formally committed to the Science Based Targets initiative to seek their validation of our absolute emissions reduct [...]",ACCEPT,,,,FLAG_NO_FISCAL_YEAR,x,"What is Alphabet's corporate goal regarding total greenhouse gas reduction across its entire business value network by the end of the decade, per Alphabet's fiscal 2023 annual report?",
+heldout_02,Alphabet,2023,Item 1A,simple_lookup,short direct question,"At Alphabet, what factors impact workforce retention and talent acquisition?","Workforce retention and talent acquisition are impacted by intense industry competition, competitor poaching, the potential limitations of equity awards and compensation programs, restrictive immigration policies and regulatory changes, and adjustments to hybrid work models or corporate culture.","Competition in our industry for qualified employees is intense, and certain of our competitors have directly targeted, and may continue to target, our employees. In addition, our compensation arrangements, such as our equity award programs, may not always be successful in attracting new employees and retaining and motivating our existing employees. Restrictive immigration policy and regulatory changes may also affect our ability to hire, mobilize, or retain some of our global talent.","[...] our continuing to identify, hire, develop, motivate, and retain highly skilled personnel for all areas of our organization. Competition in our industry for qualified employees is intense, and certain of our competitors have directly targeted, and may continue to target, our employees. In addition, our compensation arrangements, such as our equity award programs, may not always be successful in attracting new employees and retaining and motivating our existing employees. Restrictive immigration policy and regulatory changes may also affect our ability to hire, mobilize, or retain some of our global talent. All of our executive officers and key employees are at-will employees, and we do not maintain any key-person life insurance [...]",ACCEPT,,"Prepended 'At Alphabet, '",What factors impact workforce retention and talent acquisition?,FLAG_NO_COMPANY_NAME; FLAG_NO_FISCAL_YEAR,x,"At Alphabet, what factors impact workforce retention and talent acquisition, for fiscal 2023?",
+heldout_03,Alphabet,2023,Item 7,numeric_precision,keyword-style phrase,Alphabet 2023 APAC constant currency revenue growth rate percentage,"For the year ended December 31, 2023, the constant currency revenue growth rate for APAC was 13%.","APAC47,024 51,514 (1,759)53,273 10 %(3)%13 %","[...] Currency Revenues
+
+20222023
+
+United States$134,814 $146,286 $0 $146,286 9 %0 %9 %
+
+EMEA82,062 91,038 460 90,578 11 %1 %10 %
+
+APAC47,024 51,514 (1,759)53,273 10 %(3)%13 %
+
+Other Americas16,976 18,320 (654)18,974 8 %(4)%12 %
+
+Revenues, excluding hedging effect
+
+280,876 307,158 (1,953)309,111 9 % [...]",ACCEPT,REJECT_ANSWER_LEAKAGE: 'APAC',,,REJECT_ANSWER_LEAKAGE: 'APAC',x,,
+heldout_04,Alphabet,2023,Item 7,numeric_precision,paraphrase (no copied terms from the chunk),"At Alphabet, what was the total dollar amount spent on innovative technical investigation and engineering efforts during the fiscal year 2023?","$45,427 million","Research and development expenses$39,500 $45,427","[...] evelopment
+
+The following table presents R&D expenses (in millions, except percentages):
+
+Year Ended December 31,
+
+20222023
+
+Research and development expenses$39,500 $45,427
+
+Research and development expenses as a percentage of revenues14 %15 %
+
+R&D expenses increased $5.9 billion from 2022 to 202 [...]",ACCEPT,,"Prepended 'At Alphabet, '",What was the total dollar amount spent on innovative technical investigation and engineering efforts during the fiscal year 2023?,FLAG_NO_COMPANY_NAME,x,,
+heldout_05,Alphabet,2023,Item 8,numeric_precision,"""what does the filing say about"" style","At Alphabet, what does the filing say about the total carrying value of marketable and non-marketable equity securities as of the end of fiscal year 2023, expressed in millions of dollars?","$34,739 million","Carrying value$5,156 $28,529 $33,685 $5,973 $28,766 $34,739","[...] tial cost$5,764 $16,157 $21,921 $5,418 $17,616 $23,034
+
+Cumulative net gain (loss)(1)
+
+(608)12,372 11,764 555 11,150 11,705
+
+Carrying value$5,156 $28,529 $33,685 $5,973 $28,766 $34,739
+
+(1)Non-marketable equity securities cumulative net gain (loss) is comprised of $16.8 billion gains and $4.5 billion losses [...]",ACCEPT,REJECT_6GRAM_OVERLAP: 'marketable and non marketable equity securities'; FLAG_NO_COMPANY_NAME,"Prepended 'At Alphabet, '","What does the filing say about the total carrying value of marketable and non-marketable equity securities as of the end of fiscal year 2023, expressed in millions of dollars?",REJECT_6GRAM_OVERLAP: 'marketable and non marketable equity securities'; FLAG_NO_COMPANY_NAME,x,"At Alphabet, what was the combined carrying value of its equity investments at the end of fiscal 2023, in millions of dollars?",
+heldout_06,Alphabet,2023,Item 8,numeric_precision,comparison-of-two-figures style where the chunk allows,"At Alphabet, how did the initial monetary penalty imposed by the European Commission for Android-related distribution practices compare to the subsequent amount set by the General Court?","The initial fine imposed by the European Commission was €4.3 billion (or $5.1 billion as of June 30, 2018), which was subsequently reduced by the General Court to €4.1 billion.","The EC decision imposed a €4.3 billion ($5.1 billion as of June 30, 2018) fine and directed the termination of the conduct at issue. On October 9, 2018, we appealed the EC decision, and on October 29, 2018, we implemented changes to certain of our Android distribution practices. On September 14, 2022, the General Court reduced the fine from €4.3 billion to €4.1 billion.","[...] its decision that certain provisions in Google’s Android-related distribution agreements infringed European competition law. The EC decision imposed a €4.3 billion ($5.1 billion as of June 30, 2018) fine and directed the termination of the conduct at issue. On October 9, 2018, we appealed the EC decision, and on October 29, 2018, we implemented changes to certain of our Android distribution practices. On September 14, 2022, the General Court reduced the fine from €4.3 billion to €4.1 billion. We subsequently filed an appeal with the European Court of Justice. In 2018, we recognized a charge of $5.1 billion for the [...]",REJECT,REJECT_ANSWER_LEAKAGE: 'European'; FLAG_NO_FISCAL_YEAR,"Prepended 'At Alphabet, '",How did the initial monetary penalty imposed by the European Commission for Android-related distribution practices compare to the subsequent amount set by the General Court?,REJECT_ANSWER_LEAKAGE: 'European'; FLAG_NO_FISCAL_YEAR,,,x
+heldout_07,Alphabet,2024,Item 1,simple_lookup,natural prose,"At Alphabet, how many products with a user base exceeding the two billion mark integrate the company's natively multimodal AI model?",All seven of the company's products that have two billion users are using Gemini.,"Today, all seven of our two billion-user products — Android, Chrome, Gmail, Maps, Play Store, Search, and YouTube — are using Gemini.","[...] , audio, image, and video. Gemini is powering AI features across our products and services that are helping people everyday. Today, all seven of our two billion-user products — Android, Chrome, Gmail, Maps, Play Store, Search, and YouTube — are using Gemini.
+
+Our Google Cloud products, including Google Cloud Platform and Google Workspace, help organizations stay at the forefront o [...]",ACCEPT,,"Prepended 'At Alphabet, '",How many products with a user base exceeding the two billion mark integrate the company's natively multimodal AI model?,FLAG_NO_COMPANY_NAME; FLAG_NO_FISCAL_YEAR,x,,
+heldout_08,Alphabet,2024,Item 1A,numeric_precision,short direct question,"At Alphabet, what proportion of total consolidated revenue came from outside the United States during the 2024 fiscal year?",International revenues accounted for approximately 51% of Alphabet's consolidated revenues in 2024.,International revenues accounted for approximately 51% of our consolidated revenues in 2024.,"[...] ur international operations are significant to our revenues and net income, and we plan to continue to grow internationally. International revenues accounted for approximately 51% of our consolidated revenues in 2024. In addition to risks described elsewhere in this section, our international operations expose us to other risks, including t [...]",ACCEPT,,"Prepended 'At Alphabet, '",What proportion of total consolidated revenue came from outside the United States during the 2024 fiscal year?,FLAG_NO_COMPANY_NAME,x,,
+heldout_09,Alphabet,2024,Item 7,numeric_precision,keyword-style phrase,Alphabet fiscal year 2024 operating margin percentage,32%,Operating margin27 %32 %5 %,"[...] $133,332 $146,306 $12,974 10 %
+
+Operating expenses$89,769 $91,322 $1,553 2 %
+
+Operating income$84,293 $112,390 $28,097 33 %
+
+Operating margin27 %32 %5 %
+
+Other income (expense), net$1,424 $7,425 $6,001 421 %
+
+Net income$73,795 $100,118 $26,323 36 %
+
+Diluted EPS(2)
+
+$5.80 $8.04 [...]",ACCEPT,,,,PASS,x,,
+heldout_10,Alphabet,2024,Item 7,numeric_precision,paraphrase (no copied terms from the chunk),"At Alphabet, what was the total capital returned to investors via equity buybacks during the 2024 fiscal period?",$62.0 billion (379 million shares repurchased and retired in 2024),"During 2024, we repurchased and subsequently retired 379 million shares for $62.0 billion.","[...] the Consolidated Statements of Cash Flows included in Item 8 of this Annual Report on Form 10-K.
+
+Share Repurchase Program
+
+During 2024, we repurchased and subsequently retired 379 million shares for $62.0 billion.
+
+In April 2024, the Board of Directors of Alphabet authorized the company to repurchase up to an additional $70.0 billion of [...]",ACCEPT,,"Prepended 'At Alphabet, '",What was the total capital returned to investors via equity buybacks during the 2024 fiscal period?,FLAG_NO_COMPANY_NAME,x,,
+heldout_11,Alphabet,2024,Item 8,numeric_precision,"""what does the filing say about"" style","At Alphabet, what does the filing say about the total operating lease expenses for the twelve-month period concluding at the end of 2023, measured in millions?","$3,362 million","Operating lease cost$2,900 $3,362 $3,304","[...] with varying lease terms.
+
+Components of lease costs were as follows (in millions):
+
+Year Ended December 31,
+
+202220232024
+
+Operating lease cost$2,900 $3,362 $3,304
+
+Finance lease cost:
+
+Amortization of lease assets474 469 413
+
+Interest on lease liabilities34 35 31
+
+Finance lease cost508 [...]",REJECT,"FLAG_NO_COMPANY_NAME; REJECT_QUESTION_YEAR_MISMATCH (question names 2023, but filing is 2024)","Prepended 'At Alphabet, '","What does the filing say about the total operating lease expenses for the twelve-month period concluding at the end of 2023, measured in millions?","FLAG_NO_COMPANY_NAME; REJECT_QUESTION_YEAR_MISMATCH (question names 2023, but filing is 2024)",,,x
+heldout_12,Alphabet,2024,Item 8,multi_hop-like single-chunk,comparison-of-two-figures style where the chunk allows,"How do the revenue recognition criteria differ between subscription-based cloud services and consumption-based cloud services, per Alphabet's fiscal 2024 annual report?","Revenues for cloud services provided on a consumption basis are recognized when the customer utilizes the services based on the quantity consumed, whereas revenues for subscription-based cloud services are recognized ratably over the contract term as the customer receives and consumes the benefits.","Revenues related to cloud services provided on a consumption basis are recognized when the customer utilizes the services, based on the quantity of services consumed. Revenues related to cloud services provided on a subscription basis are recognized ratably over the contract term as the customer receives and consumes the benefits of the cloud services.","[...] ervices are generally provided on either a consumption or subscription basis and may have contract terms longer than a year. Revenues related to cloud services provided on a consumption basis are recognized when the customer utilizes the services, based on the quantity of services consumed. Revenues related to cloud services provided on a subscription basis are recognized ratably over the contract term as the customer receives and consumes the benefits of the cloud services.",REJECT,REJECT_COMPARISON_NOT_SUPPORTED (found 0 distinct figures in GT),Disambiguated repeated quote: appended 'per Alphabet's fiscal 2024 annual report',How do the revenue recognition criteria differ between subscription-based cloud services and consumption-based cloud services?,REPEATED_ACROSS_YEARS_DISAMBIGUATED (quote in FY2023; question names target year); REJECT_COMPARISON_NOT_SUPPORTED (found 0 distinct figures in GT),,,x
+heldout_13,Alphabet,2025,Item 1,simple_lookup,natural prose,"At Alphabet, how are the incoming funds for the non-core operating segments primarily generated?",Revenues from Other Bets are generated primarily from the sale of autonomous transportation and internet services.,Revenues from Other Bets are generated primarily from the sale of autonomous transportation and internet services.,"[...] with considerable uncertainty, some of them are already generating revenue and making important strides in their industries. Revenues from Other Bets are generated primarily from the sale of autonomous transportation and internet services.
+
+Competition
+
+Our business is characterized by rapid change as well as new and disruptive technologies. We face formidable c [...]",REJECT,,"Prepended 'At Alphabet, '",How are the incoming funds for the non-core operating segments primarily generated?,FLAG_NO_COMPANY_NAME; FLAG_NO_FISCAL_YEAR,,,x
+heldout_14,Alphabet,2025,Item 1A,simple_lookup,short direct question,"What potential negative impacts on society from artificial intelligence deployments are identified as risk factors for the company, in Alphabet's FY2025 10-K?","Unintended consequences, uses, or customization of AI tools and systems may negatively impact human rights, privacy, employment, or other societal concerns, potentially leading to litigation, reputational damage, regulatory scrutiny, and harm to the company's financial condition and operating results.","Unintended consequences, uses, or customization of our AI tools and systems may negatively affect human rights, privacy, employment, or other social concerns, which may result in claims, lawsuits, brand or reputational harm, and increased regulatory scrutiny, any of which could harm our business, financial condition, and operating results.","[...] services, but we may not be able to identify or resolve all AI-related issues, deficiencies, and failures before they arise. Unintended consequences, uses, or customization of our AI tools and systems may negatively affect human rights, privacy, employment, or other social concerns, which may result in claims, lawsuits, brand or reputational harm, and increased regulatory scrutiny, any of which could harm our business, financial condition, and operating results.
+
+People access our products and services through a variety of platforms and devices that continue to evolve with the advance [...]",ACCEPT,,Disambiguated repeated quote: appended 'in Alphabet's FY2025 10-K',What potential negative impacts on society from artificial intelligence deployments are identified as risk factors for the company?,"REPEATED_ACROSS_YEARS_DISAMBIGUATED (quote in FY2023, 2024; question names target year); FLAG_NO_FISCAL_YEAR",x,,
+heldout_15,Alphabet,2025,Item 7,numeric_precision,keyword-style phrase,Alphabet Traffic Acquisition Costs (TAC) total for fiscal year 2025 in millions,"$59,926 million","TAC$54,900 $59,926","[...] lowing table presents cost of revenues, including TAC (in millions, except percentages):
+
+Year Ended December 31,
+
+20242025
+
+TAC$54,900 $59,926
+
+Other cost of revenues91,406 102,609
+
+Total cost of revenues$146,306 $162,535
+
+Total cost of revenues as a percentage of re [...]",ACCEPT,,,,PASS,x,,
+heldout_16,Alphabet,2025,Item 7,simple_lookup,paraphrase (no copied terms from the chunk),"At Alphabet, how might the integration of machine learning features into consumer and enterprise tools alter financial monetization models?","Integrating artificial intelligence into products and services may lead to different monetization methods compared to historical offerings, potentially impacting revenue growth rates and margin trajectories.","As we continue to incorporate AI into our products and services, such as with AI Overviews and AI Mode in Search, and with enterprise AI solutions on our Google Cloud Platform, we may monetize differently than our historical consumer and enterprise offerings which could affect revenue growth rates and margin trends.","[...] evolution, including user engagement with AI products and services, will continue to benefit our business and our revenues. As we continue to incorporate AI into our products and services, such as with AI Overviews and AI Mode in Search, and with enterprise AI solutions on our Google Cloud Platform, we may monetize differently than our historical consumer and enterprise offerings which could affect revenue growth rates and margin trends. When developing new products and services we generally focus first on user experience and then on monetization. At the same [...]",ACCEPT,,"Prepended 'At Alphabet, '",How might the integration of machine learning features into consumer and enterprise tools alter financial monetization models?,FLAG_NO_COMPANY_NAME; FLAG_NO_FISCAL_YEAR,x,"At Alphabet, how might the integration of machine learning features into consumer and enterprise tools alter financial monetization models, in fiscal 2025?",
+heldout_17,Alphabet,2025,Item 8,numeric_precision,"""what does the filing say about"" style","At Alphabet, what does the filing say about the total undiscounted lease obligations for operating agreements at the conclusion of fiscal year 2025?","$18,251 million","Total undiscounted lease payments
+
+18,251","[...] g LeasesFinance
+
+Leases
+
+2026$3,275 $491
+
+20273,082 345
+
+20282,510 335
+
+20292,061 314
+
+20301,669 241
+
+Thereafter5,654 1,143
+
+Total undiscounted lease payments
+
+18,251 2,869
+
+Less: imputed interest
+
+(2,297)(369)
+
+Total lease liability balance$15,954 $2,500
+
+As of December 31, 2025, we have e [...]",ACCEPT,,"Prepended 'At Alphabet, '",What does the filing say about the total undiscounted lease obligations for operating agreements at the conclusion of fiscal year 2025?,FLAG_NO_COMPANY_NAME,x,,
+heldout_18,Alphabet,2025,Item 8,numeric_precision,comparison-of-two-figures style where the chunk allows,"At Alphabet, how did the amount of future funding commitments for private company and renewable energy holdings change between the close of fiscal year 2024 and fiscal year 2025?","Future funding commitments decreased from $1.5 billion as of December 31, 2024, to $1.1 billion as of December 31, 2025.","As of December 31, 2024 and 2025, future funding commitments were $1.5 billion and $1.1 billion, respectively.","[...] ents. The maximum exposure to these VIEs is generally limited to the current carrying value plus future funding commitments. As of December 31, 2024 and 2025, future funding commitments were $1.5 billion and $1.1 billion, respectively.
+
+70.
+
+Table of Contents
+
+Alphabet Inc.
+
+Leases with data center leasing VIEs are accounted for as finance leases and are inc [...]",REJECT,"REJECT_ANSWER_LEAKAGE: '2024'; FLAG_NO_COMPANY_NAME; REJECT_QUESTION_YEAR_MISMATCH (question names 2024, but filing is 2025)","Prepended 'At Alphabet, '",How did the amount of future funding commitments for private company and renewable energy holdings change between the close of fiscal year 2024 and fiscal year 2025?,"REJECT_ANSWER_LEAKAGE: '2024'; FLAG_NO_COMPANY_NAME; REJECT_QUESTION_YEAR_MISMATCH (question names 2024, but filing is 2025)",,,x
+heldout_19,Amazon,2023,Item 1,simple_lookup,natural prose,"At Amazon, who serves as the Chief Executive Officer of the company as of the filing date provided?",Andrew R. Jassy serves as President and Chief Executive Officer.,Andrew R. Jassy56President and Chief Executive Officer,"[...] ctors as of January 24, 2024:
+
+Information About Our Executive Officers
+
+NameAgePosition
+
+Jeffrey P. Bezos60Executive Chair
+
+Andrew R. Jassy56President and Chief Executive Officer
+
+Douglas J. Herrington57CEO Worldwide Amazon Stores
+
+Brian T. Olsavsky60Senior Vice President and Chief Financial Officer
+
+S [...]",REJECT,REJECT_ANSWER_LEAKAGE: 'Chief'; FLAG_NO_COMPANY_NAME; FLAG_NO_FISCAL_YEAR,"Prepended 'At Amazon, '",Who serves as the Chief Executive Officer of the company as of the filing date provided?,REJECT_ANSWER_LEAKAGE: 'Chief'; FLAG_NO_COMPANY_NAME; FLAG_NO_FISCAL_YEAR,,,x
+heldout_20,Amazon,2023,Item 1A,simple_lookup,short direct question,"At Amazon, what factors complicate foreign business licensing and certification?","Foreign business licensing and certification requirements apply to imports, exports, web services, and electronic devices, serving as one of the regulatory challenges for international sales and operations.","•business licensing or certification requirements, such as for imports, exports, web services, and electronic devices;","[...] ractices regarding the physical and digital distribution of media products and enforcement of intellectual property rights;
+
+•business licensing or certification requirements, such as for imports, exports, web services, and electronic devices;
+
+•limitations on the repatriation and investment of funds and foreign currency exchange restrictions;
+
+•limited fulfillment [...]",REJECT,REJECT_ANSWER_LEAKAGE: 'Foreign'; FLAG_NO_COMPANY_NAME; FLAG_NO_FISCAL_YEAR,"Prepended 'At Amazon, '",What factors complicate foreign business licensing and certification?,REJECT_ANSWER_LEAKAGE: 'Foreign'; FLAG_NO_COMPANY_NAME; FLAG_NO_FISCAL_YEAR,,,x
+heldout_21,Amazon,2023,Item 7,simple_lookup,keyword-style phrase,"Amazon operating cost categorization and working capital management, for fiscal 2023","Variable costs include product and content costs, payment processing and related transaction costs, picking, packaging, and preparing orders for shipment, transportation, customer service support, costs necessary to run AWS, and a portion of marketing costs; fixed costs include the costs to build and run the technology infrastructure, to build, enhance, and add features to online stores, web services, electronic devices, and digital offerings, and to build and optimize the fulfillment network.","Our variable costs include product and content costs, payment processing and related transaction costs, picking, packaging, and preparing orders for shipment, transportation, customer service support, costs necessary to run AWS, and a portion of our marketing costs. Our fixed costs include the costs necessary to build and run our technology infrastructure; to build, enhance, and add features to our online stores, web services, electronic devices, and digital offerings; and to build and optimize our fulfillment network.","We seek to reduce our variable costs per unit and work to leverage our fixed costs. Our variable costs include product and content costs, payment processing and related transaction costs, picking, packaging, and preparing orders for shipment, transportation, customer service support, costs necessary to run AWS, and a portion of our marketing costs. Our fixed costs include the costs necessary to build and run our technology infrastructure; to build, enhance, and add features to our online stores, web services, electronic devices, and digital offerings; and to build and optimize our fulfillment network. Variable costs generally change directly with sales volume, while fixed costs generally are dependent on the timing of capac [...]",ACCEPT,,Disambiguated repeated quote: appended 'for fiscal 2023',Amazon operating cost categorization and working capital management,"REPEATED_ACROSS_YEARS_DISAMBIGUATED (quote in FY2024, 2025; question names target year)",x,"Amazon variable and fixed operating cost categories, for fiscal 2023",
+heldout_22,Amazon,2023,Item 7,numeric_precision,paraphrase (no copied terms from the chunk),"At Amazon, what was the total expenditure for outbound product delivery services incurred by the corporation during the year ended December 31, 2023?",$89.5 billion,Shipping costs were $83.5 billion and $89.5 billion in 2022 and 2023.,Shipping costs were $83.5 billion and $89.5 billion in 2022 and 2023. Shipping costs to receive products from our suppliers are included in our inventory and recognized as cost of sales upon sal [...],ACCEPT,,"Prepended 'At Amazon, '","What was the total expenditure for outbound product delivery services incurred by the corporation during the year ended December 31, 2023?",FLAG_NO_COMPANY_NAME,x,,
+heldout_23,Amazon,2023,Item 8,numeric_precision,"""what does the filing say about"" style","At Amazon, what does the filing say about the capital expenditures for the cloud computing division during the latest reported fiscal year?","In 2023, total net additions to property and equipment for the AWS segment were $24,843 million.","AWS (2)22,047 27,755 24,843
+
+Corporate2,622 2,688 1,828
+
+Consolidated$72,325 $60,836 $48,344","[...] ons):
+
+Year Ended December 31,
+
+202120222023
+
+North America (1)$37,397 $23,682 $17,529
+
+International (1)10,259 6,711 4,144
+
+AWS (2)22,047 27,755 24,843
+
+Corporate2,622 2,688 1,828
+
+Consolidated$72,325 $60,836 $48,344
+
+___________________
+
+(1)Includes property and equipment added under finance leases of $3.6 billion, $422 million, and $525 [...]",ACCEPT,,"Prepended 'At Amazon, '",What does the filing say about the capital expenditures for the cloud computing division during the latest reported fiscal year?,FLAG_NO_COMPANY_NAME; FLAG_NO_FISCAL_YEAR,x,"At Amazon, what does the filing say about the capital expenditures for the cloud computing division in fiscal 2023?",
+heldout_24,Amazon,2023,Item 8,numeric_precision,comparison-of-two-figures style where the chunk allows,"At Amazon, what is the change in the total unearned revenue balance between the end of fiscal year 2022 and the end of fiscal year 2023?","Total unearned revenue increased from $16.1 billion as of December 31, 2022, to $20.6 billion as of December 31, 2023.","Our total unearned revenue as of December 31, 2022 was $16.1 billion, of which $12.4 billion was recognized as revenue during the year ended December 31, 2023 and our total unearned revenue as of December 31, 2023 was $20.6 billion.","[...] zed over the service period. Unearned revenue primarily relates to prepayments of AWS services and Amazon Prime memberships. Our total unearned revenue as of December 31, 2022 was $16.1 billion, of which $12.4 billion was recognized as revenue during the year ended December 31, 2023 and our total unearned revenue as of December 31, 2023 was $20.6 billion. Included in “Other long-term liabilities” on our consolidated balance sheets was $2.9 billion and $5.7 billion of unearned r [...]",REJECT,"REJECT_ANSWER_LEAKAGE: '2022'; FLAG_NO_COMPANY_NAME; REJECT_QUESTION_YEAR_MISMATCH (question names 2022, but filing is 2023)","Prepended 'At Amazon, '",What is the change in the total unearned revenue balance between the end of fiscal year 2022 and the end of fiscal year 2023?,"REJECT_ANSWER_LEAKAGE: '2022'; FLAG_NO_COMPANY_NAME; REJECT_QUESTION_YEAR_MISMATCH (question names 2022, but filing is 2023)",,,x
+heldout_25,Amazon,2024,Item 1,simple_lookup,natural prose,"At Amazon, who holds the position of chief executive officer for the cloud computing division as of January 2025?",Matthew S. Garman,Matthew S. Garman48CEO Amazon Web Services,"[...] cutive Officers
+
+NameAgePosition
+
+Jeffrey P. Bezos61Executive Chair
+
+Andrew R. Jassy57President and Chief Executive Officer
+
+Matthew S. Garman48CEO Amazon Web Services
+
+Douglas J. Herrington58CEO Worldwide Amazon Stores
+
+Brian T. Olsavsky61Senior Vice President and Chief Financial Officer
+
+S [...]",ACCEPT,"FLAG_NO_COMPANY_NAME; REJECT_QUESTION_YEAR_MISMATCH (question names 2025, but filing is 2024)","Prepended 'At Amazon, '",Who holds the position of chief executive officer for the cloud computing division as of January 2025?,"FLAG_NO_COMPANY_NAME; REJECT_QUESTION_YEAR_MISMATCH (question names 2025, but filing is 2024)",x,,
+heldout_26,Amazon,2024,Item 1A,simple_lookup,short direct question,"What resource price increases and inflationary cost pressures are identified as potential operational factors, per Amazon's fiscal 2024 annual report?","Amazon notes that factors such as the availability and price increases of transportation (including fuel), land, water, energy, paper and packing commodities, hardware, and technology infrastructure—often driven by inflationary pressures—can impact operations.","availability of and increases in the prices of transportation (including fuel), resources such as land, water, and energy, commodities like paper and packing supplies and hardware products, and technology infrastructure products, including as a result of inflationary pressures;","[...] and services;
+
+•the extent to which we invest in technology and infrastructure, fulfillment, and other expense categories;
+
+•availability of and increases in the prices of transportation (including fuel), resources such as land, water, and energy, commodities like paper and packing supplies and hardware products, and technology infrastructure products, including as a result of inflationary pressures;",ACCEPT,,Disambiguated repeated quote: appended 'per Amazon's fiscal 2024 annual report',What resource price increases and inflationary cost pressures are identified as potential operational factors?,"REPEATED_ACROSS_YEARS_DISAMBIGUATED (quote in FY2023, 2025; question names target year)",x,,
+heldout_27,Amazon,2024,Item 7,numeric_precision,keyword-style phrase,Amazon AWS revenue fiscal year 2024 absolute amount in millions,"$107,556 million","AWS90,757 107,556","Year Ended December 31,
+
+20232024
+
+Net Sales:
+
+North America$352,828 $387,497
+
+International131,200 142,906
+
+AWS90,757 107,556
+
+Consolidated$574,785 $637,959
+
+Year-over-year Percentage Growth:
+
+North America12 %10 %
+
+International11 9
+
+AWS13 19
+
+Conso [...]",ACCEPT,,,,REPEATED_ACROSS_YEARS_DISAMBIGUATED (quote in FY2025; question names target year),x,,
+heldout_28,Amazon,2024,Item 7,numeric_precision,paraphrase (no copied terms from the chunk),"At Amazon, what is the projected revenue range for the opening quarter of 2025?",Net sales are expected to be between $151.0 billion and $155.5 billion for the first quarter of 2025.,"•Net sales are expected to be between $151.0 billion and $155.5 billion, or to grow between 5% and 9% compared with first quarter 2024.","[...] new and emerging technologies, as well as those outlined in Item 1A of Part I, “Risk Factors.”
+
+First Quarter 2025 Guidance
+
+•Net sales are expected to be between $151.0 billion and $155.5 billion, or to grow between 5% and 9% compared with first quarter 2024. This guidance anticipates an unusually large, unfavorable impact of approximately $2.1 billion, or 150 basis points, from fo [...]",REJECT,"REJECT_ANSWER_LEAKAGE: '2025'; FLAG_NO_COMPANY_NAME; REJECT_QUESTION_YEAR_MISMATCH (question names 2025, but filing is 2024)","Prepended 'At Amazon, '",What is the projected revenue range for the opening quarter of 2025?,"REJECT_ANSWER_LEAKAGE: '2025'; FLAG_NO_COMPANY_NAME; REJECT_QUESTION_YEAR_MISMATCH (question names 2025, but filing is 2024)",,,x
+heldout_29,Amazon,2024,Item 8,numeric_precision,"""what does the filing say about"" style","At Amazon, what does the filing say about the net additions to property and equipment for the AWS business division in the most recent fiscal year listed?","$53,267 million","AWS (2)27,755 24,843 53,267","[...] ions):
+
+Year Ended December 31,
+
+202220232024
+
+North America (1)$23,682 $17,529 $24,348
+
+International (1)6,711 4,144 6,643
+
+AWS (2)27,755 24,843 53,267
+
+Corporate2,688 1,828 1,494
+
+Consolidated$60,836 $48,344 $85,752
+
+___________________
+
+(1)Includes property and equipment ad [...]",ACCEPT,REJECT_6GRAM_OVERLAP: 'net additions to property and equipment'; FLAG_NO_FISCAL_YEAR,"Prepended 'At Amazon, '",What does the filing say about the net additions to property and equipment for the AWS business division in the most recent fiscal year listed?,REJECT_6GRAM_OVERLAP: 'net additions to property and equipment'; FLAG_NO_FISCAL_YEAR,x,"At Amazon, how much did AWS add to its property and equipment in fiscal 2024?",
+heldout_30,Amazon,2024,Item 8,numeric_precision,comparison-of-two-figures style where the chunk allows,"At Amazon, how did the valuation results for marketable equity securities change between the fiscal year ending in 2023 and the fiscal year ending in 2024?","In 2023, the valuation gains were $984 million, whereas in 2024, the valuation losses were $(1,278) million.","Marketable equity securities valuation gains (losses)$(13,870)$984 $(1,278)","[...] her Income (Expense), Net
+
+Other income (expense), net, is as follows (in millions):
+
+Year Ended December 31,
+
+202220232024
+
+Marketable equity securities valuation gains (losses)$(13,870)$984 $(1,278)
+
+Equity warrant valuation gains (losses)(2,132)26 (192)
+
+Upward adjustments relating to equity investments in private compan [...]",REJECT,"REJECT_ANSWER_LEAKAGE: '2023'; FLAG_NO_COMPANY_NAME; REJECT_QUESTION_YEAR_MISMATCH (question names 2023, but filing is 2024)","Prepended 'At Amazon, '",How did the valuation results for marketable equity securities change between the fiscal year ending in 2023 and the fiscal year ending in 2024?,"REJECT_ANSWER_LEAKAGE: '2023'; FLAG_NO_COMPANY_NAME; REJECT_QUESTION_YEAR_MISMATCH (question names 2023, but filing is 2024)",,,x
+heldout_31,Amazon,2025,Item 1,simple_lookup,natural prose,"Which executive holds the position of Chief Financial Officer for the company, in Amazon's FY2025 10-K?",Brian T. Olsavsky,Brian T. Olsavsky. Mr. Olsavsky has served as Senior Vice President and Chief Financial Officer since June 2015,"[...] or Vice President, Consumables from May 2014 to December 2014, and Vice President, Consumables from May 2005 to April 2014.
+
+Brian T. Olsavsky. Mr. Olsavsky has served as Senior Vice President and Chief Financial Officer since June 2015, Vice President, Finance for the Global Consumer Business from December 2011 to June 2015, and numerous financial leadership [...]",ACCEPT,,Disambiguated repeated quote: appended 'in Amazon's FY2025 10-K',Which executive holds the position of Chief Financial Officer for the company?,"REPEATED_ACROSS_YEARS_DISAMBIGUATED (quote in FY2023, 2024; question names target year); FLAG_NO_FISCAL_YEAR",x,,
+heldout_32,Amazon,2025,Item 1A,simple_lookup,short direct question,"At Amazon, what factors cause sales volatility?","Sales and operating results fluctuate due to factors including the ability to retain and increase sales to existing customers, attract new customers, satisfy customer demands, retain and expand the network of sellers, offer products on favorable terms, manage inventory, fulfill orders, face competition, and adapt to changes in usage or adoption rates of the internet, e-commerce, electronic devices, web services, satellite communications services, and artificial intelligence and machine learning technologies.","Our sales and operating results will also fluctuate for many other reasons, including due to factors described elsewhere in this section and the following:
+
+•our ability to retain and increase sales to existing customers, attract new customers, and satisfy our customers’ demands;
+
+•our ability to retain and expand our network of sellers;
+
+•our ability to offer products on favorable terms, manage inventory, and fulfill orders;
+
+•the introduction of competitive stores, websites, products, services, price decreases, or improvements;
+
+•changes in usage or adoption rates of the internet, e-commerce, electronic devices, web services, satellite communications services, and artificial intelligence and machine learning technologies, products, and services, including outside the U.S.;","[...] changes in customer preferences or a weakening of the U.S. or global economies, may result in decreased revenue or growth.
+
+Our sales and operating results will also fluctuate for many other reasons, including due to factors described elsewhere in this section and the following:
+
+•our ability to retain and increase sales to existing customers, attract new customers, and satisfy our customers’ demands;
+
+•our ability to retain and expand our network of sellers;
+
+•our ability to offer products on favorable terms, manage inventory, and fulfill orders;
+
+•the introduction of competitive stores, websites, products, services, price decreases, or improvements;
+
+•changes in usage or adoption rates of the internet, e-commerce, electronic devices, web services, satellite communications services, and artificial intelligence and machine learning technologies, products, and services, including outside the U.S.;",ACCEPT,,"Prepended 'At Amazon, '",What factors cause sales volatility?,FLAG_NO_COMPANY_NAME; FLAG_NO_FISCAL_YEAR,x,"At Amazon, what factors cause sales volatility in fiscal 2025?",
+heldout_33,Amazon,2025,Item 7,simple_lookup,keyword-style phrase,"Amazon variable cost components enumeration, for fiscal 2025","Amazon's variable costs include product and content costs, payment processing and related transaction costs, picking, packaging, and preparing orders for shipment, transportation, customer service support, costs necessary to run AWS, and a portion of marketing costs.","Our variable costs include product and content costs, payment processing and related transaction costs, picking, packaging, and preparing orders for shipment, transportation, customer service support, costs necessary to run AWS, and a portion of our marketing costs.","[...] on our non-GAAP free cash flow measure.
+
+We seek to reduce our variable costs per unit and work to leverage our fixed costs. Our variable costs include product and content costs, payment processing and related transaction costs, picking, packaging, and preparing orders for shipment, transportation, customer service support, costs necessary to run AWS, and a portion of our marketing costs. Our fixed costs include the costs necessary to build and run our technology infrastructure; to build, enhance, and add featu [...]",ACCEPT,,Disambiguated repeated quote: appended 'for fiscal 2025',Amazon variable cost components enumeration,"REPEATED_ACROSS_YEARS_DISAMBIGUATED (quote in FY2023, 2024; question names target year)",x,,
+heldout_34,Amazon,2025,Item 7,numeric_precision,paraphrase (no copied terms from the chunk),"At Amazon, how much did currency fluctuations add to tech and infrastructure expenses during fiscal year 2025?",Changes in foreign exchange rates increased technology and infrastructure costs by $312 million in 2025.,Changes in foreign exchange rates increased technology and infrastructure costs by $312 million in 2025.,"[...] d to the prior year, is primarily due to an increase in spending on infrastructure, including depreciation and amortization. Changes in foreign exchange rates increased technology and infrastructure costs by $312 million in 2025. We currently expense the majority of the costs associated with the development of our satellite network for global broadband [...]",ACCEPT,,"Prepended 'At Amazon, '",How much did currency fluctuations add to tech and infrastructure expenses during fiscal year 2025?,FLAG_NO_COMPANY_NAME,x,,
+heldout_35,Amazon,2025,Item 8,numeric_precision,"""what does the filing say about"" style","At Amazon, what does the filing say about the principal amount of newly issued senior notes for the fiscal period ending December 31, 2025?",$15.0 billion (senior notes issued in November 2025),including $15.0 billion issued in November 2025 for general corporate purposes.,"As of December 31, 2025, we had $68.0 billion of unsecured senior notes outstanding (the “Notes”), including $15.0 billion issued in November 2025 for general corporate purposes. Our total long-term debt obligations are as follows (in millions):
+
+Maturities (1)Stated Interest RatesEffective Interest Ra [...]",ACCEPT,,"Prepended 'At Amazon, '","What does the filing say about the principal amount of newly issued senior notes for the fiscal period ending December 31, 2025?",FLAG_NO_COMPANY_NAME,x,"At Amazon, what amount of senior notes was issued in the final quarter of fiscal 2025 for general corporate purposes?",
+heldout_36,Amazon,2025,Item 8,numeric_precision,comparison-of-two-figures style where the chunk allows,"At Amazon, what is the difference between the fair value of convertible notes recorded on the consolidated balance sheet and the associated pre-tax unrealized gain included in accumulated other comprehensive income as of December 31, 2025?",$6.3 billion ($45.8 billion estimated fair value minus $39.5 billion associated pre-tax unrealized gain),"As of December 31, 2025, the estimated fair value of our convertible notes recorded on our consolidated balance sheet was approximately $45.8 billion, and the associated pre-tax unrealized gain included in “Accumulated other comprehensive income (loss)” was $39.5 billion.","[...] 2025, the amount recorded on our consolidated balance sheet for nonvoting preferred stock was approximately $14.8 billion.
+
+As of December 31, 2025, the estimated fair value of our convertible notes recorded on our consolidated balance sheet was approximately $45.8 billion, and the associated pre-tax unrealized gain included in “Accumulated other comprehensive income (loss)” was $39.5 billion.
+
+We also have a commercial arrangement primarily for the provision of AWS cloud services, which includes the use of AWS chip [...]",REJECT,REJECT_6GRAM_OVERLAP: 'the associated pre tax unrealized gain'; FLAG_NO_COMPANY_NAME,"Prepended 'At Amazon, '","What is the difference between the fair value of convertible notes recorded on the consolidated balance sheet and the associated pre-tax unrealized gain included in accumulated other comprehensive income as of December 31, 2025?",REJECT_6GRAM_OVERLAP: 'the associated pre tax unrealized gain'; FLAG_NO_COMPANY_NAME,,,x
+heldout_37,Apple,2023,Item 1,numeric_precision,natural prose,"At Apple, what proportion of total revenue was generated via third-party cellular carriers, wholesalers, and other secondary pathways for the 2023 fiscal period?",63% of total net sales,"During 2023, the Company’s net sales through its direct and indirect distribution channels accounted for 37% and 63%, respectively, of total net sales.","[...] iety of indirect distribution channels, such as third-party cellular network carriers, wholesalers, retailers and resellers. During 2023, the Company’s net sales through its direct and indirect distribution channels accounted for 37% and 63%, respectively, of total net sales.
+
+Competition
+
+The markets for the Company’s products and services are highly competitive, and are characterized by aggressiv [...]",ACCEPT,,"Prepended 'At Apple, '","What proportion of total revenue was generated via third-party cellular carriers, wholesalers, and other secondary pathways for the 2023 fiscal period?",FLAG_NO_COMPANY_NAME,x,,
+heldout_38,Apple,2023,Item 1A,simple_lookup,short direct question,"What potential negative consequences could Apple face if its merchandise importation is subjected to sudden regulatory restrictions, per Apple's fiscal 2023 annual report?","Apple's merchandise could face bans, delays, or importation prohibitions, which would lead to material adverse effects on the company's business, reputation, operational results, and financial condition.","As a result, the Company’s products could be banned, delayed or prohibited from importation, which could materially adversely affect the Company’s business, reputation, results of operations and financial condition.","[...] can be no assurance that such policies and procedures will be effective in preventing a violation or a claim of a violation. As a result, the Company’s products could be banned, delayed or prohibited from importation, which could materially adversely affect the Company’s business, reputation, results of operations and financial condition.
+
+Expectations relating to environmental, social and governance considerations and related reporting obligations expose the C [...]",ACCEPT,,Disambiguated repeated quote: appended 'per Apple's fiscal 2023 annual report',What potential negative consequences could Apple face if its merchandise importation is subjected to sudden regulatory restrictions?,REPEATED_ACROSS_YEARS_DISAMBIGUATED (quote in FY2024; question names target year),x,,
+heldout_39,Apple,2023,Item 7,simple_lookup,keyword-style phrase,"At Apple, uncertain tax positions and legal contingencies financial impact evaluation criteria","The evaluation of uncertain tax positions requires significant judgment in interpreting GAAP and complex tax laws, while recording liabilities for legal proceedings depends on whether a loss is probable and reasonably estimable. Management exercises significant judgment in both areas, and unfavorable resolutions could materially affect Apple's financial condition and operating results.","The evaluation of the Company’s uncertain tax positions involves significant judgment in the interpretation and application of GAAP and complex domestic and international tax laws, including the Act and matters related to the allocation of international taxation rights between countries. Although management believes the Company’s reserves are reasonable, no assurance can be given that the final outcome of these uncertainties will not be different from that which is reflected in the Company’s reserves.","The Company is subject to income taxes in the U.S. and numerous foreign jurisdictions. The evaluation of the Company’s uncertain tax positions involves significant judgment in the interpretation and application of GAAP and complex domestic and international tax laws, including the Act and matters related to the allocation of international taxation rights between countries. Although management believes the Company’s reserves are reasonable, no assurance can be given that the final outcome of these uncertainties will not be different from that which is reflected in the Company’s reserves. Reserves are adjusted considering changing facts and circumstances, such as the closing of a tax examination. Resolution of [...]",ACCEPT,,"Prepended 'At Apple, '",uncertain tax positions and legal contingencies financial impact evaluation criteria,FLAG_NO_COMPANY_NAME; FLAG_NO_FISCAL_YEAR,x,"At Apple, uncertain tax positions and legal contingencies financial impact evaluation criteria, for fiscal 2023",
+heldout_40,Apple,2023,Item 7,simple_lookup,paraphrase (no copied terms from the chunk),"What factors does leadership rely on when formulating calculations for carrying values of obligations and assets, in Apple's FY2023 10-K?","Management bases its estimates on historical experience and on various other assumptions it believes to be reasonable under the circumstances, the results of which form the basis for making judgments about the carrying values of assets and liabilities.","Management bases its estimates on historical experience and on various other assumptions it believes to be reasonable under the circumstances, the results of which form the basis for making judgments about the carrying values of assets and liabilities.","[...] the significant accounting policies and methods used in the preparation of the Company’s consolidated financial statements. Management bases its estimates on historical experience and on various other assumptions it believes to be reasonable under the circumstances, the results of which form the basis for making judgments about the carrying values of assets and liabilities.
+
+Uncertain Tax Positions
+
+The Company is subject to income taxes in the U.S. and numerous foreign jurisdictions. The evaluat [...]",ACCEPT,,Disambiguated repeated quote: appended 'in Apple's FY2023 10-K',What factors does leadership rely on when formulating calculations for carrying values of obligations and assets?,"REPEATED_ACROSS_YEARS_DISAMBIGUATED (quote in FY2024, 2025; question names target year); FLAG_NO_FISCAL_YEAR",x,,
+heldout_41,Apple,2023,Item 8,simple_lookup,"""what does the filing say about"" style","At Apple, what does the filing say about the opinion issued regarding the consolidated balance sheets for the fiscal year ended September 30, 2023?","The independent registered public accounting firm issued an opinion stating that the financial statements present fairly, in all material respects, the financial position of Apple Inc. at September 30, 2023 and September 24, 2022, and the results of its operations and cash flows in conformity with U.S. generally accepted accounting principles.","In our opinion, the financial statements present fairly, in all material respects, the financial position of Apple Inc. at September 30, 2023 and September 24, 2022, and the results of its operations and its cash flows for each of the three years in the period ended September 30, 2023, in conformity with U.S. generally accepted accounting principles.","[...] ears in the period ended September 30, 2023, and the related notes (collectively referred to as the “financial statements”). In our opinion, the financial statements present fairly, in all material respects, the financial position of Apple Inc. at September 30, 2023 and September 24, 2022, and the results of its operations and its cash flows for each of the three years in the period ended September 30, 2023, in conformity with U.S. generally accepted accounting principles.
+
+We also have audited, in accordance with the standards of the Public Company Accounting Oversight Board (United States) (th [...]",ACCEPT,,"Prepended 'At Apple, '","What does the filing say about the opinion issued regarding the consolidated balance sheets for the fiscal year ended September 30, 2023?",FLAG_NO_COMPANY_NAME,x,,
+heldout_42,Apple,2023,Item 8,multi_hop-like single-chunk,comparison-of-two-figures style where the chunk allows,"At Apple, how does the timing of revenue recognition for transferred physical devices differ from that of bundled recurring service features?","Revenue allocated to delivered hardware and bundled software is recognized when control transfers to the buyer upon shipment, whereas revenue allocated to product-related bundled services and unspecified software upgrades is deferred and recognized ratably on a straight-line basis over the expected service provision period.","Revenue allocated to the delivered hardware and bundled software is recognized when control has transferred to the customer, which generally occurs when the product is shipped. Revenue allocated to the product-related bundled services and unspecified software upgrade rights is deferred and recognized on a straight-line basis over the estimated period they are expected to be provided.","[...] able prices for the undelivered performance obligations, the allocation of revenue is based on the Company’s estimated SSPs. Revenue allocated to the delivered hardware and bundled software is recognized when control has transferred to the customer, which generally occurs when the product is shipped. Revenue allocated to the product-related bundled services and unspecified software upgrade rights is deferred and recognized on a straight-line basis over the estimated period they are expected to be provided.
+
+For certain long-term service arrangements, the Company has performance obligations for services it has not yet delivered. [...]",REJECT,FLAG_NO_COMPANY_NAME; FLAG_NO_FISCAL_YEAR; REJECT_COMPARISON_NOT_SUPPORTED (found 0 distinct figures in GT),"Prepended 'At Apple, '",How does the timing of revenue recognition for transferred physical devices differ from that of bundled recurring service features?,FLAG_NO_COMPANY_NAME; FLAG_NO_FISCAL_YEAR; REJECT_COMPARISON_NOT_SUPPORTED (found 0 distinct figures in GT),,,x
+heldout_43,Apple,2024,Item 1,numeric_precision,natural prose,"At Apple, what was the total headcount of full-time equivalent staff at the close of fiscal year 2024?","As of September 28, 2024, the Company had approximately 164,000 full-time equivalent employees.","As of September 28, 2024, the Company had approximately 164,000 full-time equivalent employees.","[...] lusive, safe and supportive environment for all of its team members, so that its people can do the best work of their lives. As of September 28, 2024, the Company had approximately 164,000 full-time equivalent employees.
+
+Compensation and Benefits
+
+The Company believes that compensation should be competitive and equitable, and should enable em [...]",ACCEPT,,"Prepended 'At Apple, '",What was the total headcount of full-time equivalent staff at the close of fiscal year 2024?,FLAG_NO_COMPANY_NAME,x,,
+heldout_44,Apple,2024,Item 1A,simple_lookup,short direct question,What protection limitations exist for Apple's IT network?,"Apple's security measures and insurance coverage may not be sufficient for all eventualities or losses, as they remain vulnerable to hacking, ransomware, employee errors, fraud, and system failures.","As with all companies, these security measures may not be sufficient for all eventualities and are vulnerable to hacking, ransomware attacks, employee error, malfeasance, system error, faulty password management or other irregularities.","[...] ta, and mitigate the impact of unauthorized access, including through the use of encryption and authentication technologies. As with all companies, these security measures may not be sufficient for all eventualities and are vulnerable to hacking, ransomware attacks, employee error, malfeasance, system error, faulty password management or other irregularities. For example, third parties can fraudulently induce the Company’s or its suppliers’ and other third parties’ employees or cus [...]",ACCEPT,,,,FLAG_NO_FISCAL_YEAR,x,"What protection limitations exist for Apple's IT network, in Apple's fiscal 2024 filing?",
+heldout_45,Apple,2024,Item 7,other,keyword-style phrase,"Apple uncertain tax positions and ordinary course litigation financial impact evaluation criteria, for fiscal 2024","Management determines tax reserves and legal liabilities by exercising significant judgment in interpreting GAAP, complex domestic and international tax laws (such as the TCJA), and evaluating probabilities where losses are both probable and reasonably estimable. These reserves and liabilities are subject to adjustment as facts and circumstances change, and unexpected resolutions could materially impact the company's financial condition and operating results.","The evaluation of the Company’s uncertain tax positions involves significant judgment in the interpretation and application of GAAP and complex domestic and international tax laws, including the TCJA and the allocation of international taxation rights between countries. Although management believes the Company’s reserves are reasonable, no assurance can be given that the final outcome of these uncertainties will not be different from that reflected in the Company’s reserves.","The Company is subject to income taxes in the U.S. and numerous foreign jurisdictions. The evaluation of the Company’s uncertain tax positions involves significant judgment in the interpretation and application of GAAP and complex domestic and international tax laws, including the TCJA and the allocation of international taxation rights between countries. Although management believes the Company’s reserves are reasonable, no assurance can be given that the final outcome of these uncertainties will not be different from that reflected in the Company’s reserves. Reserves are adjusted considering changing facts and circumstances, such as the closing of a tax examination. Resolution of [...]",ACCEPT,,Disambiguated repeated quote: appended 'for fiscal 2024',Apple uncertain tax positions and ordinary course litigation financial impact evaluation criteria,REPEATED_ACROSS_YEARS_DISAMBIGUATED (quote in FY2025; question names target year),x,,
+heldout_46,Apple,2024,Item 7,numeric_precision,paraphrase (no copied terms from the chunk),"At Apple, what was the aggregate principal value of outstanding fixed-rate debt instruments held by the corporation as of the conclusion of fiscal year 2024?","As of September 28, 2024, the company had outstanding fixed-rate notes with varying maturities for an aggregate principal amount of $97.3 billion.","As of September 28, 2024, the Company had outstanding fixed-rate notes with varying maturities for an aggregate principal amount of $97.3 billion (collectively the “Notes”), with $10.9 billion payable within 12 months.","[...] e next 12 months and beyond.
+
+The Company’s material cash requirements include the following contractual obligations:
+
+Debt
+
+As of September 28, 2024, the Company had outstanding fixed-rate notes with varying maturities for an aggregate principal amount of $97.3 billion (collectively the “Notes”), with $10.9 billion payable within 12 months. Future interest payments associated with the Notes total $38.5 billion, with $2.6 billion payable within 12 months.",ACCEPT,,"Prepended 'At Apple, '",What was the aggregate principal value of outstanding fixed-rate debt instruments held by the corporation as of the conclusion of fiscal year 2024?,FLAG_NO_COMPANY_NAME,x,,
+heldout_47,Apple,2024,Item 8,numeric_precision,"""what does the filing say about"" style","At Apple, what does the filing say about the aggregate value of property, plant, equipment, and other non-current assets belonging to the enterprise at the conclusion of fiscal years 2024 and 2023?","The total long-lived assets were $45,680 million as of September 28, 2024, and $43,715 million as of September 30, 2023.","Total long-lived assets$45,680 $43,715","Total long-lived assets$45,680 $43,715
+
+(1)China includes Hong Kong and Taiwan.
+
+Apple Inc. | 2024 Form 10-K | 47
+
+Report of Independent Registered Public Accounti [...]",REJECT,"REJECT_ANSWER_LEAKAGE: '2023'; FLAG_NO_COMPANY_NAME; REJECT_QUESTION_YEAR_MISMATCH (question names 2023, but filing is 2024)","Prepended 'At Apple, '","What does the filing say about the aggregate value of property, plant, equipment, and other non-current assets belonging to the enterprise at the conclusion of fiscal years 2024 and 2023?","REJECT_ANSWER_LEAKAGE: '2023'; FLAG_NO_COMPANY_NAME; REJECT_QUESTION_YEAR_MISMATCH (question names 2023, but filing is 2024)",,,x
+heldout_48,Apple,2024,Item 8,numeric_precision,comparison-of-two-figures style where the chunk allows,"At Apple, how did the notional value of undocumented foreign exchange hedging contracts change between fiscal year 2023 and fiscal year 2024, expressed in millions of dollars?","The notional amount of derivative instruments not designated as accounting hedges for foreign exchange contracts decreased from $104,777 million in 2023 to $91,493 million in 2024.","Derivative instruments not designated as accounting hedges:
+
+Foreign exchange contracts$91,493 $104,777","[...] ruments designated as accounting hedges:
+
+Foreign exchange contracts$64,069 $74,730
+
+Interest rate contracts$14,575 $19,375
+
+Derivative instruments not designated as accounting hedges:
+
+Foreign exchange contracts$91,493 $104,777
+
+The carrying amounts of the Company’s hedged items in fair value hedges as of September 28, 2024 and September 30, 2023 wer [...]",REJECT,"REJECT_ANSWER_LEAKAGE: '2023'; FLAG_NO_COMPANY_NAME; REJECT_QUESTION_YEAR_MISMATCH (question names 2023, but filing is 2024)","Prepended 'At Apple, '","How did the notional value of undocumented foreign exchange hedging contracts change between fiscal year 2023 and fiscal year 2024, expressed in millions of dollars?","REJECT_ANSWER_LEAKAGE: '2023'; FLAG_NO_COMPANY_NAME; REJECT_QUESTION_YEAR_MISMATCH (question names 2023, but filing is 2024)",,,x
+heldout_49,Apple,2025,Item 1,numeric_precision,natural prose,"At Apple, what was the total headcount of full-time equivalent staff employed by the technology firm as of late September 2025?","As of September 27, 2025, the company employed approximately 166,000 full-time equivalent workers.","As of September 27, 2025, the Company had approximately 166,000 full-time equivalent employees.","[...] y is an equal opportunity employer committed to inclusion and to providing a workplace free of harassment or discrimination. As of September 27, 2025, the Company had approximately 166,000 full-time equivalent employees.
+
+The Company believes that compensation should be competitive and equitable, and offers discretionary cash and equity awards [...]",ACCEPT,,"Prepended 'At Apple, '",What was the total headcount of full-time equivalent staff employed by the technology firm as of late September 2025?,FLAG_NO_COMPANY_NAME,x,,
+heldout_50,Apple,2025,Item 1A,simple_lookup,short direct question,"What is the typical duration covered by manufacturing purchase commitments, per Apple's fiscal 2025 annual report?",Manufacturing purchase obligations typically cover forecasted component and manufacturing requirements for periods up to 150 days.,"Manufacturing purchase obligations cover the Company’s forecasted component and manufacturing requirements, typically for periods up to 150 days.","[...] tes.
+
+The Company orders components for its products and builds inventory in advance of product announcements and shipments. Manufacturing purchase obligations cover the Company’s forecasted component and manufacturing requirements, typically for periods up to 150 days. Because the Company’s markets are volatile, competitive and subject to rapid technology and price changes, there is a risk t [...]",ACCEPT,,Disambiguated repeated quote: appended 'per Apple's fiscal 2025 annual report',What is the typical duration covered by manufacturing purchase commitments?,"REPEATED_ACROSS_YEARS_DISAMBIGUATED (quote in FY2023, 2024; question names target year)",x,,
+heldout_51,Apple,2025,Item 7,numeric_precision,keyword-style phrase,Apple FY2025 provision for income taxes,"$20,719 million","Provision for income taxes$20,719 $29,749 $16,741","[...] tax rate and statutory federal income tax rate for 2025, 2024 and 2023 were as follows (dollars in millions):
+
+202520242023
+
+Provision for income taxes$20,719 $29,749 $16,741
+
+Effective tax rate15.6%24.1%14.7%
+
+Statutory federal income tax rate21%21%21%
+
+The Company’s effective tax rate for 2025 wa [...]",ACCEPT,,,,FLAG_NO_FISCAL_YEAR,x,,
+heldout_52,Apple,2025,Item 7,numeric_precision,paraphrase (no copied terms from the chunk),"At Apple, what is the total monetary value of equity bought back by the corporate entity during the 2025 fiscal period?","During fiscal year 2025, the company repurchased $89.3 billion of its common stock.","During 2025, the Company repurchased $89.3 billion of its common stock and paid dividends and dividend equivalents of $15.4 billion.","[...] urchase program of up to $100 billion and raised its quarterly dividend from $0.25 to $0.26 per share beginning in May 2025. During 2025, the Company repurchased $89.3 billion of its common stock and paid dividends and dividend equivalents of $15.4 billion.
+
+Recent Accounting Pronouncements
+
+Internal-Use Software
+
+In September 2025, the Financial Accounting Standards Board (“FASB [...]",ACCEPT,,"Prepended 'At Apple, '",What is the total monetary value of equity bought back by the corporate entity during the 2025 fiscal period?,FLAG_NO_COMPANY_NAME,x,,
+heldout_53,Apple,2025,Item 8,simple_lookup,"""what does the filing say about"" style","At Apple, what does the filing say about the maximum hedging duration utilized for foreign currency exposure related to term debt transactions?","As of September 27, 2025, the maximum length of time over which the Company is hedging its exposure to the variability in future cash flows for term debt–related foreign currency transactions is 17 years.","As of September 27, 2025, the maximum length of time over which the Company is hedging its exposure to the variability in future cash flows for term debt–related foreign currency transactions is 17 years.","[...] ross-currency swaps or other instruments. The Company designates these instruments as either cash flow or fair value hedges. As of September 27, 2025, the maximum length of time over which the Company is hedging its exposure to the variability in future cash flows for term debt–related foreign currency transactions is 17 years.
+
+The Company may also use derivative instruments that are not designated as accounting hedges to protect gross margins from [...]",ACCEPT,,"Prepended 'At Apple, '",What does the filing say about the maximum hedging duration utilized for foreign currency exposure related to term debt transactions?,FLAG_NO_COMPANY_NAME; FLAG_NO_FISCAL_YEAR,x,"At Apple, what does the filing say about the maximum hedging duration utilized for foreign currency exposure related to term debt transactions as of fiscal 2025?",
+heldout_54,Apple,2025,Item 8,numeric_precision,comparison-of-two-figures style where the chunk allows,"At Apple, how did the total value of gross unrecognized tax benefits evolve between the close of fiscal year 2024 and fiscal year 2025?","The total amount of gross unrecognized tax benefits increased from $22.0 billion ($22,038 million) as of September 28, 2024, to $23.2 billion ($23,242 million) as of September 27, 2025.","As of September 27, 2025, the total amount of gross unrecognized tax benefits was $23.2 billion... As of September 28, 2024, the total amount of gross unrecognized tax benefits was $22.0 billion...","As of September 27, 2025, the total amount of gross unrecognized tax benefits was $23.2 billion, of which $10.6 billion, if recognized, would impact the Company’s effective tax rate. As of September 28, 2024, the total amount of gross unrecognized ta [...]",REJECT,"REJECT_QUOTE_CONTAINS_ELLIPSIS; REJECT_ANSWER_LEAKAGE: '2024'; FLAG_NO_COMPANY_NAME; REJECT_QUESTION_YEAR_MISMATCH (question names 2024, but filing is 2025)","Prepended 'At Apple, '",How did the total value of gross unrecognized tax benefits evolve between the close of fiscal year 2024 and fiscal year 2025?,"REJECT_QUOTE_CONTAINS_ELLIPSIS; REJECT_ANSWER_LEAKAGE: '2024'; FLAG_NO_COMPANY_NAME; REJECT_QUESTION_YEAR_MISMATCH (question names 2024, but filing is 2025)",,,x
+heldout_55,Microsoft,2024,Item 1,simple_lookup,natural prose,"Which executive currently holds the position of Chief Financial Officer at Microsoft, in Microsoft's FY2024 10-K?",Amy Hood (referred to as Ms. Hood),"Ms. Hood was appointed Executive Vice President and Chief Financial Officer in July 2013, subsequent to her appointment as Chief Financial Officer in May 2013.","[...] gan joined Microsoft in 2003. Ms. Hogan also serves on the Board of Directors of Alaska Air Group, Inc.
+
+18
+
+PART I
+
+Item 1
+
+Ms. Hood was appointed Executive Vice President and Chief Financial Officer in July 2013, subsequent to her appointment as Chief Financial Officer in May 2013. From 2010 to 2013, Ms. Hood was Chief Financial Officer of the Microsoft Business Division. Since joining Microsoft in 2002, [...]",ACCEPT,,Disambiguated repeated quote: appended 'in Microsoft's FY2024 10-K',Which executive currently holds the position of Chief Financial Officer at Microsoft?,"REPEATED_ACROSS_YEARS_DISAMBIGUATED (quote in FY2025, 2026; question names target year); FLAG_NO_FISCAL_YEAR",x,,
+heldout_56,Microsoft,2024,Item 1A,numeric_precision,short direct question,"At Microsoft, what is the total additional tax payment demanded by the IRS for transfer pricing audits covering tax years 2004 through 2013, for fiscal 2024?",The IRS is seeking an additional tax payment of $28.9 billion plus penalties and interest regarding intercompany transfer pricing disputes for the tax years 2004 to 2013.,"In the NOPAs, the IRS is seeking an additional tax payment of $28.9 billion plus penalties and interest.","[...] OPAs”) from the IRS for the tax years 2004 to 2013. The primary issues in the NOPAs relate to intercompany transfer pricing. In the NOPAs, the IRS is seeking an additional tax payment of $28.9 billion plus penalties and interest. The final resolution of the proposed adjustments, and other audits or litigation, may differ from the amounts recorded in ou [...]",REJECT,"REJECT_ANSWER_LEAKAGE: '2004'; FLAG_NO_COMPANY_NAME; REJECT_QUESTION_YEAR_MISMATCH (question names 2004, 2013, but filing is 2024)","Disambiguated repeated quote: appended 'for fiscal 2024' (remains rejected: REJECT_ANSWER_LEAKAGE: '2004'; REPEATED_ACROSS_YEARS_DISAMBIGUATED (quote in FY2025, 2026; question names target year); FLAG_NO_COMPANY_NAME); Prepended 'At Microsoft, '",What is the total additional tax payment demanded by the IRS for transfer pricing audits covering tax years 2004 through 2013?,"REJECT_ANSWER_LEAKAGE: '2004'; REPEATED_ACROSS_YEARS_DISAMBIGUATED (quote in FY2025, 2026; question names target year); FLAG_NO_COMPANY_NAME; REJECT_QUESTION_YEAR_MISMATCH (question names 2004, 2013, but filing is 2024)",,,x
+heldout_57,Microsoft,2024,Item 7,numeric_precision,paraphrase (no copied terms from the chunk),"At Microsoft, what was the total value of liquid funds and near-term market holdings at the close of fiscal year 2024?",$75.5 billion,"Cash, cash equivalents, and short-term investments totaled $75.5 billion and $111.3 billion as of June 30, 2024 and 2023, respectively.","Cash, cash equivalents, and short-term investments totaled $75.5 billion and $111.3 billion as of June 30, 2024 and 2023, respectively. Equity and other investments were $14.6 billion and $9.9 billion as of June 30, 2024 and 2023, respectively. Our short-term [...]",ACCEPT,,"Prepended 'At Microsoft, '",What was the total value of liquid funds and near-term market holdings at the close of fiscal year 2024?,FLAG_NO_COMPANY_NAME,x,,
+heldout_58,Microsoft,2024,Item 8,numeric_precision,"""what does the filing say about"" style","At Microsoft, what does the filing say about the total face value of long-term debt instruments for the period ending June 30, 2024?","The total face value of long-term debt as of June 30, 2024, is $51,221 million.","Total face value
+
+51,221","[...] 4.50%
+
+5.16%
+
+–
+
+5.49%
+
+56
+
+0
+
+2024 issuance of $3.3 billion (a)
+
+2026
+
+–
+
+2050
+
+1.35%
+
+–
+
+4.50%
+
+5.16%
+
+–
+
+5.49%
+
+3,344
+
+0
+
+Total face value
+
+51,221
+
+52,866
+
+Unamortized discount and issuance costs
+
+(1,227
+
+)
+
+(438
+
+)
+
+Hedge fair value adjustments (b)
+
+(81
+
+)
+
+(106
+
+)
+
+Pre [...]",ACCEPT,,"Prepended 'At Microsoft, '","What does the filing say about the total face value of long-term debt instruments for the period ending June 30, 2024?",FLAG_NO_COMPANY_NAME,x,,
+heldout_59,Microsoft,2024,Item 8,simple_lookup,comparison-of-two-figures style where the chunk allows,"At Microsoft, how did the external audit firm assess the validity of the applied discount metrics used by company leadership?","The auditor evaluated the reasonableness of the discount rates by testing the underlying source information, verifying calculation accuracy, and developing independent estimate ranges to compare against management's chosen rates with the assistance of fair value specialists.","•With the assistance of our fair value specialists, we evaluated the reasonableness of the discount rates by:
+
+-Testing the source information underlying the discount rates and testing the mathematical accuracy of the calculations.
+
+-Developing a range of independent estimates and comparing those to the discount rates selected by management.","•With the assistance of our fair value specialists, we evaluated the reasonableness of the discount rates by:
+
+-Testing the source information underlying the discount rates and testing the mathematical accuracy of the calculations.
+
+-Developing a range of independent estimates and comparing those to the discount rates selected by management.
+
+/s/ DELOITTE & TOUCHE LLP
+
+Seattle, Washington
+
+July 30, 2024
+
+We have served as the Company's auditor since 1983.
+
+97
+
+PAR [...]",REJECT,FLAG_NO_COMPANY_NAME; FLAG_NO_FISCAL_YEAR; REJECT_COMPARISON_NOT_SUPPORTED (found 0 distinct figures in GT),"Prepended 'At Microsoft, '",How did the external audit firm assess the validity of the applied discount metrics used by company leadership?,FLAG_NO_COMPANY_NAME; FLAG_NO_FISCAL_YEAR; REJECT_COMPARISON_NOT_SUPPORTED (found 0 distinct figures in GT),,,x
+heldout_60,Microsoft,2025,Item 1,simple_lookup,natural prose,"What is the primary distinction between the two main classifications of original equipment manufacturers that partner with Microsoft, per Microsoft's fiscal 2025 annual report?","The primary distinction is that direct OEMs have a direct contractual agreement managed between Microsoft and the manufacturer (covering virtually all multinational companies as well as various regional and local entities), whereas system builders are lower-volume PC manufacturers that acquire Microsoft software for pre-installation and redistribution through the distributor channel rather than a direct relationship.","There are two broad categories of OEMs. The largest category of OEMs are direct OEMs as our relationship with them is managed through a direct agreement between Microsoft and the OEM. We have distribution agreements covering one or more of our products with virtually all the multinational OEMs, including Dell, Hewlett-Packard, Lenovo, and with many regional and local OEMs. The second broad category of OEMs are system builders consisting of lower-volume PC manufacturers, which source Microsoft software for pre-installation and local redistribution primarily through the Microsoft distributor channel rather than through a direct agreement or relationship with Microsoft.","There are two broad categories of OEMs. The largest category of OEMs are direct OEMs as our relationship with them is managed through a direct agreement between Microsoft and the OEM. We have distribution agreements covering one or more of our products with virtually all the multinational OEMs, including Dell, Hewlett-Packard, Lenovo, and with many regional and local OEMs. The second broad category of OEMs are system builders consisting of lower-volume PC manufacturers, which source Microsoft software for pre-installation and local redistribution primarily through the Microsoft distributor channel rather than through a direct agreement or relationship with Microsoft.
+
+LICENSING OPTIONS
+
+We offer options for organizations of varying sizes that want to purchase our cloud services and on-prem [...]",ACCEPT,,Disambiguated repeated quote: appended 'per Microsoft's fiscal 2025 annual report',What is the primary distinction between the two main classifications of original equipment manufacturers that partner with Microsoft?,REPEATED_ACROSS_YEARS_DISAMBIGUATED (quote in FY2024; question names target year),x,,
+heldout_61,Microsoft,2025,Item 1A,simple_lookup,short direct question,"What consequences could arise from failing to meet public-sector contracting obligations, in Microsoft's FY2025 10-K?","Failing to satisfy government contractual or regulatory requirements can lead to suspension or debarment as a governmental contractor, the imposition of civil and criminal fines and penalties, and potential rescission of contracts under certain circumstances.","If we do not satisfy contractual or regulatory requirements, we could be suspended or debarred as a governmental contractor, we could incur civil and criminal fines and penalties, and under certain circumstances contracts may be rescinded.","[...] ons relating to these contracts, and we are required to provide assurance and attestations about our products and processes. If we do not satisfy contractual or regulatory requirements, we could be suspended or debarred as a governmental contractor, we could incur civil and criminal fines and penalties, and under certain circumstances contracts may be rescinded. Some agreements may allow a government to terminate without cause and provide for higher liability limits for certain losses [...]",ACCEPT,,Disambiguated repeated quote: appended 'in Microsoft's FY2025 10-K',What consequences could arise from failing to meet public-sector contracting obligations?,REPEATED_ACROSS_YEARS_DISAMBIGUATED (quote in FY2026; question names target year); FLAG_NO_FISCAL_YEAR,x,,
+heldout_62,Microsoft,2025,Item 7,numeric_precision,keyword-style phrase,"At Microsoft, productivity and Business Processes segment operating income fiscal year 2025 in millions","$69,773 million","Productivity and Business Processes
+
+Revenue
+
+$
+
+120,810
+
+$
+
+106,820
+
+13%
+
+Cost of revenue
+
+22,422
+
+19,611
+
+14%
+
+Operating expenses
+
+28,615
+
+27,548
+
+4%
+
+Operating Income
+
+$
+
+69,773
+
+$
+
+59,661
+
+17%","[...] nts.
+
+38
+
+PART II
+
+Item 7
+
+SEGMENT RESULTS OF OPERATIONS
+
+(In millions, except percentages)
+
+2025
+
+2024
+
+Percentage
+
+Change
+
+Productivity and Business Processes
+
+Revenue
+
+$
+
+120,810
+
+$
+
+106,820
+
+13%
+
+Cost of revenue
+
+22,422
+
+19,611
+
+14%
+
+Operating expenses
+
+28,615
+
+27,548
+
+4%
+
+Operating Income
+
+$
+
+69,773
+
+$
+
+59,661
+
+17%
+
+Intelligent Cloud
+
+Revenue
+
+$
+
+106,265
+
+$
+
+87,464
+
+21%
+
+Cost of revenue
+
+40,171
+
+29,611
+
+36%
+
+Operating expenses
+
+21,505
+
+2 [...]",ACCEPT,,"Prepended 'At Microsoft, '",Productivity and Business Processes segment operating income fiscal year 2025 in millions,FLAG_NO_COMPANY_NAME,x,,
+heldout_63,Microsoft,2025,Item 7,numeric_precision,paraphrase (no copied terms from the chunk),"At Microsoft, what was the year-over-year growth rate for Azure and other cloud services during the period?",Azure and other cloud services revenue grew by 34%.,Azure and other cloud services revenue grew 34% driven by demand for our portfolio of services.,"[...] r 21%.
+
+•Server products and cloud services revenue increased $18.6 billion or 23% driven by Azure and other cloud services. Azure and other cloud services revenue grew 34% driven by demand for our portfolio of services. Server products revenue decreased 3% driven by a decrease in transactional purchasing with continued customer shift to cloud [...]",ACCEPT,,"Prepended 'At Microsoft, '",What was the year-over-year growth rate for Azure and other cloud services during the period?,FLAG_NO_FISCAL_YEAR,x,"At Microsoft, how much did the Azure cloud platform's revenue grow year over year in fiscal 2025?",
+heldout_64,Microsoft,2025,Item 8,numeric_precision,"""what does the filing say about"" style","At Microsoft, what does the filing say about the aggregate carrying amount for total debt investments as of June 30, 2024, for fiscal 2025?","The total amount for debt investments was $68,209 million.","Total debt investments
+
+$
+
+68,209","[...] Municipal securities
+
+Level 2
+
+262
+
+0
+
+(13
+
+)
+
+249
+
+0
+
+249
+
+0
+
+Municipal securities
+
+Level 3
+
+104
+
+0
+
+(17
+
+)
+
+87
+
+0
+
+87
+
+0
+
+Total debt investments
+
+$
+
+68,209
+
+$
+
+38
+
+$
+
+(3,348
+
+)
+
+$
+
+64,899
+
+$
+
+6,183
+
+$
+
+57,216
+
+$
+
+1,500
+
+Changes in Fair Value Recorded in Net Income
+
+Equity investm [...]",REJECT,"FLAG_NO_COMPANY_NAME; REJECT_QUESTION_YEAR_MISMATCH (question names 2024, but filing is 2025)","Disambiguated repeated quote: appended 'for fiscal 2025'; Prepended 'At Microsoft, '","What does the filing say about the aggregate carrying amount for total debt investments as of June 30, 2024?","REPEATED_ACROSS_YEARS_DISAMBIGUATED (quote in FY2024; question names target year); FLAG_NO_COMPANY_NAME; REJECT_QUESTION_YEAR_MISMATCH (question names 2024, but filing is 2025)",,,x
+heldout_65,Microsoft,2025,Item 8,numeric_precision,comparison-of-two-figures style where the chunk allows,"At Microsoft, what is the specific minimum liquidity requirement and the actual cash investments level maintained as of June 30, 2025?","The minimum liquidity requirement is $1.0 billion, and the cash investments held were in excess of $1.0 billion as of June 30, 2025.","require us to maintain minimum liquidity of $1.0 billion. To the extent we fail to meet these requirements, we will be required to post collateral, similar to the standard convention related to over-the-counter derivatives. As of June 30, 2025, our long-term unsecured debt rating was AAA, and cash investments were in excess of $1.0 billion.","[...] rovisions that require our issued and outstanding long-term unsecured debt to maintain an investment grade credit rating and require us to maintain minimum liquidity of $1.0 billion. To the extent we fail to meet these requirements, we will be required to post collateral, similar to the standard convention related to over-the-counter derivatives. As of June 30, 2025, our long-term unsecured debt rating was AAA, and cash investments were in excess of $1.0 billion. As a result, no collateral was required to be posted.",ACCEPT,,"Prepended 'At Microsoft, '","What is the specific minimum liquidity requirement and the actual cash investments level maintained as of June 30, 2025?",FLAG_NO_COMPANY_NAME,x,,
+heldout_66,Microsoft,2026,Item 1,simple_lookup,natural prose,"What long-term environmental targets has the technology enterprise set to achieve by the end of the decade, per Microsoft's fiscal 2026 annual report?","Microsoft announced goals to become a carbon negative, water positive, and zero waste company by 2030.","In 2020, we announced goals to become a carbon negative, water positive, and zero waste company by 2030.","[...] ommitted to sustainability and our approach to addressing climate change starts with the sustainability of our own business. In 2020, we announced goals to become a carbon negative, water positive, and zero waste company by 2030. Since announcing these goals, we have seen major changes in both the technology sector and in our understanding of what it w [...]",ACCEPT,,Disambiguated repeated quote: appended 'per Microsoft's fiscal 2026 annual report',What long-term environmental targets has the technology enterprise set to achieve by the end of the decade?,REPEATED_ACROSS_YEARS_DISAMBIGUATED (quote in FY2025; question names target year),x,,
+heldout_67,Microsoft,2026,Item 1A,simple_lookup,short direct question,"What potential business impacts could arise from regulatory scrutiny and enforcement regarding artificial intelligence and competition laws, in Microsoft's FY2026 10-K?","Competition law enforcement actions, court decisions, and new market regulations may result in fines or hinder the company's ability to provide software benefits to consumers and businesses, reducing product attractiveness and revenue. Additionally, evolving legislative and regulatory actions concerning artificial intelligence, such as the EU's AI Act, could increase operational costs or restrict opportunities and the provision or operation of AI models and services.","Competition law enforcement actions and court decisions along with new market regulations may result in fines or hinder our ability to provide the benefits of our software to consumers and businesses, reducing the attractiveness of our products and the revenue that comes from them.","[...] U.S. and foreign antitrust authorities have previously brought enforcement actions and continue to scrutinize our business. Competition law enforcement actions and court decisions along with new market regulations may result in fines or hinder our ability to provide the benefits of our software to consumers and businesses, reducing the attractiveness of our products and the revenue that comes from them. New competition law actions or obligations under market regulation schemes could be initiated, potentially using previous ac [...]",ACCEPT,,Disambiguated repeated quote: appended 'in Microsoft's FY2026 10-K',What potential business impacts could arise from regulatory scrutiny and enforcement regarding artificial intelligence and competition laws?,"REPEATED_ACROSS_YEARS_DISAMBIGUATED (quote in FY2024, 2025; question names target year); FLAG_NO_FISCAL_YEAR",x,,
+heldout_68,Microsoft,2026,Item 7,numeric_precision,keyword-style phrase,Microsoft fiscal year 2026 adjusted diluted earnings per share non-GAAP value,$17.28,"Adjusted diluted earnings per share (non-GAAP)
+
+$
+
+17.28","[...] $
+
+17.95
+
+$
+
+13.64
+
+$
+
+11.80
+
+32%
+
+16%
+
+Net (gains) losses from investments in OpenAI
+
+(0.67
+
+)
+
+0.49
+
+0.15
+
+(237)%
+
+227%
+
+Adjusted diluted earnings per share (non-GAAP)
+
+$
+
+17.28
+
+$
+
+14.13
+
+$
+
+11.95
+
+22%
+
+18%",REJECT,REJECT_6GRAM_OVERLAP: 'adjusted diluted earnings per share non',,,REJECT_6GRAM_OVERLAP: 'adjusted diluted earnings per share non',,,x
+heldout_69,Microsoft,2026,Item 7,numeric_precision,paraphrase (no copied terms from the chunk),"At Microsoft, what was the annual growth rate for the enterprise cloud computing division?",Azure and other cloud services revenue increased by 41% during the fiscal year.,•Azure and other cloud services revenue increased 41%.,"[...] Microsoft 365 Consumer cloud revenue increased 28%.
+
+•LinkedIn revenue increased 11%.
+
+•Dynamics 365 revenue increased 18%.
+
+•Azure and other cloud services revenue increased 41%.
+
+•Windows OEM and Devices revenue decreased slightly.
+
+•XBOX content and services revenue decreased 5%.
+
+•Search advertising [...]",ACCEPT,,"Prepended 'At Microsoft, '",What was the annual growth rate for the enterprise cloud computing division?,FLAG_NO_COMPANY_NAME; FLAG_NO_FISCAL_YEAR,x,What was Azure's revenue growth rate at Microsoft in fiscal 2026?,
+heldout_70,Microsoft,2026,Item 8,numeric_precision,"""what does the filing say about"" style","At Microsoft, what does the filing say about the valuation allowance amount recorded for the fiscal year ending June 30, 2026?","The valuation allowance for fiscal year 2026 was $1,332 million.","Less valuation allowance
+(
+1,332
+)",The increase in our effective tax rate for fiscal year 2026 compared to fiscal year 2025 was primarily due to changes in the mix of our earnings and tax expenses between the U.S. and foreign countries. The decrease in our effective tax rate for fisca [...],REJECT,REJECT_QUOTE_NOT_IN_CHUNK; FLAG_NO_COMPANY_NAME,"Prepended 'At Microsoft, '","What does the filing say about the valuation allowance amount recorded for the fiscal year ending June 30, 2026?",REJECT_QUOTE_NOT_IN_CHUNK; FLAG_NO_COMPANY_NAME,,,x
+heldout_71,Microsoft,2026,Item 8,multi_hop-like single-chunk,comparison-of-two-figures style where the chunk allows,"At Microsoft, how does the timing of revenue recognition differ between perpetual on-premises software licenses and subscription-based cloud offerings?","Revenue from distinct on-premises licenses is recognized upfront at the point in time when the software is made available to the customer, whereas revenue related to subscription-based cloud services is recognized ratably over the contract period.",Revenue from distinct on-premises licenses is recognized upfront at the point in time when the software is made available to the customer. [...] Revenue related to cloud services provided on a subscription basis is recognized ratably over the contract period.,"Licenses for on-premises software provide the customer with a right to use the software as it exists when made available to the customer. Customers may purchase perpetual licenses or subscribe to licenses, which provide customers with the same functi [...]",REJECT,REJECT_QUOTE_CONTAINS_ELLIPSIS; FLAG_NO_COMPANY_NAME; FLAG_NO_FISCAL_YEAR; REJECT_COMPARISON_NOT_SUPPORTED (found 0 distinct figures in GT),"Prepended 'At Microsoft, '",How does the timing of revenue recognition differ between perpetual on-premises software licenses and subscription-based cloud offerings?,REJECT_QUOTE_CONTAINS_ELLIPSIS; FLAG_NO_COMPANY_NAME; FLAG_NO_FISCAL_YEAR; REJECT_COMPARISON_NOT_SUPPORTED (found 0 distinct figures in GT),,,x
+heldout_72,NVIDIA,2024,Item 1,numeric_precision,natural prose,"At NVIDIA, what proportion of electricity consumption was covered through green energy procurement for the company during the 2023 fiscal period?",44%,"In fiscal year 2023, we increased the percentage of our total electricity use matched by renewable energy purchases to 44%.","[...] ontents
+
+or generate enough renewable energy to match 100% of our global electricity usage for our offices and data centers. In fiscal year 2023, we increased the percentage of our total electricity use matched by renewable energy purchases to 44%. By fiscal year 2026, we aim to engage manufacturing suppliers comprising at least 67% of NVIDIA’s scope 3 category 1 GHG emi [...]",REJECT,"FLAG_NO_COMPANY_NAME; REJECT_QUESTION_YEAR_MISMATCH (question names 2023, but filing is 2024)","Prepended 'At NVIDIA, '",What proportion of electricity consumption was covered through green energy procurement for the company during the 2023 fiscal period?,"FLAG_NO_COMPANY_NAME; REJECT_QUESTION_YEAR_MISMATCH (question names 2023, but filing is 2024)",,,x
+heldout_73,NVIDIA,2024,Item 1A,simple_lookup,short direct question,What U.S. tax deduction benefits a significant portion of NVIDIA's domestic taxable income?,"Foreign-derived intangible income, or FDII, qualifies for preferential treatment and benefits a significant portion of NVIDIA's income taxable in the United States.","Most of our income is taxable in the United States, with a significant portion qualifying for preferential treatment as foreign-derived intangible income, or FDII.","[...] cause other adverse tax impacts, which may materially impact our results of operations, or the way we conduct our business. Most of our income is taxable in the United States, with a significant portion qualifying for preferential treatment as foreign-derived intangible income, or FDII. If U.S. tax rates increase or the FDII deduction is reduced, our provision for income taxes, results of operations, net inco [...]",ACCEPT,,,,FLAG_NO_FISCAL_YEAR,x,"What U.S. tax deduction benefits a significant portion of NVIDIA's domestic taxable income, in NVIDIA's FY2024 10-K?",
+heldout_74,NVIDIA,2024,Item 7,numeric_precision,keyword-style phrase,"At NVIDIA, compute and Networking segment operating income for fiscal year ended January 28, 2024","$32,016 million","Compute & Networking$32,016 $5,083 $26,933 530 %","[...] 948 126 %
+
+Operating Income by Reportable Segments
+
+Year Ended
+
+Jan 28, 2024Jan 29, 2023$
+
+Change%
+
+Change
+
+($ in millions)
+
+Compute & Networking$32,016 $5,083 $26,933 530 %
+
+Graphics5,846 4,552 1,294 28 %
+
+All Other(4,890)(5,411)521 (10)%
+
+Total$32,972 $4,224 $28,748 681 %
+
+Compute & Networking r [...]",ACCEPT,,"Prepended 'At NVIDIA, '","Compute and Networking segment operating income for fiscal year ended January 28, 2024",FLAG_NO_COMPANY_NAME,x,,
+heldout_75,NVIDIA,2024,Item 7,numeric_precision,paraphrase (no copied terms from the chunk),"At NVIDIA, what is the expected monetary range for capital expenditures related to property and equipment in the upcoming fiscal year?",Approximately $3.5 billion to $4.0 billion.,"During fiscal year 2025, we expect to use our existing cash, cash equivalents, and marketable securities, and the cash generated by our operations to fund our capital investments of approximately $3.5 billion to $4.0 billion related to property and equipment.","[...] to the Consolidated Financial Statements in Part IV, Item 15 of this Annual Report on Form 10-K for additional information.
+
+During fiscal year 2025, we expect to use our existing cash, cash equivalents, and marketable securities, and the cash generated by our operations to fund our capital investments of approximately $3.5 billion to $4.0 billion related to property and equipment.
+
+Except for approximately $1.4 billion of cash, cash equivalents, and marketable securities held outside the U.S. for which [...]",ACCEPT,,"Prepended 'At NVIDIA, '",What is the expected monetary range for capital expenditures related to property and equipment in the upcoming fiscal year?,FLAG_NO_COMPANY_NAME; FLAG_NO_FISCAL_YEAR,x,"At NVIDIA, what capital expenditure range for property and equipment is expected for the year after fiscal 2024?",
+heldout_76,NVIDIA,2024,Item 8,numeric_precision,"""what does the filing say about"" style","At NVIDIA, what does the filing say about the carrying value for privately held company holdings at the conclusion of fiscal year 2024?","The carrying value of non-marketable equity securities, which are primarily investments in privately held companies, totaled $1.3 billion as of January 28, 2024.","The carrying value of our non-marketable equity securities totaled $1.3 billion and $288 million as of January 28, 2024 and January 29, 2023, respectively.","[...] 3 and 2022.
+
+Our non-marketable equity securities are recorded in long-term other assets on our Consolidated Balance Sheets. The carrying value of our non-marketable equity securities totaled $1.3 billion and $288 million as of January 28, 2024 and January 29, 2023, respectively. Gains and losses on these investments, realized and unrealized, are recognized in Other income and expense, net on our Conso [...]",ACCEPT,,"Prepended 'At NVIDIA, '",What does the filing say about the carrying value for privately held company holdings at the conclusion of fiscal year 2024?,FLAG_NO_COMPANY_NAME,x,,
+heldout_77,NVIDIA,2024,Item 8,simple_lookup,comparison-of-two-figures style where the chunk allows,"At NVIDIA, how do original maturity timelines distinguish between cash equivalents and marketable securities?","Cash equivalents are highly liquid investments with an original maturity of three months or less at the time of purchase, whereas marketable securities consist of highly liquid debt investments with maturities exceeding three months when purchased.",We consider all highly liquid investments that are readily convertible into cash and have an original maturity of three months or less at the time of purchase to be cash equivalents. Marketable securities consist of highly liquid debt investments with maturities of greater than three months when purchased.,"[...] ng is not included in the computation of diluted net income per share.
+
+Cash and Cash Equivalents and Marketable Securities
+
+We consider all highly liquid investments that are readily convertible into cash and have an original maturity of three months or less at the time of purchase to be cash equivalents. Marketable securities consist of highly liquid debt investments with maturities of greater than three months when purchased. We currently classify our investments as current based on the nature of the investments and their availability for use in cu [...]",REJECT,FLAG_NO_COMPANY_NAME; FLAG_NO_FISCAL_YEAR; REJECT_COMPARISON_NOT_SUPPORTED (found 0 distinct figures in GT),"Prepended 'At NVIDIA, '",How do original maturity timelines distinguish between cash equivalents and marketable securities?,FLAG_NO_COMPANY_NAME; FLAG_NO_FISCAL_YEAR; REJECT_COMPARISON_NOT_SUPPORTED (found 0 distinct figures in GT),,,x
+heldout_78,NVIDIA,2025,Item 1,numeric_precision,natural prose,"At NVIDIA, what proportion of the workforce departed from the company during fiscal year 2025?","In fiscal year 2025, NVIDIA's overall employee turnover rate was 2.5%.","In fiscal year 2025, our overall turnover rate was 2.5%.","[...] e want NVIDIA to be a place where people can grow their careers over their lifetime and our employees tend to come and stay. In fiscal year 2025, our overall turnover rate was 2.5%.",ACCEPT,,"Prepended 'At NVIDIA, '",What proportion of the workforce departed from the company during fiscal year 2025?,FLAG_NO_COMPANY_NAME,x,,
+heldout_79,NVIDIA,2025,Item 1A,simple_lookup,short direct question,"At NVIDIA, what specific rights does Microsoft hold under its agreement with the company if a third party attempts to purchase a large stake in the common stock, for fiscal 2025?","Under the agreement with Microsoft for the Xbox, if a third party offers to purchase at least 30% of the outstanding common stock, Microsoft may possess first and last rights of refusal to acquire that stock.","Under our agreement with Microsoft for the Xbox, if someone makes an offer to purchase at least 30% of our outstanding common stock, Microsoft may have first and last rights of refusal to purchase the stock.","[...] er proposals; and super-majority voting requirement to amend some provisions in our certificate of incorporation and bylaws. Under our agreement with Microsoft for the Xbox, if someone makes an offer to purchase at least 30% of our outstanding common stock, Microsoft may have first and last rights of refusal to purchase the stock. These provisions could delay or prevent a change in control of NVIDIA, discourage proxy contests, and make it more difficult [...]",ACCEPT,REJECT_ANSWER_LEAKAGE: 'Microsoft'; FLAG_NO_COMPANY_NAME,"Disambiguated repeated quote: appended 'for fiscal 2025' (remains rejected: REJECT_ANSWER_LEAKAGE: 'Microsoft'; REPEATED_ACROSS_YEARS_DISAMBIGUATED (quote in FY2024, 2026; question names target year); FLAG_NO_COMPANY_NAME); Prepended 'At NVIDIA, '",What specific rights does Microsoft hold under its agreement with the company if a third party attempts to purchase a large stake in the common stock?,"REJECT_ANSWER_LEAKAGE: 'Microsoft'; REPEATED_ACROSS_YEARS_DISAMBIGUATED (quote in FY2024, 2026; question names target year); FLAG_NO_COMPANY_NAME",x,,
+heldout_80,NVIDIA,2025,Item 7,numeric_precision,keyword-style phrase,"At NVIDIA, compute and Networking segment operating income fiscal year 2025 in millions","$82,875 million","Compute & Networking$82,875 $32,016 $50,859 159 %","[...] 575 114 %
+
+Operating Income by Reportable Segments
+
+Year Ended
+
+Jan 26, 2025Jan 28, 2024$
+
+Change%
+
+Change
+
+($ in millions)
+
+Compute & Networking$82,875 $32,016 $50,859 159 %
+
+Graphics5,085 5,846 (761)(13)%
+
+All Other(6,507)(4,890)(1,617)33 %
+
+Total$81,453 $32,972 $48,481 147 %
+
+Compute & Networkin [...]",ACCEPT,,"Prepended 'At NVIDIA, '",Compute and Networking segment operating income fiscal year 2025 in millions,FLAG_NO_COMPANY_NAME,x,,
+heldout_81,NVIDIA,2025,Item 7,simple_lookup,paraphrase (no copied terms from the chunk),"What is the company's policy regarding how interest and penalties associated with unrecognized tax benefits are classified in the financial statements, per NVIDIA's fiscal 2025 annual report?",The company's policy is to include interest and penalties related to unrecognized tax benefits as a component of income tax expense.,Our policy is to include interest and penalties related to unrecognized tax benefits as a component of income tax expense.,[...] re-likely-than-not that the position would be sustained upon audit based solely on the technical merits of the tax position. Our policy is to include interest and penalties related to unrecognized tax benefits as a component of income tax expense.,ACCEPT,,Disambiguated repeated quote: appended 'per NVIDIA's fiscal 2025 annual report',What is the company's policy regarding how interest and penalties associated with unrecognized tax benefits are classified in the financial statements?,"REPEATED_ACROSS_YEARS_DISAMBIGUATED (quote in FY2024, 2026; question names target year)",x,,
+heldout_82,NVIDIA,2025,Item 8,numeric_precision,"""what does the filing say about"" style","At NVIDIA, what does the filing say about the present value of net future minimum lease payments?","The present value of net future minimum lease payments as of January 26, 2025, is $1,807 million.","Present value of net future minimum lease payments1,807","[...] )
+
+Fiscal Year:
+
+2026$354
+
+2027331
+
+2028337
+
+2029301
+
+2030226
+
+2031 and thereafter537
+
+Total2,086
+
+Less imputed interest279
+
+Present value of net future minimum lease payments1,807
+
+Less short-term operating lease liabilities288
+
+Long-term operating lease liabilities$1,519
+
+Between fiscal years 2026 and [...]",REJECT,REJECT_6GRAM_OVERLAP: 'present value of net future minimum'; FLAG_NO_COMPANY_NAME; FLAG_NO_FISCAL_YEAR,"Prepended 'At NVIDIA, '",What does the filing say about the present value of net future minimum lease payments?,REJECT_6GRAM_OVERLAP: 'present value of net future minimum'; FLAG_NO_COMPANY_NAME; FLAG_NO_FISCAL_YEAR,,,x
+heldout_83,NVIDIA,2025,Item 8,multi_hop-like single-chunk,comparison-of-two-figures style where the chunk allows,"How do the valuation methodologies and expense recognition models differ between awards tied to corporate financial targets versus those benchmarked against market performance, in NVIDIA's FY2025 10-K?","Awards tied to corporate financial targets (PSUs) use the closing trading price minus a dividend yield discount for fair value and are expensed using an accelerated amortization model based on probable performance targets. In contrast, awards benchmarked against market performance (market-based PSUs) use a Monte Carlo simulation for fair value and are recognized using a straight-line attribution method over the requisite employee service period.","We use the closing trading price of our common stock on the date of grant, minus a dividend yield discount, as the fair value of awards of restricted stock units, or RSUs, and performance stock units, or PSUs, that are based on our corporate financial performance targets. We use a Monte Carlo simulation on the date of grant to estimate the fair value of PSUs that are based on our stock performance compared to market performance, or market-based PSUs. The compensation expense for RSUs and market-based PSUs is recognized using a straight-line attribution method over the requisite employee service period while compensation expense for PSUs is recognized using an accelerated amortization model based on performance targets probable of achievement.","[...] known warranty and indemnification issues if a loss is probable and can be reasonably estimated.
+
+Stock-based Compensation
+
+We use the closing trading price of our common stock on the date of grant, minus a dividend yield discount, as the fair value of awards of restricted stock units, or RSUs, and performance stock units, or PSUs, that are based on our corporate financial performance targets. We use a Monte Carlo simulation on the date of grant to estimate the fair value of PSUs that are based on our stock performance compared to market performance, or market-based PSUs. The compensation expense for RSUs and market-based PSUs is recognized using a straight-line attribution method over the requisite employee service period while compensation expense for PSUs is recognized using an accelerated amortization model based on performance targets probable of achievement. We estimate the fair value of shares to be issued under our employee stock purchase plan, or ESPP, using the Black-Scholes m [...]",REJECT,FLAG_NO_FISCAL_YEAR; REJECT_COMPARISON_NOT_SUPPORTED (found 0 distinct figures in GT),Disambiguated repeated quote: appended 'in NVIDIA's FY2025 10-K',How do the valuation methodologies and expense recognition models differ between awards tied to corporate financial targets versus those benchmarked against market performance?,REPEATED_ACROSS_YEARS_DISAMBIGUATED (quote in FY2026; question names target year); FLAG_NO_FISCAL_YEAR; REJECT_COMPARISON_NOT_SUPPORTED (found 0 distinct figures in GT),,,x
+heldout_84,NVIDIA,2026,Item 1,numeric_precision,natural prose,"At NVIDIA, what is the timeline range for the expiration dates of the company's currently active patents?",The company's currently issued patents have expiration dates ranging from March 2026 to June 2045.,Our currently issued patents have expiration dates from March 2026 to June 2045.,"[...] third-party nondisclosure agreements, and licensing arrangements to protect our IP in the United States and internationally. Our currently issued patents have expiration dates from March 2026 to June 2045. We have numerous patents issued, allowed, and pending in the United States and in foreign jurisdictions. Our patents and pen [...]",ACCEPT,,"Prepended 'At NVIDIA, '",What is the timeline range for the expiration dates of the company's currently active patents?,FLAG_NO_COMPANY_NAME; FLAG_NO_FISCAL_YEAR,x,,
+heldout_85,NVIDIA,2026,Item 1A,simple_lookup,short direct question,"At NVIDIA, what specific environmental constraints could restrict customer data center expansion and subsequent product consumption, for fiscal 2026?","Power or water shortages, land or permitting constraints, or regulations limiting energy, water, or land availability could impair customers' ability to expand data center capacity and consume products and services.","Power or water shortages, land or permitting constraints, or regulations that limit energy, water, or land availability, could impair the ability of our customers to expand their data center capacity and consume our products and services, which may in turn negatively impact our business.","[...] nd other performance and quality problems may increase. Data centers depend on access to clean water and predictable energy. Power or water shortages, land or permitting constraints, or regulations that limit energy, water, or land availability, could impair the ability of our customers to expand their data center capacity and consume our products and services, which may in turn negatively impact our business.
+
+Climate change may have a long-term impact on our business.
+
+Climate change may have an increasingly adverse impact on our [...]",ACCEPT,,"Disambiguated repeated quote: appended 'for fiscal 2026'; Prepended 'At NVIDIA, '",What specific environmental constraints could restrict customer data center expansion and subsequent product consumption?,REPEATED_ACROSS_YEARS_DISAMBIGUATED (quote in FY2025; question names target year); FLAG_NO_COMPANY_NAME,x,,
+heldout_86,NVIDIA,2026,Item 7,numeric_precision,keyword-style phrase,NVIDIA fiscal year 2026 compute and networking segment operating income in millions,"$130,141 million","Compute & Networking
+
+$193,479 $116,193 $77,286 67 %
+
+Graphics22,459 14,304 8,155 57 %","[...] eportable Segments
+
+Revenue by Reportable Segments
+
+Year Ended
+
+Jan 25, 2026Jan 26, 2025$
+
+Change%
+
+Change
+
+($ in millions)
+
+Compute & Networking
+
+$193,479 $116,193 $77,286 67 %
+
+Graphics22,459 14,304 8,155 57 %
+
+Total$215,938 $130,497 $85,441 65 %
+
+Operating Income by Reportable Segments
+
+Year Ended
+
+Jan 25, 2026Jan 26, 2025$
+
+Change [...]",REJECT,,,,PASS,,,x
+heldout_87,NVIDIA,2026,Item 7,simple_lookup,paraphrase (no copied terms from the chunk),"At NVIDIA, which specific areas of financial reporting does the company identify as involving significant estimation uncertainty and potential material impact on operations?","The company's critical accounting estimates are concentrated in inventories, income taxes, non-marketable equity securities, and revenue recognition.","We have critical accounting estimates in the areas of inventories, income taxes, non-marketable equity securities, and revenue recognition.","[...] ficant level of estimation uncertainty and could have a material impact on our financial condition or results of operations. We have critical accounting estimates in the areas of inventories, income taxes, non-marketable equity securities, and revenue recognition. Refer to Note 1 of the Notes to the Consolidated Financial Statements in Part IV, Item 15 of this Annual Report on Form 10-K [...]",ACCEPT,,"Prepended 'At NVIDIA, '",Which specific areas of financial reporting does the company identify as involving significant estimation uncertainty and potential material impact on operations?,FLAG_NO_COMPANY_NAME; FLAG_NO_FISCAL_YEAR,x,"At NVIDIA, which specific areas of financial reporting does the company identify as involving significant estimation uncertainty and potential material impact on operations, for fiscal 2026?",
+heldout_88,NVIDIA,2026,Item 8,numeric_precision,"""what does the filing say about"" style","At NVIDIA, what does the filing say about the deferred tax valuation allowance ending balance for fiscal year 2026?",$768 million,"Deferred tax valuation allowance$1,610 $31 (3)$(873)(3)$768","Sales return allowance$82 $188 (2)$(100)(4)$170
+
+Deferred tax valuation allowance$1,610 $31 (3)$(873)(3)$768
+
+Fiscal year 2025
+
+Allowance for doubtful accounts$4 $— (1)$— (1)$4
+
+Sales return allowance$109 $151 (2)$(178)(4)$82
+
+Deferr [...]",ACCEPT,,"Prepended 'At NVIDIA, '",What does the filing say about the deferred tax valuation allowance ending balance for fiscal year 2026?,FLAG_NO_COMPANY_NAME,x,,
+heldout_89,NVIDIA,2026,Item 8,numeric_precision,comparison-of-two-figures style where the chunk allows,"At NVIDIA, how do the accrued contingent liabilities for the disclosed legal proceedings compare between the fiscal year-end date and the prior periods?","As of January 25, 2026, there are zero accrued contingent liabilities associated with the described legal proceedings because the company believes that while liabilities are reasonably possible, they are not probable.","As of January 25, 2026, there are no accrued contingent liabilities associated with the legal proceedings described above based on our belief that liabilities, while reasonably possible, are not probable.","[...] d pending the final resolution of In Re NVIDIA Corporation Securities Litigation action.
+
+Accounting for Loss Contingencies
+
+As of January 25, 2026, there are no accrued contingent liabilities associated with the legal proceedings described above based on our belief that liabilities, while reasonably possible, are not probable. Further, any possible loss or range of loss in these matters cannot be reasonably estimated at this time. We are engaged in [...]",REJECT,FLAG_NO_COMPANY_NAME; FLAG_NO_FISCAL_YEAR; REJECT_COMPARISON_NOT_SUPPORTED (found 1 distinct figures in GT),"Prepended 'At NVIDIA, '",How do the accrued contingent liabilities for the disclosed legal proceedings compare between the fiscal year-end date and the prior periods?,FLAG_NO_COMPANY_NAME; FLAG_NO_FISCAL_YEAR; REJECT_COMPARISON_NOT_SUPPORTED (found 1 distinct figures in GT),,,x
+heldout_mh_01,Alphabet,2023/2025,Item 8/Item 8,multi_hop,comparison-of-two-figures style where the chunk allows,"How does Alphabet's risk management approach regarding financial counterparties, specifically concerning credit risk and guarantees, span from its 2023 policies on foreign exchange contracts and receivables to its 2025 financial commitments involving power purchase agreements?","In 2023, Alphabet managed credit risk for cash equivalents, derivatives like foreign exchange contracts, and unsecured accounts receivable through counterparty creditworthiness assessments, credit limits, and collateral management. By 2025, the company expanded its counterparty risk exposure by providing financial guarantees in the form of backstop agreements totaling up to $5.7 billion to support counterparty procurement of long-lead time equipment for future power purchase agreements.","Foreign exchange contracts are transacted with various financial institutions with high credit standing. Accounts receivable are typically unsecured and are derived from revenues earned from customers located around the world. || We provide financial guarantees to certain counterparties, in the form of backstop agreements with varying terms through August 2026. These backstop agreements support counterparty procurement of long-lead time equipment for our future power purchase agreements.","[2023]: [...] isk exposure through timely assessment of our counterparty creditworthiness, credit limits and use of collateral management. Foreign exchange contracts are transacted with various financial institutions with high credit standing. Accounts receivable are typically unsecured and are derived from revenues earned from customers located around the world. We manage our credit risk exposure by performing ongoing evaluations to determine customer credit and we limit the amount of [...] || [2025]: [...] n as of December 31, 2025, of which the majority is paid quarterly through the first quarter of 2030.
+
+Financial Guarantees
+
+We provide financial guarantees to certain counterparties, in the form of backstop agreements with varying terms through August 2026. These backstop agreements support counterparty procurement of long-lead time equipment for our future power purchase agreements. As of December 31, 2025, our maximum potential amount of future payments under these guarantees was $5.7 billion, upon which [...]",REJECT,REJECT_MULTI_YEAR_NON_ADJACENT_YEARS (2023 and 2025 are not adjacent),,,REJECT_MULTI_YEAR_NON_ADJACENT_YEARS (2023 and 2025 are not adjacent),,,x
+heldout_mh_02,Alphabet,2023/2025,Item 1A/Item 1A,multi_hop,comparison-of-two-figures style where the chunk allows,"At Alphabet, how do the potential risks associated with hardware supply contracts and manufacturing commitments mentioned in the 2023 report differ from the challenges regarding device manufacturers and platform adaptation described in the 2025 report?","In the 2023 report, the risks center on volume-based pricing, minimum purchase requirements, unconsumed materials, and manufacturing costs tied to hardware supply contracts. In contrast, the 2025 report focuses on the challenges of adapting products for a growing variety of devices, dealing with unique technical standards set by manufacturers, and the risk of failing to attract and retain device makers, suppliers, and distributors.","For instance, because certain of our hardware supply contracts have volume-based pricing or minimum purchase requirements, if the volume of sales of our devices decreases or does not reach projected targets, we could face increased materials and manufacturing costs or other financial liabilities that could make our products more costly per unit to manufacture and harm our financial condition and operating results. || Each manufacturer or distributor may establish unique technical standards for its devices, and our products and services may not be available or may only be available with limited functionality for our users or our advertisers on these devices as a result.","[2023]: [...] med due to market demand, technological change, changed consumer preferences, quality, product recalls, and warranty issues. For instance, because certain of our hardware supply contracts have volume-based pricing or minimum purchase requirements, if the volume of sales of our devices decreases or does not reach projected targets, we could face increased materials and manufacturing costs or other financial liabilities that could make our products more costly per unit to manufacture and harm our financial condition and operating results. Furthermore, certain of our competitors may negotiate more favorable contractual terms based on volume and other commitments [...] || [2025]: [...] y devices), automobiles, and television-streaming devices. Our products and services may be less popular on some interfaces. Each manufacturer or distributor may establish unique technical standards for its devices, and our products and services may not be available or may only be available with limited functionality for our users or our advertisers on these devices as a result. Some manufacturers may also elect not to include our products on their devices.
+
+It is hard to predict the challenges we may [...]",REJECT,REJECT_MULTI_YEAR_NON_ADJACENT_YEARS (2023 and 2025 are not adjacent),,,REJECT_MULTI_YEAR_NON_ADJACENT_YEARS (2023 and 2025 are not adjacent),,,x
+heldout_mh_03,Alphabet,2023/2025,Item 7/Item 7,multi_hop,comparison-of-two-figures style where the chunk allows,How did Alphabet's methodology for evaluating or altering the useful lives of its hardware infrastructure change between the 2023 and 2025 reporting periods?,"In fiscal year 2023, Alphabet completed a specific assessment that directly changed the estimated useful life of servers and certain network equipment to six years. By fiscal year 2025, the company shifted description to a broader ongoing process where the reasonableness of useful lives for technical infrastructure and property equipment is assessed periodically or upon triggering events using inputs like historical performance, technology advancements, and deployment plans.","In January 2023, we completed an assessment of the useful lives of our servers and network equipment resulting in a change in the estimated useful life of our servers and certain network equipment to six years. || We assess the reasonableness of the useful lives of our property and equipment periodically or when events indicate a change is necessary.","[2023]: [...] be an exposure to loss in excess of the amount recorded, and such amounts could be material.
+
+Change in Accounting Estimate
+
+In January 2023, we completed an assessment of the useful lives of our servers and network equipment resulting in a change in the estimated useful life of our servers and certain network equipment to six years. This change in accounting estimate was effective beginning fiscal year 2023. For additional information, see Note 1 of the N [...] || [2025]: We assess the reasonableness of the useful lives of our property and equipment periodically or when events indicate a change is necessary. To determine the useful lives of our technical infrastructure, we rely on multiple inputs, including historical asset perfor [...]",REJECT,REJECT_MULTI_YEAR_NON_ADJACENT_YEARS (2023 and 2025 are not adjacent),,,REJECT_MULTI_YEAR_NON_ADJACENT_YEARS (2023 and 2025 are not adjacent),,,x
+heldout_mh_04,Amazon,2023/2024,Item 1A/Item 1A,multi_hop,comparison-of-two-figures style where the chunk allows,"How did Amazon's disclosures regarding regulatory and compliance risks evolve between 2023 and 2024, specifically regarding the inclusion of artificial intelligence technologies versus international tax framework changes?","In the 2023 fiscal year, Amazon explicitly noted that it is subject to regulations and laws governing artificial intelligence technologies and services among its legal and regulatory risks. In the 2024 fiscal year, the company highlighted potential financial impacts from changes to the global tax framework, including unilateral tax measures, European Union global minimum taxes, and revenue-based taxes targeting online commerce.","artificial intelligence technologies and services, and other products and services that we offer or sell. || changes to the global tax framework, competition, and other laws and accounting rules in various jurisdictions.","[2023]: [...] the internet, physical, e-commerce, and omnichannel retail, digital content, web services, electronic devices, advertising, artificial intelligence technologies and services, and other products and services that we offer or sell. These regulations and laws cover taxation, privacy, data use, data protection, data security, data localization, network sec [...] || [2024]: [...] ons due to changes in laws, regulations, administrative practices, principles, and interpretations related to tax, including changes to the global tax framework, competition, and other laws and accounting rules in various jurisdictions. Such changes could come about as a result of economic, political, and other conditions. An increasing number of jurisdiction [...]",REJECT,,,,PASS,,,x
+heldout_mh_05,Amazon,2024/2025,Item 1/Item 1,multi_hop,comparison-of-two-figures style where the chunk allows,"How did Amazon's competitive environment regarding technology change between 2024 and 2025, specifically concerning artificial intelligence, and what was the total employee count at the end of the latter fiscal year?","In fiscal year 2024, Amazon listed companies providing IT services or products, including cloud infrastructure and AI tools and services, among its competitors. By fiscal year 2025, competition for qualified personnel had intensified, particularly for technical staff including those specializing in artificial intelligence and machine learning technologies, alongside a total workforce of approximately 1,576,000 full-time and part-time employees as of December 31, 2025.","companies that provide information technology services or products, including on-premises or cloud-based infrastructure, tools and services relating to artificial intelligence, and other services; || As of December 31, 2025, we employed approximately 1,576,000 full-time and part-time employees.","[2024]: [...] ompanies that provide fulfillment and logistics services for themselves or for third parties, whether online or offline; (6) companies that provide information technology services or products, including on-premises or cloud-based infrastructure, tools and services relating to artificial intelligence, and other services; (7) companies that design, manufacture, market, or sell consumer electronics, communications, and other electronic devices a [...] || [2025]: [...] ends December 31.
+
+Human Capital
+
+Our employees are critical to our mission of being Earth’s most customer-centric company. As of December 31, 2025, we employed approximately 1,576,000 full-time and part-time employees. Additionally, we use independent contractors and temporary personnel to supplement our workforce. Competition for qualified [...]",REJECT,FLAG_GROUND_TRUTH_NOT_CLEARLY_SUPPORTED_BY_BOTH_QUOTES (Quote 1 ends with dangling punctuation or incomplete phrase),,,FLAG_GROUND_TRUTH_NOT_CLEARLY_SUPPORTED_BY_BOTH_QUOTES (Quote 1 ends with dangling punctuation or incomplete phrase),,,x
+heldout_mh_06,Amazon,2023/2025,Item 7/Item 7,multi_hop,comparison-of-two-figures style where the chunk allows,How did Amazon's operating cash flow performance in 2023 relate to tax provision estimates and judgments regarding deferred tax assets across its operating jurisdictions?,"In 2023, Amazon's operating cash flow increased to $84.9 billion (up from $46.8 billion in 2022) primarily due to higher net income excluding non-cash expenses and working capital changes. Meanwhile, the company's valuation of deferred tax assets and estimates for tax provisions required significant judgment under evolving multi-jurisdictional tax laws and regulations, which impact actual and forecasted earnings.","The increase in operating cash flow in 2023, compared to the prior year, was due to an increase in net income (loss), excluding non-cash expenses, and changes in working capital. || and significant judgment is required in determining our ability to use our deferred tax assets.","[2023]: [...] leases, and interest payments. Cash received from our customers and other activities generally corresponds to our net sales. The increase in operating cash flow in 2023, compared to the prior year, was due to an increase in net income (loss), excluding non-cash expenses, and changes in working capital. Working capital at any specific point in time is subject to many variables, including variability in demand, inventory manag [...] || [2025]: [...] tain. In addition, our actual and forecasted earnings are subject to change due to economic, political, and other conditions and significant judgment is required in determining our ability to use our deferred tax assets.
+
+Our effective tax rates could be affected by numerous factors, such as changes in our business operations, acquisitions, in [...]",REJECT,REJECT_MULTI_YEAR_NON_ADJACENT_YEARS (2023 and 2025 are not adjacent),,,REJECT_MULTI_YEAR_NON_ADJACENT_YEARS (2023 and 2025 are not adjacent),,,x
+heldout_mh_07,Apple,2024/2025,Item 7/Item 7,multi_hop,comparison-of-two-figures style where the chunk allows,"At Apple, how did the annual revenue growth trajectory for the iPad segment shift between the 2024 and 2025 fiscal periods, and what specific drivers were cited for its performance in each of those years?","In fiscal year 2024, iPad net sales declined by 6% (dropping from $28,300 million in 2023 to $26,694 million in 2024), driven primarily by lower net sales in Greater China. Conversely, in fiscal year 2025, iPad net sales rebounded with a 5% increase to reach $28,023 million, which was primarily propelled by higher net sales of iPad Air, iPad mini, and standard iPad models, though partially offset by lower net sales of the iPad Pro.","iPad26,694 (6)%28,300 (3)%29,292 || iPad net sales increased during 2025 compared to 2024 primarily due to higher net sales of iPad Air, iPad mini and iPad, partially offset by lower net sales of iPad Pro.","[2024]: [...] (dollars in millions):
+
+2024Change2023Change2022
+
+iPhone$201,183 — %$200,583 (2)%$205,489
+
+Mac29,984 2 %29,357 (27)%40,177
+
+iPad26,694 (6)%28,300 (3)%29,292
+
+Wearables, Home and Accessories37,005 (7)%39,845 (3)%41,241
+
+Services (1)
+
+96,169 13 %85,200 9 %78,129
+
+Total net sales$391 [...] || [2025]: [...] Mac
+
+Mac net sales increased during 2025 compared to 2024 primarily due to higher net sales of laptops and desktops.
+
+iPad
+
+iPad net sales increased during 2025 compared to 2024 primarily due to higher net sales of iPad Air, iPad mini and iPad, partially offset by lower net sales of iPad Pro.
+
+Wearables, Home and Accessories
+
+Wearables, Home and Accessories net sales decreased during 2025 compared to 2024 primarily [...]",REJECT,"FLAG_GROUND_TRUTH_NOT_CLEARLY_SUPPORTED_BY_BOTH_QUOTES (Quote 1 is too brief, <6 words or <30 chars)",,,"FLAG_GROUND_TRUTH_NOT_CLEARLY_SUPPORTED_BY_BOTH_QUOTES (Quote 1 is too brief, <6 words or <30 chars)",,,x
+heldout_mh_08,Apple,2024/2025,Item 1/Item 1,multi_hop,comparison-of-two-figures style where the chunk allows,"At Apple, how did the description of competitor product feature imitation evolve between 2024 and 2025 regarding integrated solutions?","In 2024, the company noted that rivals imitate product features or collaborate to offer more competitive integrated solutions. In 2025, the wording evolved to specify that competition intensifies as competitors imitate the approach to providing components seamlessly or work collaboratively on integrated solutions.","The Company faces significant competition as competitors imitate the Company’s product features and applications within their products, or collaborate to offer integrated solutions that are more competitive than those they currently offer. || The Company also expects competition to intensify as competitors imitate the Company’s approach to providing components seamlessly within their offerings or work collaboratively to offer integrated solutions.","[2024]: [...] ls that provide content to users for free and use illegitimate means to obtain third-party digital content and applications. The Company faces significant competition as competitors imitate the Company’s product features and applications within their products, or collaborate to offer integrated solutions that are more competitive than those they currently offer.
+
+Supply of Components
+
+Although most components essential to the Company’s business are generally available from multiple so [...] || [2025]: [...] mpetitors imitate the Company’s product features and applications within their products to offer more competitive solutions. The Company also expects competition to intensify as competitors imitate the Company’s approach to providing components seamlessly within their offerings or work collaboratively to offer integrated solutions. Some of the Company’s competitors have broad product lines, low-priced products, large installed bases of active devices, an [...]",ACCEPT,,,,PASS,x,,
+heldout_mh_09,Microsoft,2024/2025,Item 7/Item 7,multi_hop,comparison-of-two-figures style where the chunk allows,How did Microsoft's disclosure regarding foreign exchange rate impacts evolve between the 2024 fiscal year report and the subsequent year's executive sign-off section?,"In the 2024 fiscal year report, Microsoft discussed how currency fluctuations and international operations affect revenues and expenses, noting that foreign exchange rate changes did not materially impact reported figures that year. By the 2025 fiscal year report, this operational discussion shifted entirely to a management responsibility statement and internal control attestation signed by Chief Executive Officer Satya Nadella.","Fluctuations in the U.S. dollar relative to certain foreign currencies did not have a material impact on reported revenue and expenses from our international operations in fiscal year 2024. || Satya Nadella
+
+Chief Executive Officer","[2024]: [...] es other than the U.S. dollar. As a result, changes in foreign exchange rates may significantly affect revenue and expenses. Fluctuations in the U.S. dollar relative to certain foreign currencies did not have a material impact on reported revenue and expenses from our international operations in fiscal year 2024. || [2025]: [...] financial reporting. Deloitte & Touche LLP and the internal auditors each have full and free access to the Audit Committee.
+
+Satya Nadella
+
+Chief Executive Officer",REJECT,"FLAG_GROUND_TRUTH_NOT_CLEARLY_SUPPORTED_BY_BOTH_QUOTES (Quote 2 is too brief, <6 words or <30 chars)",,,"FLAG_GROUND_TRUTH_NOT_CLEARLY_SUPPORTED_BY_BOTH_QUOTES (Quote 2 is too brief, <6 words or <30 chars)",,,x
+heldout_mh_10,Microsoft,2024/2025,Item 1/Item 1,multi_hop,comparison-of-two-figures style where the chunk allows,"At Microsoft, how did the specific competitive landscape details mentioned for Windows and Xbox change between the 2024 and 2025 fiscal years?",In FY2024 Microsoft named Apple and Google as Windows competitors and CrowdStrike as the Microsoft Defender for Endpoint competitor; in FY2025 the Windows competition description no longer names specific competitors.,"Windows faces competition from various software products and from alternative platforms and devices, mainly from Apple and Google, and Microsoft Defender for Endpoint competes with CrowdStrike on endpoint security solutions. || Windows faces competition from various software products and from alternative platforms and devices. We believe Windows competes effectively by giving customers choice, value, flexibility, security, an easy-to-use interface, and compatibility with a broad range of hardware and software applications, including those that enable productivity.","[2024]: [...] lity to attract new users, understand intent, and match intent with relevant content on advertising offerings.
+
+Competition
+
+Windows faces competition from various software products and from alternative platforms and devices, mainly from Apple and Google, and Microsoft Defender for Endpoint competes with CrowdStrike on endpoint security solutions. We believe Windows competes effectively by giving customers choice, value, flexibility, security, an easy-to-use interface, [...] || [2025]: [...] lity to attract new users, understand intent, and match intent with relevant content on advertising offerings.
+
+Competition
+
+Windows faces competition from various software products and from alternative platforms and devices. We believe Windows competes effectively by giving customers choice, value, flexibility, security, an easy-to-use interface, and compatibility with a broad range of hardware and software applications, including those that enable productivity.
+
+Devices face competition from various computer, tablet, and hardware manufacturers who offer a unique combination of high-q [...]",ACCEPT,,,,PASS,x,"At Microsoft, how did the named competitors in the Windows competition description change between fiscal 2024 and fiscal 2025?",
+heldout_mh_11,Microsoft,2024/2025,Item 1/Item 1,multi_hop,comparison-of-two-figures style where the chunk allows,How did Microsoft's distribution channels for retail packaged goods compare to its strategies for user acquisition and engagement in search and news advertising across the provided fiscal years?,"In the 2024 fiscal year, retail packaged products were primarily distributed through independent non-exclusive distributors, authorized replicators, resellers, and retail outlets, while devices were distributed via third-party retailers and volume licensing. In contrast, for the 2025 fiscal year, user acquisition and engagement for the search and news advertising business relied on tools like the Microsoft Edge browser and Bing search engine featuring Microsoft Copilot, alongside various monetization partnerships.","We distribute our retail packaged products primarily through independent non-exclusive distributors, authorized replicators, resellers, and retail outlets. || Our Microsoft Edge browser and Bing search engine with Copilot are key tools to enable user acquisition and engagement, while our technology platform enables accelerated delivery of digital advertising solutions.","[2024]: We distribute our retail packaged products primarily through independent non-exclusive distributors, authorized replicators, resellers, and retail outlets. Individual consumers obtain these products primarily through retail outlets. We distribute our devices through third-party r [...] || [2025]: [...] splay advertising to a global audience. Microsoft Copilot is a digital companion designed to inform, entertain, and inspire. Our Microsoft Edge browser and Bing search engine with Copilot are key tools to enable user acquisition and engagement, while our technology platform enables accelerated delivery of digital advertising solutions. In addition to first-party tools, we have several partnerships with companies through which we provide and monetize search o [...]",REJECT,,,,PASS,,,x
+heldout_mh_12,NVIDIA,2024/2026,Item 8/Item 8,multi_hop,comparison-of-two-figures style where the chunk allows,"At NVIDIA, how did the status of legal proceedings regarding channel inventory and crypto impact claims shift between the fiscal year 2024 disclosures and the financial asset metrics reported for fiscal year 2026?","In fiscal year 2024, NVIDIA disclosed ongoing derivative actions concerning channel inventory and cryptocurrency mining impacts (such as Lipchitz v. Huang and Horanic v. Huang) that remained stayed pending securities litigation appeals. By fiscal year 2026, the disclosed focus shifted to financial asset reporting, specifically noting $10.5 billion in investments subject to short-term lock-up restrictions, $4.8 billion in long-term marketable equity securities under lock-up through December 2027, and $6.6 billion in net unrealized gains on publicly-held equity securities, with negligible realized gains across fiscal years 2024 to 2026.","The lawsuits assert claims, purportedly on behalf of us, against certain officers and directors of the Company for breach of fiduciary duty, unjust enrichment, insider trading, misappropriation of information, corporate waste and violations of Sections 14(a), 10(b), and 20(a) of the Exchange Act based on the dissemination of allegedly false, and misleading statements related to channel inventory and the impact of cryptocurrency mining on GPU demand. || Net unrealized gains on investments in publicly-held equity securities held at period end were $6.6 billion for fiscal year 2026. Net unrealized gains on investments in publicly-held equity securities held at period end were not significant for fiscal years 2025 and 2024.","[2024]: [...] etition for rehearing on November 15, 2023, the parties are conferring regarding the next steps in these derivative matters. The lawsuits assert claims, purportedly on behalf of us, against certain officers and directors of the Company for breach of fiduciary duty, unjust enrichment, insider trading, misappropriation of information, corporate waste and violations of Sections 14(a), 10(b), and 20(a) of the Exchange Act based on the dissemination of allegedly false, and misleading statements related to channel inventory and the impact of cryptocurrency mining on GPU demand. The plaintiffs seek unspecified damages and other relief, including disgorgement of profits from the sale of NVIDIA stock an [...] || [2026]: [...] s of January 25, 2026, is included in other assets.
+
+Publicly-held equity securities are subject to market price volatility. Net unrealized gains on investments in publicly-held equity securities held at period end were $6.6 billion for fiscal year 2026. Net unrealized gains on investments in publicly-held equity securities held at period end were not significant for fiscal years 2025 and 2024.
+
+Net realized gains on investments in publicly-held equity securities sold were not significant for fiscal years 2026, 2025, [...]",REJECT,REJECT_MULTI_YEAR_NON_ADJACENT_YEARS (2024 and 2026 are not adjacent),,,REJECT_MULTI_YEAR_NON_ADJACENT_YEARS (2024 and 2026 are not adjacent),,,x
+heldout_mh_13,NVIDIA,2025/2026,Item 8/Item 8,multi_hop,comparison-of-two-figures style where the chunk allows,How does NVIDIA's treatment of potential losses from legal contingencies and regulatory proceedings compare to its policy for recording impairments on non-marketable equity securities across fiscal years 2025 and 2026?,"In fiscal year 2025, NVIDIA records a loss for pending litigation, investigations, or settlements when it determines the loss is probable and can be reasonably estimated, and discloses reasonably possible losses when they can be estimated. In fiscal year 2026, for non-marketable equity securities accounted for under the measurement alternative, the company assesses for impairment using quantitative and qualitative factors, writes down impaired investments to fair value, and records the corresponding charge through Other income, net on the Consolidated Statements of Income.","If information becomes available that causes us to determine that a loss in any of our pending litigation, || If any impairment is identified for non-marketable equity securities, we write down the investment to its fair value and record the corresponding charge through Other income, net on our Consolidated Statements of Income.","[2025]: [...] hird-party claims against us will be resolved without litigation, fines and/or substantial settlement payments or judgments. If information becomes available that causes us to determine that a loss in any of our pending litigation,
+
+58
+
+Table of Contents
+
+NVIDIA Corporation and Subsidiaries
+
+Notes to the Consolidated Financial Statements
+
+(Continued)
+
+in [...] || [2026]: [...] marketable equity securities, accounted for under the measurement alternative based on quantitative and qualitative factors. If any impairment is identified for non-marketable equity securities, we write down the investment to its fair value and record the corresponding charge through Other income, net on our Consolidated Statements of Income.
+
+The Company assesses its investments for significant influence to determine the appropriate method of accounting, including [...]",REJECT,FLAG_GROUND_TRUTH_NOT_CLEARLY_SUPPORTED_BY_BOTH_QUOTES (Quote 1 ends with dangling punctuation or incomplete phrase),,,FLAG_GROUND_TRUTH_NOT_CLEARLY_SUPPORTED_BY_BOTH_QUOTES (Quote 1 ends with dangling punctuation or incomplete phrase),,,x
+heldout_mh_14,NVIDIA,2024/2025,Item 1A/Item 1A,multi_hop,comparison-of-two-figures style where the chunk allows,How did NVIDIA's risk profile regarding supply and demand evolve from potential forecasting challenges with indirect channel partners in FY2024 to specific manufacturing vulnerabilities like foundry prioritization and non-cancellable pre-orders in FY2025?,"In fiscal year 2024, NVIDIA highlighted risks related to forecasting demand through indirect channel partners like OEMs and distributors, noting that underestimation could lead to foundry capacity issues and supply constraints. By fiscal year 2025, the risk disclosures expanded to include specific operational vulnerabilities with suppliers and subcontractors, such as foundries prioritizing competitors' orders, requirements to place non-cancellable orders or prepay for supply in advance, low manufacturing yields, and lead time extensions.","If we underestimate our customers' future demand for our products, our foundry partners may not have adequate lead-time or capacity to increase production and we may not be able to obtain sufficient inventory to fill orders on a timely basis. || •delays in product shipments, shortages, a decrease in product quality and/or higher expenses in the event our subcontractors or foundries prioritize our competitors’ or other customers’ orders over ours;
+
+•requirements to place orders that are not cancellable upon changes in demand or requirements to prepay for supply in advance;","[2024]: [...] ur ability to properly forecast demand, particularly as they are based on estimates provided by various downstream parties.
+
+If we underestimate our customers' future demand for our products, our foundry partners may not have adequate lead-time or capacity to increase production and we may not be able to obtain sufficient inventory to fill orders on a timely basis. Even if we are able to increase supply to meet customer demand, we may not be able to do so in a timely manner, or our contr [...] || [2025]: [...] their suppliers failing to provide high quality products and/or making changes to their products without our qualification;
+
+•delays in product shipments, shortages, a decrease in product quality and/or higher expenses in the event our subcontractors or foundries prioritize our competitors’ or other customers’ orders over ours;
+
+•requirements to place orders that are not cancellable upon changes in demand or requirements to prepay for supply in advance;
+
+•low manufacturing yields resulting from issues in our product design or a foundry’s proprietary process technology;
+
+•supp [...]",REJECT,FLAG_GROUND_TRUTH_NOT_CLEARLY_SUPPORTED_BY_BOTH_QUOTES (Quote 2 ends with dangling punctuation or incomplete phrase),,,FLAG_GROUND_TRUTH_NOT_CLEARLY_SUPPORTED_BY_BOTH_QUOTES (Quote 2 ends with dangling punctuation or incomplete phrase),,,x
+heldout_un_01,Tesla,2022,None,unanswerable,unanswerable inquiry,What was Tesla's total automotive regulatory credit revenue in fiscal year 2022?,I don't have enough information to answer this question based on the retrieved SEC filings.,,,ACCEPT,,,,PASS,x,,
+heldout_un_02,Uber,2024,None,unanswerable,unanswerable inquiry,What was Uber's Mobility gross bookings figure for full fiscal year 2024?,I don't have enough information to answer this question based on the retrieved SEC filings.,,,ACCEPT,,,,PASS,x,,
+heldout_un_03,Meta,2021,None,unanswerable,unanswerable inquiry,How many daily active users (DAUs) did Meta report across its Family of Apps in fiscal year 2021?,I don't have enough information to answer this question based on the retrieved SEC filings.,,,ACCEPT,,,,PASS,x,,
+heldout_un_04,Netflix,2023,None,unanswerable,unanswerable inquiry,What was Netflix's average monthly revenue per paying membership in the UCAN region in fiscal 2023?,I don't have enough information to answer this question based on the retrieved SEC filings.,,,ACCEPT,,,,PASS,x,,
+heldout_un_05,Spotify,2024,None,unanswerable,unanswerable inquiry,What was Spotify's ad-supported monthly active user count at the end of fiscal year 2024?,I don't have enough information to answer this question based on the retrieved SEC filings.,,,ACCEPT,,,,PASS,x,,
+heldout_un_06,Airbnb,2023,None,unanswerable,unanswerable inquiry,What was Airbnb's total Nights and Seats Booked volume reported in fiscal year 2023?,I don't have enough information to answer this question based on the retrieved SEC filings.,,,ACCEPT,,,,PASS,x,,
+heldout_un_07,Salesforce,2023,None,unanswerable,unanswerable inquiry,What was Salesforce's total subscription and support revenue for Service Cloud in fiscal year 2023?,I don't have enough information to answer this question based on the retrieved SEC filings.,,,ACCEPT,,,,PASS,x,,
+heldout_un_08,Intel,2022,None,unanswerable,unanswerable inquiry,What was Intel Foundry Services (IFS) operating income in fiscal year 2022?,I don't have enough information to answer this question based on the retrieved SEC filings.,,,ACCEPT,,,,PASS,x,,
+heldout_un_09,Apple,2020,None,unanswerable,unanswerable inquiry,What was Apple's total research and development expense in fiscal year 2020?,I don't have enough information to answer this question based on the retrieved SEC filings.,,,ACCEPT,,,,PASS,x,,
+heldout_un_10,NVIDIA,2021,None,unanswerable,unanswerable inquiry,What was NVIDIA's professional visualization revenue in fiscal year 2021?,I don't have enough information to answer this question based on the retrieved SEC filings.,,,ACCEPT,,,,PASS,x,,
+heldout_un_11,Amazon,2024,None,unanswerable,unanswerable inquiry,"What was the intraday high price of Amazon common stock on October 14, 2024?",I don't have enough information to answer this question based on the retrieved SEC filings.,,,ACCEPT,,,,PASS,x,,
+heldout_un_12,Microsoft,2025,None,unanswerable,unanswerable inquiry,What is the secret internal hardware architecture codename for Microsoft's 2028 cloud AI chips?,I don't have enough information to answer this question based on the retrieved SEC filings.,,,ACCEPT,,,,PASS,x,,
