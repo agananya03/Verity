@@ -48,8 +48,9 @@ DEFAULT_OUTPUT_JSON = BASE_DIR / "eval" / "golden_heldout.json"
 
 
 def normalize_whitespace(text: str) -> str:
-    """Normalizes whitespace and typography for substring location."""
+    """Normalizes whitespace and typography for substring location, stripping page-break TOC headers."""
     t = text.replace("“", "\"").replace("”", "\"").replace("’", "'").replace("—", "-")
+    t = re.sub(r"\b\d+\s+Table of Contents\b", " ", t, flags=re.IGNORECASE)
     return re.sub(r"\s+", " ", t).strip()
 
 
@@ -59,13 +60,26 @@ def find_matching_chunk_for_quote(
     fiscal_year_str: str,
     chunks: List[Dict[str, Any]],
     preferred_section: Optional[str] = None,
+    preferred_chunk_id: Optional[str] = None,
 ) -> Optional[Dict[str, Any]]:
     """
     Finds the exact chunk in chunks.json containing quote as a substring,
     restricted to the given company and fiscal year(s).
+    Prefers preferred_chunk_id if it matches the quote.
     """
     if not quote or len(quote.strip()) < 8:
         return None
+
+    norm_q = normalize_whitespace(quote)
+
+    # If preferred_chunk_id is given, test it first
+    if preferred_chunk_id:
+        for c in chunks:
+            if c.get("chunk_id") == preferred_chunk_id:
+                c_text = c.get("text", "")
+                if quote in c_text or norm_q in normalize_whitespace(c_text):
+                    return c
+                break
 
     # Parse target years (handles single year '2024' or multi-year '2023/2024')
     target_years = set(re.findall(r"\b202[0-9]\b", fiscal_year_str))
@@ -82,6 +96,10 @@ def find_matching_chunk_for_quote(
     if len(exact_matches) == 1:
         return exact_matches[0]
     elif len(exact_matches) > 1:
+        if preferred_chunk_id:
+            p_matches = [c for c in exact_matches if c.get("chunk_id") == preferred_chunk_id]
+            if p_matches:
+                return p_matches[0]
         if preferred_section:
             sec_matches = [c for c in exact_matches if c.get("item_section") == preferred_section]
             if sec_matches:
@@ -89,11 +107,14 @@ def find_matching_chunk_for_quote(
         return exact_matches[0]
 
     # 2. Normalized whitespace match
-    norm_q = normalize_whitespace(quote)
     norm_matches = [c for c in pool if norm_q in normalize_whitespace(c.get("text", ""))]
     if len(norm_matches) == 1:
         return norm_matches[0]
     elif len(norm_matches) > 1:
+        if preferred_chunk_id:
+            p_matches = [c for c in norm_matches if c.get("chunk_id") == preferred_chunk_id]
+            if p_matches:
+                return p_matches[0]
         if preferred_section:
             sec_matches = [c for c in norm_matches if c.get("item_section") == preferred_section]
             if sec_matches:
@@ -107,6 +128,10 @@ def find_matching_chunk_for_quote(
         if quote in c.get("text", "") or norm_q in normalize_whitespace(c.get("text", ""))
     ]
     if broad_matches:
+        if preferred_chunk_id:
+            p_matches = [c for c in broad_matches if c.get("chunk_id") == preferred_chunk_id]
+            if p_matches:
+                return p_matches[0]
         return broad_matches[0]
 
     return None
@@ -131,11 +156,13 @@ def merge_review_csv(
     chunks_path: Path = DEFAULT_CHUNKS_PATH,
     output_json_path: Optional[Path] = None,
     output_path: Optional[Path] = None,
+    candidates_json_path: Optional[Path] = None,
+    stop_on_validation_failure: bool = True,
 ) -> List[Dict[str, Any]]:
     """
     Parses review.csv as UTF-8, uses accept=x rows only, applies edits,
     re-validates edited questions, resolves source_chunk_ids, attaches metadata,
-    and writes golden_heldout.json.
+    and writes golden benchmark JSON.
     """
     target_output_path = output_path or output_json_path or DEFAULT_OUTPUT_JSON
     if not review_csv_path.exists():
@@ -148,7 +175,20 @@ def merge_review_csv(
         chunks: List[Dict[str, Any]] = json.load(f)
 
     corpus_chunk_ids: Set[str] = {c.get("chunk_id") for c in chunks if c.get("chunk_id")}
+    chunks_by_id: Dict[str, Dict[str, Any]] = {c.get("chunk_id"): c for c in chunks if c.get("chunk_id")}
     logger.info(f"Loaded {len(chunks)} chunks from corpus ({len(corpus_chunk_ids)} unique chunk_ids).")
+
+    # Load candidates JSON if provided (for resolving candidate chunk IDs)
+    cands_by_id: Dict[str, Dict[str, Any]] = {}
+    if candidates_json_path and candidates_json_path.exists():
+        try:
+            with open(candidates_json_path, "r", encoding="utf-8") as f:
+                cands_data = json.load(f)
+                if isinstance(cands_data, list):
+                    cands_by_id = {d["id"]: d for d in cands_data if isinstance(d, dict) and "id" in d}
+                logger.info(f"Loaded {len(cands_by_id)} candidate items from {candidates_json_path}.")
+        except Exception as e:
+            logger.warning(f"Could not load candidates JSON from {candidates_json_path}: {e}")
 
     with open(review_csv_path, "r", encoding="utf-8") as f:
         reader = csv.DictReader(f)
@@ -195,8 +235,8 @@ def merge_review_csv(
         else:
             q = orig_q
 
-        is_unanswerable = (cat == "unanswerable" or row_id.startswith("heldout_un_"))
-        is_multi_year = row_id.startswith("heldout_mh_") or cat == "multi_hop" or "/" in fy
+        is_unanswerable = (cat == "unanswerable" or row_id.startswith("heldout_un_") or "_un_" in row_id)
+        is_multi_year = (row_id.startswith("heldout_mh_") or "_mh_" in row_id or cat == "multi_hop" or "/" in fy)
 
         # Requirement 3: Resolve source_chunk_ids for answerable items
         resolved_chunk_ids: List[str] = []
@@ -206,6 +246,59 @@ def merge_review_csv(
 
         if is_unanswerable:
             expected_decline = True
+        elif is_multi_year:
+            expected_decline = False
+            individual_quotes = [
+                sq.strip()
+                for sq in re.split(r"\s*\|\|\s*|\n---\n", quote_field)
+                if sq.strip()
+            ]
+
+            if not individual_quotes:
+                err = f"Multi-year item '{row_id}' ({comp} FY{fy}) has no supporting_quote specified!"
+                unresolved_errors.append(err)
+                continue
+
+            years = [y.strip() for y in re.findall(r"\b202[0-9]\b", fy)]
+            cand = cands_by_id.get(row_id)
+            cand_sids = cand.get("source_chunk_ids", []) if cand else []
+
+            for idx, quote in enumerate(individual_quotes):
+                target_yr = years[idx] if idx < len(years) else fy
+                pref_cid = cand_sids[idx] if idx < len(cand_sids) else None
+
+                matching_chunk = find_matching_chunk_for_quote(
+                    quote=quote,
+                    company=comp,
+                    fiscal_year_str=target_yr,
+                    chunks=chunks,
+                    preferred_section=sec,
+                    preferred_chunk_id=pref_cid,
+                )
+
+                if not matching_chunk and pref_cid and pref_cid in chunks_by_id:
+                    pref_c = chunks_by_id[pref_cid]
+                    if normalize_whitespace(quote) in normalize_whitespace(pref_c.get("text", "")):
+                        matching_chunk = pref_c
+
+                if not matching_chunk:
+                    err = (
+                        f"Item '{row_id}' ({comp} FY{target_yr}, {sec}): Supporting quote could NOT be found in chunks.json!\n"
+                        f"  Quote: \"{quote[:120]}...\""
+                    )
+                    unresolved_errors.append(err)
+                    continue
+
+                cid = matching_chunk.get("chunk_id")
+                if not cid:
+                    unresolved_errors.append(f"Matching chunk for item '{row_id}' is missing 'chunk_id'!")
+                    continue
+
+                matched_chunks.append(matching_chunk)
+                if cid not in resolved_chunk_ids:
+                    resolved_chunk_ids.append(cid)
+                    resolved_contexts.append(matching_chunk.get("text", ""))
+                    resolved_quotes.append(quote)
         else:
             expected_decline = False
             individual_quotes = [
@@ -219,6 +312,9 @@ def merge_review_csv(
                 unresolved_errors.append(err)
                 continue
 
+            cand = cands_by_id.get(row_id)
+            pref_cid = (cand.get("chunk_id") or cand.get("source_chunk_ids", [None])[0]) if cand else None
+
             for quote in individual_quotes:
                 matching_chunk = find_matching_chunk_for_quote(
                     quote=quote,
@@ -226,7 +322,13 @@ def merge_review_csv(
                     fiscal_year_str=fy,
                     chunks=chunks,
                     preferred_section=sec,
+                    preferred_chunk_id=pref_cid,
                 )
+
+                if not matching_chunk and pref_cid and pref_cid in chunks_by_id:
+                    pref_c = chunks_by_id[pref_cid]
+                    if normalize_whitespace(quote) in normalize_whitespace(pref_c.get("text", "")):
+                        matching_chunk = pref_c
 
                 if not matching_chunk:
                     err = (
@@ -297,9 +399,15 @@ def merge_review_csv(
             })
 
         # Requirement 4: Per-item metadata
+        ineligible_ids = {"round2_130", "round2_126", "round2_106", "round2_mh_09", "round2_mh_22"}
+        if row_id in ineligible_ids or row_id.startswith("heldout_mh_"):
+            aq_eligible = False
+        else:
+            aq_eligible = True
+
         meta: Dict[str, Any] = {
             "reviewed_by": "claude-llm-review",
-            "answer_quality_eligible": False if row_id.startswith("heldout_mh_") else True,
+            "answer_quality_eligible": aq_eligible,
             "section": sec,
             "question_style": style,
         }
@@ -349,70 +457,125 @@ def merge_review_csv(
             f"Integrity check failed: {len(missing_ids)} source_chunk_ids do not exist in chunks.json: {missing_ids[:5]}"
         )
 
-    # Requirement 5: Write backend/eval/golden_heldout.json
-    target_output_path.parent.mkdir(parents=True, exist_ok=True)
-    with open(target_output_path, "w", encoding="utf-8") as f:
-        json.dump(heldout_items, f, indent=2, ensure_ascii=False)
+    # Check for chunk ID overlap against golden_set.json and golden_heldout.json
+    eval_dir = Path(__file__).resolve().parent
+    golden_files_to_check = [
+        eval_dir / "golden_set.json",
+        eval_dir / "golden_heldout.json",
+    ]
+    overlap_ids: Set[str] = set()
+    current_source_ids_set = set(all_source_ids)
+    checked_files = []
+
+    for gf in golden_files_to_check:
+        if gf.exists() and gf.resolve() != target_output_path.resolve():
+            checked_files.append(gf.name)
+            try:
+                with open(gf, "r", encoding="utf-8") as f:
+                    gdata = json.load(f)
+                    for git in gdata:
+                        if isinstance(git, dict):
+                            for cid in git.get("source_chunk_ids", []):
+                                if cid in current_source_ids_set:
+                                    overlap_ids.add(cid)
+                            if git.get("chunk_id") and git["chunk_id"] in current_source_ids_set:
+                                overlap_ids.add(git["chunk_id"])
+            except Exception as e:
+                logger.warning(f"Could not read {gf} for overlap check: {e}")
+
+    # Item counts by type and company
+    single_year_count = 0
+    multi_year_count = 0
+    unanswerable_count = 0
+
+    for it in heldout_items:
+        iid = it["id"]
+        icat = it["category"]
+        ify = str(it.get("fiscal_year", ""))
+        if it.get("expected_decline") or icat == "unanswerable" or "_un_" in iid or iid.startswith("heldout_un_"):
+            unanswerable_count += 1
+        elif "_mh_" in iid or iid.startswith("heldout_mh_") or icat == "multi_hop" or "/" in ify:
+            multi_year_count += 1
+        else:
+            single_year_count += 1
+
+    comp_counts = Counter(it["company"] for it in heldout_items)
+
+    print("\n" + "=" * 80)
+    print("DATASET INTEGRITY & ITEM COUNTS REPORT")
+    print("=" * 80)
+    print(f"Total Accepted Items: {len(heldout_items)}")
+    print("\nCounts by Item Type:")
+    print(f"  - Single-year questions : {single_year_count}")
+    print(f"  - Multi-year questions  : {multi_year_count}")
+    print(f"  - Unanswerable questions: {unanswerable_count}")
+    print(f"  - Total                 : {single_year_count + multi_year_count + unanswerable_count}")
+
+    print("\nCounts by Company:")
+    for comp, cnt in sorted(comp_counts.items()):
+        print(f"  - {comp:<25}: {cnt:>3}")
+
+    print("\nCorpus & Overlap Verification:")
+    print(f"  - Corpus check: 100% of source_chunk_ids ({len(all_source_ids)} references, {len(current_source_ids_set)} unique) exist in chunks.json.")
+    if overlap_ids:
+        print(f"  - Overlap check FAILED: {len(overlap_ids)} chunk IDs overlap with {checked_files}: {overlap_ids}")
+        raise ValueError(f"Chunk overlap detected with prior golden files: {overlap_ids}")
+    else:
+        print(f"  - Overlap check PASSED: 0 chunk IDs overlap with {', '.join(checked_files)}.")
+    print("=" * 80 + "\n")
 
     # Print Validation Report for Edited Questions
-    print("\n" + "=" * 80)
-    print("EDITED QUESTIONS VALIDATION REPORT")
+    print("=" * 80)
+    print("EDITED QUESTIONS RE-VALIDATION REPORT")
     print("=" * 80)
     print(f"Total Edited Questions Re-validated: {len(edited_validation_reports)}")
     failed_edits = [r for r in edited_validation_reports if not r["passed"]]
     passed_edits = [r for r in edited_validation_reports if r["passed"]]
     print(f"  - Passed: {len(passed_edits)}")
-    print(f"  - Needs Attention: {len(failed_edits)}")
+    print(f"  - Failed: {len(failed_edits)}")
     if failed_edits:
-        print("\n  FAILURES LIST (flagged needs_attention: true):")
+        print("\nFAILING ROWS LIST:")
         for f_rep in failed_edits:
-            print(f"    * [{f_rep['id']}] {f_rep['company']} FY{f_rep['fiscal_year']}:")
-            print(f"      Edited Q: {f_rep['edited_question']}")
-            print(f"      Failures: {'; '.join(f_rep['failures'])}")
+            print(f"  * ID: {f_rep['id']} | Company: {f_rep['company']} | Fiscal Year: {f_rep['fiscal_year']}")
+            print(f"    Original Q : {f_rep.get('original_question', '')}")
+            print(f"    Edited Q   : {f_rep['edited_question']}")
+            print(f"    Reasons    : {'; '.join(f_rep['failures'])}")
+            print()
     else:
         print("  All edited questions passed all validators without errors.")
     print("=" * 80 + "\n")
 
-    # Print Breakdown Counts
-    cat_counts = Counter(it["category"] for it in heldout_items)
-    comp_counts = Counter(it["company"] for it in heldout_items)
-    sec_counts = Counter(it.get("section", "None") for it in heldout_items)
-    elig_counts = Counter(bool(it.get("metadata", {}).get("answer_quality_eligible", False)) for it in heldout_items)
+    # Stopping condition if any edited questions failed re-validation
+    if failed_edits and stop_on_validation_failure:
+        print(f"[STOP] {len(failed_edits)} edited question(s) failed re-validation.")
+        print(f"As required, stopping without writing output file: {target_output_path}")
+        print("=" * 80 + "\n")
+        sys.exit(1)
 
-    print("=" * 80)
-    print("GOLDEN HELDOUT BENCHMARK DATASET SUMMARY")
-    print("=" * 80)
-    print(f"Output File:     {target_output_path}")
-    print(f"Total Questions: {len(heldout_items)}")
-
-    print("\nBreakdown by Category:")
-    for c, cnt in sorted(cat_counts.items()):
-        print(f"  - {c:<25}: {cnt:>3}")
-    print("\nBreakdown by Company:")
-    for comp, cnt in sorted(comp_counts.items()):
-        print(f"  - {comp:<25}: {cnt:>3}")
-    print("\nBreakdown by Section:")
-    for s, cnt in sorted(sec_counts.items()):
-        print(f"  - {s:<25}: {cnt:>3}")
-    print("\nBreakdown by Answer Quality Eligibility:")
-    print(f"  - Eligible (True)        : {elig_counts[True]:>3}")
-    print(f"  - Ineligible (False)     : {elig_counts[False]:>3}")
-    print("=" * 80 + "\n")
+    # Write target golden json only if all passed (or not stopping)
+    target_output_path.parent.mkdir(parents=True, exist_ok=True)
+    with open(target_output_path, "w", encoding="utf-8") as f:
+        json.dump(heldout_items, f, indent=2, ensure_ascii=False)
+    print(f"Successfully wrote {len(heldout_items)} items to {target_output_path}")
 
     return heldout_items
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Merge reviewed CSV into golden_heldout.json.")
-    parser.add_argument("--review-csv", type=str, default=str(DEFAULT_REVIEW_CSV), help="Path to review.csv")
-    parser.add_argument("--chunks-path", type=str, default=str(DEFAULT_CHUNKS_PATH), help="Path to chunks.json")
-    parser.add_argument("--output-path", type=str, default=str(DEFAULT_OUTPUT_JSON), help="Output golden_heldout.json path")
+    parser = argparse.ArgumentParser(description="Merge reviewed CSV into golden JSON.")
+    parser.add_argument("--input", "--review-csv", dest="input_csv", type=str, default=str(DEFAULT_REVIEW_CSV), help="Path to review.csv")
+    parser.add_argument("--output", "--output-path", dest="output_json", type=str, default=str(DEFAULT_OUTPUT_JSON), help="Output golden JSON path")
+    parser.add_argument("--candidates-json", dest="candidates_json", type=str, default=None, help="Path to candidates JSON")
+    parser.add_argument("--chunks-path", dest="chunks_path", type=str, default=str(DEFAULT_CHUNKS_PATH), help="Path to chunks.json")
+    parser.add_argument("--allow-failed-validation", action="store_true", default=False, help="Do not stop on validation failures")
     args = parser.parse_args()
 
     merge_review_csv(
-        review_csv_path=Path(args.review_csv),
+        review_csv_path=Path(args.input_csv),
         chunks_path=Path(args.chunks_path),
-        output_json_path=Path(args.output_path),
+        output_json_path=Path(args.output_json),
+        candidates_json_path=Path(args.candidates_json) if args.candidates_json else None,
+        stop_on_validation_failure=not args.allow_failed_validation,
     )
 
 
