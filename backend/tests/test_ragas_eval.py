@@ -813,3 +813,108 @@ def test_estimate_table_reads_used_today_at_print_time(tmp_path, capsys):
     captured2 = capsys.readouterr().out
     assert "42 " in captured2
 
+
+def test_filter_and_sample_golden_set_filtering():
+    """Tests that filter_and_sample_golden_set correctly filters out ineligible items."""
+    from backend.eval.run_ragas_eval import filter_and_sample_golden_set
+
+    mock_items = [
+        # Eligible item 1
+        {
+            "id": "item_1",
+            "company": "Apple",
+            "section": "Item 7",
+            "fiscal_year": "2024",
+            "source_chunk_ids": ["c1"],
+            "expected_decline": False,
+            "category": "simple_lookup",
+            "metadata": {"answer_quality_eligible": True},
+        },
+        # Ineligible: expected_decline=True
+        {
+            "id": "item_2",
+            "company": "Apple",
+            "section": "Item 7",
+            "fiscal_year": "2024",
+            "source_chunk_ids": ["c2"],
+            "expected_decline": True,
+            "category": "unanswerable",
+            "metadata": {"answer_quality_eligible": True},
+        },
+        # Ineligible: multi-year ("2023/2024")
+        {
+            "id": "item_3",
+            "company": "Apple",
+            "section": "Item 7",
+            "fiscal_year": "2023/2024",
+            "source_chunk_ids": ["c3"],
+            "expected_decline": False,
+            "category": "multi_hop",
+            "metadata": {"answer_quality_eligible": True},
+        },
+        # Ineligible: answer_quality_eligible=False
+        {
+            "id": "item_4",
+            "company": "Apple",
+            "section": "Item 7",
+            "fiscal_year": "2024",
+            "source_chunk_ids": ["c4"],
+            "expected_decline": False,
+            "category": "simple_lookup",
+            "metadata": {"answer_quality_eligible": False},
+        },
+        # Ineligible: no source_chunk_ids
+        {
+            "id": "item_5",
+            "company": "Apple",
+            "section": "Item 7",
+            "fiscal_year": "2024",
+            "source_chunk_ids": [],
+            "expected_decline": False,
+            "category": "simple_lookup",
+            "metadata": {"answer_quality_eligible": True},
+        },
+    ]
+
+    filtered = filter_and_sample_golden_set(mock_items, filter_eligible=True)
+    assert len(filtered) == 1
+    assert filtered[0]["id"] == "item_1"
+
+
+def test_filter_and_sample_golden_set_stratification_on_golden_round2():
+    """Validates stratified sampling on golden_round2.json produces balanced strata."""
+    from backend.eval.run_ragas_eval import filter_and_sample_golden_set
+    from collections import Counter
+    from pathlib import Path
+
+    base_dir = Path(__file__).resolve().parent.parent
+    round2_path = base_dir / "eval" / "golden_round2.json"
+    with open(round2_path, "r", encoding="utf-8") as f:
+        raw_items = json.load(f)
+
+    # 1. Filter only
+    filtered = filter_and_sample_golden_set(raw_items, filter_eligible=True)
+    assert len(filtered) == 61
+
+    # 2. Filter + stratified sample of 30
+    sampled_30 = filter_and_sample_golden_set(
+        raw_items, filter_eligible=True, sample_size=30, seed=42
+    )
+    assert len(sampled_30) == 30
+
+    # Verify company balance
+    comp_counts = Counter(it["company"] for it in sampled_30)
+    for comp in ["Alphabet", "Amazon", "Apple", "Microsoft", "NVIDIA"]:
+        assert comp_counts[comp] >= 5, f"Expected at least 5 items for {comp}, got {comp_counts[comp]}"
+
+    # Verify section balance
+    sec_counts = Counter(it["section"] for it in sampled_30)
+    for sec in ["Item 1", "Item 1A", "Item 7", "Item 8"]:
+        assert sec_counts[sec] >= 2, f"Expected at least 2 items for {sec}, got {sec_counts[sec]}"
+
+    # Verify determinism
+    sampled_30_repeat = filter_and_sample_golden_set(
+        raw_items, filter_eligible=True, sample_size=30, seed=42
+    )
+    assert [x["id"] for x in sampled_30] == [x["id"] for x in sampled_30_repeat]
+

@@ -1192,6 +1192,69 @@ def run_judge_stage(
     return output_data
 
 
+def filter_and_sample_golden_set(
+    items: List[Dict[str, Any]],
+    filter_eligible: bool = False,
+    sample_size: Optional[int] = None,
+    seed: int = 42,
+) -> List[Dict[str, Any]]:
+    """
+    Filters and/or stratifies benchmark items.
+    If filter_eligible is True, retains only answerable, single-year, answer_quality_eligible items.
+    If sample_size is specified, performs stratified sampling across (company, section) using
+    the Largest Remainder Method.
+    """
+    result = list(items)
+    if filter_eligible:
+        result = [
+            it
+            for it in result
+            if it.get("source_chunk_ids")
+            and not it.get("expected_decline")
+            and it.get("category") != "unanswerable"
+            and "/" not in str(it.get("fiscal_year", ""))
+            and (
+                it.get("metadata", {}).get("answer_quality_eligible") is True
+                or it.get("answer_quality_eligible") is True
+            )
+        ]
+
+    if sample_size is not None and sample_size < len(result):
+        strata: Dict[Tuple[str, str], List[Dict[str, Any]]] = {}
+        for it in result:
+            key = (str(it.get("company", "Unknown")), str(it.get("section", "Unknown")))
+            strata.setdefault(key, []).append(it)
+
+        total_eligible = len(result)
+        allocations: Dict[Tuple[str, str], int] = {}
+        remainders = []
+        for k, s_items in sorted(strata.items()):
+            exact = sample_size * len(s_items) / total_eligible
+            base = int(exact)
+            rem = exact - base
+            allocations[k] = base
+            remainders.append((rem, k))
+
+        allocated = sum(allocations.values())
+        remainders.sort(key=lambda x: x[0], reverse=True)
+        for i in range(sample_size - allocated):
+            allocations[remainders[i][1]] += 1
+
+        rng = random.Random(seed)
+        sampled: List[Dict[str, Any]] = []
+        for k in sorted(strata.keys()):
+            s_items = sorted(strata[k], key=lambda x: str(x.get("id", "")))
+            rng.shuffle(s_items)
+            sampled.extend(s_items[: allocations[k]])
+
+        # Preserve original relative order
+        orig_indices = {id(it): idx for idx, it in enumerate(result)}
+        sampled.sort(key=lambda x: orig_indices.get(id(x), 0))
+        result = sampled
+
+    return result
+
+
 def main():
     parser = argparse.ArgumentParser(description="Run Free-Tier Hardened RAGAS evaluation on Verity Financial RAG benchmark.")
     parser.add_argument(
@@ -1268,6 +1331,17 @@ def main():
         default=str(BASE_DIR / "eval" / "golden_set.json"),
         help="Path to golden benchmark JSON file (default: backend/eval/golden_set.json).",
     )
+    parser.add_argument(
+        "--filter-eligible",
+        action="store_true",
+        help="Filter benchmark to answerable, single-year, answer_quality_eligible items.",
+    )
+    parser.add_argument(
+        "--stratified-sample",
+        type=int,
+        default=None,
+        help="Sample N items stratified by (company, section) with fixed seed.",
+    )
     args = parser.parse_args()
 
     # Set random seeds
@@ -1319,6 +1393,18 @@ def main():
             sys.exit(1)
     except FileNotFoundError as e:
         logger.warning(f"Skipping corpus chunk validation: {e}")
+
+    if args.filter_eligible or args.stratified_sample:
+        golden_set = filter_and_sample_golden_set(
+            golden_set,
+            filter_eligible=args.filter_eligible,
+            sample_size=args.stratified_sample,
+            seed=args.seed,
+        )
+        logger.info(
+            f"Benchmark filtered/stratified: {len(golden_set)} items in scope "
+            f"(filter_eligible={args.filter_eligible}, stratified_sample={args.stratified_sample})"
+        )
 
     if args.limit:
         golden_set = golden_set[: args.limit]
