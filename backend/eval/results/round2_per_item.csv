@@ -1,0 +1,69 @@
+id,question,gold_chunk_ids,rank_A,rank_B,rank_C
+round2_001,"In fiscal year 2023, how does Alphabet communicate financial performance updates and corporate governance details to the investing public?",0b28b19f-5204-52d1-9d98-e05c7d4073c2,1,1,1
+round2_009,Alphabet cloud computing division annual revenue for fiscal year 2023 in millions,57ac654a-36f2-5861-895f-502c5bc66317,3,3,18
+round2_010,What custom-designed microprocessors does Alphabet utilize and provide to its clientele as part of its specialized computing infrastructure in fiscal year 2024?,300f5d39-8606-548d-b72c-2f93aff08a5f,1,1,2
+round2_013,"What was Alphabet's total capital investment directed toward technical infrastructure for the fiscal year concluding December 31, 2024, expressed in millions of dollars?",61a83259-0114-58f0-b4c8-95fcccc4d0e2,1,1,1
+round2_015,Alphabet effective tax rate annual comparison percentage fiscal year 2024,77d3e94b-9469-535c-86bc-2b72ce2fd08f,8,5,2
+round2_016,What was the aggregate cost of leases for Alphabet during fiscal year 2024?,99aa645b-dc49-5170-b945-d11953e6204d,1,1,2
+round2_018,"What is the expected pre-tax amount of Alphabet's net accumulated gain on foreign currency cash flow hedges that will be transferred into revenues over the upcoming year compared to the total net accumulated gain recorded as of December 31, 2024?",ca2ed9a1-715e-5ad0-8ec2-c56d115f6337,8,1,1
+round2_019,"Where does Alphabet broadcast its financial review conference calls and engagement events involving the financial community, per its fiscal year 2025 filing?",8b7e668c-5552-5c80-b0ea-d608c684ec2f,1,1,2
+round2_022,"What was Alphabet's year-over-year percentage growth in diluted earnings per share for the fiscal period ending December 31, 2025?",fa8c7c18-2f1e-5ea5-b648-d5b9d3e576bc,13,10,6
+round2_023,What does Alphabet's fiscal year 2025 filing say about legislative adjustments enacted in mid-2025 concerning domestic research expenditures and capital outlays?,b745820e-e75e-5166-b4e1-77f9a458dfbb,8,4,2
+round2_024,"How did Alphabet's valuation allowance for deferred tax assets change between the two balance sheet dates reported in its fiscal year 2025 filing, in millions of dollars?",17c8e50a-2710-5308-b305-40a8e7f78a0e,5,6,6
+round2_025,What potential business impacts could arise for Alphabet in fiscal year 2025 if the International Trade Commission rules against the company in an intellectual property matter?,5d7e106c-5abf-5f1b-8330-acd696e3d1da,6,6,15
+round2_026,What was the total value of Alphabet's deferred tax assets for capitalized research and development at the end of fiscal year 2025 in millions?,926bed15-e67d-5822-b4d0-7282843ef57b,2,2,1
+round2_027,Amazon total global workforce count end of fiscal year 2023,0899fc20-822d-5e70-968d-d7620908b3be,1,1,2
+round2_029,What does Amazon's fiscal year 2023 filing say about ongoing government inquiries regarding competition rules?,ce822a94-45b9-550a-88e5-4fecb3de6da4,1,1,2
+round2_030,"What is Amazon's projected range for operating profit in the upcoming quarter relative to the prior year period, per its fiscal year 2023 report?",68d4e558-9103-5351-b834-2e664288ba91,8,8,47
+round2_031,What was the total cash Amazon used in financing activities during the fiscal year ending in December 2023?,722f69d2-fe2d-553f-83cc-b4b68825d695,4,3,7
+round2_032,What was the total cash generated from operating activities for Amazon during the fiscal year 2023 in millions?,e0b99639-a635-5680-a2b3-7c4eaea82311,5,3,1
+round2_033,"Amazon total current assets value for the fiscal year ended December 31, 2023 in millions",8dd125bf-15b4-5d5b-8df2-c604de2808b6,10,29,24
+round2_035,What does Amazon's fiscal year 2023 filing say about the financial effect and timing of the server depreciation timeframe extension?,0978aa0b-e42c-5c2f-9bfb-4e602f14f3dd,4,9,>50
+round2_040,What was Amazon's net amount paid for global corporate income taxes during the fiscal year ending in 2024?,90b25e6e-52c4-5303-83ea-24b385968536,>20,37,>50
+round2_041,What does Amazon's filing say about the foreign exchange impact on technology and infrastructure expenditures for fiscal year 2024?,8f143654-131b-5bd5-883b-b25f04259c67,17,13,6
+round2_044,What was the operating income for Amazon's cloud computing division in fiscal year 2024 in millions of dollars?,46df37e0-16f2-5cbf-93c2-ee8df431b25c,10,9,>50
+round2_045,Amazon fiscal year 2025 workforce education funding initiative participant total,99d30f1b-82cf-56f3-ba51-5ece5ce0edeb,1,1,2
+round2_049,What would be the financial impact on Amazon's cost of sales if the merchandise reserve valuation allowance increased by a factor of one percent at the close of fiscal year 2025?,5fc2b2f9-594e-5af7-a05b-dc584c8846bf,1,1,4
+round2_050,"How much did Amazon pay in income taxes after deducting refunds in fiscal year 2025, in millions?",d85c7630-4b3d-5b90-8ad5-036e3a74329a,2,2,1
+round2_051,Amazon fiscal year 2025 short-term borrowing program capacity increase timing and amount,7d4867be-6f31-5fe4-9fd4-6936b396376a,11,5,11
+round2_055,What potential negative consequences could arise for Apple in fiscal 2023 if the company is forced to alter its operational practices to align with newly enacted legal frameworks and ongoing judicial matters?,58f5cca9-6f55-5db1-8595-a9f9708ea0f4,5,5,12
+round2_057,Apple fiscal year 2023 capital return and equity repurchase authorization magnitude,ccae4618-69c4-5b89-998d-b33622689521,10,8,1
+round2_058,What was the magnitude and primary driver of the decline in Apple's annual revenue during the 2023 fiscal period compared to the preceding year?,e60c3e5e-dcc1-58cb-8e88-0a4d7dd1b403,1,3,1
+round2_059,What does Apple's fiscal year 2023 filing say about the magnitude of interest expense incurred on long-term obligations across the three most recent fiscal years?,7901f61b-0b51-5e6b-93f4-7a9cf575815a,>20,39,16
+round2_061,How does Apple distribute transaction prices when dealing with multiple commitments in device sales contracts where direct market values are absent (fiscal year 2023)?,daee6eef-2178-5295-96da-8320c2b50241,3,3,7
+round2_065,What does Apple's filing say about the drivers behind the shifts in digital marketplace and software hosting revenue during fiscal year 2024?,197b2341-12cf-5a5c-92c6-b890a16b3c1c,>20,>50,24
+round2_066,How did the duration in weeks differ between the fiscal year that included an extra week and the subsequent fiscal period reported by Apple in its fiscal year 2024 filing?,70e50532-5a2f-551e-9433-5af27acfb4ff,1,1,1
+round2_069,Apple restricted marketable securities escrow amount fiscal year 2024,8c95884d-eb13-5eb8-8988-0052680f3cde,1,1,2
+round2_073,How could legal setbacks impacting search distribution partners influence Apple's financial performance in fiscal year 2025?,a6bef2f6-6558-5159-a6eb-987f8c1f62db,1,1,5
+round2_074,What was Apple's Services gross margin percentage in fiscal year 2025?,5e820ce9-6fd2-5d7e-a3e7-fed844a43aa0,1,1,2
+round2_075,Apple fiscal year 2025 product announcements timeline fourth quarter hardware releases,97e04e65-82f0-5217-bb0d-57f54d63ccf8,1,1,1
+round2_076,What was the total valuation of Apple's permanent physical property holdings in the domestic region for fiscal year 2025 in millions of dollars?,99fe2b83-608c-523b-a7a4-7624f86d093a,4,3,17
+round2_080,What potential liabilities and risks arise from Microsoft's integration and deployment of artificial intelligence technologies in fiscal year 2024?,d70e4143-139c-535a-82de-48346cb0b75d,4,4,14
+round2_081,Microsoft fiscal year 2024 foreign competition law pressure on intellectual property royalties,dbd3cf85-13a0-5a90-8cbc-bb7815289991,1,1,2
+round2_082,What was Microsoft's year-over-year percentage growth rate for diluted earnings per share in fiscal year 2024?,4ecdc3ca-507f-521c-bf3a-a30840b18b6a,1,1,1
+round2_083,What does Microsoft's fiscal year 2024 filing say about the key inputs and inherent uncertainties involved when determining the valuation of intangible assets during corporate acquisitions?,88bc5725-71a5-5cf5-b898-1f460a57eb52,5,3,26
+round2_085,What was the total dollar amount Microsoft spent on common stock buybacks for the fiscal year ending in 2024?,f95e7875-3cc2-5399-9e8f-60a02d630aab,1,1,2
+round2_087,Microsoft accrued aggregate legal liabilities amount as of June 30 2024,6aeeb60f-18fe-5a60-8115-f22a5d9dfae6,10,5,2
+round2_092,What was Microsoft's total operating cash generation for fiscal year 2025?,d149c13e-dea8-5eb5-b000-1f0b7c992bf5,>20,>50,22
+round2_094,"What was the estimated market value of all of Microsoft's senior obligations, including short-term portions, at the close of fiscal year 2025?",d714de58-a541-52b7-93a2-44976631d2b3,4,6,1
+round2_095,What does Microsoft's filing say about the average price per share for employee stock purchases during the fiscal year ending in 2025?,eee9c038-a3b0-53d6-aad3-958e4be1709f,4,2,5
+round2_098,"How do adversaries leverage emerging technologies such as artificial intelligence to compromise cybersecurity, according to Microsoft's fiscal year 2026 filing?",c40d875c-bbaa-5fcc-bd17-3186dae7e1a3,2,2,4
+round2_100,What was Microsoft's fiscal year 2026 operating income for the Intelligent Cloud segment in millions of dollars?,e36aecea-4ed3-52d6-8d38-dd5daa17315a,1,1,2
+round2_105,NVIDIA fiscal year 2024 geopolitical tensions and regulatory modifications impact on regional market access,52bbdd76-1751-575a-80b0-9b8b1b6cfff6,14,10,18
+round2_109,"In its fiscal year 2024 report, what was the magnitude of the fee NVIDIA incurred when a prominent merger was called off during the preceding fiscal year?",2b12051d-1dc0-5ad6-b940-bf32a7004874,7,11,7
+round2_110,How many personnel does NVIDIA employ in the Israeli territory as of its fiscal year 2024 report?,2d431ac3-4f7c-56a5-a681-be32aee95acf,>20,>50,>50
+round2_111,NVIDIA fiscal year 2024 total unrealized losses for fixed income holdings,d3bc1484-98b2-5926-8b3e-a98fce798b0a,2,2,2
+round2_113,"What does NVIDIA's filing say about the cumulative undistributed earnings intended for indefinite reinvestment in foreign jurisdictions as of January 28, 2024?",5e774b80-bcf2-53ed-b92c-30c05b5658ed,9,4,1
+round2_115,What specific factor negatively impacted NVIDIA's gross margins during the second quarter of the 2025 fiscal year?,8c19a1d4-a3d4-5f10-93a9-90ab91a67262,9,4,1
+round2_117,NVIDIA fiscal year 2025 research and development expenditure total in millions,b600a486-5597-5ae0-a000-d5761594f1b9,15,22,2
+round2_124,What was the financial write-down amount NVIDIA recorded in the opening quarter of fiscal year 2026 related to surplus supplies and supply contracts for specific semiconductor products restricted by export controls?,deaaa8c6-f809-5612-b1f6-b07bbc9bb0d5,>20,>50,34
+round2_127,What technological platform accounted for the largest share of NVIDIA's revenue within its primary infrastructure segment during fiscal year 2026?,19ee5a7d-5e6d-54a6-b060-d83fb2fb3e9b,7,8,17
+round2_128,"What was NVIDIA's research and development expense for the fiscal year ended January 25, 2026, in millions?",48739e91-20af-52d4-916a-60feff522d9e,>20,>50,34
+round2_129,NVIDIA fiscal year 2026 fair value hierarchy classification input levels,897b866c-9ec7-57d4-a739-c6ec225188ef,1,1,14
+round2_130,What was the total capital deployed by NVIDIA for acquisitions of non-marketable equity interests or specific target entities during the fiscal year ending in January 2026?,64715d1b-8173-570b-86ee-7e9e430303dc,8,23,>50
+round2_mh_03,"What was Alphabet's total traffic acquisition cost in fiscal year 2024, and what were its capital expenditures for fiscal year 2025?",e0a21e0b-08b2-53b3-b7cb-15d9b0910b34;6ed670a9-6cb6-5088-a8b8-1ffb6fdbb06e,>20,24,1
+round2_mh_06,"How much did Amazon's operating cash flow grow from 2023 to 2024, and what were the figures for each of those two years?",e0b99639-a635-5680-a2b3-7c4eaea82311;35700c60-e683-519c-a67c-e533ec02f283,11,10,8
+round2_mh_09,"How did Amazon's estimated useful life for servers and networking equipment change between fiscal year 2024 and fiscal year 2025, and what was the financial impact of the January 1, 2025 change?",b1af6cc6-d1ca-5b61-a562-de4f5c66da1b;052033ed-71f8-5482-bf53-41eb22d88b25,2,2,5
+round2_mh_11,"How did the length of Apple's fiscal year 2023 differ from that of fiscal year 2024, in weeks?",97e04e65-82f0-5217-bb0d-57f54d63ccf8;70e50532-5a2f-551e-9433-5af27acfb4ff,4,4,1
+round2_mh_22,"What was the effect on NVIDIA's operating income of the fiscal 2024 change in property, plant and equipment useful lives, and what is the total estimated future amortization expense for intangible assets as of its fiscal 2025 report?",034ec7ea-b270-58d0-a0e0-78219640dc09;0b08c12e-e1bd-5a2b-97be-d480c3f4667a,10,10,6
+round2_mh_23,How did the net unfavorable impact of inventory provisions and sales of previously written-down items on NVIDIA's gross margin change between fiscal year 2025 and fiscal year 2026?,2ae0bc90-1f13-5986-a0b3-5dd7b2441855;cd30c3aa-7be9-585e-9af5-39c0901aae42,2,2,1
