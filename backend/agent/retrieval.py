@@ -447,25 +447,118 @@ def reciprocal_rank_fusion(
 def retrieve(query: str, top_k: int = 8, filters: Optional[Dict] = None) -> List[Dict]:
     """
     Retrieves top_k text chunks using hybrid Qdrant (dense) + BM25 (sparse) retrieval
-    fused with Reciprocal Rank Fusion (RRF, k=60).
+    fused with Reciprocal Rank Fusion.
 
-    Production features:
-    - Query cleaning (clean_v2): strips preamble boilerplate and active metadata terms only for retrieval.
-      Controlled by RETRIEVAL_QUERY_CLEANING env var (default on).
-      With no company found, cleaning is skipped.
-      Strip year only when a single-year filter is active; multi-year queries preserve all years.
-    - Per-year retrieval: when a query has 2 or more fiscal years and a company,
-      retrieves top ceil(8/n_years) per year from the fused list (using cleaned query)
-      and merges to top_k, alternating by year.
-    - Single-year and zero-year queries use the normal RRF path.
+    Controlled by RETRIEVAL_STRATEGY env var:
+      - 'clean_v3_rrf10' (new default): clean_v3 query cleaning, dense top-50 + BM25 top-50
+        filtered by extractor's company/year, RRF with k=10.
+      - 'legacy': exact current behaviour unchanged (clean_v2 query cleaning, dense top-20 +
+        BM25 top-20, RRF with k=60).
     """
-    from backend.agent.nodes.classifier import extract_all_fiscal_years, strip_query_metadata_v2
+    from backend.agent.nodes.classifier import (
+        extract_all_fiscal_years,
+        extract_company_and_year,
+        strip_query_metadata_v2,
+        strip_query_metadata_v3,
+    )
 
-    cleaning_enabled = os.getenv("RETRIEVAL_QUERY_CLEANING", "true").lower() in ("true", "1", "yes")
+    strategy = os.getenv("RETRIEVAL_STRATEGY", "clean_v3_rrf10").strip().lower()
 
+    # -------------------------------------------------------------------------
+    # Legacy Strategy: clean_v2, k=60, top-20 pools (exact current behaviour)
+    # -------------------------------------------------------------------------
+    if strategy == "legacy":
+        cleaning_enabled = os.getenv("RETRIEVAL_QUERY_CLEANING", "true").lower() in ("true", "1", "yes")
+
+        company = (filters or {}).get("company")
+
+        # Determine fiscal years: check filters first, fallback to extract_all_fiscal_years from query
+        years: List[str] = []
+        if filters and "fiscal_years" in filters and filters["fiscal_years"]:
+            years = [str(y) for y in filters["fiscal_years"]]
+        elif filters and "fiscal_year" in filters and filters["fiscal_year"]:
+            years = [str(filters["fiscal_year"])]
+        else:
+            years = extract_all_fiscal_years(query)
+
+        # 1. Query cleaning (clean_v2) - applies ONLY to retrieval query
+        if cleaning_enabled and company:
+            # Strip fiscal_year only when a single-year filter is active
+            active_single_year = (
+                str(filters.get("fiscal_year"))
+                if (filters and filters.get("fiscal_year"))
+                else (years[0] if len(years) == 1 else None)
+            )
+            retrieval_query = strip_query_metadata_v2(query, company=company, fiscal_year=active_single_year)
+        else:
+            # With no company found or cleaning disabled, do not clean
+            retrieval_query = query
+
+        # 2. Branching: Per-Year Retrieval vs Normal Path
+        if company and len(years) >= 2:
+            n_years = len(years)
+            k_per_year = max(math.ceil(8 / n_years), math.ceil(top_k / n_years))
+            per_year_results: List[List[Dict]] = []
+
+            for yr in years:
+                yr_filters = dict(filters) if filters else {}
+                yr_filters["company"] = company
+                yr_filters["fiscal_year"] = str(yr)
+                yr_filters.pop("fiscal_years", None)
+
+                # In per-year retrieval, clean the query specifically for this target year
+                yr_query = (
+                    strip_query_metadata_v2(query, company=company, fiscal_year=str(yr))
+                    if (cleaning_enabled and company)
+                    else query
+                )
+
+                dense_results = search_qdrant(query=yr_query, filters=yr_filters, limit=max(20, k_per_year))
+                sparse_results = search_bm25(query=yr_query, filters=yr_filters, limit=max(20, k_per_year))
+                fused = reciprocal_rank_fusion(
+                    dense_results=dense_results,
+                    sparse_results=sparse_results,
+                    k=60,
+                    top_k=k_per_year,
+                )
+                per_year_results.append(fused)
+
+            merged: List[Dict] = []
+            seen_ids = set()
+            for idx in range(k_per_year):
+                for yr_chunks in per_year_results:
+                    if idx < len(yr_chunks):
+                        chunk = yr_chunks[idx]
+                        cid = chunk.get("id") or chunk.get("chunk_id")
+                        if cid not in seen_ids:
+                            seen_ids.add(cid)
+                            merged.append(chunk)
+                            if len(merged) == top_k:
+                                break
+                if len(merged) == top_k:
+                    break
+            return merged
+        else:
+            # Single-year and zero-year queries use the normal path
+            norm_filters = dict(filters) if filters else None
+            if norm_filters and "fiscal_years" in norm_filters:
+                norm_filters = dict(norm_filters)
+                norm_filters.pop("fiscal_years", None)
+
+            dense_results = search_qdrant(query=retrieval_query, filters=norm_filters, limit=max(20, top_k))
+            sparse_results = search_bm25(query=retrieval_query, filters=norm_filters, limit=max(20, top_k))
+            fused_results = reciprocal_rank_fusion(
+                dense_results=dense_results,
+                sparse_results=sparse_results,
+                k=60,
+                top_k=top_k,
+            )
+            return fused_results
+
+    # -------------------------------------------------------------------------
+    # New Default Strategy: clean_v3_rrf10
+    # -------------------------------------------------------------------------
     company = (filters or {}).get("company")
-
-    # Determine fiscal years: check filters first, fallback to extract_all_fiscal_years from query
     years: List[str] = []
     if filters and "fiscal_years" in filters and filters["fiscal_years"]:
         years = [str(y) for y in filters["fiscal_years"]]
@@ -474,21 +567,11 @@ def retrieve(query: str, top_k: int = 8, filters: Optional[Dict] = None) -> List
     else:
         years = extract_all_fiscal_years(query)
 
-    # 1. Query cleaning (clean_v2) - applies ONLY to retrieval query
-    if cleaning_enabled and company:
-        # Strip fiscal_year only when a single-year filter is active
-        active_single_year = (
-            str(filters.get("fiscal_year"))
-            if (filters and filters.get("fiscal_year"))
-            else (years[0] if len(years) == 1 else None)
-        )
-        retrieval_query = strip_query_metadata_v2(query, company=company, fiscal_year=active_single_year)
-    else:
-        # With no company found or cleaning disabled, do not clean
-        retrieval_query = query
-
-    # 2. Branching: Per-Year Retrieval vs Normal Path
+    # 1. Multi-Year Per-Year Path
+    # NOTE: The multi-year per-year retrieval path stays EXACTLY as it is today
+    # (legacy query cleaning v2, k=60). This path is untested on held-out data.
     if company and len(years) >= 2:
+        cleaning_enabled = os.getenv("RETRIEVAL_QUERY_CLEANING", "true").lower() in ("true", "1", "yes")
         n_years = len(years)
         k_per_year = max(math.ceil(8 / n_years), math.ceil(top_k / n_years))
         per_year_results: List[List[Dict]] = []
@@ -531,22 +614,39 @@ def retrieve(query: str, top_k: int = 8, filters: Optional[Dict] = None) -> List
             if len(merged) == top_k:
                 break
         return merged
-    else:
-        # Single-year and zero-year queries use the normal path
-        norm_filters = dict(filters) if filters else None
-        if norm_filters and "fiscal_years" in norm_filters:
-            norm_filters = dict(norm_filters)
-            norm_filters.pop("fiscal_years", None)
 
-        dense_results = search_qdrant(query=retrieval_query, filters=norm_filters, limit=max(20, top_k))
-        sparse_results = search_bm25(query=retrieval_query, filters=norm_filters, limit=max(20, top_k))
-        fused_results = reciprocal_rank_fusion(
-            dense_results=dense_results,
-            sparse_results=sparse_results,
-            k=60,
-            top_k=top_k,
-        )
-        return fused_results
+    # 2. Single-Year / Unfiltered Path under clean_v3_rrf10
+    # For clean_v3_rrf10: query = strip_query_metadata_v3(query),
+    # dense top-50 + BM25 top-50 using the extractor's company/year filters,
+    # RRF with k=10, return top_k. If no filters are detected, use the same recipe unfiltered.
+    cleaned_query = strip_query_metadata_v3(query)
+
+    active_filters: Dict[str, Any] = {}
+    if filters:
+        if "company" in filters and filters["company"]:
+            active_filters["company"] = filters["company"]
+        if "fiscal_year" in filters and filters["fiscal_year"]:
+            active_filters["fiscal_year"] = str(filters["fiscal_year"])
+
+    # Extract company/year using the extractor if not already provided in filters
+    if not active_filters.get("company") or not active_filters.get("fiscal_year"):
+        ext_comp, ext_fy = extract_company_and_year(query)
+        if not active_filters.get("company") and ext_comp:
+            active_filters["company"] = ext_comp
+        if not active_filters.get("fiscal_year") and ext_fy:
+            active_filters["fiscal_year"] = str(ext_fy)
+
+    target_filters = active_filters if active_filters else None
+
+    dense_results = search_qdrant(query=cleaned_query, filters=target_filters, limit=max(50, top_k))
+    sparse_results = search_bm25(query=cleaned_query, filters=target_filters, limit=max(50, top_k))
+    fused_results = reciprocal_rank_fusion(
+        dense_results=dense_results,
+        sparse_results=sparse_results,
+        k=10,
+        top_k=top_k,
+    )
+    return fused_results
 
 
 if __name__ == "__main__":

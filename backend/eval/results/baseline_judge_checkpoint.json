@@ -1,0 +1,122 @@
+{
+  "round2_009": {
+    "answer_correctness": 0.7876936221999609,
+    "faithfulness": 0.6666666666666666
+  },
+  "round2_010": {
+    "faithfulness": 0.6,
+    "answer_correctness": 0.2294330980096589
+  },
+  "round2_015": {
+    "answer_correctness": 0.9709066731032396,
+    "faithfulness": 1.0
+  },
+  "round2_018": {
+    "faithfulness": 0.0,
+    "answer_correctness": 0.19564393415447529
+  },
+  "round2_024": {
+    "faithfulness": 0.0,
+    "answer_correctness": 0.19297015003375895
+  },
+  "round2_029": {
+    "faithfulness": 0.0,
+    "answer_correctness": 0.18526529751292772
+  },
+  "round2_031": {
+    "faithfulness": 1.0,
+    "answer_correctness": 0.7362615866368318
+  },
+  "round2_032": {
+    "faithfulness": 0.6666666666666666,
+    "answer_correctness": 0.48719318203562995
+  },
+  "round2_033": {
+    "faithfulness": 1.0,
+    "answer_correctness": 0.19840800978004264
+  },
+  "round2_045": {
+    "faithfulness": 0.6666666666666666,
+    "answer_correctness": 0.6102865812577779
+  },
+  "round2_049": {
+    "faithfulness": 1.0,
+    "answer_correctness": 0.1959609582711052
+  },
+  "round2_050": {
+    "faithfulness": 0.8333333333333334,
+    "answer_correctness": 0.5729170754342268
+  },
+  "round2_057": {
+    "answer_correctness": 0.8861361609415195,
+    "faithfulness": 1.0
+  },
+  "round2_058": {
+    "faithfulness": 1.0,
+    "answer_correctness": 0.9066153745882713
+  },
+  "round2_061": {
+    "faithfulness": 1.0,
+    "answer_correctness": 0.9831201346966145
+  },
+  "round2_065": {
+    "faithfulness": 0.0,
+    "answer_correctness": 0.18645212078771617
+  },
+  "round2_073": {
+    "faithfulness": 1.0,
+    "answer_correctness": 0.8183397190475807
+  },
+  "round2_076": {
+    "faithfulness": 0.0,
+    "answer_correctness": 0.19875166598659116
+  },
+  "round2_080": {
+    "faithfulness": 1.0,
+    "answer_correctness": 0.5515213607148962
+  },
+  "round2_082": {
+    "faithfulness": 0.5,
+    "answer_correctness": 0.7104416130304161
+  },
+  "round2_085": {
+    "faithfulness": 1.0,
+    "answer_correctness": 0.1986680838155899
+  },
+  "round2_094": {
+    "faithfulness": 1.0,
+    "answer_correctness": 0.19830076197627172
+  },
+  "round2_100": {
+    "faithfulness": 0.6666666666666666,
+    "answer_correctness": 0.7889346567138037
+  },
+  "round2_105": {
+    "faithfulness": 1.0,
+    "answer_correctness": 0.21276956530506985
+  },
+  "round2_110": {
+    "answer_correctness": 0.5832390995071622,
+    "faithfulness": 1.0
+  },
+  "round2_111": {
+    "faithfulness": 1.0,
+    "answer_correctness": 0.1855093402319884
+  },
+  "round2_113": {
+    "faithfulness": 1.0,
+    "answer_correctness": 0.18393953544733216
+  },
+  "round2_117": {
+    "faithfulness": 0.0,
+    "answer_correctness": 0.2022499038131513
+  },
+  "round2_124": {
+    "faithfulness": 1.0,
+    "answer_correctness": 0.18633821170366868
+  },
+  "round2_023": {
+    "faithfulness": 0.0,
+    "answer_correctness": 0.19408715568500928
+  }
+}

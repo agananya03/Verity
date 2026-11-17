@@ -335,6 +335,59 @@ def strip_query_metadata_v2(
     return q
 
 
+def strip_query_metadata_v3(
+    query: str,
+    company: Optional[str] = None,
+    fiscal_year: Optional[str] = None,
+) -> str:
+    """
+    clean_v3:
+    Removes ONLY:
+    1. Leading preamble ("According to / Based on / In / Per ... Form 10-K,")
+    2. "Form 10-K" and "10-K" references
+    3. Disambiguation clauses like "per {Company}'s fiscal {year} annual report",
+       "in {Company}'s FY{year} 10-K", "for fiscal {year}"
+    4. Phrases like "fiscal year 2024", "FY2024", "fiscal 2024"
+
+    MUST NOT remove:
+    - Company name (e.g. "Alphabet", "Amazon", "Apple", "Microsoft", "NVIDIA")
+    - Calendar dates with years (e.g. "June 30, 2024", "December 31, 2023", "January 29, 2025")
+    """
+    if not query or not query.strip():
+        return ""
+
+    q = query.strip()
+
+    # 1. Leading preamble removal ("According to / Based on / In / Per ... Form 10-K,")
+    q = re.sub(
+        r"^\s*(?:According\s+to|Based\s+on|In|Per)\s+(?:the\s+)?(?:(?:Item\s+[0-9A-Z]+|[A-Za-z]+)\s+section\s+of\s+)?(?:[A-Za-z0-9'’\s-]*?)(?:Form\s+)?10-K(?:\s+filings?)?\s*,\s*",
+        "",
+        q,
+        flags=re.IGNORECASE,
+    )
+
+    # 2. Form 10-K references
+    q = re.sub(r"\b(?:Form\s+)?10-K(?:\s+filings?)?\b", "", q, flags=re.IGNORECASE)
+
+    # 3. Disambiguation phrases added during review
+    q = re.sub(r",?\s*per\s+[A-Za-z0-9'’\s-]+?'s\s+fiscal\s+\d{4}\s+annual\s+report\b", "", q, flags=re.IGNORECASE)
+    q = re.sub(r",?\s*in\s+[A-Za-z0-9'’\s-]+?'s\s+FY\s*'?\d{2,4}(?:\s+10-K)?\b", "", q, flags=re.IGNORECASE)
+    q = re.sub(r",?\s*in\s+[A-Za-z0-9'’\s-]+?'s\s+fiscal\s+\d{4}\s+filing\b", "", q, flags=re.IGNORECASE)
+
+    # 4. Phrases like "fiscal year 2024", "fiscal 2024", "FY2024", "FY 2024"
+    # Note: does NOT match bare year like "2024" in "June 30, 2024"
+    q = re.sub(r",?\s*\b(?:for|in|during)?\s*fiscal\s+year\s+\d{4}\b", "", q, flags=re.IGNORECASE)
+    q = re.sub(r",?\s*\b(?:for|in|during)?\s*fiscal\s+\d{4}\b", "", q, flags=re.IGNORECASE)
+    q = re.sub(r",?\s*\b(?:for|in|during)?\s*FY\s*'?\d{2,4}\b", "", q, flags=re.IGNORECASE)
+
+    # Whitespace and punctuation cleanup
+    q = re.sub(r"\s+", " ", q).strip()
+    q = re.sub(r"\s+([,?.])", r"\1", q)
+    q = re.sub(r",\s*\?", "?", q)
+    q = re.sub(r",\s*$", "", q)
+    return q
+
+
 def classify(state: AgentState) -> AgentState:
     """
     Classifies query intent and extracts metadata filters.

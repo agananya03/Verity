@@ -795,7 +795,7 @@ def run_ablation_study(
 
     fingerprint = compute_fingerprint(golden_set_path=golden_set_path)
     label_to_use = (
-        f"HELDOUT SET (n={len(eligible_items)})"
+        f"HELD-OUT SET (n={len(eligible_items)}, design NOT tuned on these questions)"
         if (golden_set_path and "heldout" in str(golden_set_path).lower())
         else REPORT_LABEL
     )
@@ -835,9 +835,10 @@ def format_markdown_report(results: Dict[str, Any]) -> str:
     slice_summary = results.get("slice_summary", {})
     reranker = meta.get("reranker", {})
     per_item = results.get("per_item_results", [])
+    report_label = results.get("report_label") or meta.get("report_label") or REPORT_LABEL
 
     lines: List[str] = [
-        f"# Retrieval Ablation Study Report - {REPORT_LABEL}",
+        f"# Retrieval Ablation Study Report - {report_label}",
         "",
         f"- **Timestamp**: `{meta['timestamp']}`",
         f"- **Eligible Items Evaluated**: `{meta['eligible_items_count']}` (out of `{meta['total_golden_items']}` total golden set)",
@@ -852,7 +853,7 @@ def format_markdown_report(results: Dict[str, Any]) -> str:
         f"- `backend/eval/golden_set.json`: `{meta.get('fingerprint', {}).get('golden_set_json')}`",
         f"- **Combined Fingerprint**: `{meta.get('fingerprint', {}).get('combined')}`",
         "",
-        "## Staged Retrieval Ladder (DEV SET, n=18)",
+        f"## Staged Retrieval Ladder ({report_label})",
         "",
         "| Configuration | N | Hit@8 (All) | Rec@8 (All) | MRR (All) | Hit@8 (Single) | Rec@8 (Single) | MRR (Single) | Hit@8 (Multi) | Rec@8 (Multi) | MRR (Multi) |",
         "| :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |",
@@ -1231,17 +1232,21 @@ def main():
     # 2. Run Main Retrieval Ablation Study (All Configurations)
     results = run_ablation_study(golden_set, golden_set_path=golden_path)
 
+    is_heldout = "heldout" in str(golden_path).lower()
+    target_output_json = RESULTS_DIR / "retrieval_ablation_heldout.json" if is_heldout else OUTPUT_JSON_PATH
+    target_output_md = RESULTS_DIR / "retrieval_ablation_heldout.md" if is_heldout else OUTPUT_MD_PATH
+
     # 3. Save JSON results
     RESULTS_DIR.mkdir(parents=True, exist_ok=True)
-    with open(OUTPUT_JSON_PATH, "w", encoding="utf-8") as f:
+    with open(target_output_json, "w", encoding="utf-8") as f:
         json.dump(results, f, indent=2, ensure_ascii=False)
-    logger.info(f"Saved ablation results JSON to {OUTPUT_JSON_PATH}")
+    logger.info(f"Saved ablation results JSON to {target_output_json}")
 
     # 4. Save Markdown report
     md_content = format_markdown_report(results)
-    with open(OUTPUT_MD_PATH, "w", encoding="utf-8") as f:
+    with open(target_output_md, "w", encoding="utf-8") as f:
         f.write(md_content)
-    logger.info(f"Saved ablation markdown report to {OUTPUT_MD_PATH}")
+    logger.info(f"Saved ablation markdown report to {target_output_md}")
 
     # 5. Print to console
     print_console_summary(results)
