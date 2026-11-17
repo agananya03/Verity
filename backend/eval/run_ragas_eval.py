@@ -890,6 +890,11 @@ def run_judge_stage(
     fast_eval: bool = False,
     seed: int = 42,
     golden_set_path: Optional[Path] = None,
+    limit: Optional[int] = None,
+    judge_timeout: int = 600,
+    judge_workers: int = 1,
+    judge_retries: int = 8,
+    restart: bool = False,
 ) -> Dict[str, Any]:
     """
     Stage 2: Loads answers from {config}_answers.json, computes deterministic retrieval metrics
@@ -908,6 +913,12 @@ def run_judge_stage(
     if not all_items:
         logger.error(f"No items found in answers file {answers_path}.")
         sys.exit(1)
+
+    if limit is not None and limit > 0:
+        all_items = all_items[:limit]
+        logger.info(f"Limiting evaluation to first {limit} questions from generated answers file ({answers_path.name})")
+
+    print(f"Judging {len(all_items)} items")
 
     scored_items = [it for it in all_items if it.get("status") != "error"]
     error_items = [it for it in all_items if it.get("status") == "error"]
@@ -964,9 +975,12 @@ def run_judge_stage(
         aggregate_scores["numeric_accuracy"] = round(sum(numeric_scores) / len(numeric_scores), 4)
 
     # Step 2: Evaluate LLM-judged metrics if requested
+    eval_succeeded = False
+
     if not metrics_to_run or "none" in metrics_to_run:
         logger.info("LLM-free mode enabled (--metrics none): Skipping LLM judge calls entirely.")
         metric_source = "llm_free"
+        eval_succeeded = True
 
     elif fast_eval:
         logger.warning("Running in heuristic smoke metrics mode (--fast-eval).")
@@ -978,127 +992,219 @@ def run_judge_stage(
                 "faithfulness": h_item.get("faithfulness"),
                 "answer_correctness": h_item.get("answer_correctness"),
             })
+        eval_succeeded = True
 
     else:
-        # Check judge model budget before invoking
-        ledger.check_budget_or_stop(model=judge_model, next_index=1)
-
-        api_key = os.getenv("GOOGLE_API_KEY")
-        if not api_key:
-            logger.error("GOOGLE_API_KEY environment variable is missing for judge stage!")
-            sys.exit(1)
-
-        raw_fallbacks = os.getenv("JUDGE_FALLBACK_MODELS", "gemini-flash-lite-latest,gemini-3.5-flash").split(",")
-        fallback_judge_models = [
-            m.strip()
-            for m in raw_fallbacks
-            if m.strip() and "1.5" not in m and "2.5-flash" not in m
-        ]
-        candidate_judges = [judge_model] + [m for m in fallback_judge_models if m != judge_model]
-
-        questions = [it["question"] for it in scored_items]
-        answers = [it["answer"] for it in scored_items]
-        contexts_list = [it.get("contexts", [""]) for it in scored_items]
-        ground_truths = [it["ground_truth"] for it in scored_items]
-
-        eval_succeeded = False
-        last_eval_error = None
-
-        for current_judge in candidate_judges:
+        # Checkpoint handling: per-item caching to resume and skip completed items on rerun
+        checkpoint_path = results_path.parent / f"{config}_judge_checkpoint.json"
+        if restart and checkpoint_path.exists():
             try:
-                logger.info(f"Attempting real RAGAS evaluation with judge model: '{current_judge}'")
-                callback_handler = QuotaTrackingCallbackHandler(model_name=current_judge, ledger=ledger)
-                judge_llm = ChatGoogleGenerativeAI(
-                    model=current_judge,
-                    google_api_key=api_key,
-                    temperature=0.0,
-                    request_timeout=90.0,
-                    max_retries=2,
-                    callbacks=[callback_handler],
-                )
-                embeddings = GoogleGenerativeAIEmbeddings(
-                    model=os.getenv("RAGAS_EMBEDDING_MODEL", "gemini-embedding-001"),
-                    google_api_key=api_key,
-                )
-
-                ragas_llm = QuotaTrackingLangchainLLMWrapper(
-                    judge_llm,
-                    model_name=current_judge,
-                    ledger=ledger,
-                    bypass_n=True,
-                )
-                ragas_embeddings = LangchainEmbeddingsWrapper(embeddings)
-
-                metrics_instances = []
-                if "faithfulness" in metrics_to_run:
-                    metrics_instances.append(Faithfulness(llm=ragas_llm))
-                if "answer_correctness" in metrics_to_run:
-                    metrics_instances.append(AnswerCorrectness(llm=ragas_llm, embeddings=ragas_embeddings))
-
-                ragas_dataset = Dataset.from_dict({
-                    "user_input": questions,
-                    "response": answers,
-                    "retrieved_contexts": contexts_list,
-                    "reference": ground_truths,
-                    "question": questions,
-                    "answer": answers,
-                    "contexts": contexts_list,
-                    "ground_truth": ground_truths,
-                })
-
-                run_config = RunConfig(max_workers=1, timeout=120)
-                logger.info(f"Executing RAGAS evaluate() with {len(questions)} items for metrics: {metrics_to_run}...")
-
-                ragas_results = evaluate(
-                    dataset=ragas_dataset,
-                    metrics=metrics_instances,
-                    llm=ragas_llm,
-                    embeddings=ragas_embeddings,
-                    run_config=run_config,
-                )
-                df_results = ragas_results.to_pandas()
-
-                if "faithfulness" in metrics_to_run and "faithfulness" in df_results:
-                    val = float(df_results["faithfulness"].mean())
-                    if not math.isnan(val):
-                        aggregate_scores["faithfulness"] = val
-                if "answer_correctness" in metrics_to_run and "answer_correctness" in df_results:
-                    val = float(df_results["answer_correctness"].mean())
-                    if not math.isnan(val):
-                        aggregate_scores["answer_correctness"] = val
-
-                df_records = df_results.to_dict(orient="records")
-                for i, rec in enumerate(df_records):
-                    orig_item = scored_items[i]
-                    item_update = {}
-                    if "faithfulness" in metrics_to_run:
-                        item_update["faithfulness"] = rec.get("faithfulness", 0.0)
-                    if "answer_correctness" in metrics_to_run:
-                        item_update["answer_correctness"] = rec.get("answer_correctness", 0.0)
-                    scored_results_map[orig_item["id"]].update(item_update)
-
-                actual_judge_model = current_judge
-                eval_succeeded = True
-                break
-
+                checkpoint_path.unlink()
+                logger.info(f"--restart specified: Removed prior judge checkpoint {checkpoint_path.name}")
             except Exception as e:
-                last_eval_error = e
-                logger.warning(f"RAGAS evaluate() failed with judge '{current_judge}': {e}")
+                logger.warning(f"Could not remove checkpoint {checkpoint_path}: {e}")
 
-        if not eval_succeeded:
-            fallback_reason = str(last_eval_error or "RAGAS evaluation failed across all candidate judge models.")
-            logger.error(
-                f"CRITICAL: Real RAGAS evaluation failed or was quota-exhausted: {fallback_reason}\n"
-                "Falling back to HEURISTIC SMOKE METRICS for logging. Script will exit with code 1."
-            )
-            metric_source = "heuristic_fallback"
-            heuristic_agg, heuristic_items = compute_heuristic_smoke_metrics(scored_items, metrics_to_run)
-            aggregate_scores.update(heuristic_agg)
-            for h_item in heuristic_items:
-                scored_results_map[h_item["id"]].update({
-                    "faithfulness": h_item.get("faithfulness"),
-                    "answer_correctness": h_item.get("answer_correctness"),
-                })
+        checkpoint_data: Dict[str, Dict[str, float]] = {}
+        if checkpoint_path.exists():
+            try:
+                with open(checkpoint_path, "r", encoding="utf-8") as f:
+                    checkpoint_data = json.load(f)
+                logger.info(f"Loaded judge checkpoint with {len(checkpoint_data)} previously judged items.")
+            except Exception as e:
+                logger.warning(f"Failed to load judge checkpoint {checkpoint_path}: {e}")
+
+        # Determine which items are already completed in checkpoint
+        items_to_judge: List[Dict[str, Any]] = []
+        for it in scored_items:
+            it_id = it["id"]
+            cached_scores = checkpoint_data.get(it_id, {})
+            has_all_metrics = True
+            for m in metrics_to_run:
+                val = cached_scores.get(m)
+                if val is None or not isinstance(val, (int, float)) or math.isnan(val):
+                    has_all_metrics = False
+                    break
+            if has_all_metrics:
+                scored_results_map[it_id].update({m: cached_scores[m] for m in metrics_to_run})
+            else:
+                items_to_judge.append(it)
+
+        if not items_to_judge:
+            logger.info(f"All {len(scored_items)} items already judged in checkpoint. Skipping RAGAS evaluate().")
+            print(f"All {len(scored_items)} items already judged in checkpoint. Skipping RAGAS evaluate().")
+            eval_succeeded = True
+        else:
+            logger.info(f"Judging {len(items_to_judge)} unjudged items (skipping {len(scored_items) - len(items_to_judge)} already completed)...")
+            print(f"Skipping {len(scored_items) - len(items_to_judge)} already completed items, {len(items_to_judge)} remaining to judge.")
+
+            # Check judge model budget before invoking
+            ledger.check_budget_or_stop(model=judge_model, next_index=1)
+
+            api_key = os.getenv("GOOGLE_API_KEY")
+            if not api_key:
+                logger.error("GOOGLE_API_KEY environment variable is missing for judge stage!")
+                sys.exit(1)
+
+            raw_fallbacks = os.getenv("JUDGE_FALLBACK_MODELS", "gemini-flash-lite-latest,gemini-3.5-flash").split(",")
+            fallback_judge_models = [
+                m.strip()
+                for m in raw_fallbacks
+                if m.strip() and "1.5" not in m and "2.5-flash" not in m
+            ]
+            candidate_judges = [judge_model] + [m for m in fallback_judge_models if m != judge_model]
+
+            questions = [it["question"] for it in items_to_judge]
+            answers = [it["answer"] for it in items_to_judge]
+            contexts_list = [it.get("contexts", [""]) for it in items_to_judge]
+            ground_truths = [it["ground_truth"] for it in items_to_judge]
+
+            last_eval_error = None
+
+            for current_judge in candidate_judges:
+                try:
+                    logger.info(f"Attempting real RAGAS evaluation with judge model: '{current_judge}'")
+                    callback_handler = QuotaTrackingCallbackHandler(model_name=current_judge, ledger=ledger)
+                    judge_llm = ChatGoogleGenerativeAI(
+                        model=current_judge,
+                        google_api_key=api_key,
+                        temperature=0.0,
+                        request_timeout=float(max(judge_timeout, 90)),
+                        max_retries=2,
+                        callbacks=[callback_handler],
+                    )
+                    embeddings = GoogleGenerativeAIEmbeddings(
+                        model=os.getenv("RAGAS_EMBEDDING_MODEL", "gemini-embedding-001"),
+                        google_api_key=api_key,
+                    )
+
+                    ragas_llm = QuotaTrackingLangchainLLMWrapper(
+                        judge_llm,
+                        model_name=current_judge,
+                        ledger=ledger,
+                        bypass_n=True,
+                    )
+                    ragas_embeddings = LangchainEmbeddingsWrapper(embeddings)
+
+                    metrics_instances = []
+                    if "faithfulness" in metrics_to_run:
+                        metrics_instances.append(Faithfulness(llm=ragas_llm))
+                    if "answer_correctness" in metrics_to_run:
+                        metrics_instances.append(AnswerCorrectness(llm=ragas_llm, embeddings=ragas_embeddings))
+
+                    ragas_dataset = Dataset.from_dict({
+                        "user_input": questions,
+                        "response": answers,
+                        "retrieved_contexts": contexts_list,
+                        "reference": ground_truths,
+                        "question": questions,
+                        "answer": answers,
+                        "contexts": contexts_list,
+                        "ground_truth": ground_truths,
+                    })
+
+                    run_config = RunConfig(
+                        timeout=judge_timeout,
+                        max_workers=judge_workers,
+                        max_retries=judge_retries,
+                        max_wait=120,
+                    )
+                    logger.info(
+                        f"Executing RAGAS evaluate() with {len(questions)} items for metrics: {metrics_to_run} "
+                        f"[RunConfig: timeout={judge_timeout}s, max_workers={judge_workers}, max_retries={judge_retries}, max_wait=120s]..."
+                    )
+                    print(
+                        f"RAGAS RunConfig: timeout={judge_timeout}s, max_workers={judge_workers}, max_retries={judge_retries}, max_wait=120s"
+                    )
+
+                    ragas_results = evaluate(
+                        dataset=ragas_dataset,
+                        metrics=metrics_instances,
+                        llm=ragas_llm,
+                        embeddings=ragas_embeddings,
+                        run_config=run_config,
+                    )
+                    df_results = ragas_results.to_pandas()
+
+                    df_records = df_results.to_dict(orient="records")
+                    for i, rec in enumerate(df_records):
+                        orig_item = items_to_judge[i]
+                        it_id = orig_item["id"]
+                        item_update = {}
+                        for m in metrics_to_run:
+                            val = rec.get(m)
+                            if val is not None and isinstance(val, (int, float)) and not math.isnan(val):
+                                score_val = float(val)
+                                item_update[m] = score_val
+                                checkpoint_data.setdefault(it_id, {})[m] = score_val
+                            else:
+                                item_update[m] = float("nan")
+                        scored_results_map[it_id].update(item_update)
+
+                    # Save updated checkpoint immediately
+                    try:
+                        with open(checkpoint_path, "w", encoding="utf-8") as f:
+                            json.dump(checkpoint_data, f, indent=2)
+                        logger.info(f"Updated judge checkpoint saved to {checkpoint_path}")
+                    except Exception as e:
+                        logger.warning(f"Failed to save judge checkpoint: {e}")
+
+                    actual_judge_model = current_judge
+                    eval_succeeded = True
+                    break
+
+                except Exception as e:
+                    last_eval_error = e
+                    logger.warning(f"RAGAS evaluate() failed with judge '{current_judge}': {e}")
+
+            if not eval_succeeded:
+                fallback_reason = str(last_eval_error or "RAGAS evaluation failed across all candidate judge models.")
+                logger.error(
+                    f"CRITICAL: Real RAGAS evaluation failed or was quota-exhausted: {fallback_reason}\n"
+                    "Falling back to HEURISTIC SMOKE METRICS for logging. Script will exit with code 1."
+                )
+                metric_source = "heuristic_fallback"
+                heuristic_agg, heuristic_items = compute_heuristic_smoke_metrics(scored_items, metrics_to_run)
+                aggregate_scores.update(heuristic_agg)
+                for h_item in heuristic_items:
+                    scored_results_map[h_item["id"]].update({
+                        "faithfulness": h_item.get("faithfulness"),
+                        "answer_correctness": h_item.get("answer_correctness"),
+                    })
+
+    # Step 3: Count NaN or failed scores per metric. Never silently average over NaN.
+    nan_counts: Dict[str, int] = {}
+    nan_item_ids: Dict[str, List[str]] = {}
+    has_nans = False
+
+    if metrics_to_run and not fast_eval and metric_source != "llm_free":
+        for m in metrics_to_run:
+            failed_ids = []
+            valid_scores = []
+            for it in scored_items:
+                it_id = it["id"]
+                score = scored_results_map.get(it_id, {}).get(m)
+                if score is None or not isinstance(score, (int, float)) or math.isnan(score):
+                    failed_ids.append(it_id)
+                else:
+                    valid_scores.append(float(score))
+            nan_counts[m] = len(failed_ids)
+            nan_item_ids[m] = failed_ids
+            if failed_ids:
+                has_nans = True
+            elif valid_scores:
+                aggregate_scores[m] = round(sum(valid_scores) / len(valid_scores), 4)
+
+        print("\n" + "-" * 65)
+        print("JUDGE SCORE VALIDATION:")
+        for m in metrics_to_run:
+            count = nan_counts[m]
+            failed_list = nan_item_ids[m]
+            if count > 0:
+                print(f"Metric '{m}': {count} NaN/failed score(s). Item IDs: {failed_list}")
+                logger.error(f"Metric '{m}': {count} NaN/failed score(s). Item IDs: {failed_list}")
+            else:
+                print(f"Metric '{m}': 0 NaN/failed scores (all {len(scored_items)} items scored successfully).")
+        print("-" * 65 + "\n")
 
     # Assemble per_question_results preserving original sequence
     per_question_results: List[Dict[str, Any]] = []
@@ -1114,7 +1220,12 @@ def run_judge_stage(
             err_record["answer_correctness"] = None
             per_question_results.append(err_record)
         else:
-            per_question_results.append(scored_results_map.get(item_id, it))
+            res_rec = dict(scored_results_map.get(item_id, it))
+            for m in metrics_to_run:
+                val = res_rec.get(m)
+                if isinstance(val, (int, float)) and math.isnan(val):
+                    res_rec[m] = None
+            per_question_results.append(res_rec)
 
     output_data: Dict[str, Any] = {
         "config": config,
@@ -1139,6 +1250,11 @@ def run_judge_stage(
         "aggregate_scores": aggregate_scores,
         "per_question_results": per_question_results,
     }
+
+    if has_nans:
+        output_data["has_nan_scores"] = True
+        output_data["nan_counts"] = nan_counts
+        output_data["nan_item_ids"] = nan_item_ids
 
     if metric_source == "heuristic_fallback":
         output_data["ragas_evaluation_failed"] = True
@@ -1174,11 +1290,25 @@ def run_judge_stage(
         print(f"{'Numeric Accuracy':<25} | {aggregate_scores['numeric_accuracy']:.4f}")
     if "faithfulness" in aggregate_scores:
         print(f"{'Faithfulness':<25} | {aggregate_scores['faithfulness']:.4f}")
+    elif "faithfulness" in metrics_to_run:
+        print(f"{'Faithfulness':<25} | FAILED (NaN)")
     if "answer_correctness" in aggregate_scores:
         print(f"{'Answer Correctness':<25} | {aggregate_scores['answer_correctness']:.4f}")
+    elif "answer_correctness" in metrics_to_run:
+        print(f"{'Answer Correctness':<25} | FAILED (NaN)")
     print("=" * 65)
     print(f"Answers saved to:  backend/eval/results/{config}_answers.json")
     print(f"Final results:     backend/eval/results/{config}.json\n")
+
+    if has_nans:
+        print("\n" + "!" * 80)
+        print("CRITICAL: REAL RAGAS JUDGING PRODUCED NaN OR FAILED SCORES.")
+        for m in metrics_to_run:
+            if nan_counts.get(m, 0) > 0:
+                print(f"  - {m}: {nan_counts[m]} NaN item(s): {nan_item_ids[m]}")
+        print("SCORES WERE NOT AVERAGED OVER NaN. SCRIPT EXITING WITH NON-ZERO STATUS (1).")
+        print("!" * 80 + "\n")
+        sys.exit(1)
 
     if metric_source == "heuristic_fallback":
         print("\n" + "!" * 80)
@@ -1255,7 +1385,7 @@ def filter_and_sample_golden_set(
     return result
 
 
-def main():
+def main(argv: Optional[List[str]] = None):
     parser = argparse.ArgumentParser(description="Run Free-Tier Hardened RAGAS evaluation on Verity Financial RAG benchmark.")
     parser.add_argument(
         "--config",
@@ -1342,7 +1472,25 @@ def main():
         default=None,
         help="Sample N items stratified by (company, section) with fixed seed.",
     )
-    args = parser.parse_args()
+    parser.add_argument(
+        "--judge-timeout",
+        type=int,
+        default=600,
+        help="Timeout in seconds for RAGAS judge evaluation jobs (default: 600).",
+    )
+    parser.add_argument(
+        "--judge-workers",
+        type=int,
+        default=1,
+        help="Maximum parallel worker threads for RAGAS judge evaluation (default: 1).",
+    )
+    parser.add_argument(
+        "--judge-retries",
+        type=int,
+        default=8,
+        help="Maximum retry attempts for RAGAS judge evaluation on transient errors (default: 8).",
+    )
+    args = parser.parse_args(argv)
 
     # Set random seeds
     random.seed(args.seed)
@@ -1406,17 +1554,31 @@ def main():
             f"(filter_eligible={args.filter_eligible}, stratified_sample={args.stratified_sample})"
         )
 
-    if args.limit:
-        golden_set = golden_set[: args.limit]
-        logger.info(f"Limiting evaluation to first {args.limit} questions from golden_set.json")
-
     results_dir = BASE_DIR / "eval" / "results"
     results_dir.mkdir(parents=True, exist_ok=True)
     answers_path = results_dir / f"{args.config}_answers.json"
     results_path = results_dir / f"{args.config}.json"
 
+    if args.limit:
+        golden_set = golden_set[: args.limit]
+        if args.stage == "judge":
+            logger.info(f"Limiting evaluation to first {args.limit} questions from generated answers file ({answers_path.name})")
+        else:
+            logger.info(f"Limiting evaluation to first {args.limit} questions from {golden_set_path.name}")
+
     # Print API call estimation and budget check before running
     num_questions_in_scope = len(golden_set) - max(0, args.start_from - 1) if args.stage in ["generate", "all"] else len(golden_set)
+    if args.stage == "judge" and answers_path.exists():
+        try:
+            with open(answers_path, "r", encoding="utf-8") as _af:
+                _ans_data = json.load(_af)
+            _ans_items = _ans_data.get("items", [])
+            if args.limit:
+                _ans_items = _ans_items[: args.limit]
+            num_questions_in_scope = len(_ans_items)
+        except Exception:
+            pass
+
     print_api_call_estimate_and_budget(
         config=args.config,
         stage=args.stage,
@@ -1466,6 +1628,11 @@ def main():
             fast_eval=args.fast_eval,
             seed=args.seed,
             golden_set_path=golden_set_path,
+            limit=args.limit,
+            judge_timeout=args.judge_timeout,
+            judge_workers=args.judge_workers,
+            judge_retries=args.judge_retries,
+            restart=args.restart,
         )
 
 

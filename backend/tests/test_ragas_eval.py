@@ -918,3 +918,330 @@ def test_filter_and_sample_golden_set_stratification_on_golden_round2():
     )
     assert [x["id"] for x in sampled_30] == [x["id"] for x in sampled_30_repeat]
 
+
+def test_judge_stage_limit_behavior(tmp_path, capsys):
+    """Verifies that --limit restricts judging to the first N generated items and prints 'Judging N items'."""
+    answers_path = tmp_path / "baseline_answers.json"
+    results_path = tmp_path / "baseline.json"
+    items = [
+        {
+            "id": f"q_{i}",
+            "question": f"Question {i}?",
+            "answer": f"Answer {i}",
+            "ground_truth": f"Truth {i}",
+            "contexts": [f"Context {i}"],
+            "retrieved_chunk_ids": [f"c_{i}"],
+            "source_chunk_ids": [f"c_{i}"],
+            "status": "success",
+            "category": "simple_lookup",
+        }
+        for i in range(5)
+    ]
+    with open(answers_path, "w", encoding="utf-8") as f:
+        json.dump({"items": items}, f)
+
+    role_models = resolve_role_models()
+    ledger = QuotaLedger(limits_path=tmp_path / "limits.json", ledger_path=tmp_path / "ledger.json")
+
+    results = run_judge_stage(
+        config="baseline",
+        answers_path=answers_path,
+        results_path=results_path,
+        role_models=role_models,
+        golden_set_size=5,
+        metrics_to_run=["faithfulness"],
+        ledger=ledger,
+        fast_eval=True,
+        limit=2,
+    )
+
+    captured = capsys.readouterr().out
+    assert "Judging 2 items" in captured
+    assert results["total_evaluated"] == 2
+    assert results["n_scored"] == 2
+    assert len(results["per_question_results"]) == 2
+    assert [it["id"] for it in results["per_question_results"]] == ["q_0", "q_1"]
+
+
+def test_judge_stage_nan_detection_aborts_and_never_averages(tmp_path, capsys, monkeypatch):
+    """Verifies that judging detects NaNs, prints item IDs, never averages over NaN, and exits non-zero."""
+    import pandas as pd
+    from unittest.mock import MagicMock
+
+    answers_path = tmp_path / "baseline_answers.json"
+    results_path = tmp_path / "baseline.json"
+    items = [
+        {
+            "id": "item_0",
+            "question": "What is net income?",
+            "answer": "Net income is $10M",
+            "ground_truth": "$10M",
+            "contexts": ["Chunk 1"],
+            "retrieved_chunk_ids": ["c1"],
+            "source_chunk_ids": ["c1"],
+            "status": "success",
+            "category": "simple_lookup",
+        },
+        {
+            "id": "item_1",
+            "question": "What is revenue?",
+            "answer": "Revenue is $50M",
+            "ground_truth": "$50M",
+            "contexts": ["Chunk 2"],
+            "retrieved_chunk_ids": ["c2"],
+            "source_chunk_ids": ["c2"],
+            "status": "success",
+            "category": "simple_lookup",
+        },
+    ]
+    with open(answers_path, "w", encoding="utf-8") as f:
+        json.dump({"items": items}, f)
+
+    role_models = resolve_role_models()
+    ledger = QuotaLedger(limits_path=tmp_path / "limits.json", ledger_path=tmp_path / "ledger.json")
+
+    # Mock evaluate returning NaN for item_1 on faithfulness
+    mock_result = MagicMock()
+    mock_result.to_pandas.return_value = pd.DataFrame({
+        "faithfulness": [0.85, float("nan")],
+        "answer_correctness": [0.90, 0.70],
+    })
+
+    monkeypatch.setattr("backend.eval.run_ragas_eval.evaluate", lambda **kwargs: mock_result)
+    monkeypatch.setattr("backend.eval.run_ragas_eval.ChatGoogleGenerativeAI", lambda **kwargs: MagicMock())
+    monkeypatch.setattr("backend.eval.run_ragas_eval.GoogleGenerativeAIEmbeddings", lambda **kwargs: MagicMock())
+    monkeypatch.setenv("GOOGLE_API_KEY", "mock-key")
+
+    with pytest.raises(SystemExit) as exc_info:
+        run_judge_stage(
+            config="baseline",
+            answers_path=answers_path,
+            results_path=results_path,
+            role_models=role_models,
+            golden_set_size=2,
+            metrics_to_run=["faithfulness", "answer_correctness"],
+            ledger=ledger,
+            fast_eval=False,
+        )
+
+    assert exc_info.value.code == 1
+    captured = capsys.readouterr().out
+    assert "Metric 'faithfulness': 1 NaN/failed score(s). Item IDs: ['item_1']" in captured
+    assert "SCORES WERE NOT AVERAGED OVER NaN" in captured
+
+
+def test_judge_stage_checkpoint_and_run_config(tmp_path, capsys, monkeypatch):
+    """Verifies that judge RunConfig receives custom timeout/workers and checkpoint skips completed items."""
+    import pandas as pd
+    from unittest.mock import MagicMock
+
+    answers_path = tmp_path / "baseline_answers.json"
+    results_path = tmp_path / "baseline.json"
+    checkpoint_path = tmp_path / "baseline_judge_checkpoint.json"
+
+    items = [
+        {
+            "id": "q_0",
+            "question": "Question 0?",
+            "answer": "Answer 0",
+            "ground_truth": "Truth 0",
+            "contexts": ["C0"],
+            "retrieved_chunk_ids": ["c0"],
+            "source_chunk_ids": ["c0"],
+            "status": "success",
+            "category": "simple_lookup",
+        },
+        {
+            "id": "q_1",
+            "question": "Question 1?",
+            "answer": "Answer 1",
+            "ground_truth": "Truth 1",
+            "contexts": ["C1"],
+            "retrieved_chunk_ids": ["c1"],
+            "source_chunk_ids": ["c1"],
+            "status": "success",
+            "category": "simple_lookup",
+        },
+    ]
+    with open(answers_path, "w", encoding="utf-8") as f:
+        json.dump({"items": items}, f)
+
+    # Pre-populate checkpoint: q_0 is already completed
+    with open(checkpoint_path, "w", encoding="utf-8") as f:
+        json.dump({"q_0": {"faithfulness": 0.9, "answer_correctness": 0.8}}, f)
+
+    role_models = resolve_role_models()
+    ledger = QuotaLedger(limits_path=tmp_path / "limits.json", ledger_path=tmp_path / "ledger.json")
+
+    run_config_received = []
+
+    def mock_evaluate(dataset, run_config, **kwargs):
+        run_config_received.append(run_config)
+        # Verify that only q_1 was sent to evaluate!
+        assert len(dataset) == 1
+        assert dataset["question"][0] == "Question 1?"
+        mock_res = MagicMock()
+        mock_res.to_pandas.return_value = pd.DataFrame({
+            "faithfulness": [0.86],
+            "answer_correctness": [0.76],
+        })
+        return mock_res
+
+    monkeypatch.setattr("backend.eval.run_ragas_eval.evaluate", mock_evaluate)
+    monkeypatch.setattr("backend.eval.run_ragas_eval.ChatGoogleGenerativeAI", lambda **kwargs: MagicMock())
+    monkeypatch.setattr("backend.eval.run_ragas_eval.GoogleGenerativeAIEmbeddings", lambda **kwargs: MagicMock())
+    monkeypatch.setenv("GOOGLE_API_KEY", "mock-key")
+
+    results = run_judge_stage(
+        config="baseline",
+        answers_path=answers_path,
+        results_path=results_path,
+        role_models=role_models,
+        golden_set_size=2,
+        metrics_to_run=["faithfulness", "answer_correctness"],
+        ledger=ledger,
+        fast_eval=False,
+        judge_timeout=550,
+        judge_workers=2,
+    )
+
+    captured = capsys.readouterr().out
+    assert "Skipping 1 already completed items, 1 remaining to judge." in captured
+    assert len(run_config_received) == 1
+    assert run_config_received[0].timeout == 550
+    assert run_config_received[0].max_workers == 2
+    assert run_config_received[0].max_retries == 8
+    assert run_config_received[0].max_wait == 120
+
+    # Verify both items present in aggregate
+    assert results["aggregate_scores"]["faithfulness"] == round((0.9 + 0.86) / 2, 4)
+    assert results["aggregate_scores"]["answer_correctness"] == round((0.8 + 0.76) / 2, 4)
+
+    # Verify checkpoint file was updated with both items
+    with open(checkpoint_path, "r", encoding="utf-8") as f:
+        saved_cp = json.load(f)
+    assert "q_0" in saved_cp
+    assert "q_1" in saved_cp
+    assert saved_cp["q_1"]["faithfulness"] == 0.86
+
+
+def test_judge_retries_reaches_run_config(tmp_path, monkeypatch):
+    """Verifies that --judge-retries flag passes max_retries and max_wait to ragas RunConfig."""
+    import pandas as pd
+    from unittest.mock import MagicMock
+    from backend.eval.run_ragas_eval import main
+
+    answers_path = tmp_path / "baseline_answers.json"
+    golden_path = tmp_path / "golden_set.json"
+    items = [
+        {
+            "id": "q_0",
+            "question": "Question 0?",
+            "answer": "Answer 0",
+            "ground_truth": "Truth 0",
+            "contexts": ["C0"],
+            "retrieved_chunk_ids": ["c0"],
+            "source_chunk_ids": ["c0"],
+            "status": "success",
+            "category": "simple_lookup",
+        }
+    ]
+    with open(answers_path, "w", encoding="utf-8") as f:
+        json.dump({"items": items}, f)
+    with open(golden_path, "w", encoding="utf-8") as f:
+        json.dump(items, f)
+
+    run_config_received = []
+
+    def mock_evaluate(dataset, run_config, **kwargs):
+        run_config_received.append(run_config)
+        mock_res = MagicMock()
+        mock_res.to_pandas.return_value = pd.DataFrame({
+            "faithfulness": [0.95],
+        })
+        return mock_res
+
+    monkeypatch.setattr("backend.eval.run_ragas_eval.evaluate", mock_evaluate)
+    monkeypatch.setattr("backend.eval.run_ragas_eval.ChatGoogleGenerativeAI", lambda **kwargs: MagicMock())
+    monkeypatch.setattr("backend.eval.run_ragas_eval.GoogleGenerativeAIEmbeddings", lambda **kwargs: MagicMock())
+    monkeypatch.setattr("backend.eval.remap_source_chunks.validate_golden_source_chunks", lambda **kwargs: [])
+    monkeypatch.setattr("backend.eval.run_ragas_eval.BASE_DIR", tmp_path)
+    monkeypatch.setenv("GOOGLE_API_KEY", "mock-key")
+
+    results_dir = tmp_path / "eval" / "results"
+    results_dir.mkdir(parents=True, exist_ok=True)
+    import shutil
+    shutil.copy(answers_path, results_dir / "baseline_answers.json")
+
+    test_args = [
+        "--config", "baseline",
+        "--stage", "judge",
+        "--metrics", "faithfulness",
+        "--golden-path", str(golden_path),
+        "--judge-retries", "14",
+        "--judge-timeout", "450",
+        "--judge-workers", "3",
+        "--allow-same-judge",
+    ]
+    main(test_args)
+
+    assert len(run_config_received) == 1
+    rc = run_config_received[0]
+    assert rc.max_retries == 14
+    assert rc.max_wait == 120
+    assert rc.timeout == 450
+    assert rc.max_workers == 3
+
+
+def test_judge_stage_limiting_log_message(tmp_path, caplog, monkeypatch):
+    """Verifies that the log specifies limiting generated answers file, not golden_set.json in judge stage."""
+    import logging
+    from backend.eval.run_ragas_eval import main
+
+    answers_path = tmp_path / "baseline_answers.json"
+    golden_path = tmp_path / "golden_set.json"
+    items = [
+        {
+            "id": f"q_{i}",
+            "question": f"Question {i}?",
+            "answer": f"Answer {i}",
+            "ground_truth": f"Truth {i}",
+            "contexts": [f"C{i}"],
+            "retrieved_chunk_ids": [f"c{i}"],
+            "source_chunk_ids": [f"c{i}"],
+            "status": "success",
+            "category": "simple_lookup",
+        }
+        for i in range(5)
+    ]
+    with open(answers_path, "w", encoding="utf-8") as f:
+        json.dump({"items": items}, f)
+    with open(golden_path, "w", encoding="utf-8") as f:
+        json.dump(items, f)
+
+    results_dir = tmp_path / "eval" / "results"
+    results_dir.mkdir(parents=True, exist_ok=True)
+    import shutil
+    shutil.copy(answers_path, results_dir / "baseline_answers.json")
+
+    monkeypatch.setattr("backend.eval.remap_source_chunks.validate_golden_source_chunks", lambda **kwargs: [])
+    monkeypatch.setattr("backend.eval.run_ragas_eval.BASE_DIR", tmp_path)
+    monkeypatch.setenv("GOOGLE_API_KEY", "mock-key")
+
+    test_args = [
+        "--config", "baseline",
+        "--stage", "judge",
+        "--metrics", "none",
+        "--golden-path", str(golden_path),
+        "--limit", "2",
+    ]
+
+    with caplog.at_level(logging.INFO):
+        main(test_args)
+
+    log_text = caplog.text
+    assert "Limiting evaluation to first 2 questions from generated answers file (baseline_answers.json)" in log_text
+    assert "from golden_set.json" not in log_text
+
+
+
