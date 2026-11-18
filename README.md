@@ -2,7 +2,7 @@
 
 [![CI](https://github.com/agananya03/Verity/actions/workflows/ci.yml/badge.svg)](https://github.com/agananya03/Verity/actions/workflows/ci.yml)
 
-Verity answers questions about the annual reports (Form 10-K) of Apple, Microsoft, Amazon, NVIDIA and Alphabet. It is a LangGraph agent: it extracts the company and fiscal year from the question, retrieves passages with a hybrid dense + keyword search, drafts a cited answer, has a second model check the draft against the passages, and declines when the filings do not contain the answer. The backend is FastAPI (streaming over SSE) and the frontend is Next.js. Everything runs on free tiers.
+Verity answers questions about the annual reports (Form 10-K) of Apple, Microsoft, Amazon, NVIDIA and Alphabet. It is a LangGraph agent: it extracts the company and fiscal year from the question, retrieves passages with a hybrid dense + keyword search, drafts a cited answer, has a second model check the draft against the passages, and declines when the filings do not contain the answer. The backend is FastAPI (streaming over SSE) and the frontend is Next.js. It is built to run on free tiers.
 
 This README reports what was measured, including the parts that did not work. All numbers below come from files in `backend/eval/results/`, and every claim says how many questions it rests on.
 
@@ -117,7 +117,7 @@ What this supports and what it does not:
 - **Multi-year questions** use a per-year retrieval path that has only 8 test questions across both rounds. Treat it as unvalidated.
 - **NVIDIA and number-heavy tables retrieve worst.** NVIDIA scored 5/12 on round 2 under every config. Financial tables are flattened to text by the chunker, which loses row and column structure.
 - **Judge limits.** An LLM judge from another family is still an LLM. Refusal scoring is unreliable (see above), and answer correctness is harsh on verbose but correct answers.
-- **Free-tier operation.** The backend sleeps when idle, so the first request can take about a minute. Gemini free quotas limited how large the end-to-end evaluation could be.
+- **Free-tier operation.** Free hosting tiers sleep when idle, so the first request after a pause can take about a minute. Gemini free quotas limited how large the end-to-end evaluation could be.
 
 ## Reproducing the evaluation
 

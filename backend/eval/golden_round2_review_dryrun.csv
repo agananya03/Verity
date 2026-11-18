@@ -1,0 +1,1061 @@
+id,company,fiscal_year,section,category,question_style,question,ground_truth,supporting_quote,chunk_text_excerpt,final_status,reject_reason,rewrite_applied,original_question,validator_flags,accept,edit,reject
+round2_001,Alphabet,2023,Item 1,simple_lookup,natural prose,[DRY-RUN TEMPLATE: natural prose] Question for Alphabet FY2023 (Item 1) chunk 0b28b19f,[DRY-RUN TEMPLATE] Ground truth answer derived from chunk text.,We webcast via our investor relations website our earnings calls and certain events we participate in or host with membe,We webcast via our investor relations website our earnings calls and certain events we participate in or host with members of the investment community. Our investor relations website also provides notifications of news or announcements regarding [...],ACCEPT,,,,PASS,x,,
+round2_002,Alphabet,2023,Item 1A,simple_lookup,short direct question,[DRY-RUN TEMPLATE: short direct question] Question for Alphabet FY2023 (Item 1A) chunk 602837df,[DRY-RUN TEMPLATE] Ground truth answer derived from chunk text.,"Further, we are subject to evolving laws and regulations that dictate whether, how, and under what circumstances we can","Further, we are subject to evolving laws and regulations that dictate whether, how, and under what circumstances we can transfer, process and/or receive personal data, as well as ongoing enforcement actions from supervisory authorities related [...]",ACCEPT,,,,PASS,x,,
+round2_003,Alphabet,2023,Item 1A,simple_lookup,keyword-style phrase,[DRY-RUN TEMPLATE: keyword-style phrase] Question for Alphabet FY2023 (Item 1A) chunk 246b3464,[DRY-RUN TEMPLATE] Ground truth answer derived from chunk text.,"Adverse results in any of these lawsuits may include awards of monetary damages, costly royalty or licensing agreements","Adverse results in any of these lawsuits may include awards of monetary damages, costly royalty or licensing agreements (if licenses are available at all), or orders limiting our ability to sell our products and services in the U.S. or elsewher [...]",ACCEPT,,,,PASS,x,,
+round2_004,Alphabet,2023,Item 7,numeric_precision,paraphrase (no copied terms from the chunk),[DRY-RUN TEMPLATE: paraphrase (no copied terms from the chunk)] Question for Alphabet FY2023 (Item 7) chunk f70c7d43,[DRY-RUN TEMPLATE] Ground truth answer derived from chunk text.,"Provision for income taxes represents the estimated amount of federal, state, and foreign income taxes incurred in the U","Provision for income taxes represents the estimated amount of federal, state, and foreign income taxes incurred in the U.S. and the many jurisdictions in which we operate. The provision includes the effect of reserve provisions and changes to re [...]",ACCEPT,,,,PASS,x,,
+round2_005,Alphabet,2023,Item 7,simple_lookup,"""what does the filing say about"" style","[DRY-RUN TEMPLATE: ""what does the filing say about"" style] Question for Alphabet FY2023 (Item 7) chunk 8b12de0a",[DRY-RUN TEMPLATE] Ground truth answer derived from chunk text.,Paid clicks represent engagement by users and include clicks on advertisements by end-users on Google search properties,"Paid clicks represent engagement by users and include clicks on advertisements by end-users on Google search properties and other Google owned and operated properties including Gmail, Google Maps, and Google Play. Cost-per-click is defined as c [...]",ACCEPT,,,,PASS,x,,
+round2_006,Alphabet,2023,Item 7,simple_lookup,comparison-of-two-figures style where the chunk allows,[DRY-RUN TEMPLATE: comparison-of-two-figures style where the chunk allows] Question for Alphabet FY2023 (Item 7) chunk e2815052,[DRY-RUN TEMPLATE] Ground truth answer derived from chunk text.,"•advertiser competition for keywords;
+
+•changes in advertising quality, formats, delivery or policy;
+
+•changes in device","•advertiser competition for keywords;
+
+•changes in advertising quality, formats, delivery or policy;
+
+•changes in device mix;
+
+•seasonal fluctuations in internet usage, advertising expenditures, and underlying business trends, such as traditiona [...]",ACCEPT,,,,PASS,x,,
+round2_007,Alphabet,2023,Item 8,numeric_precision,natural prose,[DRY-RUN TEMPLATE: natural prose] Question for Alphabet FY2023 (Item 8) chunk 4adf4cbf,[DRY-RUN TEMPLATE] Ground truth answer derived from chunk text.,"In the years ended December 31, 2021, 2022, and 2023, the net income per share amounts are the same for Class A, Class B","In the years ended December 31, 2021, 2022, and 2023, the net income per share amounts are the same for Class A, Class B, and Class C stock because the holders of each class are entitled to equal per share dividends or distributions in liquidati [...]",ACCEPT,,,,PASS,x,,
+round2_008,Alphabet,2023,Item 8,simple_lookup,short direct question,[DRY-RUN TEMPLATE: short direct question] Question for Alphabet FY2023 (Item 8) chunk 99efd308,[DRY-RUN TEMPLATE] Ground truth answer derived from chunk text.,We use derivative instruments to manage risks relating to our ongoing business operations. The primary risk managed is f,"We use derivative instruments to manage risks relating to our ongoing business operations. The primary risk managed is foreign exchange risk. We use foreign currency contracts to reduce the risk that our cash flows, earnings, and investment in f [...]",ACCEPT,,,,PASS,x,,
+round2_009,Alphabet,2023,Item 8,numeric_precision,keyword-style phrase,[DRY-RUN TEMPLATE: keyword-style phrase] Question for Alphabet FY2023 (Item 8) chunk 57ac654a,[DRY-RUN TEMPLATE] Ground truth answer derived from chunk text.,"Our operating segments are not evaluated using asset information.
+
+The following table presents information about our se","Our operating segments are not evaluated using asset information.
+
+The following table presents information about our segments (in millions):
+
+Year Ended December 31,
+
+202120222023
+
+Revenues:
+
+Google Services$237,529 $253,528 $272,543
+
+Google Cl [...]",ACCEPT,,,,PASS,x,,
+round2_010,Alphabet,2024,Item 1,simple_lookup,paraphrase (no copied terms from the chunk),[DRY-RUN TEMPLATE: paraphrase (no copied terms from the chunk)] Question for Alphabet FY2024 (Item 1) chunk 300f5d39,[DRY-RUN TEMPLATE] Ground truth answer derived from chunk text.,"We aim to build the most advanced, safe, and responsible AI through a full stack of robust AI-optimized infrastructure,","We aim to build the most advanced, safe, and responsible AI through a full stack of robust AI-optimized infrastructure, including data centers, chips, and a global fiber network; world class research teams; and a broad global reach through prod [...]",ACCEPT,,,,PASS,x,,
+round2_011,Alphabet,2024,Item 1A,simple_lookup,"""what does the filing say about"" style","[DRY-RUN TEMPLATE: ""what does the filing say about"" style] Question for Alphabet FY2024 (Item 1A) chunk 861464a1",[DRY-RUN TEMPLATE] Ground truth answer derived from chunk text.,"Our products and services involve the storage, handling, and transmission of proprietary and other sensitive information","Our products and services involve the storage, handling, and transmission of proprietary and other sensitive information. Malicious software such as viruses, software bugs, theft, misuse, defects, vulnerabilities in our products and services, as [...]",ACCEPT,,,,PASS,x,,
+round2_012,Alphabet,2024,Item 1A,simple_lookup,comparison-of-two-figures style where the chunk allows,[DRY-RUN TEMPLATE: comparison-of-two-figures style where the chunk allows] Question for Alphabet FY2024 (Item 1A) chunk f714bcb0,[DRY-RUN TEMPLATE] Ground truth answer derived from chunk text.,"for many aspects of our business, including higher level of investment in technical infrastructure. Further, certain of","for many aspects of our business, including higher level of investment in technical infrastructure. Further, certain of our costs and expenses are generally less variable in nature and may not correlate to changes in revenue. We may also not be [...]",ACCEPT,,,,PASS,x,,
+round2_013,Alphabet,2024,Item 7,numeric_precision,natural prose,[DRY-RUN TEMPLATE: natural prose] Question for Alphabet FY2024 (Item 7) chunk 61a83259,[DRY-RUN TEMPLATE] Ground truth answer derived from chunk text.,"•Employee severance and related charges for the year ended December 31, 2024 were $1.0 billion, a decrease of $1.1 billi","•Employee severance and related charges for the year ended December 31, 2024 were $1.0 billion, a decrease of $1.1 billion as compared to the year ended December 31, 2023. Office space charges, including accelerated rent and accelerated deprecia [...]",ACCEPT,,,,PASS,x,,
+round2_014,Alphabet,2024,Item 7,simple_lookup,short direct question,[DRY-RUN TEMPLATE: short direct question] Question for Alphabet FY2024 (Item 7) chunk 9ead4f96,[DRY-RUN TEMPLATE] Ground truth answer derived from chunk text.,"YouTube ads
+
+YouTube ads revenues increased $4.6 billion from 2023 to 2024. The growth was driven by our brand advertisi","YouTube ads
+
+YouTube ads revenues increased $4.6 billion from 2023 to 2024. The growth was driven by our brand advertising products followed by our direct response advertising products, both of which benefited from increased spending by our adve [...]",ACCEPT,,,,PASS,x,,
+round2_015,Alphabet,2024,Item 7,simple_lookup,keyword-style phrase,[DRY-RUN TEMPLATE: keyword-style phrase] Question for Alphabet FY2024 (Item 7) chunk 77d3e94b,[DRY-RUN TEMPLATE] Ground truth answer derived from chunk text.,"OI&E, net increased $6.0 billion from 2023 to 2024 primarily due to an increase in net gains on equity securities and a","OI&E, net increased $6.0 billion from 2023 to 2024 primarily due to an increase in net gains on equity securities and a decrease in net losses on foreign currency exchange. The net gains on equity securities were primarily due to net unrealized [...]",ACCEPT,,,,PASS,x,,
+round2_016,Alphabet,2024,Item 8,numeric_precision,paraphrase (no copied terms from the chunk),[DRY-RUN TEMPLATE: paraphrase (no copied terms from the chunk)] Question for Alphabet FY2024 (Item 8) chunk 99aa645b,[DRY-RUN TEMPLATE] Ground truth answer derived from chunk text.,"202220232024
+
+Operating lease cost$2,900 $3,362 $3,304
+
+Finance lease cost:
+
+Amortization of lease assets474 469 413
+
+In","202220232024
+
+Operating lease cost$2,900 $3,362 $3,304
+
+Finance lease cost:
+
+Amortization of lease assets474 469 413
+
+Interest on lease liabilities34 35 31
+
+Finance lease cost508 504 444
+
+Variable lease cost838 1,182 1,425
+
+Total lease cost$4,24 [...]",ACCEPT,,,,PASS,x,,
+round2_017,Alphabet,2024,Item 8,simple_lookup,"""what does the filing say about"" style","[DRY-RUN TEMPLATE: ""what does the filing say about"" style] Question for Alphabet FY2024 (Item 8) chunk b435b0be",[DRY-RUN TEMPLATE] Ground truth answer derived from chunk text.,"We also have audited, in accordance with the standards of the Public Company Accounting Oversight Board (United States)","We also have audited, in accordance with the standards of the Public Company Accounting Oversight Board (United States) (PCAOB), the Company's internal control over financial reporting as of December 31, 2024, based on criteria established in I [...]",ACCEPT,,,,PASS,x,,
+round2_018,Alphabet,2024,Item 8,simple_lookup,comparison-of-two-figures style where the chunk allows,[DRY-RUN TEMPLATE: comparison-of-two-figures style where the chunk allows] Question for Alphabet FY2024 (Item 8) chunk ca2ed9a1,[DRY-RUN TEMPLATE] Ground truth answer derived from chunk text.,Cash flow hedge amounts included in the assessment of hedge effectiveness are deferred in AOCI and subsequently reclassi,Cash flow hedge amounts included in the assessment of hedge effectiveness are deferred in AOCI and subsequently reclassified to revenue when the hedged item is recognized in earnings. We exclude forward points and time value from our assessment [...],ACCEPT,,,,PASS,x,,
+round2_019,Alphabet,2025,Item 1,simple_lookup,natural prose,[DRY-RUN TEMPLATE: natural prose] Question for Alphabet FY2025 (Item 1) chunk 8b7e668c,[DRY-RUN TEMPLATE] Ground truth answer derived from chunk text.,"We webcast our earnings calls, as well as certain events we participate in or host with members of the investment commun","We webcast our earnings calls, as well as certain events we participate in or host with members of the investment community, via our investor relations YouTube channel and website. Our investor relations website also provides notifications of ne [...]",ACCEPT,,,,PASS,x,,
+round2_020,Alphabet,2025,Item 1A,simple_lookup,short direct question,[DRY-RUN TEMPLATE: short direct question] Question for Alphabet FY2025 (Item 1A) chunk c585920e,[DRY-RUN TEMPLATE] Ground truth answer derived from chunk text.,We have many competitors in different industries. Our current and potential domestic and international competitors range,We have many competitors in different industries. Our current and potential domestic and international competitors range from large and established companies to emerging start-ups. Some competitors have longer operating histories and well-establ [...],ACCEPT,,,,PASS,x,,
+round2_021,Alphabet,2025,Item 1A,simple_lookup,keyword-style phrase,[DRY-RUN TEMPLATE: keyword-style phrase] Question for Alphabet FY2025 (Item 1A) chunk 8dca3bee,[DRY-RUN TEMPLATE] Ground truth answer derived from chunk text.,"of data protection laws, imposing specific obligations with respect to the processing of personal data, including requir","of data protection laws, imposing specific obligations with respect to the processing of personal data, including required notices, consents, and opt-outs. Further, the increased risk of inadvertent disclosure of confidential information or pers [...]",ACCEPT,,,,PASS,x,,
+round2_022,Alphabet,2025,Item 7,numeric_precision,paraphrase (no copied terms from the chunk),[DRY-RUN TEMPLATE: paraphrase (no copied terms from the chunk)] Question for Alphabet FY2025 (Item 7) chunk fa8c7c18,[DRY-RUN TEMPLATE] Ground truth answer derived from chunk text.,"Provision for income taxes represents the estimated amount of federal, state, and foreign income taxes incurred in the U","Provision for income taxes represents the estimated amount of federal, state, and foreign income taxes incurred in the US and the many jurisdictions in which we operate. The provision includes the effect of reserve provisions and changes to rese [...]",ACCEPT,,,,PASS,x,,
+round2_023,Alphabet,2025,Item 7,simple_lookup,"""what does the filing say about"" style","[DRY-RUN TEMPLATE: ""what does the filing say about"" style] Question for Alphabet FY2025 (Item 7) chunk b745820e",[DRY-RUN TEMPLATE] Ground truth answer derived from chunk text.,The effective tax rate increased from 2024 to 2025. This increase was primarily due to a decrease in the US Federal Fore,"The effective tax rate increased from 2024 to 2025. This increase was primarily due to a decrease in the US Federal Foreign Derived Intangible Income tax deduction, a non-deductible EC fine and legal settlement in the US, partially offset by cha [...]",ACCEPT,,,,PASS,x,,
+round2_024,Alphabet,2025,Item 8,numeric_precision,comparison-of-two-figures style where the chunk allows,[DRY-RUN TEMPLATE: comparison-of-two-figures style where the chunk allows] Question for Alphabet FY2025 (Item 8) chunk 17c8e50a,[DRY-RUN TEMPLATE] Ground truth answer derived from chunk text.,"20242025
+
+Deferred tax assets:
+
+Accrued employee benefits$1,834 $1,951
+
+Accruals and reserves not currently deductible2,","20242025
+
+Deferred tax assets:
+
+Accrued employee benefits$1,834 $1,951
+
+Accruals and reserves not currently deductible2,552 3,570
+
+Tax credits6,384 7,314
+
+Net operating losses3,472 4,953
+
+Operating leases3,336 3,337
+
+Capitalized research and dev [...]",ACCEPT,,,,PASS,x,,
+round2_025,Alphabet,2025,Item 8,simple_lookup,natural prose,[DRY-RUN TEMPLATE: natural prose] Question for Alphabet FY2025 (Item 8) chunk 5d7e106c,[DRY-RUN TEMPLATE] Ground truth answer derived from chunk text.,"We have had patent, copyright, trade secret, and trademark infringement lawsuits filed against us claiming that certain","We have had patent, copyright, trade secret, and trademark infringement lawsuits filed against us claiming that certain of our products, services, and technologies infringe others' intellectual property rights. Adverse results in these lawsuits [...]",ACCEPT,,,,PASS,x,,
+round2_026,Alphabet,2025,Item 8,numeric_precision,short direct question,[DRY-RUN TEMPLATE: short direct question] Question for Alphabet FY2025 (Item 8) chunk 926bed15,[DRY-RUN TEMPLATE] Ground truth answer derived from chunk text.,"Total$11,922 13.9 %$19,697 16.4 %$26,656 16.8 %
+
+(1)    The tax effect in this category primarily reflects state and loc","Total$11,922 13.9 %$19,697 16.4 %$26,656 16.8 %
+
+(1)    The tax effect in this category primarily reflects state and local taxes in New York state, New York city, Pennsylvania, Minnesota, Illinois, New Jersey and Wisconsin.
+
+In 2023, the IRS iss [...]",ACCEPT,,,,PASS,x,,
+round2_027,Amazon,2023,Item 1,simple_lookup,keyword-style phrase,[DRY-RUN TEMPLATE: keyword-style phrase] Question for Amazon FY2023 (Item 1) chunk 0899fc20,[DRY-RUN TEMPLATE] Ground truth answer derived from chunk text.,"Seasonality
+
+Our business is affected by seasonality, which historically has resulted in higher sales volume during our","Seasonality
+
+Our business is affected by seasonality, which historically has resulted in higher sales volume during our fourth quarter, which ends December 31.
+
+Human Capital
+
+Our employees are critical to our mission of being Earth’s most cust [...]",ACCEPT,,,,PASS,x,,
+round2_028,Amazon,2023,Item 1A,simple_lookup,paraphrase (no copied terms from the chunk),[DRY-RUN TEMPLATE: paraphrase (no copied terms from the chunk)] Question for Amazon FY2023 (Item 1A) chunk 7afd49fd,[DRY-RUN TEMPLATE] Ground truth answer derived from chunk text.,"Our international activities are significant to our revenues and profits, and we plan to further expand internationally.","Our international activities are significant to our revenues and profits, and we plan to further expand internationally. In certain international market segments, we have relatively little operating experience and may not benefit from any first- [...]",ACCEPT,,,,PASS,x,,
+round2_029,Amazon,2023,Item 1A,simple_lookup,"""what does the filing say about"" style","[DRY-RUN TEMPLATE: ""what does the filing say about"" style] Question for Amazon FY2023 (Item 1A) chunk ce822a94",[DRY-RUN TEMPLATE] Ground truth answer derived from chunk text.,"We are subject to general business regulations and laws, as well as regulations and laws specifically governing the inte","We are subject to general business regulations and laws, as well as regulations and laws specifically governing the internet, physical, e-commerce, and omnichannel retail, digital content, web services, electronic devices, advertising, artificia [...]",ACCEPT,,,,PASS,x,,
+round2_030,Amazon,2023,Item 7,simple_lookup,comparison-of-two-figures style where the chunk allows,[DRY-RUN TEMPLATE: comparison-of-two-figures style where the chunk allows] Question for Amazon FY2023 (Item 7) chunk 68d4e558,[DRY-RUN TEMPLATE] Ground truth answer derived from chunk text.,"We provided guidance on February 1, 2024, in our earnings release furnished on Form 8-K as set forth below. These forwar","We provided guidance on February 1, 2024, in our earnings release furnished on Form 8-K as set forth below. These forward-looking statements reflect Amazon.com’s expectations as of February 1, 2024, and are subject to substantial uncertainty. Ou [...]",ACCEPT,,,,PASS,x,,
+round2_031,Amazon,2023,Item 7,simple_lookup,natural prose,[DRY-RUN TEMPLATE: natural prose] Question for Amazon FY2023 (Item 7) chunk 722f69d2,[DRY-RUN TEMPLATE] Ground truth answer derived from chunk text.,Cash provided by (used in) financing activities was $9.7 billion and $(15.9) billion in 2022 and 2023. Cash inflows from,"Cash provided by (used in) financing activities was $9.7 billion and $(15.9) billion in 2022 and 2023. Cash inflows from financing activities resulted from proceeds from short-term debt, and other and long-term-debt of $62.7 billion and $18.1 bi [...]",ACCEPT,,,,PASS,x,,
+round2_032,Amazon,2023,Item 7,simple_lookup,short direct question,[DRY-RUN TEMPLATE: short direct question] Question for Amazon FY2023 (Item 7) chunk e0b99639,[DRY-RUN TEMPLATE] Ground truth answer derived from chunk text.,"We are also currently subject to tax controversies in various jurisdictions, and these jurisdictions may assess addition","We are also currently subject to tax controversies in various jurisdictions, and these jurisdictions may assess additional income tax liabilities against us. Developments in an audit, investigation, or other tax controversy could have a material [...]",ACCEPT,,,,PASS,x,,
+round2_033,Amazon,2023,Item 8,numeric_precision,keyword-style phrase,[DRY-RUN TEMPLATE: keyword-style phrase] Question for Amazon FY2023 (Item 8) chunk 8dd125bf,[DRY-RUN TEMPLATE] Ground truth answer derived from chunk text.,"Other comprehensive income (loss):
+
+Foreign currency translation adjustments, net of tax of $47, $100, and $(55)
+
+(819)(","Other comprehensive income (loss):
+
+Foreign currency translation adjustments, net of tax of $47, $100, and $(55)
+
+(819)(2,586)1,027
+
+Available-for-sale debt securities:
+
+Change in net unrealized gains (losses), net of tax of $72, $159, and $(110 [...]",ACCEPT,,,,PASS,x,,
+round2_034,Amazon,2023,Item 8,simple_lookup,paraphrase (no copied terms from the chunk),[DRY-RUN TEMPLATE: paraphrase (no copied terms from the chunk)] Question for Amazon FY2023 (Item 8) chunk 28c37bc4,[DRY-RUN TEMPLATE] Ground truth answer derived from chunk text.,"In July 2021, the Luxembourg National Commission for Data Protection (the “CNPD”) issued a decision against Amazon Europ","In July 2021, the Luxembourg National Commission for Data Protection (the “CNPD”) issued a decision against Amazon Europe Core S.à r.l. claiming that Amazon’s processing of personal data did not comply with the EU General Data Protection Regulat [...]",ACCEPT,,,,PASS,x,,
+round2_035,Amazon,2023,Item 8,simple_lookup,"""what does the filing say about"" style","[DRY-RUN TEMPLATE: ""what does the filing say about"" style] Question for Amazon FY2023 (Item 8) chunk 0978aa0b",[DRY-RUN TEMPLATE] Ground truth answer derived from chunk text.,"On May 27, 2022, we effected a 20-for-1 stock split of our common stock and proportionately increased the number of auth","On May 27, 2022, we effected a 20-for-1 stock split of our common stock and proportionately increased the number of authorized shares of common stock. All share, restricted stock unit (“RSU”), and per share or per RSU information throughout this [...]",ACCEPT,,,,PASS,x,,
+round2_036,Amazon,2024,Item 1,simple_lookup,comparison-of-two-figures style where the chunk allows,[DRY-RUN TEMPLATE: comparison-of-two-figures style where the chunk allows] Question for Amazon FY2024 (Item 1) chunk 459a5ce4,[DRY-RUN TEMPLATE] Ground truth answer derived from chunk text.,"Our current and potential competitors include: (1) physical, e-commerce, and omnichannel retailers, publishers, vendors,","Our current and potential competitors include: (1) physical, e-commerce, and omnichannel retailers, publishers, vendors, distributors, manufacturers, and producers of the products we offer and sell to consumers and businesses; (2) publishers, pr [...]",ACCEPT,,,,PASS,x,,
+round2_037,Amazon,2024,Item 1A,simple_lookup,natural prose,[DRY-RUN TEMPLATE: natural prose] Question for Amazon FY2024 (Item 1A) chunk cb406e21,[DRY-RUN TEMPLATE] Ground truth answer derived from chunk text.,"As a result of holiday sales, as of December 31 of each year, our cash, cash equivalents, and marketable securities bala","As a result of holiday sales, as of December 31 of each year, our cash, cash equivalents, and marketable securities balances typically reach their highest level (other than as a result of cash flows provided by or used in investing and financing [...]",ACCEPT,,,,PASS,x,,
+round2_038,Amazon,2024,Item 1A,simple_lookup,short direct question,[DRY-RUN TEMPLATE: short direct question] Question for Amazon FY2024 (Item 1A) chunk 31ccc061,[DRY-RUN TEMPLATE] Ground truth answer derived from chunk text.,"Item 1A.Risk Factors
+
+Please carefully consider the following discussion of significant factors, events, and uncertainti","Item 1A.Risk Factors
+
+Please carefully consider the following discussion of significant factors, events, and uncertainties that make an investment in our securities risky. The events and consequences discussed in these risk factors could, in cir [...]",ACCEPT,,,,PASS,x,,
+round2_039,Amazon,2024,Item 7,simple_lookup,keyword-style phrase,[DRY-RUN TEMPLATE: keyword-style phrase] Question for Amazon FY2024 (Item 7) chunk 4ad4eba9,[DRY-RUN TEMPLATE] Ground truth answer derived from chunk text.,The preparation of financial statements in conformity with generally accepted accounting principles of the United States,"The preparation of financial statements in conformity with generally accepted accounting principles of the United States (“GAAP”) requires estimates and assumptions that affect the reported amounts of assets and liabilities, revenues and expense [...]",ACCEPT,,,,PASS,x,,
+round2_040,Amazon,2024,Item 7,simple_lookup,paraphrase (no copied terms from the chunk),[DRY-RUN TEMPLATE: paraphrase (no copied terms from the chunk)] Question for Amazon FY2024 (Item 7) chunk 90b25e6e,[DRY-RUN TEMPLATE] Ground truth answer derived from chunk text.,Our U.S. taxable income is reduced by accelerated depreciation deductions and increased by the impact of capitalized res,Our U.S. taxable income is reduced by accelerated depreciation deductions and increased by the impact of capitalized research and development expenses. U.S. tax rules provide for enhanced accelerated depreciation deductions by allowing us to exp [...],ACCEPT,,,,PASS,x,,
+round2_041,Amazon,2024,Item 7,simple_lookup,"""what does the filing say about"" style","[DRY-RUN TEMPLATE: ""what does the filing say about"" style] Question for Amazon FY2024 (Item 7) chunk 8f143654",[DRY-RUN TEMPLATE] Ground truth answer derived from chunk text.,We seek to invest efficiently in numerous areas of technology and infrastructure so we may continue to enhance the custo,"We seek to invest efficiently in numerous areas of technology and infrastructure so we may continue to enhance the customer experience and improve our process efficiency through rapid technology developments, while operating at an ever increasin [...]",ACCEPT,,,,PASS,x,,
+round2_042,Amazon,2024,Item 8,numeric_precision,comparison-of-two-figures style where the chunk allows,[DRY-RUN TEMPLATE: comparison-of-two-figures style where the chunk allows] Question for Amazon FY2024 (Item 8) chunk 650c996a,[DRY-RUN TEMPLATE] Ground truth answer derived from chunk text.,"Weighted-average remaining lease term – operating leases11.3 years10.6 years
+
+Weighted-average remaining lease term – fi","Weighted-average remaining lease term – operating leases11.3 years10.6 years
+
+Weighted-average remaining lease term – finance leases11.9 years11.9 years
+
+Weighted-average discount rate – operating leases3.3 %3.5 %
+
+Weighted-average discount rate [...]",ACCEPT,,,,PASS,x,,
+round2_043,Amazon,2024,Item 8,simple_lookup,natural prose,[DRY-RUN TEMPLATE: natural prose] Question for Amazon FY2024 (Item 8) chunk 17e04581,[DRY-RUN TEMPLATE] Ground truth answer derived from chunk text.,"General and Administrative
+
+General and administrative expenses primarily consist of costs for corporate functions, incl","General and Administrative
+
+General and administrative expenses primarily consist of costs for corporate functions, including payroll and related expenses; facilities and equipment expenses, such as depreciation and amortization expense and rent [...]",ACCEPT,,,,PASS,x,,
+round2_044,Amazon,2024,Item 8,numeric_precision,short direct question,[DRY-RUN TEMPLATE: short direct question] Question for Amazon FY2024 (Item 8) chunk 46df37e0,[DRY-RUN TEMPLATE] Ground truth answer derived from chunk text.,The North America segment primarily consists of amounts earned from retail sales of consumer products (including from se,The North America segment primarily consists of amounts earned from retail sales of consumer products (including from sellers) and advertising and subscription services through North America-focused online and physical stores. This segment inclu [...],ACCEPT,,,,PASS,x,,
+round2_045,Amazon,2025,Item 1,simple_lookup,keyword-style phrase,[DRY-RUN TEMPLATE: keyword-style phrase] Question for Amazon FY2025 (Item 1) chunk 99d30f1b,[DRY-RUN TEMPLATE] Ground truth answer derived from chunk text.,We strive to be Earth’s best employer. We rely on numerous and evolving initiatives to implement this objective and inve,"We strive to be Earth’s best employer. We rely on numerous and evolving initiatives to implement this objective and invent mechanisms for talent development, including competitive pay and benefits, flexible work arrangements, and skills training [...]",ACCEPT,,,,PASS,x,,
+round2_046,Amazon,2025,Item 1A,simple_lookup,paraphrase (no copied terms from the chunk),[DRY-RUN TEMPLATE: paraphrase (no copied terms from the chunk)] Question for Amazon FY2025 (Item 1A) chunk eb3e6b45,[DRY-RUN TEMPLATE] Ground truth answer derived from chunk text.,"We also rely on a significant number of personnel to operate our stores, fulfillment network, and data centers and carry","We also rely on a significant number of personnel to operate our stores, fulfillment network, and data centers and carry out our other operations. Failure to successfully hire, train, manage, and retain sufficient personnel to meet our needs can [...]",ACCEPT,,,,PASS,x,,
+round2_047,Amazon,2025,Item 1A,simple_lookup,"""what does the filing say about"" style","[DRY-RUN TEMPLATE: ""what does the filing say about"" style] Question for Amazon FY2025 (Item 1A) chunk ca4f7d4d",[DRY-RUN TEMPLATE] Ground truth answer derived from chunk text.,"We accept payments using a variety of methods, including credit card, debit card, credit accounts (including promotional","We accept payments using a variety of methods, including credit card, debit card, credit accounts (including promotional financing), gift cards, direct debit from a customer’s bank account, consumer invoicing, checks, and payment upon delivery. [...]",ACCEPT,,,,PASS,x,,
+round2_048,Amazon,2025,Item 7,simple_lookup,comparison-of-two-figures style where the chunk allows,[DRY-RUN TEMPLATE: comparison-of-two-figures style where the chunk allows] Question for Amazon FY2025 (Item 7) chunk d413fc84,[DRY-RUN TEMPLATE] Ground truth answer derived from chunk text.,"We are subject to income taxes in the U.S. (federal and state) and numerous foreign jurisdictions. Tax laws, regulations","We are subject to income taxes in the U.S. (federal and state) and numerous foreign jurisdictions. Tax laws, regulations, administrative practices, principles, and interpretations in various jurisdictions may be subject to significant change, wi [...]",ACCEPT,,,,PASS,x,,
+round2_049,Amazon,2025,Item 7,simple_lookup,natural prose,[DRY-RUN TEMPLATE: natural prose] Question for Amazon FY2025 (Item 7) chunk 5fc2b2f9,[DRY-RUN TEMPLATE] Ground truth answer derived from chunk text.,"Inventories, consisting of products available for sale, are primarily accounted for using the first-in first-out method,","Inventories, consisting of products available for sale, are primarily accounted for using the first-in first-out method, and are valued at the lower of cost and net realizable value. This valuation requires us to make judgments, based on current [...]",ACCEPT,,,,PASS,x,,
+round2_050,Amazon,2025,Item 8,numeric_precision,short direct question,[DRY-RUN TEMPLATE: short direct question] Question for Amazon FY2025 (Item 8) chunk d85c7630,[DRY-RUN TEMPLATE] Ground truth answer derived from chunk text.,"In 2023, 2024, and 2025, we recorded a net tax provision of $7.1 billion, $9.3 billion, and $19.1 billion. Our U.S. taxa","In 2023, 2024, and 2025, we recorded a net tax provision of $7.1 billion, $9.3 billion, and $19.1 billion. Our U.S. taxable income is reduced by accelerated depreciation deductions and the resulting U.S. tax liability is reduced by tax credits, [...]",ACCEPT,,,,PASS,x,,
+round2_051,Amazon,2025,Item 8,simple_lookup,keyword-style phrase,[DRY-RUN TEMPLATE: keyword-style phrase] Question for Amazon FY2025 (Item 8) chunk 7d4867be,[DRY-RUN TEMPLATE] Ground truth answer derived from chunk text.,"In January 2023, we entered into an $8.0 billion unsecured 364-day term loan with a syndicate of lenders (the “Term Loan","In January 2023, we entered into an $8.0 billion unsecured 364-day term loan with a syndicate of lenders (the “Term Loan”), maturing in January 2024 and bearing interest at the Secured Overnight Financing Rate specified in the Term Loan plus 0.7 [...]",ACCEPT,,,,PASS,x,,
+round2_052,Amazon,2025,Item 8,simple_lookup,paraphrase (no copied terms from the chunk),[DRY-RUN TEMPLATE: paraphrase (no copied terms from the chunk)] Question for Amazon FY2025 (Item 8) chunk 8be67eb2,[DRY-RUN TEMPLATE] Ground truth answer derived from chunk text.,"When we have the option to extend the lease term, terminate the lease before the contractual expiration date, or purchas","When we have the option to extend the lease term, terminate the lease before the contractual expiration date, or purchase the leased asset, and it is reasonably certain that we will exercise the option, we consider the option in determining the [...]",ACCEPT,,,,PASS,x,,
+round2_053,Apple,2023,Item 1,simple_lookup,"""what does the filing say about"" style","[DRY-RUN TEMPLATE: ""what does the filing say about"" style] Question for Apple FY2023 (Item 1) chunk 06ced211",[DRY-RUN TEMPLATE] Ground truth answer derived from chunk text.,"Because the industries in which the Company competes are characterized by rapid technological advances, the Company’s ab","Because the industries in which the Company competes are characterized by rapid technological advances, the Company’s ability to compete successfully depends heavily upon its ability to ensure a continual and timely flow of competitive products, [...]",ACCEPT,,,,PASS,x,,
+round2_054,Apple,2023,Item 1A,simple_lookup,comparison-of-two-figures style where the chunk allows,[DRY-RUN TEMPLATE: comparison-of-two-figures style where the chunk allows] Question for Apple FY2023 (Item 1A) chunk 67a9322b,[DRY-RUN TEMPLATE] Ground truth answer derived from chunk text.,"The Company is also currently subject to antitrust investigations in various jurisdictions around the world, which can r","The Company is also currently subject to antitrust investigations in various jurisdictions around the world, which can result in legal proceedings and claims against the Company that could, individually or in the aggregate, have a materially adv [...]",ACCEPT,,,,PASS,x,,
+round2_055,Apple,2023,Item 1A,simple_lookup,natural prose,[DRY-RUN TEMPLATE: natural prose] Question for Apple FY2023 (Item 1A) chunk 58f5cca9,[DRY-RUN TEMPLATE] Ground truth answer derived from chunk text.,"Further, the Company has commercial relationships with other companies in the technology industry that are or may become","Further, the Company has commercial relationships with other companies in the technology industry that are or may become subject to investigations and litigation that, if resolved against those other companies, could materially adversely affect [...]",ACCEPT,,,,PASS,x,,
+round2_056,Apple,2023,Item 7,numeric_precision,short direct question,[DRY-RUN TEMPLATE: short direct question] Question for Apple FY2023 (Item 7) chunk acbfef73,[DRY-RUN TEMPLATE] Ground truth answer derived from chunk text.,Europe net sales decreased 1% or $824 million during 2023 compared to 2022. The weakness in foreign currencies relative,"Europe net sales decreased 1% or $824 million during 2023 compared to 2022. The weakness in foreign currencies relative to the U.S. dollar accounted for more than the entire year-over-year decrease in Europe net sales, which consisted primarily [...]",ACCEPT,,,,PASS,x,,
+round2_057,Apple,2023,Item 7,simple_lookup,keyword-style phrase,[DRY-RUN TEMPLATE: keyword-style phrase] Question for Apple FY2023 (Item 7) chunk ccae4618,[DRY-RUN TEMPLATE] Ground truth answer derived from chunk text.,The Company’s total net sales decreased 3% or $11.0 billion during 2023 compared to 2022. The weakness in foreign curren,"The Company’s total net sales decreased 3% or $11.0 billion during 2023 compared to 2022. The weakness in foreign currencies relative to the U.S. dollar accounted for more than the entire year-over-year decrease in total net sales, which consist [...]",ACCEPT,,,,PASS,x,,
+round2_058,Apple,2023,Item 7,simple_lookup,paraphrase (no copied terms from the chunk),[DRY-RUN TEMPLATE: paraphrase (no copied terms from the chunk)] Question for Apple FY2023 (Item 7) chunk e60c3e5e,[DRY-RUN TEMPLATE] Ground truth answer derived from chunk text.,"Item 7.    Management’s Discussion and Analysis of Financial Condition and Results of Operations
+
+The following discussi","Item 7.    Management’s Discussion and Analysis of Financial Condition and Results of Operations
+
+The following discussion should be read in conjunction with the consolidated financial statements and accompanying notes included in Part II, Item [...]",ACCEPT,,,,PASS,x,,
+round2_059,Apple,2023,Item 8,numeric_precision,"""what does the filing say about"" style","[DRY-RUN TEMPLATE: ""what does the filing say about"" style] Question for Apple FY2023 (Item 8) chunk 7901f61b",[DRY-RUN TEMPLATE] Ground truth answer derived from chunk text.,"Effective
+
+Interest RateAmount
+
+(in millions)
+
+Effective
+
+Interest Rate
+
+2013 – 2022 debt issuances:
+
+Fixed-rate 0.000%","Effective
+
+Interest RateAmount
+
+(in millions)
+
+Effective
+
+Interest Rate
+
+2013 – 2022 debt issuances:
+
+Fixed-rate 0.000% – 4.650% notes
+
+2024 – 2062
+
+$101,322 0.03% – 6.72%
+
+$111,824 0.03% – 4.78%
+
+Third quarter 2023 debt issuance:
+
+Fixed-rate 4 [...]",ACCEPT,,,,PASS,x,,
+round2_060,Apple,2023,Item 8,simple_lookup,comparison-of-two-figures style where the chunk allows,[DRY-RUN TEMPLATE: comparison-of-two-figures style where the chunk allows] Question for Apple FY2023 (Item 8) chunk d56780e9,[DRY-RUN TEMPLATE] Ground truth answer derived from chunk text.,The derivative assets above represent the Company’s gross credit exposure if all counterparties failed to perform. To mi,"The derivative assets above represent the Company’s gross credit exposure if all counterparties failed to perform. To mitigate credit risk, the Company generally uses collateral security arrangements that provide for collateral to be received or [...]",ACCEPT,,,,PASS,x,,
+round2_061,Apple,2023,Item 8,simple_lookup,natural prose,[DRY-RUN TEMPLATE: natural prose] Question for Apple FY2023 (Item 8) chunk daee6eef,[DRY-RUN TEMPLATE] Ground truth answer derived from chunk text.,The Company has identified up to three performance obligations regularly included in arrangements involving the sale of,"The Company has identified up to three performance obligations regularly included in arrangements involving the sale of iPhone, Mac, iPad and certain other products. The first performance obligation, which represents the substantial portion of [...]",ACCEPT,,,,PASS,x,,
+round2_062,Apple,2024,Item 1,numeric_precision,short direct question,[DRY-RUN TEMPLATE: short direct question] Question for Apple FY2024 (Item 1) chunk c35c5fbd,[DRY-RUN TEMPLATE] Ground truth answer derived from chunk text.,"The Company believes that open and honest communication among team members, managers and leaders helps create an open, c","The Company believes that open and honest communication among team members, managers and leaders helps create an open, collaborative work environment where everyone can contribute, grow and succeed. Team members are encouraged to come to their m [...]",ACCEPT,,,,PASS,x,,
+round2_063,Apple,2024,Item 1A,numeric_precision,keyword-style phrase,[DRY-RUN TEMPLATE: keyword-style phrase] Question for Apple FY2024 (Item 1A) chunk 0c156ac8,[DRY-RUN TEMPLATE] Ground truth answer derived from chunk text.,Compliance with these laws and regulations is onerous and expensive. New and changing laws and regulations can adversely,"Compliance with these laws and regulations is onerous and expensive. New and changing laws and regulations can adversely affect the Company’s business by increasing the Company’s costs, limiting the Company’s ability to offer a product, service [...]",ACCEPT,,,,PASS,x,,
+round2_064,Apple,2024,Item 1A,simple_lookup,paraphrase (no copied terms from the chunk),[DRY-RUN TEMPLATE: paraphrase (no copied terms from the chunk)] Question for Apple FY2024 (Item 1A) chunk 33ed0d83,[DRY-RUN TEMPLATE] Ground truth answer derived from chunk text.,The outcome of litigation or government investigations is inherently uncertain. If one or more legal matters were resolv,"The outcome of litigation or government investigations is inherently uncertain. If one or more legal matters were resolved against the Company or an indemnified third party in a reporting period for amounts above management’s expectations, the C [...]",ACCEPT,,,,PASS,x,,
+round2_065,Apple,2024,Item 7,numeric_precision,"""what does the filing say about"" style","[DRY-RUN TEMPLATE: ""what does the filing say about"" style] Question for Apple FY2024 (Item 7) chunk 197b2341",[DRY-RUN TEMPLATE] Ground truth answer derived from chunk text.,"iPhone
+
+iPhone net sales were relatively flat during 2024 compared to 2023.
+
+Mac
+
+Mac net sales increased during 2024 co","iPhone
+
+iPhone net sales were relatively flat during 2024 compared to 2023.
+
+Mac
+
+Mac net sales increased during 2024 compared to 2023 due primarily to higher net sales of laptops.
+
+iPad
+
+iPad net sales decreased during 2024 compared to 2023 due [...]",ACCEPT,,,,PASS,x,,
+round2_066,Apple,2024,Item 7,simple_lookup,comparison-of-two-figures style where the chunk allows,[DRY-RUN TEMPLATE: comparison-of-two-figures style where the chunk allows] Question for Apple FY2024 (Item 7) chunk 70e50532,[DRY-RUN TEMPLATE] Ground truth answer derived from chunk text.,"Item 7.    Management’s Discussion and Analysis of Financial Condition and Results of Operations
+
+The following discussi","Item 7.    Management’s Discussion and Analysis of Financial Condition and Results of Operations
+
+The following discussion should be read in conjunction with the consolidated financial statements and accompanying notes included in Part II, Item [...]",ACCEPT,,,,PASS,x,,
+round2_067,Apple,2024,Item 7,numeric_precision,natural prose,[DRY-RUN TEMPLATE: natural prose] Question for Apple FY2024 (Item 7) chunk 8545288c,[DRY-RUN TEMPLATE] Ground truth answer derived from chunk text.,"The Company’s other purchase obligations primarily consist of noncancelable obligations to acquire capital assets, inclu","The Company’s other purchase obligations primarily consist of noncancelable obligations to acquire capital assets, including assets related to product manufacturing, and noncancelable obligations related to supplier arrangements, licensed intell [...]",ACCEPT,,,,PASS,x,,
+round2_068,Apple,2024,Item 8,numeric_precision,short direct question,[DRY-RUN TEMPLATE: short direct question] Question for Apple FY2024 (Item 8) chunk 839103f1,[DRY-RUN TEMPLATE] Ground truth answer derived from chunk text.,"Subtotal132,108 583 (4,635)128,056 1,966 34,611 91,479
+
+Total (2)(3)
+
+$160,600 $688 $(4,638)$156,650 $29,943 $35,228 $91","Subtotal132,108 583 (4,635)128,056 1,966 34,611 91,479
+
+Total (2)(3)
+
+$160,600 $688 $(4,638)$156,650 $29,943 $35,228 $91,479
+
+Apple Inc. | 2024 Form 10-K | 36
+
+2023
+
+Adjusted
+
+CostUnrealized
+
+GainsUnrealized
+
+LossesFair
+
+ValueCash and
+
+Cash
+
+Equ [...]",ACCEPT,,,,PASS,x,,
+round2_069,Apple,2024,Item 8,simple_lookup,keyword-style phrase,[DRY-RUN TEMPLATE: keyword-style phrase] Question for Apple FY2024 (Item 8) chunk 8c95884d,[DRY-RUN TEMPLATE] Ground truth answer derived from chunk text.,"(2)As of September 28, 2024, cash and cash equivalents included $2.6 billion held in escrow and restricted from general","(2)As of September 28, 2024, cash and cash equivalents included $2.6 billion held in escrow and restricted from general use. These restricted cash and cash equivalents were designated to settle the Company’s obligation related to the State Aid [...]",ACCEPT,,,,PASS,x,,
+round2_070,Apple,2024,Item 8,numeric_precision,paraphrase (no copied terms from the chunk),[DRY-RUN TEMPLATE: paraphrase (no copied terms from the chunk)] Question for Apple FY2024 (Item 8) chunk e7a3e3a9,[DRY-RUN TEMPLATE] Ground truth answer derived from chunk text.,Auditing management’s evaluation of whether an uncertain tax position is more likely than not to be sustained and the me,"Auditing management’s evaluation of whether an uncertain tax position is more likely than not to be sustained and the measurement of the benefit of various tax positions can be complex, involves significant judgment, and is based on interpretati [...]",ACCEPT,,,,PASS,x,,
+round2_071,Apple,2025,Item 1,numeric_precision,"""what does the filing say about"" style","[DRY-RUN TEMPLATE: ""what does the filing say about"" style] Question for Apple FY2025 (Item 1) chunk fa711cbb",[DRY-RUN TEMPLATE] Ground truth answer derived from chunk text.,The Company is committed to the safety and security of its team members everywhere it operates. The Company supports emp,"The Company is committed to the safety and security of its team members everywhere it operates. The Company supports employees with general safety, security and crisis management training, and by putting specific programs in place for those work [...]",ACCEPT,,,,PASS,x,,
+round2_072,Apple,2025,Item 1A,simple_lookup,comparison-of-two-figures style where the chunk allows,[DRY-RUN TEMPLATE: comparison-of-two-figures style where the chunk allows] Question for Apple FY2025 (Item 1A) chunk ee149d5f,[DRY-RUN TEMPLATE] Ground truth answer derived from chunk text.,"The Company’s business requires it to use and store confidential information, including personal and sensitive health an","The Company’s business requires it to use and store confidential information, including personal and sensitive health and financial information with respect to the Company’s customers and employees. The Company devotes significant resources to s [...]",ACCEPT,,,,PASS,x,,
+round2_073,Apple,2025,Item 1A,simple_lookup,natural prose,[DRY-RUN TEMPLATE: natural prose] Question for Apple FY2025 (Item 1A) chunk a6bef2f6,[DRY-RUN TEMPLATE] Ground truth answer derived from chunk text.,"Further, the Company has commercial relationships with other companies in the technology industry that are or may become","Further, the Company has commercial relationships with other companies in the technology industry that are or may become subject to investigations and litigation that, if resolved against those other companies, could materially adversely affect [...]",ACCEPT,,,,PASS,x,,
+round2_074,Apple,2025,Item 7,numeric_precision,short direct question,[DRY-RUN TEMPLATE: short direct question] Question for Apple FY2025 (Item 7) chunk 5e820ce9,[DRY-RUN TEMPLATE] Ground truth answer derived from chunk text.,"The following table shows net sales by category for 2025, 2024 and 2023 (dollars in millions):
+
+2025Change2024Change2023","The following table shows net sales by category for 2025, 2024 and 2023 (dollars in millions):
+
+2025Change2024Change2023
+
+iPhone$209,586 4 %$201,183 — %$200,583
+
+Mac33,708 12 %29,984 2 %29,357
+
+iPad28,023 5 %26,694 (6)%28,300
+
+Wearables, Home an [...]",ACCEPT,,,,PASS,x,,
+round2_075,Apple,2025,Item 7,simple_lookup,keyword-style phrase,[DRY-RUN TEMPLATE: keyword-style phrase] Question for Apple FY2025 (Item 7) chunk 97e04e65,[DRY-RUN TEMPLATE] Ground truth answer derived from chunk text.,"Item 7.    Management’s Discussion and Analysis of Financial Condition and Results of Operations
+
+The following discussi","Item 7.    Management’s Discussion and Analysis of Financial Condition and Results of Operations
+
+The following discussion should be read in conjunction with the consolidated financial statements and accompanying notes included in Part II, Item [...]",ACCEPT,,,,PASS,x,,
+round2_076,Apple,2025,Item 8,numeric_precision,paraphrase (no copied terms from the chunk),[DRY-RUN TEMPLATE: paraphrase (no copied terms from the chunk)] Question for Apple FY2025 (Item 8) chunk 99fe2b83,[DRY-RUN TEMPLATE] Ground truth answer derived from chunk text.,"Net sales:
+
+U.S.$151,790 $142,196 $138,573
+
+China (1)
+
+64,377 66,952 72,559
+
+Other countries199,994 181,887 172,153
+
+Tot","Net sales:
+
+U.S.$151,790 $142,196 $138,573
+
+China (1)
+
+64,377 66,952 72,559
+
+Other countries199,994 181,887 172,153
+
+Total net sales$416,161 $391,035 $383,285
+
+20252024
+
+Long-lived assets:
+
+U.S.$40,274 $35,664
+
+China (1)
+
+3,617 4,797
+
+Other coun [...]",ACCEPT,,,,PASS,x,,
+round2_077,Apple,2025,Item 8,simple_lookup,"""what does the filing say about"" style","[DRY-RUN TEMPLATE: ""what does the filing say about"" style] Question for Apple FY2025 (Item 8) chunk 79ad380d",[DRY-RUN TEMPLATE] Ground truth answer derived from chunk text.,The Company’s fiscal year is the 52- or 53-week period that ends on the last Saturday of September. An additional week i,The Company’s fiscal year is the 52- or 53-week period that ends on the last Saturday of September. An additional week is included in the first fiscal quarter every five or six years to realign the Company’s fiscal quarters with calendar quarter [...],ACCEPT,,,,PASS,x,,
+round2_078,Apple,2025,Item 8,numeric_precision,comparison-of-two-figures style where the chunk allows,[DRY-RUN TEMPLATE: comparison-of-two-figures style where the chunk allows] Question for Apple FY2025 (Item 8) chunk 5bc4b5b3,[DRY-RUN TEMPLATE] Ground truth answer derived from chunk text.,A reconciliation of the provision for income taxes to the amount computed by applying the statutory federal income tax r,"A reconciliation of the provision for income taxes to the amount computed by applying the statutory federal income tax rate (21% in 2025, 2024 and 2023) to income before provision for income taxes for 2025, 2024 and 2023 is as follows (dollars i [...]",ACCEPT,,,,PASS,x,,
+round2_079,Microsoft,2024,Item 1,simple_lookup,natural prose,[DRY-RUN TEMPLATE: natural prose] Question for Microsoft FY2024 (Item 1) chunk d6cbb830,[DRY-RUN TEMPLATE] Ground truth answer derived from chunk text.,"PART I
+
+ITEM 1. BUSINESS
+
+GENERAL
+
+Embracing Our Future
+
+Microsoft is a technology company committed to making digital t","PART I
+
+ITEM 1. BUSINESS
+
+GENERAL
+
+Embracing Our Future
+
+Microsoft is a technology company committed to making digital technology and artificial intelligence (“AI”) available broadly and doing so responsibly, with a mission to empower every pers [...]",ACCEPT,,,,PASS,x,,
+round2_080,Microsoft,2024,Item 1A,simple_lookup,short direct question,[DRY-RUN TEMPLATE: short direct question] Question for Microsoft FY2024 (Item 1A) chunk d70e4143,[DRY-RUN TEMPLATE] Ground truth answer derived from chunk text.,"Our products and services, how they are used by customers, and how third-party products and services interact with them,","Our products and services, how they are used by customers, and how third-party products and services interact with them, may present security, privacy, and execution risks. Our products and services may contain defects in design, manufacture, or [...]",ACCEPT,,,,PASS,x,,
+round2_081,Microsoft,2024,Item 1A,simple_lookup,keyword-style phrase,[DRY-RUN TEMPLATE: keyword-style phrase] Question for Microsoft FY2024 (Item 1A) chunk dbd3cf85,[DRY-RUN TEMPLATE] Ground truth answer derived from chunk text.,"Our portfolio of first-party devices continues to grow; at the same time, our OEM partners offer a large variety of devi","Our portfolio of first-party devices continues to grow; at the same time, our OEM partners offer a large variety of devices for our platforms. As a result, we increasingly both cooperate and compete with our OEM partners, creating a risk that we [...]",ACCEPT,,,,PASS,x,,
+round2_082,Microsoft,2024,Item 7,numeric_precision,paraphrase (no copied terms from the chunk),[DRY-RUN TEMPLATE: paraphrase (no copied terms from the chunk)] Question for Microsoft FY2024 (Item 7) chunk 4ecdc3ca,[DRY-RUN TEMPLATE] Ground truth answer derived from chunk text.,"SUMMARY RESULTS OF OPERATIONS
+
+(In millions, except percentages and per share amounts)
+
+2024
+
+2023
+
+Percentage
+
+Change","SUMMARY RESULTS OF OPERATIONS
+
+(In millions, except percentages and per share amounts)
+
+2024
+
+2023
+
+Percentage
+
+Change
+
+Revenue
+
+$
+
+245,122
+
+$
+
+211,915
+
+16%
+
+Gross margin
+
+171,008
+
+146,052
+
+17%
+
+Operating income
+
+109,433
+
+88,523
+
+24%
+
+Net inco [...]",ACCEPT,,,,PASS,x,,
+round2_083,Microsoft,2024,Item 7,simple_lookup,"""what does the filing say about"" style","[DRY-RUN TEMPLATE: ""what does the filing say about"" style] Question for Microsoft FY2024 (Item 7) chunk 88bc5725",[DRY-RUN TEMPLATE] Ground truth answer derived from chunk text.,Accounting for business combinations requires significant judgments when allocating the purchase price to the estimated,Accounting for business combinations requires significant judgments when allocating the purchase price to the estimated fair values of assets acquired and liabilities assumed at the acquisition date. Determination of fair value involves estimat [...],ACCEPT,,,,PASS,x,,
+round2_084,Microsoft,2024,Item 7,simple_lookup,comparison-of-two-figures style where the chunk allows,[DRY-RUN TEMPLATE: comparison-of-two-figures style where the chunk allows] Question for Microsoft FY2024 (Item 7) chunk bbc9cd61,[DRY-RUN TEMPLATE] Ground truth answer derived from chunk text.,"Our products are generally sold with a right of return, we may provide other credits or incentives, and in certain insta","Our products are generally sold with a right of return, we may provide other credits or incentives, and in certain instances we estimate customer usage of our products and services, which are accounted for as variable consideration when determin [...]",ACCEPT,,,,PASS,x,,
+round2_085,Microsoft,2024,Item 8,numeric_precision,natural prose,[DRY-RUN TEMPLATE: natural prose] Question for Microsoft FY2024 (Item 8) chunk f95e7875,[DRY-RUN TEMPLATE] Ground truth answer derived from chunk text.,"We repurchased the following shares of common stock under the share repurchase programs:
+
+(In millions)
+
+Shares
+
+Amount","We repurchased the following shares of common stock under the share repurchase programs:
+
+(In millions)
+
+Shares
+
+Amount
+
+Shares
+
+Amount
+
+Shares
+
+Amount
+
+Year Ended June 30,
+
+2024
+
+2023
+
+2022
+
+First Quarter
+
+11
+
+$
+
+3,560
+
+17
+
+$
+
+4,600
+
+21
+
+$
+
+6, [...]",ACCEPT,,,,PASS,x,,
+round2_086,Microsoft,2024,Item 8,simple_lookup,short direct question,[DRY-RUN TEMPLATE: short direct question] Question for Microsoft FY2024 (Item 8) chunk 9cb4491a,[DRY-RUN TEMPLATE] Ground truth answer derived from chunk text.,"In December 2023, the FASB issued a new standard to improve income tax disclosures. The guidance requires disclosure of","In December 2023, the FASB issued a new standard to improve income tax disclosures. The guidance requires disclosure of disaggregated income taxes paid, prescribes standardized categories for the components of the effective tax rate reconciliat [...]",ACCEPT,,,,PASS,x,,
+round2_087,Microsoft,2024,Item 8,simple_lookup,keyword-style phrase,[DRY-RUN TEMPLATE: keyword-style phrase] Question for Microsoft FY2024 (Item 8) chunk 6aeeb60f,[DRY-RUN TEMPLATE] Ground truth answer derived from chunk text.,"86
+
+PART II
+
+Item 8
+
+Irish Data Protection Commission Matter
+
+In 2018, the Irish Data Protection Commission (“IDPC”) beg","86
+
+PART II
+
+Item 8
+
+Irish Data Protection Commission Matter
+
+In 2018, the Irish Data Protection Commission (“IDPC”) began investigating a complaint against LinkedIn as to whether LinkedIn’s targeted advertising practices violated the recently i [...]",ACCEPT,,,,PASS,x,,
+round2_088,Microsoft,2025,Item 1,simple_lookup,paraphrase (no copied terms from the chunk),[DRY-RUN TEMPLATE: paraphrase (no copied terms from the chunk)] Question for Microsoft FY2025 (Item 1) chunk 10b0abdc,[DRY-RUN TEMPLATE] Ground truth answer derived from chunk text.,"•Microsoft 365 Commercial products and cloud services, including Microsoft 365 Commercial cloud, comprising Microsoft 36","•Microsoft 365 Commercial products and cloud services, including Microsoft 365 Commercial cloud, comprising Microsoft 365 Commercial, Enterprise Mobility + Security, the cloud portion of Windows Commercial, the per-user portion of Power BI, Exch [...]",ACCEPT,,,,PASS,x,,
+round2_089,Microsoft,2025,Item 1A,simple_lookup,"""what does the filing say about"" style","[DRY-RUN TEMPLATE: ""what does the filing say about"" style] Question for Microsoft FY2025 (Item 1A) chunk 47b306b0",[DRY-RUN TEMPLATE] Ground truth answer derived from chunk text.,Our products operate in conjunction with and are dependent on products and components across a broad ecosystem of third,"Our products operate in conjunction with and are dependent on products and components across a broad ecosystem of third parties. If there is a security vulnerability in one of these components, and if there is a security exploit targeting it, w [...]",ACCEPT,,,,PASS,x,,
+round2_090,Microsoft,2025,Item 1A,simple_lookup,comparison-of-two-figures style where the chunk allows,[DRY-RUN TEMPLATE: comparison-of-two-figures style where the chunk allows] Question for Microsoft FY2025 (Item 1A) chunk a9b352bc,[DRY-RUN TEMPLATE] Ground truth answer derived from chunk text.,"New, existing, and evolving laws and regulations, or interpretations or applications of existing laws and regulations in","New, existing, and evolving laws and regulations, or interpretations or applications of existing laws and regulations in a manner inconsistent with our interpretations of such laws and regulations or our practices, may result in modification of [...]",ACCEPT,,,,PASS,x,,
+round2_091,Microsoft,2025,Item 7,numeric_precision,natural prose,[DRY-RUN TEMPLATE: natural prose] Question for Microsoft FY2025 (Item 7) chunk 134a614c,[DRY-RUN TEMPLATE] Ground truth answer derived from chunk text.,"Contractual Obligations
+
+The following table summarizes the payments due by fiscal year for our outstanding contractual","Contractual Obligations
+
+The following table summarizes the payments due by fiscal year for our outstanding contractual obligations as of June 30, 2025:
+
+(In millions)
+
+2026
+
+Thereafter
+
+Total
+
+Long-term debt: (a)
+
+Principal payments
+
+$
+
+3,000 [...]",ACCEPT,,,,PASS,x,,
+round2_092,Microsoft,2025,Item 7,simple_lookup,short direct question,[DRY-RUN TEMPLATE: short direct question] Question for Microsoft FY2025 (Item 7) chunk d149c13e,[DRY-RUN TEMPLATE] Ground truth answer derived from chunk text.,A majority of our investments are priced by pricing vendors and are generally Level 1 or Level 2 investments as these ve,A majority of our investments are priced by pricing vendors and are generally Level 1 or Level 2 investments as these vendors either provide a quoted market price in an active market or use observable inputs for their pricing without applying si [...],ACCEPT,,,,PASS,x,,
+round2_093,Microsoft,2025,Item 7,simple_lookup,keyword-style phrase,[DRY-RUN TEMPLATE: keyword-style phrase] Question for Microsoft FY2025 (Item 7) chunk bbdbb641,[DRY-RUN TEMPLATE] Ground truth answer derived from chunk text.,"We are currently assessing the One Big Beautiful Bill Act (“OBBBA”) which was enacted on July 4, 2025. The OBBBA provide","We are currently assessing the One Big Beautiful Bill Act (“OBBBA”) which was enacted on July 4, 2025. The OBBBA provides a U.S. global intangible low-taxed income effective tax rate of 14% effective fiscal year 2027 for Microsoft. It also provi [...]",ACCEPT,,,,PASS,x,,
+round2_094,Microsoft,2025,Item 8,numeric_precision,paraphrase (no copied terms from the chunk),[DRY-RUN TEMPLATE: paraphrase (no copied terms from the chunk)] Question for Microsoft FY2025 (Item 8) chunk d714de58,[DRY-RUN TEMPLATE] Ground truth answer derived from chunk text.,"2052
+
+–
+
+2062
+
+2.92%
+
+–
+
+3.04%
+
+2.92%
+
+–
+
+3.04%
+
+8,185
+
+8,185
+
+2023 issuance of $0.1 billion
+
+2026
+
+–
+
+2050
+
+1.35%
+
+–
+
+4","2052
+
+–
+
+2062
+
+2.92%
+
+–
+
+3.04%
+
+2.92%
+
+–
+
+3.04%
+
+8,185
+
+8,185
+
+2023 issuance of $0.1 billion
+
+2026
+
+–
+
+2050
+
+1.35%
+
+–
+
+4.50%
+
+5.16%
+
+–
+
+5.49%
+
+56
+
+56
+
+2024 issuance of $3.3 billion
+
+2026
+
+–
+
+2050
+
+1.35%
+
+–
+
+4.50%
+
+5.16%
+
+–
+
+5.49%
+
+3,344
+
+3,344 [...]",ACCEPT,,,,PASS,x,,
+round2_095,Microsoft,2025,Item 8,simple_lookup,"""what does the filing say about"" style","[DRY-RUN TEMPLATE: ""what does the filing say about"" style] Question for Microsoft FY2025 (Item 8) chunk eee9c038",[DRY-RUN TEMPLATE] Ground truth answer derived from chunk text.,We have an ESPP for all eligible employees. Shares of our common stock may be purchased by employees at three-month inte,We have an ESPP for all eligible employees. Shares of our common stock may be purchased by employees at three-month intervals at 90% of the fair market value on the last trading day of each three-month period. Employees may purchase shares havin [...],ACCEPT,,,,PASS,x,,
+round2_096,Microsoft,2025,Item 8,simple_lookup,comparison-of-two-figures style where the chunk allows,[DRY-RUN TEMPLATE: comparison-of-two-figures style where the chunk allows] Question for Microsoft FY2025 (Item 8) chunk 67418055,[DRY-RUN TEMPLATE] Ground truth answer derived from chunk text.,"Sales and Marketing
+
+Sales and marketing expenses include payroll, employee benefits, stock-based compensation expense,","Sales and Marketing
+
+Sales and marketing expenses include payroll, employee benefits, stock-based compensation expense, and other headcount-related expenses associated with sales and marketing personnel, and the costs of advertising, promotions [...]",ACCEPT,,,,PASS,x,,
+round2_097,Microsoft,2026,Item 1,simple_lookup,natural prose,[DRY-RUN TEMPLATE: natural prose] Question for Microsoft FY2026 (Item 1) chunk 4c6bcca9,[DRY-RUN TEMPLATE] Ground truth answer derived from chunk text.,"Our Search advertising business is designed to deliver relevant search, native, and display advertising to a global audi","Our Search advertising business is designed to deliver relevant search, native, and display advertising to a global audience. Microsoft Copilot is a digital companion designed to inform, entertain, and inspire. Our Microsoft Edge browser and Bin [...]",ACCEPT,,,,PASS,x,,
+round2_098,Microsoft,2026,Item 1A,simple_lookup,short direct question,[DRY-RUN TEMPLATE: short direct question] Question for Microsoft FY2026 (Item 1A) chunk c40d875c,[DRY-RUN TEMPLATE] Ground truth answer derived from chunk text.,"Cyberthreats are constantly evolving and becoming increasingly sophisticated and complex, increasing the difficulty of p","Cyberthreats are constantly evolving and becoming increasingly sophisticated and complex, increasing the difficulty of preventing, detecting and successfully defending against them. Threat actors also utilize emerging technologies such as AI and [...]",ACCEPT,,,,PASS,x,,
+round2_099,Microsoft,2026,Item 1A,simple_lookup,keyword-style phrase,[DRY-RUN TEMPLATE: keyword-style phrase] Question for Microsoft FY2026 (Item 1A) chunk ed58780d,[DRY-RUN TEMPLATE] Ground truth answer derived from chunk text.,"If our reputation or our brands are damaged, our business and results of operations may be harmed. Our reputation and br","If our reputation or our brands are damaged, our business and results of operations may be harmed. Our reputation and brands are globally recognized and are important to our business. Our reputation and brands affect our ability to attract and r [...]",ACCEPT,,,,PASS,x,,
+round2_100,Microsoft,2026,Item 7,numeric_precision,paraphrase (no copied terms from the chunk),[DRY-RUN TEMPLATE: paraphrase (no copied terms from the chunk)] Question for Microsoft FY2026 (Item 7) chunk e36aecea,[DRY-RUN TEMPLATE] Ground truth answer derived from chunk text.,"SEGMENT RESULTS OF OPERATIONS
+
+(In millions, except percentages)
+
+2026
+
+2025
+
+Percentage
+
+Change
+
+Productivity and Busin","SEGMENT RESULTS OF OPERATIONS
+
+(In millions, except percentages)
+
+2026
+
+2025
+
+Percentage
+
+Change
+
+Productivity and Business Processes
+
+Revenue
+
+$
+
+139,996
+
+$
+
+120,810
+
+16%
+
+Cost of revenue
+
+25,017
+
+22,422
+
+12%
+
+Operating expenses
+
+31,100
+
+28,615 [...]",ACCEPT,,,,PASS,x,,
+round2_101,Microsoft,2026,Item 7,simple_lookup,"""what does the filing say about"" style","[DRY-RUN TEMPLATE: ""what does the filing say about"" style] Question for Microsoft FY2026 (Item 7) chunk 91466419",[DRY-RUN TEMPLATE] Ground truth answer derived from chunk text.,"Our effective tax rate was lower than the U.S. federal statutory rate, primarily due to earnings taxed at lower rates in","Our effective tax rate was lower than the U.S. federal statutory rate, primarily due to earnings taxed at lower rates in foreign jurisdictions resulting from producing and distributing our products and services through our foreign regional opera [...]",ACCEPT,,,,PASS,x,,
+round2_102,Microsoft,2026,Item 8,numeric_precision,comparison-of-two-figures style where the chunk allows,[DRY-RUN TEMPLATE: comparison-of-two-figures style where the chunk allows] Question for Microsoft FY2026 (Item 8) chunk 26812618,[DRY-RUN TEMPLATE] Ground truth answer derived from chunk text.,"U.S. agency securities
+
+Level 2
+
+2,686
+
+0
+
+0
+
+2,686
+
+496
+
+2,190
+
+0
+
+Foreign government bonds
+
+Level 2
+
+349
+
+24
+
+(9
+
+)
+
+3","U.S. agency securities
+
+Level 2
+
+2,686
+
+0
+
+0
+
+2,686
+
+496
+
+2,190
+
+0
+
+Foreign government bonds
+
+Level 2
+
+349
+
+24
+
+(9
+
+)
+
+364
+
+0
+
+364
+
+0
+
+Mortgage- and asset-backed securities
+
+Level 2
+
+2,558
+
+10
+
+(27
+
+)
+
+2,541
+
+0
+
+2,541
+
+0
+
+Corporate notes and bon [...]",ACCEPT,,,,PASS,x,,
+round2_103,Microsoft,2026,Item 8,simple_lookup,natural prose,[DRY-RUN TEMPLATE: natural prose] Question for Microsoft FY2026 (Item 8) chunk e5de6272,[DRY-RUN TEMPLATE] Ground truth answer derived from chunk text.,"Product revenue includes sales from operating systems, server applications, business solution applications, software dev","Product revenue includes sales from operating systems, server applications, business solution applications, software development tools, desktop and server management tools, video games, and hardware such as PCs, tablets, gaming and entertainment [...]",ACCEPT,,,,PASS,x,,
+round2_104,Microsoft,2026,Item 8,simple_lookup,short direct question,[DRY-RUN TEMPLATE: short direct question] Question for Microsoft FY2026 (Item 8) chunk 13ef98b8,[DRY-RUN TEMPLATE] Ground truth answer derived from chunk text.,"Compensation cost for stock awards, which include restricted stock units (“RSUs”) and performance stock units (“PSUs”),","Compensation cost for stock awards, which include restricted stock units (“RSUs”) and performance stock units (“PSUs”), is measured at the fair value on the grant date and recognized as expense, net of estimated forfeitures, over the related se [...]",ACCEPT,,,,PASS,x,,
+round2_105,NVIDIA,2024,Item 1,simple_lookup,keyword-style phrase,[DRY-RUN TEMPLATE: keyword-style phrase] Question for NVIDIA FY2024 (Item 1) chunk 52bbdd76,[DRY-RUN TEMPLATE] Ground truth answer derived from chunk text.,"Our competitive position has been harmed, and our competitive position and future results may be further harmed in the l","Our competitive position has been harmed, and our competitive position and future results may be further harmed in the long term, if there are further changes in the USG’s export controls. Given the increasing strategic importance of AI and risi [...]",ACCEPT,,,,PASS,x,,
+round2_106,NVIDIA,2024,Item 1A,simple_lookup,paraphrase (no copied terms from the chunk),[DRY-RUN TEMPLATE: paraphrase (no copied terms from the chunk)] Question for NVIDIA FY2024 (Item 1A) chunk 23877e9a,[DRY-RUN TEMPLATE] Ground truth answer derived from chunk text.,"We have invested in research and development in markets where we have a limited operating history, which may not produce","We have invested in research and development in markets where we have a limited operating history, which may not produce meaningful revenue for several years, if at all. If we fail to develop or monetize new products and technologies, or if they [...]",ACCEPT,,,,PASS,x,,
+round2_107,NVIDIA,2024,Item 1A,simple_lookup,"""what does the filing say about"" style","[DRY-RUN TEMPLATE: ""what does the filing say about"" style] Question for NVIDIA FY2024 (Item 1A) chunk 2c8cc436",[DRY-RUN TEMPLATE] Ground truth answer derived from chunk text.,"In October 2023, the USG announced new and updated licensing requirements that became effective in our fourth quarter of","In October 2023, the USG announced new and updated licensing requirements that became effective in our fourth quarter of fiscal year 2024 for exports to China and Country Groups D1, D4, and D5 (including but not limited to, Saudi Arabia, the Uni [...]",ACCEPT,,,,PASS,x,,
+round2_108,NVIDIA,2024,Item 7,numeric_precision,comparison-of-two-figures style where the chunk allows,[DRY-RUN TEMPLATE: comparison-of-two-figures style where the chunk allows] Question for NVIDIA FY2024 (Item 7) chunk 4e68ace0,[DRY-RUN TEMPLATE] Ground truth answer derived from chunk text.,Provisions for inventory and excess inventory purchase obligations totaled $2.2 billion for both fiscal years 2024 and 2,Provisions for inventory and excess inventory purchase obligations totaled $2.2 billion for both fiscal years 2024 and 2023. Sales of previously reserved inventory or settlements of excess inventory purchase obligations resulted in a provision r [...],ACCEPT,,,,PASS,x,,
+round2_109,NVIDIA,2024,Item 7,simple_lookup,natural prose,[DRY-RUN TEMPLATE: natural prose] Question for NVIDIA FY2024 (Item 7) chunk 2b12051d,[DRY-RUN TEMPLATE] Ground truth answer derived from chunk text.,"Operating expenses increased for fiscal year 2024, driven by growth in employees and compensation increases. Fiscal year","Operating expenses increased for fiscal year 2024, driven by growth in employees and compensation increases. Fiscal year 2023 also included a $1.4 billion acquisition termination charge related to the proposed Arm transaction.
+
+Market Platform H [...]",ACCEPT,,,,PASS,x,,
+round2_110,NVIDIA,2024,Item 7,simple_lookup,short direct question,[DRY-RUN TEMPLATE: short direct question] Question for NVIDIA FY2024 (Item 7) chunk 2d431ac3,[DRY-RUN TEMPLATE] Ground truth answer derived from chunk text.,"Macroeconomic factors, including inflation, increased interest rates, capital market volatility, global supply chain con","Macroeconomic factors, including inflation, increased interest rates, capital market volatility, global supply chain constraints and global economic and geopolitical developments, may have direct and indirect impacts on our results of operations [...]",ACCEPT,,,,PASS,x,,
+round2_111,NVIDIA,2024,Item 8,numeric_precision,keyword-style phrase,[DRY-RUN TEMPLATE: keyword-style phrase] Question for NVIDIA FY2024 (Item 8) chunk d3bc1484,[DRY-RUN TEMPLATE] Ground truth answer derived from chunk text.,"Debt securities issued by U.S. government agencies1,836 — (2)1,834 50 1,784
+
+Money market funds1,777 — — 1,777 1,777 —","Debt securities issued by U.S. government agencies1,836 — (2)1,834 50 1,784
+
+Money market funds1,777 — — 1,777 1,777 —
+
+Certificates of deposit365 — — 365 134 231
+
+Foreign government bonds140 — — 140 100 40
+
+Total$13,112 $1 $(58)$13,055 $3,148 [...]",ACCEPT,,,,PASS,x,,
+round2_112,NVIDIA,2024,Item 8,simple_lookup,paraphrase (no copied terms from the chunk),[DRY-RUN TEMPLATE: paraphrase (no copied terms from the chunk)] Question for NVIDIA FY2024 (Item 8) chunk 7b04fc7a,[DRY-RUN TEMPLATE] Ground truth answer derived from chunk text.,A company’s internal control over financial reporting is a process designed to provide reasonable assurance regarding th,A company’s internal control over financial reporting is a process designed to provide reasonable assurance regarding the reliability of financial reporting and the preparation of financial statements for external purposes in accordance with gen [...],ACCEPT,,,,PASS,x,,
+round2_113,NVIDIA,2024,Item 8,simple_lookup,"""what does the filing say about"" style","[DRY-RUN TEMPLATE: ""what does the filing say about"" style] Question for NVIDIA FY2024 (Item 8) chunk 5e774b80",[DRY-RUN TEMPLATE] Ground truth answer derived from chunk text.,"As of January 28, 2024, we intend to indefinitely reinvest approximately $1.1 billion and $250 million of cumulative und","As of January 28, 2024, we intend to indefinitely reinvest approximately $1.1 billion and $250 million of cumulative undistributed earnings held by certain subsidiaries in Israel and the United Kingdom, respectively. We have not provided the amo [...]",ACCEPT,,,,PASS,x,,
+round2_114,NVIDIA,2025,Item 1,simple_lookup,comparison-of-two-figures style where the chunk allows,[DRY-RUN TEMPLATE: comparison-of-two-figures style where the chunk allows] Question for NVIDIA FY2025 (Item 1) chunk 5aabdb0a,[DRY-RUN TEMPLATE] Ground truth answer derived from chunk text.,"The GPU was initially used to simulate human imagination, enabling the virtual worlds of video games and films. Today, i","The GPU was initially used to simulate human imagination, enabling the virtual worlds of video games and films. Today, it also simulates human intelligence, enabling a deeper understanding of the physical world. Its parallel processing capabilit [...]",ACCEPT,,,,PASS,x,,
+round2_115,NVIDIA,2025,Item 1A,simple_lookup,natural prose,[DRY-RUN TEMPLATE: natural prose] Question for NVIDIA FY2025 (Item 1A) chunk 8c19a1d4,[DRY-RUN TEMPLATE] Ground truth answer derived from chunk text.,Product transitions are complex and we often ship both new and prior architecture products simultaneously as our channel,Product transitions are complex and we often ship both new and prior architecture products simultaneously as our channel partners prepare to ship and support new products. We are generally in various stages of transitioning the architectures of [...],ACCEPT,,,,PASS,x,,
+round2_116,NVIDIA,2025,Item 1A,simple_lookup,short direct question,[DRY-RUN TEMPLATE: short direct question] Question for NVIDIA FY2025 (Item 1A) chunk 5c518170,[DRY-RUN TEMPLATE] Ground truth answer derived from chunk text.,"21
+
+Table of Contents
+
+demand, access to global markets, hiring, and profitability. For example, other countries have re","21
+
+Table of Contents
+
+demand, access to global markets, hiring, and profitability. For example, other countries have restricted and may continue in the future to restrict business with the State of Israel, where we have engineering, sales suppo [...]",ACCEPT,,,,PASS,x,,
+round2_117,NVIDIA,2025,Item 7,numeric_precision,keyword-style phrase,[DRY-RUN TEMPLATE: keyword-style phrase] Question for NVIDIA FY2025 (Item 7) chunk b600a486,[DRY-RUN TEMPLATE] Ground truth answer derived from chunk text.,Provisions for inventory and excess inventory purchase obligations totaled $3.7 billion and $2.2 billion for fiscal year,"Provisions for inventory and excess inventory purchase obligations totaled $3.7 billion and $2.2 billion for fiscal years 2025 and 2024, respectively. Sales of previously reserved inventory and settlements of excess inventory purchase obligation [...]",ACCEPT,,,,PASS,x,,
+round2_118,NVIDIA,2025,Item 7,simple_lookup,paraphrase (no copied terms from the chunk),[DRY-RUN TEMPLATE: paraphrase (no copied terms from the chunk)] Question for NVIDIA FY2025 (Item 7) chunk 5f8640f2,[DRY-RUN TEMPLATE] Ground truth answer derived from chunk text.,Product transitions are complex and we often ship both new and prior architecture products simultaneously as our channel,Product transitions are complex and we often ship both new and prior architecture products simultaneously as our channel partners prepare to ship and support new products. We are generally in various stages of transitioning the architectures of [...],ACCEPT,,,,PASS,x,,
+round2_119,NVIDIA,2025,Item 7,simple_lookup,"""what does the filing say about"" style","[DRY-RUN TEMPLATE: ""what does the filing say about"" style] Question for NVIDIA FY2025 (Item 7) chunk 2e1005c9",[DRY-RUN TEMPLATE] Ground truth answer derived from chunk text.,"We account for customer programs, which involve rebates and marketing development funds, or MDFs, as a reduction in reve","We account for customer programs, which involve rebates and marketing development funds, or MDFs, as a reduction in revenue and accrue for such programs based on the amount we expect to be claimed by customers. Certain customer programs include [...]",ACCEPT,,,,PASS,x,,
+round2_120,NVIDIA,2025,Item 8,numeric_precision,comparison-of-two-figures style where the chunk allows,[DRY-RUN TEMPLATE: comparison-of-two-figures style where the chunk allows] Question for NVIDIA FY2025 (Item 8) chunk f3fd6934,[DRY-RUN TEMPLATE] Ground truth answer derived from chunk text.,"As of January 26, 2025, the total carrying amount of goodwill was $5.2 billion, consisting of goodwill balances allocate","As of January 26, 2025, the total carrying amount of goodwill was $5.2 billion, consisting of goodwill balances allocated to our Compute & Networking and Graphics reporting units of $4.8 billion and $370 million, respectively. As of January 28, [...]",ACCEPT,,,,PASS,x,,
+round2_121,NVIDIA,2025,Item 8,simple_lookup,natural prose,[DRY-RUN TEMPLATE: natural prose] Question for NVIDIA FY2025 (Item 8) chunk 979d1959,[DRY-RUN TEMPLATE] Ground truth answer derived from chunk text.,"We are subject to taxation by taxing authorities both in the United States and other countries. As of January 26, 2025,","We are subject to taxation by taxing authorities both in the United States and other countries. As of January 26, 2025, the significant tax jurisdictions that may be subject to examination include the United States for fiscal years after 2021, [...]",ACCEPT,,,,PASS,x,,
+round2_122,NVIDIA,2025,Item 8,simple_lookup,short direct question,[DRY-RUN TEMPLATE: short direct question] Question for NVIDIA FY2025 (Item 8) chunk 319fd4b5,[DRY-RUN TEMPLATE] Ground truth answer derived from chunk text.,"Long-lived assets, such as property and equipment and intangible assets subject to amortization, are reviewed for impair","Long-lived assets, such as property and equipment and intangible assets subject to amortization, are reviewed for impairment whenever events or changes in circumstances indicate that the carrying amount of an asset or asset group may not be reco [...]",ACCEPT,,,,PASS,x,,
+round2_123,NVIDIA,2026,Item 1,simple_lookup,keyword-style phrase,[DRY-RUN TEMPLATE: keyword-style phrase] Question for NVIDIA FY2026 (Item 1) chunk 0ffca65c,[DRY-RUN TEMPLATE] Ground truth answer derived from chunk text.,"In August 2025, the USG granted licenses that would allow us to ship certain H20 products to certain China-based custome","In August 2025, the USG granted licenses that would allow us to ship certain H20 products to certain China-based customers. We generated approximately $60 million in H20 revenue under those licenses. USG officials expressed an expectation that t [...]",ACCEPT,,,,PASS,x,,
+round2_124,NVIDIA,2026,Item 1A,simple_lookup,paraphrase (no copied terms from the chunk),[DRY-RUN TEMPLATE: paraphrase (no copied terms from the chunk)] Question for NVIDIA FY2026 (Item 1A) chunk deaaa8c6,[DRY-RUN TEMPLATE] Ground truth answer derived from chunk text.,"In April 2025, the USG informed us that it requires a license for export to China (including Hong Kong and Macau) and D:","In April 2025, the USG informed us that it requires a license for export to China (including Hong Kong and Macau) and D:5 countries, or to companies headquartered or with an ultimate parent therein, of our H20 integrated circuits and any other c [...]",ACCEPT,,,,PASS,x,,
+round2_125,NVIDIA,2026,Item 1A,simple_lookup,"""what does the filing say about"" style","[DRY-RUN TEMPLATE: ""what does the filing say about"" style] Question for NVIDIA FY2026 (Item 1A) chunk 7e745cc9",[DRY-RUN TEMPLATE] Ground truth answer derived from chunk text.,We continue to increase our supply and capacity purchases with existing and new suppliers to support our demand projecti,We continue to increase our supply and capacity purchases with existing and new suppliers to support our demand projections and increasing complexity of our data center products. We expect supply constraints to be a headwind to Gaming in the fir [...],ACCEPT,,,,PASS,x,,
+round2_126,NVIDIA,2026,Item 7,numeric_precision,comparison-of-two-figures style where the chunk allows,[DRY-RUN TEMPLATE: comparison-of-two-figures style where the chunk allows] Question for NVIDIA FY2026 (Item 7) chunk 8c50e6c3,[DRY-RUN TEMPLATE] Ground truth answer derived from chunk text.,A discussion regarding our financial condition and results of operations for fiscal year 2026 compared to fiscal year 20,A discussion regarding our financial condition and results of operations for fiscal year 2026 compared to fiscal year 2025 is presented below. A discussion regarding our financial condition and results of operations for fiscal year 2025 compared [...],ACCEPT,,,,PASS,x,,
+round2_127,NVIDIA,2026,Item 7,simple_lookup,natural prose,[DRY-RUN TEMPLATE: natural prose] Question for NVIDIA FY2026 (Item 7) chunk 19ee5a7d,[DRY-RUN TEMPLATE] Ground truth answer derived from chunk text.,"Item 7. Management's Discussion and Analysis of Financial Condition and Results of Operations
+
+The following discussion","Item 7. Management's Discussion and Analysis of Financial Condition and Results of Operations
+
+The following discussion and analysis of our financial condition and results of operations should be read in conjunction with “Item 1A. Risk Factors, [...]",ACCEPT,,,,PASS,x,,
+round2_128,NVIDIA,2026,Item 8,numeric_precision,short direct question,[DRY-RUN TEMPLATE: short direct question] Question for NVIDIA FY2026 (Item 8) chunk 48739e91,[DRY-RUN TEMPLATE] Ground truth answer derived from chunk text.,Addressing the matter involved performing procedures and evaluating audit evidence in connection with forming our overal,Addressing the matter involved performing procedures and evaluating audit evidence in connection with forming our overall opinion on the consolidated financial statements. These procedures included testing the effectiveness of controls relating [...],ACCEPT,,,,PASS,x,,
+round2_129,NVIDIA,2026,Item 8,simple_lookup,keyword-style phrase,[DRY-RUN TEMPLATE: keyword-style phrase] Question for NVIDIA FY2026 (Item 8) chunk 897b866c,[DRY-RUN TEMPLATE] Ground truth answer derived from chunk text.,"The carrying value of cash equivalents, accounts receivable, accounts payable and accrued liabilities approximate their","The carrying value of cash equivalents, accounts receivable, accounts payable and accrued liabilities approximate their fair values due to their relatively short maturities as of January 25, 2026 and January 26, 2025. Marketable debt and equity [...]",ACCEPT,,,,PASS,x,,
+round2_130,NVIDIA,2026,Item 8,numeric_precision,paraphrase (no copied terms from the chunk),[DRY-RUN TEMPLATE: paraphrase (no copied terms from the chunk)] Question for NVIDIA FY2026 (Item 8) chunk 64715d1b,[DRY-RUN TEMPLATE] Ground truth answer derived from chunk text.,"54
+
+Table of Contents
+
+NVIDIA Corporation and Subsidiaries
+
+Consolidated Statements of Cash Flows
+
+(In millions)
+
+Year E","54
+
+Table of Contents
+
+NVIDIA Corporation and Subsidiaries
+
+Consolidated Statements of Cash Flows
+
+(In millions)
+
+Year Ended
+
+Jan 25, 2026Jan 26, 2025Jan 28, 2024
+
+Cash flows from operating activities:
+
+Net income$120,067 $72,880 $29,760
+
+Adjust [...]",ACCEPT,,,,PASS,x,,
+round2_mh_01,Alphabet,2023/2024,Item 7/Item 7,multi_hop,comparison-of-two-figures style where the chunk allows,[DRY-RUN TEMPLATE] Compare Alphabet FY2023 and FY2024 metric,[DRY-RUN TEMPLATE] Multi-year synthesized answer.,"Recording an uncertain tax position involves various qualita || with variable terms, we do not estimate the non-cancelable o","[2023]: Recording an uncertain tax position involves various qualitative considerations, including evaluation of comparable and resolved tax exposures, applicability of tax laws, and likelihood [...] || [2024]: with variable terms, we do not estimate the non-cancelable obligation beyond any minimum quantities and/or pricing as of December 31, 2024. In certain instances, the amount of our contr [...]",ACCEPT,,,,PASS,x,,
+round2_mh_02,Alphabet,2023/2024,Item 8/Item 8,multi_hop,comparison-of-two-figures style where the chunk allows,[DRY-RUN TEMPLATE] Compare Alphabet FY2023 and FY2024 metric,[DRY-RUN TEMPLATE] Multi-year synthesized answer.,"Fair value is an exit price, representing the amount that wo || 77.
+
+Table of Contents
+
+Alphabet Inc.
+
+Google ServicesGoogle","[2023]: Fair value is an exit price, representing the amount that would be received to sell an asset or paid to transfer a liability in an orderly transaction between market participants. As su [...] || [2024]: 77.
+
+Table of Contents
+
+Alphabet Inc.
+
+Google ServicesGoogle CloudOther BetsTotal
+
+Balance as of December 31, 2022$20,847 $7,205 $908 $28,960
+
+Additions
+
+240 3 0 243
+
+Foreign currency t [...]",ACCEPT,,,,PASS,x,,
+round2_mh_03,Alphabet,2024/2025,Item 7/Item 7,multi_hop,comparison-of-two-figures style where the chunk allows,[DRY-RUN TEMPLATE] Compare Alphabet FY2024 and FY2025 metric,[DRY-RUN TEMPLATE] Multi-year synthesized answer.,EMEA revenue growth was not materially affected by changes i || •Other Bets operating loss of $7.5 billion for the year ende,"[2024]: EMEA revenue growth was not materially affected by changes in foreign currency exchange rates, as the effect of the U.S. dollar strengthening relative to the Turkish lira was offset by [...] || [2025]: •Other Bets operating loss of $7.5 billion for the year ended December 31, 2025 included a $2.1 billion employee compensation charge recognized in the fourth quarter for Waymo, primaril [...]",ACCEPT,,,,PASS,x,,
+round2_mh_04,Alphabet,2024/2025,Item 8/Item 8,multi_hop,comparison-of-two-figures style where the chunk allows,[DRY-RUN TEMPLATE] Compare Alphabet FY2024 and FY2025 metric,[DRY-RUN TEMPLATE] Multi-year synthesized answer.,Unrealized net gain (loss) on marketable equity securities(3 || We recognize the financial statement effects of a tax positi,"[2024]: Unrealized net gain (loss) on marketable equity securities(3,242)790 156
+
+Unrealized net gain (loss) on non-marketable equity securities(1)
+
+229 (1,088)3,372
+
+Total gain (loss) on equit [...] || [2025]: We recognize the financial statement effects of a tax position when it is more likely than not that, based on technical merits, the position will be sustained upon examination. The tax [...]",ACCEPT,,,,PASS,x,,
+round2_mh_05,Alphabet,2023/2024/2025,Item 7/Item 7/Item 7,multi_hop,comparison-of-two-figures style where the chunk allows,[DRY-RUN TEMPLATE] Compare Alphabet FY2023 and FY2024 and FY2025 metric,[DRY-RUN TEMPLATE] Multi-year synthesized answer.,"We benefit from advertising revenues generated from differen || Changes in social, political, economic, tax, and regulatory || Provision for income taxes represents the estimated amount o","[2023]: We benefit from advertising revenues generated from different channels, including mobile, and newer advertising formats. The margins from these channels and newer products have generall [...] || [2024]: Changes in social, political, economic, tax, and regulatory conditions or in laws and policies governing a wide range of topics and related legal matters, including investigations, law [...] || [2025]: Provision for income taxes represents the estimated amount of federal, state, and foreign income taxes incurred in the US and the many jurisdictions in which we operate. The provision i [...]",ACCEPT,,,,PASS,x,,
+round2_mh_06,Amazon,2023/2024,Item 7/Item 7,multi_hop,comparison-of-two-figures style where the chunk allows,[DRY-RUN TEMPLATE] Compare Amazon FY2023 and FY2024 metric,[DRY-RUN TEMPLATE] Multi-year synthesized answer.,We are also currently subject to tax controversies in variou || We are also currently subject to tax controversies in variou,"[2023]: We are also currently subject to tax controversies in various jurisdictions, and these jurisdictions may assess additional income tax liabilities against us. Developments in an audit, i [...] || [2024]: We are also currently subject to tax controversies in various jurisdictions, and these jurisdictions may assess additional income tax liabilities against us. Developments in an audit, i [...]",ACCEPT,,,,PASS,x,,
+round2_mh_07,Amazon,2023/2024,Item 8/Item 8,multi_hop,comparison-of-two-figures style where the chunk allows,[DRY-RUN TEMPLATE] Compare Amazon FY2023 and FY2024 metric,[DRY-RUN TEMPLATE] Multi-year synthesized answer.,"Common Stock Available for Future Issuance
+
+As of December 3 || Beginning in March 2020 with Frame-Wilson v. Amazon.com, Inc","[2023]: Common Stock Available for Future Issuance
+
+As of December 31, 2023, common stock available for future issuance to employees is 1.6 billion shares.
+
+Note 9 — INCOME TAXES
+
+In 2021, 2022 [...] || [2024]: Beginning in March 2020 with Frame-Wilson v. Amazon.com, Inc. filed in the United States District Court for the Western District of Washington (“W.D. Wash.”), private litigants have fil [...]",ACCEPT,,,,PASS,x,,
+round2_mh_08,Amazon,2024/2025,Item 7/Item 7,multi_hop,comparison-of-two-figures style where the chunk allows,[DRY-RUN TEMPLATE] Compare Amazon FY2024 and FY2025 metric,[DRY-RUN TEMPLATE] Multi-year synthesized answer.,"Overview
+
+Our primary source of revenue is the sale of a wid || As of December 31, 2024 and 2025, restricted cash, cash equi","[2024]: Overview
+
+Our primary source of revenue is the sale of a wide range of products and services to customers. The products offered through our stores include merchandise and content we hav [...] || [2025]: As of December 31, 2024 and 2025, restricted cash, cash equivalents, and marketable securities were $3.5 billion and $3.3 billion. See Item 8 of Part II, “Financial Statements and Suppl [...]",ACCEPT,,,,PASS,x,,
+round2_mh_09,Amazon,2024/2025,Item 8/Item 8,multi_hop,comparison-of-two-figures style where the chunk allows,[DRY-RUN TEMPLATE] Compare Amazon FY2024 and FY2025 metric,[DRY-RUN TEMPLATE] Multi-year synthesized answer.,"We incur software development costs related to products to b || Effective January 1, 2025 we changed our estimate of the use","[2024]: We incur software development costs related to products to be sold, leased, or marketed to external users, internal-use software, and our websites. Software development costs capitalize [...] || [2025]: Effective January 1, 2025 we changed our estimate of the useful lives of a subset of our servers and networking equipment from six years to five years. The shorter useful lives are due [...]",ACCEPT,,,,PASS,x,,
+round2_mh_10,Amazon,2023/2024/2025,Item 7/Item 7/Item 7,multi_hop,comparison-of-two-figures style where the chunk allows,[DRY-RUN TEMPLATE] Compare Amazon FY2023 and FY2024 and FY2025 metric,[DRY-RUN TEMPLATE] Multi-year synthesized answer.,"The increase in fulfillment costs in absolute dollars in 202 || We provided guidance on February 6, 2025, in our earnings re || We are also currently subject to tax controversies in variou","[2023]: The increase in fulfillment costs in absolute dollars in 2023, compared to the prior year, is primarily due to increased sales and investments in our fulfillment network, partially offs [...] || [2024]: We provided guidance on February 6, 2025, in our earnings release furnished on Form 8-K as set forth below. These forward-looking statements reflect Amazon.com’s expectations as of Febr [...] || [2025]: We are also currently subject to tax controversies in various jurisdictions, and these jurisdictions may assess additional income tax liabilities against us. Developments in an audit, i [...]",ACCEPT,,,,PASS,x,,
+round2_mh_11,Apple,2023/2024,Item 7/Item 7,multi_hop,comparison-of-two-figures style where the chunk allows,[DRY-RUN TEMPLATE] Compare Apple FY2023 and FY2024 metric,[DRY-RUN TEMPLATE] Multi-year synthesized answer.,The Company’s total net sales decreased 3% or $11.0 billion || Item 7.    Management’s Discussion and Analysis of Financial,"[2023]: The Company’s total net sales decreased 3% or $11.0 billion during 2023 compared to 2022. The weakness in foreign currencies relative to the U.S. dollar accounted for more than the ent [...] || [2024]: Item 7.    Management’s Discussion and Analysis of Financial Condition and Results of Operations
+
+The following discussion should be read in conjunction with the consolidated financial [...]",ACCEPT,,,,PASS,x,,
+round2_mh_12,Apple,2023/2024,Item 8/Item 8,multi_hop,comparison-of-two-figures style where the chunk allows,[DRY-RUN TEMPLATE] Compare Apple FY2023 and FY2024 metric,[DRY-RUN TEMPLATE] Multi-year synthesized answer.,The Apple Inc. 2022 Employee Stock Plan (the “2022 Plan”) is || The Company’s management is responsible for maintaining effe,"[2023]: The Apple Inc. 2022 Employee Stock Plan (the “2022 Plan”) is a shareholder-approved plan that provides for broad-based equity grants to employees, including executive officers, and perm [...] || [2024]: The Company’s management is responsible for maintaining effective internal control over financial reporting and for its assessment of the effectiveness of internal control over financia [...]",ACCEPT,,,,PASS,x,,
+round2_mh_13,Apple,2024/2025,Item 7/Item 7,multi_hop,comparison-of-two-figures style where the chunk allows,[DRY-RUN TEMPLATE] Compare Apple FY2024 and FY2025 metric,[DRY-RUN TEMPLATE] Multi-year synthesized answer.,"Item 7.    Management’s Discussion and Analysis of Financial || Beginning in the second quarter of 2025, new U.S. Tariffs we","[2024]: Item 7.    Management’s Discussion and Analysis of Financial Condition and Results of Operations
+
+The following discussion should be read in conjunction with the consolidated financial [...] || [2025]: Beginning in the second quarter of 2025, new U.S. Tariffs were announced, including additional tariffs on imports from China, India, Japan, South Korea, Taiwan, Vietnam and the EU, amon [...]",ACCEPT,,,,PASS,x,,
+round2_mh_14,Apple,2024/2025,Item 8/Item 8,multi_hop,comparison-of-two-figures style where the chunk allows,[DRY-RUN TEMPLATE] Compare Apple FY2024 and FY2025 metric,[DRY-RUN TEMPLATE] Multi-year synthesized answer.,"The Company has identified the performance obligations regul || Item 8.    Financial Statements and Supplementary Data
+
+Inde","[2024]: The Company has identified the performance obligations regularly included in arrangements involving the sale of iPhone, Mac and iPad. The first material performance obligation, which re [...] || [2025]: Item 8.    Financial Statements and Supplementary Data
+
+Index to Consolidated Financial StatementsPage
+
+Consolidated Statements of Operations for the years ended September 27, 2025, Sep [...]",ACCEPT,,,,PASS,x,,
+round2_mh_15,Apple,2023/2024/2025,Item 7/Item 7/Item 7,multi_hop,comparison-of-two-figures style where the chunk allows,[DRY-RUN TEMPLATE] Compare Apple FY2023 and FY2024 and FY2025 metric,[DRY-RUN TEMPLATE] Multi-year synthesized answer.,"The Company’s effective tax rate for 2023 and 2022 was lower || iPhone
+
+iPhone net sales were relatively flat during 2024 co || The Company is subject to income taxes in the U.S. and numer","[2023]: The Company’s effective tax rate for 2023 and 2022 was lower than the statutory federal income tax rate due primarily to a lower effective tax rate on foreign earnings, the impact of th [...] || [2024]: iPhone
+
+iPhone net sales were relatively flat during 2024 compared to 2023.
+
+Mac
+
+Mac net sales increased during 2024 compared to 2023 due primarily to higher net sales of laptops.
+
+iPa [...] || [2025]: The Company is subject to income taxes in the U.S. and numerous foreign jurisdictions. The evaluation of the Company’s uncertain tax positions involves significant judgment in the inter [...]",ACCEPT,,,,PASS,x,,
+round2_mh_16,Microsoft,2024/2025,Item 7/Item 7,multi_hop,comparison-of-two-figures style where the chunk allows,[DRY-RUN TEMPLATE] Compare Microsoft FY2024 and FY2025 metric,[DRY-RUN TEMPLATE] Multi-year synthesized answer.,"Fiscal Year 2024 Compared with Fiscal Year 2023
+
+Research an || Cash from operations increased $17.6 billion to $136.2 billi","[2024]: Fiscal Year 2024 Compared with Fiscal Year 2023
+
+Research and development expenses increased $2.3 billion or 9% driven by Gaming, with 7 points of growth from the Activision Blizzard ac [...] || [2025]: Cash from operations increased $17.6 billion to $136.2 billion for fiscal year 2025, primarily due to an increase in cash received from customers, offset in part by an increase in cash [...]",ACCEPT,,,,PASS,x,,
+round2_mh_17,Microsoft,2024/2025,Item 8/Item 8,multi_hop,comparison-of-two-figures style where the chunk allows,[DRY-RUN TEMPLATE] Compare Microsoft FY2024 and FY2025 metric,[DRY-RUN TEMPLATE] Multi-year synthesized answer.,"(1,837
+
+)
+
+(2,738
+
+)
+
+Other
+
+(167
+
+)
+
+(89
+
+)
+
+Deferred incom || We apply a practical expedient to expense costs as incurred","[2024]: (1,837
+
+)
+
+(2,738
+
+)
+
+Other
+
+(167
+
+)
+
+(89
+
+)
+
+Deferred income tax liabilities
+
+$
+
+(12,447
+
+)
+
+$
+
+(10,181
+
+)
+
+Net deferred income tax assets
+
+$
+
+19,652
+
+$
+
+19,730
+
+Reported As
+
+Other lon [...] || [2025]: We apply a practical expedient to expense costs as incurred for costs to obtain a contract with a customer when the amortization period would have been one year or less. These costs in [...]",ACCEPT,,,,PASS,x,,
+round2_mh_18,Microsoft,2025/2026,Item 7/Item 7,multi_hop,comparison-of-two-figures style where the chunk allows,[DRY-RUN TEMPLATE] Compare Microsoft FY2025 and FY2026 metric,[DRY-RUN TEMPLATE] Multi-year synthesized answer.,"In general, and where applicable, we use quoted prices in ac || Adjusted other income (expense), net, adjusted net income, a","[2025]: In general, and where applicable, we use quoted prices in active markets for identical assets or liabilities to determine the fair value of our financial instruments. This pricing metho [...] || [2026]: Adjusted other income (expense), net, adjusted net income, and adjusted diluted EPS are non-GAAP financial measures which exclude net (gains) losses from investments in OpenAI. We belie [...]",ACCEPT,,,,PASS,x,,
+round2_mh_19,Microsoft,2025/2026,Item 8/Item 8,multi_hop,comparison-of-two-figures style where the chunk allows,[DRY-RUN TEMPLATE] Compare Microsoft FY2025 and FY2026 metric,[DRY-RUN TEMPLATE] Multi-year synthesized answer.,"(1.3)%
+
+State income taxes, net of federal benefit
+
+1.5%
+
+1. || (17,732
+
+)
+
+Maturities of investments
+
+34,605
+
+16,079
+
+24,77","[2025]: (1.3)%
+
+State income taxes, net of federal benefit
+
+1.5%
+
+1.5%
+
+1.6%
+
+Research and development credit
+
+(1.1)%
+
+(1.1)%
+
+(1.1)%
+
+Excess tax benefits relating to stock-based compensation [...] || [2026]: (17,732
+
+)
+
+Maturities of investments
+
+34,605
+
+16,079
+
+24,775
+
+Sales of investments
+
+21,798
+
+9,309
+
+10,894
+
+Other, net
+
+(19,861
+
+)
+
+2,317
+
+(1,298
+
+)
+
+Net cash used in investing
+
+(139,50 [...]",ACCEPT,,,,PASS,x,,
+round2_mh_20,Microsoft,2024/2025/2026,Item 7/Item 7/Item 7,multi_hop,comparison-of-two-figures style where the chunk allows,[DRY-RUN TEMPLATE] Compare Microsoft FY2024 and FY2025 and FY2026 metric,[DRY-RUN TEMPLATE] Multi-year synthesized answer.,We generate revenue by offering a wide range of cloud-based || We are currently assessing the One Big Beautiful Bill Act (“ || For equity investments accounted for under the measurement a,"[2024]: We generate revenue by offering a wide range of cloud-based solutions, content, and other services to people and businesses; licensing and supporting an array of software products; del [...] || [2025]: We are currently assessing the One Big Beautiful Bill Act (“OBBBA”) which was enacted on July 4, 2025. The OBBBA provides a U.S. global intangible low-taxed income effective tax rate of [...] || [2026]: For equity investments accounted for under the measurement alternative, we evaluate whether observable changes in price have occurred in orderly transactions for identical or similar in [...]",ACCEPT,,,,PASS,x,,
+round2_mh_21,NVIDIA,2024/2025,Item 7/Item 7,multi_hop,comparison-of-two-figures style where the chunk allows,[DRY-RUN TEMPLATE] Compare NVIDIA FY2024 and FY2025 metric,[DRY-RUN TEMPLATE] Multi-year synthesized answer.,"In October 2023, the USG announced new and updated licensing || We are monitoring the impact of the geopolitical conflict in","[2024]: In October 2023, the USG announced new and updated licensing requirements that became effective in our fourth quarter of fiscal year 2024 for exports to China and Country Groups D1, D4, [...] || [2025]: We are monitoring the impact of the geopolitical conflict in and around Israel on our operations, including the health and safety of our approximately 4,700 employees in the region who [...]",ACCEPT,,,,PASS,x,,
+round2_mh_22,NVIDIA,2024/2025,Item 8/Item 8,multi_hop,comparison-of-two-figures style where the chunk allows,[DRY-RUN TEMPLATE] Compare NVIDIA FY2024 and FY2025 metric,[DRY-RUN TEMPLATE] Multi-year synthesized answer.,"In February 2023, we assessed the useful lives of our proper || (Continued)
+
+The following table outlines the estimated futu","[2024]: In February 2023, we assessed the useful lives of our property, plant, and equipment. Based on advances in technology and usage rate, we increased the estimated useful life of most of o [...] || [2025]: (Continued)
+
+The following table outlines the estimated future amortization expense related to the net carrying amount of intangible assets as of January 26, 2025:
+
+Future Amortization [...]",ACCEPT,,,,PASS,x,,
+round2_mh_23,NVIDIA,2025/2026,Item 7/Item 7,multi_hop,comparison-of-two-figures style where the chunk allows,[DRY-RUN TEMPLATE] Compare NVIDIA FY2025 and FY2026 metric,[DRY-RUN TEMPLATE] Multi-year synthesized answer.,Revenue growth in fiscal year 2025 was driven by data center || Situations that may result in excess or obsolete inventory o,"[2025]: Revenue growth in fiscal year 2025 was driven by data center compute and networking platforms for accelerated computing and AI solutions. Demand for our Hopper architecture drove our si [...] || [2026]: Situations that may result in excess or obsolete inventory or excess product purchase commitments include changes in business and economic conditions, changes in market conditions, sudd [...]",ACCEPT,,,,PASS,x,,
+round2_mh_24,NVIDIA,2025/2026,Item 8/Item 8,multi_hop,comparison-of-two-figures style where the chunk allows,[DRY-RUN TEMPLATE] Compare NVIDIA FY2025 and FY2026 metric,[DRY-RUN TEMPLATE] Multi-year synthesized answer.,"Subject to certain exceptions, RSUs vest generally over four || As of January 25, 2026, the total carrying amount of goodwil","[2025]: Subject to certain exceptions, RSUs vest generally over four years subject to continued service. PSUs vest over four years, subject to continued service and performance conditions. Mark [...] || [2026]: As of January 25, 2026, the total carrying amount of goodwill was $20.8 billion, consisting of goodwill balances allocated to our Compute & Networking and Graphics reporting units of $2 [...]",ACCEPT,,,,PASS,x,,
+round2_mh_25,NVIDIA,2024/2025/2026,Item 7/Item 7/Item 7,multi_hop,comparison-of-two-figures style where the chunk allows,[DRY-RUN TEMPLATE] Compare NVIDIA FY2024 and FY2025 and FY2026 metric,[DRY-RUN TEMPLATE] Multi-year synthesized answer.,"We build technology and introduce products for new and innov || In October 2023, the USG announced new and updated licensing || Item 7. Management's Discussion and Analysis of Financial Co","[2024]: We build technology and introduce products for new and innovative use cases and applications such as our NVIDIA DGX Cloud services, Omniverse platform, LLMs, and generative AI models. O [...] || [2025]: In October 2023, the USG announced new and updated licensing requirements that became effective in our fourth quarter of fiscal year 2024 for exports to China and Country Groups D1, D4, [...] || [2026]: Item 7. Management's Discussion and Analysis of Financial Condition and Results of Operations
+
+The following discussion and analysis of our financial condition and results of operations [...]",ACCEPT,,,,PASS,x,,
+round2_un_01,Tesla,2022,None,unanswerable,unanswerable inquiry,What was Tesla's total automotive regulatory credit revenue in fiscal year 2022?,I don't have enough information to answer this question based on the retrieved SEC filings.,,,ACCEPT,,,,PASS,x,,
+round2_un_02,Uber,2024,None,unanswerable,unanswerable inquiry,What was Uber's Mobility gross bookings figure for full fiscal year 2024?,I don't have enough information to answer this question based on the retrieved SEC filings.,,,ACCEPT,,,,PASS,x,,
+round2_un_03,Meta,2021,None,unanswerable,unanswerable inquiry,How many daily active users (DAUs) did Meta report across its Family of Apps in fiscal year 2021?,I don't have enough information to answer this question based on the retrieved SEC filings.,,,ACCEPT,,,,PASS,x,,
+round2_un_04,Netflix,2023,None,unanswerable,unanswerable inquiry,What was Netflix's average monthly revenue per paying membership in the UCAN region in fiscal 2023?,I don't have enough information to answer this question based on the retrieved SEC filings.,,,ACCEPT,,,,PASS,x,,
+round2_un_05,Spotify,2024,None,unanswerable,unanswerable inquiry,What was Spotify's ad-supported monthly active user count at the end of fiscal year 2024?,I don't have enough information to answer this question based on the retrieved SEC filings.,,,ACCEPT,,,,PASS,x,,
+round2_un_06,Airbnb,2023,None,unanswerable,unanswerable inquiry,What was Airbnb's total Nights and Seats Booked volume reported in fiscal year 2023?,I don't have enough information to answer this question based on the retrieved SEC filings.,,,ACCEPT,,,,PASS,x,,
+round2_un_07,Salesforce,2023,None,unanswerable,unanswerable inquiry,What was Salesforce's total subscription and support revenue for Service Cloud in fiscal year 2023?,I don't have enough information to answer this question based on the retrieved SEC filings.,,,ACCEPT,,,,PASS,x,,
+round2_un_08,Intel,2022,None,unanswerable,unanswerable inquiry,What was Intel Foundry Services (IFS) operating income in fiscal year 2022?,I don't have enough information to answer this question based on the retrieved SEC filings.,,,ACCEPT,,,,PASS,x,,
+round2_un_09,Oracle,2023,None,unanswerable,unanswerable inquiry,What was Oracle Cloud Infrastructure (OCI) consumption revenue growth reported in fiscal year 2023?,I don't have enough information to answer this question based on the retrieved SEC filings.,,,ACCEPT,,,,PASS,x,,
+round2_un_10,Cisco,2024,None,unanswerable,unanswerable inquiry,"What was Cisco's total Secure, Agile Networks revenue reported in fiscal year 2024?",I don't have enough information to answer this question based on the retrieved SEC filings.,,,ACCEPT,,,,PASS,x,,
+round2_un_11,Apple,2020,None,unanswerable,unanswerable inquiry,What was Apple's total research and development expense in fiscal year 2020?,I don't have enough information to answer this question based on the retrieved SEC filings.,,,ACCEPT,,,,PASS,x,,
+round2_un_12,NVIDIA,2021,None,unanswerable,unanswerable inquiry,What was NVIDIA's professional visualization revenue in fiscal year 2021?,I don't have enough information to answer this question based on the retrieved SEC filings.,,,ACCEPT,,,,PASS,x,,
+round2_un_13,Amazon,2021,None,unanswerable,unanswerable inquiry,What were Amazon's net sales from physical stores reported in fiscal year 2021?,I don't have enough information to answer this question based on the retrieved SEC filings.,,,ACCEPT,,,,PASS,x,,
+round2_un_14,Amazon,2024,None,unanswerable,unanswerable inquiry,"What was the intraday high price of Amazon common stock on October 14, 2024?",I don't have enough information to answer this question based on the retrieved SEC filings.,,,ACCEPT,,,,PASS,x,,
+round2_un_15,Microsoft,2025,None,unanswerable,unanswerable inquiry,What is the secret internal hardware architecture codename for Microsoft's 2028 cloud AI chips?,I don't have enough information to answer this question based on the retrieved SEC filings.,,,ACCEPT,,,,PASS,x,,
