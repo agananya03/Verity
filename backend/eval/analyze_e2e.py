@@ -156,6 +156,151 @@ def compute_paired_bootstrap_ci(
     }
 
 
+def compute_two_sample_bootstrap_ci(
+    group1_scores: List[float],
+    group2_scores: List[float],
+    n_resamples: int = 10000,
+    ci: float = 0.95,
+    seed: int = 42,
+) -> Dict[str, Any]:
+    """
+    Computes two-sample difference in means (group1 - group2) with 95% bootstrap CI
+    over independent resamples with replacement.
+    """
+    g1 = np.array(group1_scores, dtype=float)
+    g2 = np.array(group2_scores, dtype=float)
+    n1, n2 = len(g1), len(g2)
+    mean1 = float(np.mean(g1)) if n1 > 0 else 0.0
+    mean2 = float(np.mean(g2)) if n2 > 0 else 0.0
+    diff = mean1 - mean2
+    if n1 == 0 or n2 == 0:
+        return {
+            "mean_group1": round(mean1, 4),
+            "mean_group2": round(mean2, 4),
+            "mean_difference": round(diff, 4),
+            "ci_lower": 0.0,
+            "ci_upper": 0.0,
+            "n1": n1,
+            "n2": n2,
+        }
+
+    rng = np.random.default_rng(seed)
+    idx1 = rng.integers(0, n1, size=(n_resamples, n1))
+    idx2 = rng.integers(0, n2, size=(n_resamples, n2))
+    means1 = np.mean(g1[idx1], axis=1)
+    means2 = np.mean(g2[idx2], axis=1)
+    boot_diffs = means1 - means2
+
+    alpha = (1.0 - ci) / 2.0
+    ci_lower = float(np.percentile(boot_diffs, alpha * 100))
+    ci_upper = float(np.percentile(boot_diffs, (1.0 - alpha) * 100))
+
+    return {
+        "mean_group1": round(mean1, 4),
+        "mean_group2": round(mean2, 4),
+        "mean_difference": round(diff, 4),
+        "ci_lower": round(ci_lower, 4),
+        "ci_upper": round(ci_upper, 4),
+        "n1": n1,
+        "n2": n2,
+    }
+
+
+def filter_non_decline_pairs(
+    baseline_items: List[Dict[str, Any]],
+    improved_items: List[Dict[str, Any]],
+) -> Tuple[List[Dict[str, Any]], List[Dict[str, Any]]]:
+    """
+    Filters paired items to only those where NEITHER pipeline's answer is a decline.
+    """
+    b_map = {it["id"]: it for it in baseline_items}
+    imp_map = {it["id"]: it for it in improved_items}
+    shared_ids = [it_id for it_id in b_map if it_id in imp_map]
+
+    clean_b: List[Dict[str, Any]] = []
+    clean_imp: List[Dict[str, Any]] = []
+
+    for it_id in shared_ids:
+        b_it = b_map[it_id]
+        imp_it = imp_map[it_id]
+        if not is_decline_answer(b_it.get("answer")) and not is_decline_answer(imp_it.get("answer")):
+            clean_b.append(b_it)
+            clean_imp.append(imp_it)
+
+    return clean_b, clean_imp
+
+
+def sample_random_items(
+    items: List[Dict[str, Any]],
+    k: int = 6,
+    seed: int = 42,
+) -> List[Dict[str, Any]]:
+    """
+    Randomly samples k items from a list without replacement using fixed seed.
+    """
+    if len(items) <= k:
+        return list(items)
+    rng = np.random.default_rng(seed)
+    chosen_indices = rng.choice(len(items), size=k, replace=False)
+    return [items[i] for i in chosen_indices]
+
+
+def select_lowest_faithfulness_items(
+    improved_items: List[Dict[str, Any]],
+    k: int = 3,
+) -> List[Dict[str, Any]]:
+    """
+    Selects the k items with the lowest faithfulness scores in the improved pipeline.
+    Ties broken deterministically by id.
+    """
+    def _get_f(it: Dict[str, Any]) -> float:
+        val = it.get("improved_faithfulness")
+        if val is None:
+            val = it.get("faithfulness")
+        return float(val) if val is not None else 0.0
+
+    return sorted(improved_items, key=lambda x: (_get_f(x), x.get("id", "")))[:k]
+
+
+def analyze_judge_refusal_inconsistency(
+    baseline_items: List[Dict[str, Any]],
+) -> Dict[str, Any]:
+    """
+    Counts how many baseline faithfulness scores of 0.0 and 1.0 are declines,
+    documenting the judge's inconsistency on refusals.
+    """
+    scores_0 = [it for it in baseline_items if float(it.get("faithfulness") or 0.0) == 0.0]
+    scores_1 = [it for it in baseline_items if float(it.get("faithfulness") or 0.0) == 1.0]
+    all_declines = [it for it in baseline_items if is_decline_answer(it.get("answer"))]
+
+    declines_0 = [it for it in scores_0 if is_decline_answer(it.get("answer"))]
+    declines_1 = [it for it in scores_1 if is_decline_answer(it.get("answer"))]
+
+    return {
+        "faithfulness_0_0": {
+            "total": len(scores_0),
+            "decline_count": len(declines_0),
+            "non_decline_count": len(scores_0) - len(declines_0),
+            "decline_pct": round(len(declines_0) / len(scores_0), 4) if scores_0 else 0.0,
+            "decline_ids": [it["id"] for it in declines_0],
+        },
+        "faithfulness_1_0": {
+            "total": len(scores_1),
+            "decline_count": len(declines_1),
+            "non_decline_count": len(scores_1) - len(declines_1),
+            "decline_pct": round(len(declines_1) / len(scores_1), 4) if scores_1 else 0.0,
+            "decline_ids": [it["id"] for it in declines_1],
+        },
+        "total_baseline_declines": len(all_declines),
+        "declines_scored_0_or_1": len(declines_0) + len(declines_1),
+        "inconsistency_summary": (
+            f"Of the {len(all_declines)} total baseline declines, {len(declines_0)} were scored 0.0 "
+            f"and {len(declines_1)} were scored 1.0 by the judge, demonstrating arbitrary binary scoring "
+            "of standard refusal boilerplate."
+        ),
+    }
+
+
 def compute_retrieval_metrics_for_item(retrieved_chunk_ids: List[str], source_chunk_ids: List[str], k: int = 8) -> Tuple[float, float, float]:
     """Computes hit@k, recall@k, and mrr for an item if not pre-computed."""
     top_k = retrieved_chunk_ids[:k]
@@ -596,6 +741,348 @@ def generate_e2e_spot_check_markdown(spot_checks: Dict[str, List[Dict[str, Any]]
     return "\n".join(lines)
 
 
+def generate_e2e_posthoc_markdown(posthoc_data: Dict[str, Any]) -> str:
+    """Generates clean GitHub-flavored markdown for results/e2e_posthoc.md."""
+    meta = posthoc_data["metadata"]
+    non_dec = posthoc_data["non_decline_analysis"]
+    gold_slices = posthoc_data["gold_retrieved_slices"]
+    judge_incon = posthoc_data["judge_refusal_inconsistency"]
+
+    lines = [
+        "# Secondary Post-Hoc Evaluation Analysis: Verity Financial RAG",
+        "",
+        "> [!IMPORTANT]",
+        "> **POST-HOC, not pre-registered**: The analyses below are secondary and exploratory. They were designed after examining the primary pre-registered evaluation results to control for refusal scoring artifacts and retrieval dependencies.",
+        "",
+        f"- **Date**: {meta['date']}",
+        f"- **Judge Model**: `{meta['judge_model']}`",
+        f"- **Golden Benchmark**: `golden_round2.json` (SHA-256: `{meta['golden_round2_sha256'][:16]}...`)",
+        f"- **Sample Size**: {meta['sample_size']} items total",
+        "",
+        "## 1. Paired Differences Restricted to Non-Decline Answers",
+        "",
+        f"This slice excludes items where either pipeline declined to answer (n={non_dec['n']} items where both pipelines produced substantive answers). This controls for judge refusal scoring anomalies.",
+        "",
+        "### Table 1: Paired Differences on Non-Decline Answers (n=15) [POST-HOC, not pre-registered]",
+        "",
+        "| Metric | Baseline (Mean) | Improved (Mean) | Paired Difference (Imp - Base) | 95% Bootstrap CI | Imp Higher / Equal / Lower |",
+        "| :--- | :---: | :---: | :---: | :---: | :---: |",
+    ]
+
+    for m_key, label in [("faithfulness", "Faithfulness"), ("answer_correctness", "Answer Correctness")]:
+        p = non_dec[m_key]
+        diff_str = f"{p['mean_difference']:+.4f}"
+        ci_str = f"[{p['ci_lower']:+.4f}, {p['ci_upper']:+.4f}]"
+        counts_str = f"{p['higher']} / {p['equal']} / {p['lower']}"
+        lines.append(
+            f"| **{label}** | {p['mean_baseline']:.4f} | {p['mean_improved']:.4f} | **{diff_str}** | {ci_str} | {counts_str} |"
+        )
+
+    lines.extend([
+        "",
+        "## 2. Analysis Restricted to Gold-Retrieved Items",
+        "",
+        "### Table 2: Paired Differences on Gold-Retrieved Items (Improved Hit@8 = True, n=24) [POST-HOC, not pre-registered]",
+        "",
+        "| Metric | Baseline (Mean) | Improved (Mean) | Paired Difference (Imp - Base) | 95% Bootstrap CI | Imp Higher / Equal / Lower |",
+        "| :--- | :---: | :---: | :---: | :---: | :---: |",
+    ])
+
+    for m_key, label in [("faithfulness", "Faithfulness"), ("answer_correctness", "Answer Correctness")]:
+        p = gold_slices["improved_hit_paired_differences"][m_key]
+        diff_str = f"{p['mean_difference']:+.4f}"
+        ci_str = f"[{p['ci_lower']:+.4f}, {p['ci_upper']:+.4f}]"
+        counts_str = f"{p['higher']} / {p['equal']} / {p['lower']}"
+        lines.append(
+            f"| **{label}** | {p['mean_baseline']:.4f} | {p['mean_improved']:.4f} | **{diff_str}** | {ci_str} | {counts_str} |"
+        )
+
+    lines.extend([
+        "",
+        "### Table 3: Paired Differences on Improved-Only Gold-Retrieved Items (Imp Hit & Base Miss, n=16) [POST-HOC, not pre-registered]",
+        "",
+        "| Metric | Baseline (Mean) | Improved (Mean) | Paired Difference (Imp - Base) | 95% Bootstrap CI | Imp Higher / Equal / Lower |",
+        "| :--- | :---: | :---: | :---: | :---: | :---: |",
+    ])
+
+    for m_key, label in [("faithfulness", "Faithfulness"), ("answer_correctness", "Answer Correctness")]:
+        p = gold_slices["improved_only_hit_paired_differences"][m_key]
+        diff_str = f"{p['mean_difference']:+.4f}"
+        ci_str = f"[{p['ci_lower']:+.4f}, {p['ci_upper']:+.4f}]"
+        counts_str = f"{p['higher']} / {p['equal']} / {p['lower']}"
+        lines.append(
+            f"| **{label}** | {p['mean_baseline']:.4f} | {p['mean_improved']:.4f} | **{diff_str}** | {ci_str} | {counts_str} |"
+        )
+
+    lines.extend([
+        "",
+        "### Table 4: Improved Pipeline Alone: Gold-Retrieved (n=24) vs Miss (n=6) [POST-HOC, not pre-registered]",
+        "",
+        "| Metric | Gold Chunk Retrieved (Hit) | Gold Chunk Missed (Miss) | Difference (Hit - Miss) | 95% Bootstrap CI |",
+        "| :--- | :---: | :---: | :---: | :---: |",
+    ])
+
+    imp_alone = gold_slices["improved_pipeline_hit_vs_miss"]
+    for m_key, label in [("faithfulness", "Faithfulness"), ("answer_correctness", "Answer Correctness")]:
+        p = imp_alone[m_key]
+        diff_str = f"{p['mean_difference']:+.4f}"
+        ci_str = f"[{p['ci_lower']:+.4f}, {p['ci_upper']:+.4f}]"
+        lines.append(
+            f"| **{label}** | {p['mean_group1']:.4f} | {p['mean_group2']:.4f} | **{diff_str}** | {ci_str} |"
+        )
+
+    f0 = judge_incon["faithfulness_0_0"]
+    f1 = judge_incon["faithfulness_1_0"]
+    lines.extend([
+        "",
+        "## 3. Judge Inconsistency on Baseline Refusals / Declines",
+        "",
+        "Documenting RAGAS faithfulness judge inconsistency on standard refusal boilerplate:",
+        "",
+        "### Table 5: Judge Inconsistency on Baseline Refusals / Declines [POST-HOC, not pre-registered]",
+        "",
+        "| Baseline Faithfulness Score | Total Items | Declines (Refusals) | Non-Declines | Decline Percentage |",
+        "| :--- | :---: | :---: | :---: | :---: |",
+        f"| **Score = 0.0** | {f0['total']} | {f0['decline_count']} | {f0['non_decline_count']} | {f0['decline_pct'] * 100:.1f}% |",
+        f"| **Score = 1.0** | {f1['total']} | {f1['decline_count']} | {f1['non_decline_count']} | {f1['decline_pct'] * 100:.1f}% |",
+        f"| **Total Declines** | {judge_incon['total_baseline_declines']} | {judge_incon['declines_scored_0_or_1']} scored 0.0 or 1.0 | 0 scored between 0 and 1 | {judge_incon['declines_scored_0_or_1'] / judge_incon['total_baseline_declines'] * 100:.1f}% |",
+        "",
+        f"> **Key Finding**: {judge_incon['inconsistency_summary']}",
+        "",
+    ])
+
+    return "\n".join(lines)
+
+
+def generate_e2e_spot_check_random_markdown(
+    random_items: List[Dict[str, Any]],
+    lowest_faith_items: List[Dict[str, Any]],
+    metadata: Dict[str, Any],
+) -> str:
+    """Generates clean GitHub-flavored markdown for results/e2e_spot_check_random.md."""
+    lines = [
+        "# Secondary Post-Hoc Evaluation: Random & Low-Faithfulness Spot Check",
+        "",
+        "> [!IMPORTANT]",
+        "> **POST-HOC, not pre-registered**: This audit set was selected post-hoc to evaluate qualitative response fidelity and judge reliability without selection bias toward extreme delta outliers.",
+        "",
+        f"- **Date**: {metadata['date']}",
+        f"- **Judge Model**: `{metadata['judge_model']}`",
+        "- **Contents**: 6 random items sampled with seed 42, plus the 3 lowest-faithfulness answers from the improved pipeline.",
+        "",
+        "---",
+        "",
+        "## Category A: 6 Random Items (Seed 42) [POST-HOC, not pre-registered]",
+        "",
+    ]
+
+    for rank, it in enumerate(random_items, 1):
+        lines.extend([
+            f"### #{rank} [Item `{it['id']}`] ({it['category']}) [POST-HOC, not pre-registered]",
+            "",
+            f"**Question**: {it['question']}",
+            "",
+            f"**Ground Truth**: `{it['ground_truth']}`",
+            "",
+            f"**Supporting Quote**: {it['supporting_quote']}",
+            "",
+            f"- **Baseline Answer**: {it['baseline_answer']}",
+            f"- **Improved Answer**: {it['improved_answer']}",
+            "",
+            "**Judge Scores**:",
+            f"- Baseline: Faithfulness = **{it['baseline_faithfulness']}**, Answer Correctness = {it['baseline_answer_correctness']}",
+            f"- Improved: Faithfulness = **{it['improved_faithfulness']}**, Answer Correctness = {it['improved_answer_correctness']}",
+            f"- **Difference (Δ Faithfulness)**: `{it['diff_faithfulness']:+.4f}` | **(Δ Answer Correctness)**: `{it['diff_answer_correctness']:+.4f}`",
+            "",
+            "---",
+            "",
+        ])
+
+    lines.extend([
+        "## Category B: 3 Lowest-Faithfulness Improved Answers [POST-HOC, not pre-registered]",
+        "",
+    ])
+
+    for rank, it in enumerate(lowest_faith_items, 1):
+        lines.extend([
+            f"### #{rank} [Item `{it['id']}`] ({it['category']}) [POST-HOC, not pre-registered]",
+            "",
+            f"**Question**: {it['question']}",
+            "",
+            f"**Ground Truth**: `{it['ground_truth']}`",
+            "",
+            f"**Supporting Quote**: {it['supporting_quote']}",
+            "",
+            f"- **Baseline Answer**: {it['baseline_answer']}",
+            f"- **Improved Answer**: {it['improved_answer']}",
+            "",
+            "**Judge Scores**:",
+            f"- Baseline: Faithfulness = {it['baseline_faithfulness']}, Answer Correctness = {it['baseline_answer_correctness']}",
+            f"- Improved: Faithfulness = **{it['improved_faithfulness']}**, Answer Correctness = **{it['improved_answer_correctness']}**",
+            f"- **Difference (Δ Faithfulness)**: `{it['diff_faithfulness']:+.4f}` | **(Δ Answer Correctness)**: `{it['diff_answer_correctness']:+.4f}`",
+            "",
+            "---",
+            "",
+        ])
+
+    return "\n".join(lines)
+
+
+def run_posthoc_analysis(
+    baseline_items: List[Dict[str, Any]],
+    improved_items: List[Dict[str, Any]],
+    golden_map: Dict[str, Dict[str, Any]],
+    output_dir: Path,
+    metadata: Dict[str, Any],
+    force: bool = False,
+    n_resamples: int = 10000,
+    seed: int = 42,
+) -> Dict[str, Any]:
+    """
+    Executes the secondary, post-hoc analysis and writes results to e2e_posthoc.json,
+    e2e_posthoc.md, and e2e_spot_check_random.md.
+    """
+    posthoc_json_path = output_dir / "e2e_posthoc.json"
+    posthoc_md_path = output_dir / "e2e_posthoc.md"
+    spot_check_random_md_path = output_dir / "e2e_spot_check_random.md"
+
+    # Enforce write-once for posthoc files unless force=True
+    existing_posthoc = [p for p in (posthoc_json_path, posthoc_md_path, spot_check_random_md_path) if p.exists()]
+    if existing_posthoc and not force:
+        err = (
+            f"Refusing to overwrite existing post-hoc file(s): {', '.join(p.name for p in existing_posthoc)}. "
+            "Specify --force to overwrite."
+        )
+        logger.error(err)
+        raise FileExistsError(err)
+
+    # 1. Non-decline paired differences
+    clean_b, clean_imp = filter_non_decline_pairs(baseline_items, improved_items)
+    f_clean_b = [float(it["faithfulness"]) for it in clean_b]
+    f_clean_imp = [float(it["faithfulness"]) for it in clean_imp]
+    c_clean_b = [float(it["answer_correctness"]) for it in clean_b]
+    c_clean_imp = [float(it["answer_correctness"]) for it in clean_imp]
+
+    non_decline_analysis = {
+        "n": len(clean_b),
+        "neither_decline_ids": [it["id"] for it in clean_b],
+        "faithfulness": compute_paired_bootstrap_ci(f_clean_b, f_clean_imp, n_resamples=n_resamples, seed=seed),
+        "answer_correctness": compute_paired_bootstrap_ci(c_clean_b, c_clean_imp, n_resamples=n_resamples, seed=seed),
+    }
+
+    # 2. Gold-retrieved comparisons
+    b_map = {it["id"]: it for it in baseline_items}
+    imp_map = {it["id"]: it for it in improved_items}
+    shared_ids = [it["id"] for it in improved_items if it["id"] in b_map]
+
+    # 2A: Items where Improved retrieved gold chunk (improved hit@8 == True, n=24)
+    imp_hit_ids = [it_id for it_id in shared_ids if float(imp_map[it_id].get("hit@8") or 0.0) > 0.0]
+    b_f_ih = [float(b_map[i]["faithfulness"]) for i in imp_hit_ids]
+    imp_f_ih = [float(imp_map[i]["faithfulness"]) for i in imp_hit_ids]
+    b_c_ih = [float(b_map[i]["answer_correctness"]) for i in imp_hit_ids]
+    imp_c_ih = [float(imp_map[i]["answer_correctness"]) for i in imp_hit_ids]
+
+    imp_hit_paired = {
+        "n": len(imp_hit_ids),
+        "item_ids": imp_hit_ids,
+        "faithfulness": compute_paired_bootstrap_ci(b_f_ih, imp_f_ih, n_resamples=n_resamples, seed=seed),
+        "answer_correctness": compute_paired_bootstrap_ci(b_c_ih, imp_c_ih, n_resamples=n_resamples, seed=seed),
+    }
+
+    # 2B: Items where Improved retrieved gold chunk but Baseline missed (improved-only gold retrieved, n=16)
+    imp_only_hit_ids = [
+        it_id for it_id in shared_ids
+        if float(imp_map[it_id].get("hit@8") or 0.0) > 0.0 and float(b_map[it_id].get("hit@8") or 0.0) == 0.0
+    ]
+    b_f_io = [float(b_map[i]["faithfulness"]) for i in imp_only_hit_ids]
+    imp_f_io = [float(imp_map[i]["faithfulness"]) for i in imp_only_hit_ids]
+    b_c_io = [float(b_map[i]["answer_correctness"]) for i in imp_only_hit_ids]
+    imp_c_io = [float(imp_map[i]["answer_correctness"]) for i in imp_only_hit_ids]
+
+    imp_only_paired = {
+        "n": len(imp_only_hit_ids),
+        "item_ids": imp_only_hit_ids,
+        "faithfulness": compute_paired_bootstrap_ci(b_f_io, imp_f_io, n_resamples=n_resamples, seed=seed),
+        "answer_correctness": compute_paired_bootstrap_ci(b_c_io, imp_c_io, n_resamples=n_resamples, seed=seed),
+    }
+
+    # 2C: Improved pipeline alone: Gold-retrieved vs Miss
+    imp_miss_ids = [it_id for it_id in shared_ids if float(imp_map[it_id].get("hit@8") or 0.0) == 0.0]
+    imp_f_miss = [float(imp_map[i]["faithfulness"]) for i in imp_miss_ids]
+    imp_c_miss = [float(imp_map[i]["answer_correctness"]) for i in imp_miss_ids]
+
+    imp_pipeline_hit_vs_miss = {
+        "hit_n": len(imp_hit_ids),
+        "miss_n": len(imp_miss_ids),
+        "faithfulness": compute_two_sample_bootstrap_ci(imp_f_ih, imp_f_miss, n_resamples=n_resamples, seed=seed),
+        "answer_correctness": compute_two_sample_bootstrap_ci(imp_c_ih, imp_c_miss, n_resamples=n_resamples, seed=seed),
+    }
+
+    gold_slices = {
+        "improved_hit_paired_differences": imp_hit_paired,
+        "improved_only_hit_paired_differences": imp_only_paired,
+        "improved_pipeline_hit_vs_miss": imp_pipeline_hit_vs_miss,
+    }
+
+    # 3. Judge refusal inconsistency on baseline
+    judge_inconsistency = analyze_judge_refusal_inconsistency(baseline_items)
+
+    # 4. Spot check: 6 random items (seed 42) + 3 lowest-faithfulness improved answers
+    paired_all: List[Dict[str, Any]] = []
+    for it_id in shared_ids:
+        b_it = b_map[it_id]
+        imp_it = imp_map[it_id]
+        b_f = float(b_it.get("faithfulness") or 0.0)
+        imp_f = float(imp_it.get("faithfulness") or 0.0)
+        b_c = float(b_it.get("answer_correctness") or 0.0)
+        imp_c = float(imp_it.get("answer_correctness") or 0.0)
+        paired_all.append({
+            "id": it_id,
+            "category": imp_it.get("category") or b_it.get("category", "unknown"),
+            "question": imp_it.get("question") or b_it.get("question", ""),
+            "ground_truth": imp_it.get("ground_truth") or b_it.get("ground_truth", ""),
+            "baseline_answer": b_it.get("answer", ""),
+            "improved_answer": imp_it.get("answer", ""),
+            "baseline_faithfulness": round(b_f, 4),
+            "improved_faithfulness": round(imp_f, 4),
+            "diff_faithfulness": round(imp_f - b_f, 4),
+            "baseline_answer_correctness": round(b_c, 4),
+            "improved_answer_correctness": round(imp_c, 4),
+            "diff_answer_correctness": round(imp_c - b_c, 4),
+            "supporting_quote": _get_supporting_quote(it_id, golden_map, b_it, imp_it),
+        })
+
+    sampled_random = sample_random_items(paired_all, k=6, seed=seed)
+    lowest_faith = select_lowest_faithfulness_items(paired_all, k=3)
+
+    meta_copy = dict(metadata)
+    meta_copy["analysis_type"] = "SECONDARY, POST-HOC analysis (not pre-registered)"
+
+    posthoc_output = {
+        "metadata": meta_copy,
+        "non_decline_analysis": non_decline_analysis,
+        "gold_retrieved_slices": gold_slices,
+        "judge_refusal_inconsistency": judge_inconsistency,
+    }
+
+    posthoc_md = generate_e2e_posthoc_markdown(posthoc_output)
+    spot_check_random_md = generate_e2e_spot_check_random_markdown(sampled_random, lowest_faith, meta_copy)
+
+    output_dir.mkdir(parents=True, exist_ok=True)
+    with open(posthoc_json_path, "w", encoding="utf-8") as f:
+        json.dump(posthoc_output, f, indent=2, ensure_ascii=False)
+    with open(posthoc_md_path, "w", encoding="utf-8") as f:
+        f.write(posthoc_md)
+    with open(spot_check_random_md_path, "w", encoding="utf-8") as f:
+        f.write(spot_check_random_md)
+
+    logger.info(f"Successfully generated {posthoc_json_path.name}")
+    logger.info(f"Successfully generated {posthoc_md_path.name}")
+    logger.info(f"Successfully generated {spot_check_random_md_path.name}")
+
+    return posthoc_output
+
+
 def run_e2e_analysis(
     baseline_answers_path: Path,
     improved_answers_path: Path,
@@ -610,29 +1097,22 @@ def run_e2e_analysis(
     seed: int = 42,
 ) -> Dict[str, Any]:
     """
-    Executes complete end-to-end evaluation analysis.
-    Refuses to overwrite existing files unless force=True.
+    Executes primary end-to-end evaluation analysis and secondary post-hoc analysis.
+    Preserves existing write-once summary files unless force=True.
     Refuses to run if any items have missing or NaN scores.
     """
     summary_json_path = output_dir / "e2e_summary.json"
     summary_md_path = output_dir / "e2e_summary.md"
     spot_check_md_path = output_dir / "e2e_spot_check.md"
 
-    # Enforce write-once
-    existing_files = [p for p in (summary_json_path, summary_md_path, spot_check_md_path) if p.exists()]
-    if existing_files:
-        if not force:
-            err = (
-                f"Refusing to overwrite existing file(s): {', '.join(p.name for p in existing_files)}. "
-                "Specify --force to overwrite."
-            )
-            logger.error(err)
-            raise FileExistsError(err)
-        else:
-            logger.warning(
-                f"WARNING: Overwriting existing file(s) because --force was passed: "
-                f"{', '.join(p.name for p in existing_files)}"
-            )
+    # The existing e2e_summary files are strictly write-once; do not touch them if they already exist
+    existing_primary = [p for p in (summary_json_path, summary_md_path, spot_check_md_path) if p.exists()]
+    write_primary = len(existing_primary) == 0
+    if existing_primary:
+        logger.info(
+            f"Existing primary summary files found ({', '.join(p.name for p in existing_primary)}); "
+            "preserving strictly write-once primary files (never touched)."
+        )
 
     # Load baseline and improved data
     b_items, b_meta, b_offending = load_pipeline_data(
@@ -717,9 +1197,6 @@ def run_e2e_analysis(
         except Exception as e:
             logger.warning(f"Could not load golden benchmark from {golden_path}: {e}")
 
-    # Spot checks
-    spot_checks = select_spot_check_items(aligned_b, aligned_imp, golden_map)
-
     # Build metadata
     golden_sha = compute_file_sha256(golden_path)
     today_str = datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%d")
@@ -745,24 +1222,39 @@ def run_e2e_analysis(
         "retrieval_slices": retrieval_slices,
     }
 
-    # Generate Markdown documents
-    summary_md = generate_e2e_summary_markdown(summary_output)
-    spot_check_md = generate_e2e_spot_check_markdown(spot_checks, meta_summary)
+    if write_primary:
+        spot_checks = select_spot_check_items(aligned_b, aligned_imp, golden_map)
+        summary_md = generate_e2e_summary_markdown(summary_output)
+        spot_check_md = generate_e2e_spot_check_markdown(spot_checks, meta_summary)
 
-    # Write files
-    output_dir.mkdir(parents=True, exist_ok=True)
-    with open(summary_json_path, "w", encoding="utf-8") as f:
-        json.dump(summary_output, f, indent=2, ensure_ascii=False)
-    with open(summary_md_path, "w", encoding="utf-8") as f:
-        f.write(summary_md)
-    with open(spot_check_md_path, "w", encoding="utf-8") as f:
-        f.write(spot_check_md)
+        output_dir.mkdir(parents=True, exist_ok=True)
+        with open(summary_json_path, "w", encoding="utf-8") as f:
+            json.dump(summary_output, f, indent=2, ensure_ascii=False)
+        with open(summary_md_path, "w", encoding="utf-8") as f:
+            f.write(summary_md)
+        with open(spot_check_md_path, "w", encoding="utf-8") as f:
+            f.write(spot_check_md)
 
-    logger.info(f"Successfully generated {summary_json_path.name}")
-    logger.info(f"Successfully generated {summary_md_path.name}")
-    logger.info(f"Successfully generated {spot_check_md_path.name}")
+        logger.info(f"Successfully generated {summary_json_path.name}")
+        logger.info(f"Successfully generated {summary_md_path.name}")
+        logger.info(f"Successfully generated {spot_check_md_path.name}")
 
-    return summary_output
+    # Execute and save secondary post-hoc analysis
+    posthoc_output = run_posthoc_analysis(
+        baseline_items=aligned_b,
+        improved_items=aligned_imp,
+        golden_map=golden_map,
+        output_dir=output_dir,
+        metadata=meta_summary,
+        force=force,
+        n_resamples=n_resamples,
+        seed=seed,
+    )
+
+    return {
+        "primary_summary": summary_output if write_primary else None,
+        "posthoc_analysis": posthoc_output,
+    }
 
 
 def main(argv: Optional[List[str]] = None) -> int:

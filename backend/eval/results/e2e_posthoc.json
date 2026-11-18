@@ -1,0 +1,212 @@
+{
+  "metadata": {
+    "date": "2026-11-17",
+    "golden_round2_sha256": "37cc61373c8b806b84476fbe5663a591411f3b34c02b846d57f8a653ccf94645",
+    "judge_model": "gemma-4-31b-it",
+    "sample_size": 30,
+    "generator_model": "gemini-3.5-flash-lite",
+    "critic_model": "gemini-3.1-flash-lite",
+    "analysis_type": "SECONDARY, POST-HOC analysis (not pre-registered)"
+  },
+  "non_decline_analysis": {
+    "n": 15,
+    "neither_decline_ids": [
+      "round2_009",
+      "round2_010",
+      "round2_015",
+      "round2_031",
+      "round2_032",
+      "round2_045",
+      "round2_050",
+      "round2_057",
+      "round2_058",
+      "round2_061",
+      "round2_073",
+      "round2_080",
+      "round2_082",
+      "round2_100",
+      "round2_105"
+    ],
+    "faithfulness": {
+      "mean_baseline": 0.84,
+      "mean_improved": 0.9965,
+      "mean_difference": 0.1565,
+      "ci_lower": 0.0667,
+      "ci_upper": 0.253,
+      "ci_level": 0.95,
+      "higher": 7,
+      "equal": 7,
+      "lower": 1,
+      "n": 15
+    },
+    "answer_correctness": {
+      "mean_baseline": 0.6835,
+      "mean_improved": 0.8219,
+      "mean_difference": 0.1384,
+      "ci_lower": -0.0098,
+      "ci_upper": 0.2844,
+      "ci_level": 0.95,
+      "higher": 11,
+      "equal": 0,
+      "lower": 4,
+      "n": 15
+    }
+  },
+  "gold_retrieved_slices": {
+    "improved_hit_paired_differences": {
+      "n": 24,
+      "item_ids": [
+        "round2_009",
+        "round2_010",
+        "round2_015",
+        "round2_018",
+        "round2_023",
+        "round2_024",
+        "round2_029",
+        "round2_031",
+        "round2_032",
+        "round2_045",
+        "round2_049",
+        "round2_050",
+        "round2_057",
+        "round2_058",
+        "round2_061",
+        "round2_073",
+        "round2_076",
+        "round2_080",
+        "round2_082",
+        "round2_085",
+        "round2_094",
+        "round2_100",
+        "round2_111",
+        "round2_113"
+      ],
+      "faithfulness": {
+        "mean_baseline": 0.6917,
+        "mean_improved": 0.9653,
+        "mean_difference": 0.2736,
+        "ci_lower": 0.1306,
+        "ci_upper": 0.4306,
+        "ci_level": 0.95,
+        "higher": 12,
+        "equal": 11,
+        "lower": 1,
+        "n": 24
+      },
+      "answer_correctness": {
+        "mean_baseline": 0.4987,
+        "mean_improved": 0.8035,
+        "mean_difference": 0.3048,
+        "ci_lower": 0.1696,
+        "ci_upper": 0.4336,
+        "ci_level": 0.95,
+        "higher": 20,
+        "equal": 0,
+        "lower": 4,
+        "n": 24
+      }
+    },
+    "improved_only_hit_paired_differences": {
+      "n": 16,
+      "item_ids": [
+        "round2_010",
+        "round2_015",
+        "round2_018",
+        "round2_023",
+        "round2_024",
+        "round2_029",
+        "round2_031",
+        "round2_032",
+        "round2_049",
+        "round2_057",
+        "round2_058",
+        "round2_080",
+        "round2_085",
+        "round2_094",
+        "round2_111",
+        "round2_113"
+      ],
+      "faithfulness": {
+        "mean_baseline": 0.7042,
+        "mean_improved": 0.9792,
+        "mean_difference": 0.275,
+        "ci_lower": 0.0667,
+        "ci_upper": 0.5042,
+        "ci_level": 0.95,
+        "higher": 6,
+        "equal": 9,
+        "lower": 1,
+        "n": 16
+      },
+      "answer_correctness": {
+        "mean_baseline": 0.4062,
+        "mean_improved": 0.8175,
+        "mean_difference": 0.4114,
+        "ci_lower": 0.2729,
+        "ci_upper": 0.5479,
+        "ci_level": 0.95,
+        "higher": 14,
+        "equal": 0,
+        "lower": 2,
+        "n": 16
+      }
+    },
+    "improved_pipeline_hit_vs_miss": {
+      "hit_n": 24,
+      "miss_n": 6,
+      "faithfulness": {
+        "mean_group1": 0.9653,
+        "mean_group2": 0.4579,
+        "mean_difference": 0.5074,
+        "ci_lower": 0.1481,
+        "ci_upper": 0.8458,
+        "n1": 24,
+        "n2": 6
+      },
+      "answer_correctness": {
+        "mean_group1": 0.8035,
+        "mean_group2": 0.3616,
+        "mean_difference": 0.4418,
+        "ci_lower": 0.1804,
+        "ci_upper": 0.6483,
+        "n1": 24,
+        "n2": 6
+      }
+    }
+  },
+  "judge_refusal_inconsistency": {
+    "faithfulness_0_0": {
+      "total": 7,
+      "decline_count": 7,
+      "non_decline_count": 0,
+      "decline_pct": 1.0,
+      "decline_ids": [
+        "round2_018",
+        "round2_023",
+        "round2_024",
+        "round2_029",
+        "round2_065",
+        "round2_076",
+        "round2_117"
+      ]
+    },
+    "faithfulness_1_0": {
+      "total": 16,
+      "decline_count": 7,
+      "non_decline_count": 9,
+      "decline_pct": 0.4375,
+      "decline_ids": [
+        "round2_033",
+        "round2_049",
+        "round2_085",
+        "round2_094",
+        "round2_111",
+        "round2_113",
+        "round2_124"
+      ]
+    },
+    "total_baseline_declines": 14,
+    "declines_scored_0_or_1": 14,
+    "inconsistency_summary": "Of the 14 total baseline declines, 7 were scored 0.0 and 7 were scored 1.0 by the judge, demonstrating arbitrary binary scoring of standard refusal boilerplate."
+  }
+}

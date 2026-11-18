@@ -16,13 +16,19 @@ import pytest
 
 from backend.eval.analyze_e2e import (
     DataIntegrityError,
+    analyze_judge_refusal_inconsistency,
     compute_critic_stats,
     compute_paired_bootstrap_ci,
     compute_retrieval_slices,
+    compute_two_sample_bootstrap_ci,
     count_declines,
+    filter_non_decline_pairs,
     is_decline_answer,
     load_pipeline_data,
     run_e2e_analysis,
+    run_posthoc_analysis,
+    sample_random_items,
+    select_lowest_faithfulness_items,
     select_spot_check_items,
     validate_no_nans_or_missing,
 )
@@ -385,8 +391,8 @@ def test_full_analysis_pipeline_and_write_once(tmp_path):
     assert "Category A: Top 3 Items by Absolute Faithfulness Difference" in spot_content
     assert "Category B: Top 3 Items by Absolute Answer Correctness Difference" in spot_content
 
-    # Second run without force: should raise FileExistsError
-    with pytest.raises(FileExistsError, match="Refusing to overwrite existing file"):
+    # Second run without force: should raise FileExistsError because post-hoc files exist
+    with pytest.raises(FileExistsError, match="Refusing to overwrite existing"):
         run_e2e_analysis(
             baseline_answers_path=b_ans_path,
             improved_answers_path=imp_ans_path,
@@ -416,3 +422,162 @@ def test_full_analysis_pipeline_and_write_once(tmp_path):
         seed=42,
     )
     assert res_forced is not None
+
+
+def test_filter_non_decline_pairs():
+    """Verifies that filter_non_decline_pairs keeps only items where neither answer is a decline."""
+    b_items = [
+        {"id": "q1", "answer": "Apple revenue was $391B [1]."},
+        {"id": "q2", "answer": "I don't have enough information to answer this question based on the retrieved SEC filings."},
+        {"id": "q3", "answer": "Microsoft operating income reached $109B."},
+        {"id": "q4", "answer": "I do not have enough information to answer."},
+    ]
+    imp_items = [
+        {"id": "q1", "answer": "Apple revenue reached $391.035 billion in 2024 [Chunk 1]."},
+        {"id": "q2", "answer": "Alphabet cloud revenue was $33,088M [1]."},  # baseline declined
+        {"id": "q3", "answer": "I don't have enough information to answer this question based on the retrieved SEC filings."},  # imp declined
+        {"id": "q4", "answer": "Cannot answer based on context."},  # both declined
+    ]
+
+    clean_b, clean_imp = filter_non_decline_pairs(b_items, imp_items)
+
+    assert len(clean_b) == 1
+    assert len(clean_imp) == 1
+    assert clean_b[0]["id"] == "q1"
+    assert clean_imp[0]["id"] == "q1"
+
+
+def test_random_sampler_fixed_seed():
+    """Verifies that sample_random_items is deterministic with fixed seed 42 and samples without replacement."""
+    items = [{"id": f"q_{i}", "val": i} for i in range(20)]
+
+    s1 = sample_random_items(items, k=6, seed=42)
+    s2 = sample_random_items(items, k=6, seed=42)
+
+    assert len(s1) == 6
+    assert len(s2) == 6
+    assert [x["id"] for x in s1] == [x["id"] for x in s2]  # Deterministic
+
+    # Distinct items (no replacement)
+    ids = [x["id"] for x in s1]
+    assert len(set(ids)) == 6
+
+    # Different seed yields different sample
+    s3 = sample_random_items(items, k=6, seed=123)
+    assert [x["id"] for x in s1] != [x["id"] for x in s3]
+
+    # k >= len(items) returns all items
+    s_all = sample_random_items(items[:3], k=5, seed=42)
+    assert len(s_all) == 3
+
+
+def test_lowest_faithfulness_sampler():
+    """Verifies that select_lowest_faithfulness_items picks lowest faithfulness items accurately."""
+    items = [
+        {"id": "q1", "improved_faithfulness": 0.8},
+        {"id": "q2", "improved_faithfulness": 0.0},
+        {"id": "q3", "improved_faithfulness": 0.5},
+        {"id": "q4", "improved_faithfulness": 0.0},
+        {"id": "q5", "improved_faithfulness": 1.0},
+    ]
+    lowest = select_lowest_faithfulness_items(items, k=3)
+    ids = [x["id"] for x in lowest]
+    assert ids == ["q2", "q4", "q3"]
+
+
+def test_judge_refusal_inconsistency_logic():
+    """Verifies calculation of baseline faithfulness 0.0 and 1.0 refusal counts."""
+    baseline_items = [
+        {"id": "q1", "faithfulness": 0.0, "answer": "I don't have enough information to answer."},
+        {"id": "q2", "faithfulness": 0.0, "answer": "I don't have enough information to answer."},
+        {"id": "q3", "faithfulness": 1.0, "answer": "I don't have enough information to answer."},
+        {"id": "q4", "faithfulness": 1.0, "answer": "Apple revenue was $391B."},
+        {"id": "q5", "faithfulness": 0.5, "answer": "Microsoft profit was $88B."},
+    ]
+    res = analyze_judge_refusal_inconsistency(baseline_items)
+
+    assert res["faithfulness_0_0"]["total"] == 2
+    assert res["faithfulness_0_0"]["decline_count"] == 2
+    assert res["faithfulness_0_0"]["decline_pct"] == 1.0
+    assert res["faithfulness_0_0"]["decline_ids"] == ["q1", "q2"]
+
+    assert res["faithfulness_1_0"]["total"] == 2
+    assert res["faithfulness_1_0"]["decline_count"] == 1
+    assert res["faithfulness_1_0"]["decline_pct"] == 0.5
+    assert res["faithfulness_1_0"]["decline_ids"] == ["q3"]
+
+    assert res["total_baseline_declines"] == 3
+    assert res["declines_scored_0_or_1"] == 3
+
+
+def test_posthoc_analysis_generation(tmp_path):
+    """Verifies that run_posthoc_analysis generates e2e_posthoc.md/json and spot check with required labels."""
+    out_dir = tmp_path / "results"
+    out_dir.mkdir(parents=True, exist_ok=True)
+
+    b_items = [
+        {"id": f"q_{i}", "category": "simple_lookup", "question": f"Q{i}", "ground_truth": f"T{i}",
+         "answer": "I don't have enough information" if i < 2 else f"B answer {i}",
+         "hit@8": 0.0 if i < 2 else 1.0, "faithfulness": 0.0 if i < 2 else 0.8, "answer_correctness": 0.2 if i < 2 else 0.7}
+        for i in range(10)
+    ]
+    imp_items = [
+        {"id": f"q_{i}", "category": "simple_lookup", "question": f"Q{i}", "ground_truth": f"T{i}",
+         "answer": f"Imp answer {i}",
+         "hit@8": 1.0, "faithfulness": 0.9, "answer_correctness": 0.85}
+        for i in range(10)
+    ]
+    golden_map = {f"q_{i}": {"source_quotes": [f"Quote {i}"]} for i in range(10)}
+
+    metadata = {
+        "date": "2026-11-17",
+        "golden_round2_sha256": "mock_sha",
+        "judge_model": "test-judge",
+        "sample_size": 10,
+    }
+
+    res = run_posthoc_analysis(
+        baseline_items=b_items,
+        improved_items=imp_items,
+        golden_map=golden_map,
+        output_dir=out_dir,
+        metadata=metadata,
+        force=False,
+        n_resamples=500,
+        seed=42,
+    )
+
+    posthoc_json = out_dir / "e2e_posthoc.json"
+    posthoc_md = out_dir / "e2e_posthoc.md"
+    spot_check_md = out_dir / "e2e_spot_check_random.md"
+
+    assert posthoc_json.exists()
+    assert posthoc_md.exists()
+    assert spot_check_md.exists()
+
+    md_text = posthoc_md.read_text(encoding="utf-8")
+    assert "POST-HOC, not pre-registered" in md_text
+    assert "Table 1:" in md_text
+    assert "Table 2:" in md_text
+    assert "Table 3:" in md_text
+    assert "Table 4:" in md_text
+    assert "Table 5:" in md_text
+
+    spot_text = spot_check_md.read_text(encoding="utf-8")
+    assert "POST-HOC, not pre-registered" in spot_text
+    assert "Category A: 6 Random Items (Seed 42)" in spot_text
+    assert "Category B: 3 Lowest-Faithfulness Improved Answers" in spot_text
+
+    # Write-once protection on posthoc files
+    with pytest.raises(FileExistsError, match="Refusing to overwrite existing post-hoc file"):
+        run_posthoc_analysis(
+            baseline_items=b_items,
+            improved_items=imp_items,
+            golden_map=golden_map,
+            output_dir=out_dir,
+            metadata=metadata,
+            force=False,
+            n_resamples=500,
+            seed=42,
+        )
+
