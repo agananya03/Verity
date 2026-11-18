@@ -40,3 +40,5 @@ backend/eval/results_backup_*/
 backend/eval/results/quota_ledger.json
 backend/eval/results/*_answers*.json
 backend/eval/results/*_partial.json
+*_dryrun*
+judge_latency_test.py
