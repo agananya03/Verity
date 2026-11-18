@@ -11,10 +11,6 @@ export function Navbar() {
       name: "Chat",
       href: "/",
     },
-    {
-      name: "Eval Dashboard",
-      href: "/eval",
-    },
   ];
 
   return (
